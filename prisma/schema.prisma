@@ -7,25 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  PATIENT
-  THERAPIST
-  ADMIN
-}
-
-enum SessionType {
-  VIDEO
-  AUDIO
-  CHAT
-}
-
-enum AppointmentStatus {
-  PENDING
-  CONFIRMED
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
 
 model User {
   id            String    @id @default(cuid())
@@ -34,7 +15,7 @@ model User {
   password      String
   phone         String?
   avatar        String?
-  role          Role      @default(PATIENT)
+  role          String    @default("PATIENT")
   isSuspended   Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -73,8 +54,8 @@ model Appointment {
   therapist   User              @relation("TherapistAppointments", fields: [therapistId], references: [id])
   scheduledAt DateTime
   duration    Int               @default(50)
-  type        SessionType       @default(VIDEO)
-  status      AppointmentStatus @default(PENDING)
+  type        String            @default("VIDEO")
+  status      String            @default("PENDING")
   price       Int
   roomName    String            @unique
   notes       String?

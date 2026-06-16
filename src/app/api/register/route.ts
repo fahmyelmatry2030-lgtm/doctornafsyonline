@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { Role } from "@prisma/client";
+
 import { getSettings } from "@/app/admin/settings/actions";
 
 export async function POST(request: Request) {
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       email: string;
       password: string;
       phone?: string;
-      role?: Role;
+      role?: string;
       specializations?: string;
       yearsExperience?: string;
       pricePerSession?: string;
@@ -37,17 +37,17 @@ export async function POST(request: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    const userRole = role === "THERAPIST" ? Role.THERAPIST : Role.PATIENT;
+    const userRole = role === "THERAPIST" ? "THERAPIST" : "PATIENT";
 
     // التحقق من إعدادات المنصة
     const settings = await getSettings();
-    if (userRole === Role.THERAPIST && !settings.allowNewTherapists) {
+    if (userRole === "THERAPIST" && !settings.allowNewTherapists) {
       return NextResponse.json(
         { error: "تسجيل الأخصائيين الجدد معطل حالياً من قبل الإدارة" },
         { status: 400 }
       );
     }
-    if (userRole === Role.PATIENT && !settings.allowNewPatients) {
+    if (userRole === "PATIENT" && !settings.allowNewPatients) {
       return NextResponse.json(
         { error: "تسجيل المرضى الجدد معطل حالياً من قبل الإدارة" },
         { status: 400 }
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
         password: hashedPassword,
         phone,
         role: userRole,
-        ...(userRole === Role.THERAPIST && {
+        ...(userRole === "THERAPIST" && {
           therapistProfile: {
             create: {
               bio: "أخصائي نفسي جديد",

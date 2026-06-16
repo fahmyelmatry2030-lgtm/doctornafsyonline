@@ -2,10 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { AppointmentStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
 
-export async function updateAppointmentStatus(id: string, status: AppointmentStatus) {
+export async function updateAppointmentStatus(id: string, status: string) {
   try {
     const session = await auth();
     if (!session?.user || session.user.role !== "ADMIN") {

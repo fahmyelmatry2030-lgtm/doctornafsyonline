@@ -67,7 +67,7 @@ export default async function SessionPage({ params }: Props) {
 
       <SessionRoom
         appointmentId={appointment.id}
-        sessionType={appointment.type}
+        sessionType={appointment.type as "VIDEO" | "AUDIO" | "CHAT"}
         livekitToken={token}
         livekitUrl={process.env.LIVEKIT_URL || null}
         livekitConfigured={isLiveKitConfigured()}

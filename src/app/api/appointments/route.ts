@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createLiveKitToken } from "@/lib/livekit";
-import { SessionType } from "@prisma/client";
+
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         patientId: session.user.id,
         therapistId,
         scheduledAt: new Date(scheduledAt),
-        type: (type as SessionType) || SessionType.VIDEO,
+        type: type || "VIDEO",
         duration: duration || 50,
         price: therapist.therapistProfile.pricePerSession,
         roomName,
