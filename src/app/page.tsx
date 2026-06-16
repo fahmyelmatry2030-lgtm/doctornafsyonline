@@ -24,7 +24,7 @@ async function getFeaturedTherapists() {
 }
 
 export default async function HomePage() {
-  let therapists = [];
+  let therapists: any[] = [];
   let dbError = null;
   try {
     therapists = await getFeaturedTherapists();
