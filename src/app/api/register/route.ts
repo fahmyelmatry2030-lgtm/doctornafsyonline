@@ -7,12 +7,18 @@ import { getSettings } from "@/app/admin/settings/actions";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, password, phone, role } = body as {
+    const { 
+      name, email, password, phone, role,
+      specializations, yearsExperience, pricePerSession 
+    } = body as {
       name: string;
       email: string;
       password: string;
       phone?: string;
       role?: Role;
+      specializations?: string;
+      yearsExperience?: string;
+      pricePerSession?: string;
     };
 
     if (!name || !email || !password) {
@@ -58,10 +64,10 @@ export async function POST(request: Request) {
         ...(userRole === Role.THERAPIST && {
           therapistProfile: {
             create: {
-              bio: "أخصائي نفسي معتمد",
-              specializations: JSON.stringify(["القلق والتوتر"]),
-              pricePerSession: 300,
-              yearsExperience: 3,
+              bio: "أخصائي نفسي جديد",
+              specializations: specializations ? JSON.stringify(specializations.split(',').map(s => s.trim())) : JSON.stringify(["استشارات عامة"]),
+              pricePerSession: pricePerSession ? Number(pricePerSession) : 300,
+              yearsExperience: yearsExperience ? Number(yearsExperience) : 1,
             },
           },
         }),
@@ -72,7 +78,8 @@ export async function POST(request: Request) {
       { id: user.id, email: user.email, role: user.role },
       { status: 201 }
     );
-  } catch {
+  } catch (error) {
+    console.error("Registration error:", error);
     return NextResponse.json(
       { error: "حدث خطأ أثناء التسجيل" },
       { status: 500 }
