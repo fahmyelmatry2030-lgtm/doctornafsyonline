@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Phone, MapPin, Send, MessageCircle, Clock, CheckCircle2 } from "lucide-react";
+import { Mail, MapPin, Phone, Send, MessageCircle, Clock, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 export default function ContactPage() {
   const [formState, setFormState] = useState({
@@ -18,224 +19,213 @@ export default function ContactPage() {
   };
 
   return (
-    <div>
+    <div className="bg-[var(--color-background)] min-h-screen">
       {/* ============ HERO SECTION ============ */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-teal-800 to-teal-700 py-24 md:py-32">
-        <div className="absolute inset-0 opacity-6">
-          <div className="absolute top-0 left-1/4 h-96 w-96 rounded-full bg-white blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-white blur-3xl"></div>
+      <section className="relative overflow-hidden bg-[var(--color-surface-warm)] py-24 md:py-32">
+        <div className="absolute inset-0 opacity-40 pointer-events-none">
+          <div className="absolute top-0 left-1/4 h-96 w-96 rounded-full bg-[var(--color-surface-cool)] blur-3xl animate-float-slow"></div>
+          <div className="absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-[#E0E7FF] blur-3xl animate-float"></div>
         </div>
 
-        <div className="relative mx-auto max-w-6xl px-4">
-          <div className="max-w-3xl">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold text-white">
-              <MessageCircle className="h-4 w-4" />
+        <div className="relative mx-auto max-w-6xl px-4 text-center z-10">
+          <div className="max-w-3xl mx-auto animate-fade-in-up stagger-1">
+            <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#312E81] shadow-premium">
+              <MessageCircle className="h-4 w-4 text-[#6366F1]" />
               تواصل معنا
             </span>
-            <h1 className="mb-6 text-5xl font-black text-white md:text-6xl">
-              نحن <span className="text-yellow-200">هنا لمساعدتك</span>
+            <h1 className="mb-6 text-5xl font-black leading-tight text-[var(--color-foreground)] md:text-6xl animate-fade-in-up stagger-2">
+              نحن هنا <span className="gradient-text">لأجلك</span>
             </h1>
-            <p className="text-xl text-white/90">
-              أي سؤال أو استفسار؟ تواصل معنا — نرد على جميع الرسائل بسرعة
+            <p className="text-xl leading-relaxed text-slate-700 animate-fade-in-up stagger-3">
+              يسعدنا الاستماع إليك. سواء كان لديك استفسار، ملاحظة، أو تحتاج إلى مساعدة، فريقنا جاهز للرد عليك في أسرع وقت.
             </p>
           </div>
         </div>
       </section>
 
       {/* ============ MAIN CONTENT ============ */}
-      <div className="mx-auto max-w-6xl px-4 py-20">
+      <div className="mx-auto max-w-6xl px-4 py-20 relative z-10">
         <div className="grid gap-12 lg:grid-cols-2">
           {/* Contact Information */}
-          <section>
-            <div className="mb-12">
-              <p className="mb-3 text-sm font-bold uppercase text-teal-600 tracking-widest">📍 معلومات التواصل</p>
-              <h2 className="mb-4 text-4xl font-black text-slate-900">
-                تواصل معنا بسهولة
-              </h2>
-              <p className="text-lg text-slate-600 leading-relaxed">
-                اختر الطريقة التي تفضلها للتواصل معنا. فريقنا جاهز لمساعدتك في أي استفسار.
-              </p>
-            </div>
+          <div className="animate-fade-in-up">
+            <h2 className="mb-8 text-3xl font-black text-[var(--color-foreground)]">معلومات التواصل</h2>
+            <p className="mb-10 text-lg text-slate-600 leading-relaxed">
+              يمكنك التواصل معنا عبر أي من القنوات التالية، وسنحرص على الرد عليك خلال أقل من 24 ساعة.
+            </p>
 
             <div className="space-y-6">
-              {/* Email */}
-              <div className="group rounded-3xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50 p-8 hover:border-teal-300 hover:shadow-md transition-all">
-                <div className="flex items-start gap-5">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white group-hover:from-blue-600 group-hover:to-blue-700 transition-all">
-                    <Mail className="h-6 w-6" />
+              {[
+                {
+                  icon: <Mail className="h-6 w-6 text-[#6366F1]" />,
+                  title: "البريد الإلكتروني",
+                  info: "support@nafsi.com",
+                  desc: "للاستفسارات العامة والدعم التقني",
+                  bg: "from-[#6366F1] to-[#8B5CF6]",
+                },
+                {
+                  icon: <Phone className="h-6 w-6 text-[#10B981]" />,
+                  title: "رقم الهاتف",
+                  info: "+20 100 123 4567",
+                  desc: "متاح من 9 صباحاً حتى 9 مساءً بتوقيت مكة",
+                  bg: "from-[#10B981] to-[#059669]",
+                },
+                {
+                  icon: <MapPin className="h-6 w-6 text-[#F59E0B]" />,
+                  title: "المقر الرئيسي",
+                  info: "القاهرة، مصر",
+                  desc: "نخدم جميع أنحاء الوطن العربي رقمياً",
+                  bg: "from-[#F59E0B] to-[#D97706]",
+                },
+              ].map((item, idx) => (
+                <div
+                  key={item.title}
+                  className="card-glow glass flex items-start gap-5 rounded-3xl border border-[var(--color-border-soft)] p-6 transition-premium hover:shadow-premium-hover hover:-translate-y-1"
+                >
+                  <div className={`mt-1 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${item.bg} text-white shadow-md transition-bounce hover:scale-110`}>
+                    <div className="bg-white/20 p-2.5 rounded-lg text-white backdrop-blur-sm">
+                      {item.icon}
+                    </div>
                   </div>
                   <div>
-                    <h3 className="mb-1 text-xl font-bold text-slate-900 group-hover:text-blue-700 transition">
-                      البريد الإلكتروني
-                    </h3>
-                    <p className="text-slate-600">للاستفسارات العامة والدعم</p>
-                    <a
-                      href="mailto:support@docnafsyonline.com"
-                      className="mt-3 inline-flex items-center gap-2 font-semibold text-blue-600 hover:text-blue-700 transition"
-                    >
-                      support@docnafsyonline.com ←
-                    </a>
+                    <h3 className="mb-1 text-xl font-bold text-[var(--color-foreground)]">{item.title}</h3>
+                    <p className="mb-1 font-semibold text-[#6366F1]">{item.info}</p>
+                    <p className="text-sm text-slate-500">{item.desc}</p>
                   </div>
                 </div>
-              </div>
-
-              {/* Phone */}
-              <div className="group rounded-3xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50 p-8 hover:border-emerald-300 hover:shadow-md transition-all">
-                <div className="flex items-start gap-5">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white group-hover:from-emerald-600 group-hover:to-emerald-700 transition-all">
-                    <Phone className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="mb-1 text-xl font-bold text-slate-900 group-hover:text-emerald-700 transition">
-                      الهاتف
-                    </h3>
-                    <p className="text-slate-600">للدعم السريع (24/7)</p>
-                    <a
-                      href="tel:+201001234567"
-                      className="mt-3 inline-flex items-center gap-2 font-semibold text-emerald-600 hover:text-emerald-700 transition"
-                    >
-                      +20 100 123 4567 ←
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Location */}
-              <div className="group rounded-3xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50 p-8 hover:border-purple-300 hover:shadow-md transition-all">
-                <div className="flex items-start gap-5">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-white group-hover:from-purple-600 group-hover:to-purple-700 transition-all">
-                    <MapPin className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="mb-1 text-xl font-bold text-slate-900 group-hover:text-purple-700 transition">
-                      الموقع
-                    </h3>
-                    <p className="text-slate-600">القاهرة، مصر</p>
-                    <p className="mt-2 text-sm text-slate-500">
-                      المقر الرئيسي — نقبل العملاء أونلاين فقط
-                    </p>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
 
             {/* Response Time */}
-            <div className="mt-8 rounded-3xl bg-gradient-to-r from-teal-600 to-emerald-600 p-8 text-white">
-              <div className="flex items-center gap-3 mb-3">
-                <Clock className="h-6 w-6" />
-                <h3 className="font-bold text-lg">متوسط وقت الرد</h3>
+            <div className="mt-8 rounded-3xl bg-gradient-to-r from-[#1E1B3A] to-[#312E81] p-8 text-white shadow-premium relative overflow-hidden">
+              <div className="absolute right-0 top-0 w-32 h-32 bg-[#6366F1] rounded-full blur-[50px] opacity-20 pointer-events-none"></div>
+              <div className="flex items-center gap-4 mb-3 relative z-10">
+                <Clock className="h-8 w-8 text-[#C7D2FE] animate-pulse-soft" />
+                <h3 className="font-bold text-xl text-white">متوسط وقت الرد</h3>
               </div>
-              <p className="opacity-95">
-                نرد على جميع الرسائل والاستفسارات خلال ساعة واحدة كحد أقصى
+              <p className="opacity-95 text-[#A5B4FC] relative z-10 leading-relaxed">
+                نحن ندرك أهمية وقتك، لذلك نلتزم بالرد على كافة رسائلك خلال مدة أقصاها ساعة واحدة في أوقات العمل الرسمية.
               </p>
             </div>
-          </section>
+          </div>
 
           {/* Contact Form */}
-          <section>
-            <div className="rounded-3xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50 p-10 shadow-sm">
-              <div className="mb-8">
-                <p className="mb-3 text-sm font-bold uppercase text-teal-600 tracking-widest">✉️ أرسل لنا رسالة</p>
-                <h2 className="mb-3 text-3xl font-black text-slate-900">نموذج الاتصال</h2>
-                <p className="text-slate-600">ملء الحقول أدناه وسنرد عليك قريباً</p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Name */}
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    الاسم الكامل
+          <div className="card-glow glass-strong rounded-3xl border border-[var(--color-border-soft)] p-8 shadow-premium animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <h2 className="mb-2 text-2xl font-bold text-[var(--color-foreground)]">أرسل لنا رسالة</h2>
+            <p className="mb-8 text-slate-600">الرجاء تعبئة النموذج وسنتواصل معك قريباً.</p>
+            
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <label htmlFor="name" className="block text-sm font-semibold text-slate-700">
+                    الاسم الكريم
                   </label>
                   <input
                     type="text"
-                    placeholder="أدخل اسمك"
+                    id="name"
                     value={formState.name}
-                    onChange={(e) =>
-                      setFormState({ ...formState, name: e.target.value })
-                    }
-                    className="w-full rounded-2xl border-2 border-slate-200 bg-white px-5 py-3.5 text-sm outline-none transition focus:border-teal-500 focus:bg-white placeholder:text-slate-400"
+                    onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                    className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm hover:border-slate-300"
+                    placeholder="أدخل اسمك"
                     required
                   />
                 </div>
-
-                {/* Email */}
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                <div className="space-y-2">
+                  <label htmlFor="email" className="block text-sm font-semibold text-slate-700">
                     البريد الإلكتروني
                   </label>
                   <input
                     type="email"
-                    placeholder="you@example.com"
+                    id="email"
                     value={formState.email}
-                    onChange={(e) =>
-                      setFormState({ ...formState, email: e.target.value })
-                    }
-                    className="w-full rounded-2xl border-2 border-slate-200 bg-white px-5 py-3.5 text-sm outline-none transition focus:border-teal-500 focus:bg-white placeholder:text-slate-400"
+                    onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                    className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm hover:border-slate-300"
+                    placeholder="example@domain.com"
                     required
                   />
                 </div>
+              </div>
 
-                {/* Message */}
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    الرسالة
-                  </label>
-                  <textarea
-                    rows={6}
-                    placeholder="اكتب رسالتك هنا..."
-                    value={formState.message}
-                    onChange={(e) =>
-                      setFormState({ ...formState, message: e.target.value })
-                    }
-                    className="w-full rounded-2xl border-2 border-slate-200 bg-white px-5 py-3.5 text-sm outline-none transition focus:border-teal-500 focus:bg-white resize-none placeholder:text-slate-400"
-                    required
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="w-full rounded-2xl bg-gradient-to-r from-slate-800 to-teal-600 px-6 py-4 text-sm font-bold text-white transition hover:shadow-lg hover:scale-105 flex items-center justify-center gap-2 group"
-                >
-                  <Send className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  أرسل الآن
-                </button>
-
-                {/* Success Message */}
-                {submitted && (
-                  <div className="rounded-2xl bg-emerald-50 border-2 border-emerald-200 p-4 flex items-center gap-3 text-emerald-700">
-                    <CheckCircle2 className="h-6 w-6 flex-shrink-0" />
-                    <p className="font-semibold">
-                      شكراً! تم إرسال رسالتك بنجاح. سنرد عليك قريباً.
-                    </p>
+              <div className="space-y-2">
+                <label htmlFor="subject" className="block text-sm font-semibold text-slate-700">
+                  الموضوع
+                </label>
+                <div className="relative">
+                  <select
+                    id="subject"
+                    className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 px-4 py-3.5 text-slate-900 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm hover:border-slate-300 appearance-none"
+                  >
+                    <option>استفسار عام</option>
+                    <option>مشكلة في الحجز أو الدفع</option>
+                    <option>اقتراح تحسين</option>
+                    <option>طلب انضمام كأخصائي</option>
+                    <option>أخرى</option>
+                  </select>
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <ChevronDownIcon />
                   </div>
-                )}
-              </form>
+                </div>
+              </div>
 
-              {/* Privacy Note */}
-              <p className="mt-6 text-xs text-slate-500 text-center">
-                نحن نحترم خصوصيتك. لن نشارك بياناتك مع أي طرف ثالث.
-              </p>
-            </div>
-          </section>
+              <div className="space-y-2">
+                <label htmlFor="message" className="block text-sm font-semibold text-slate-700">
+                  الرسالة
+                </label>
+                <textarea
+                  id="message"
+                  rows={5}
+                  value={formState.message}
+                  onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                  className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all resize-none shadow-sm hover:border-slate-300"
+                  placeholder="كيف يمكننا مساعدتك؟"
+                  required
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                className="group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] px-6 py-4 font-bold text-white transition-bounce hover:shadow-lg hover:shadow-[#6366F1]/30 focus:outline-none focus:ring-4 focus:ring-[#6366F1]/20"
+              >
+                إرسال الرسالة
+                <Send className="h-5 w-5 transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1" />
+              </button>
+
+              {submitted && (
+                <div className="rounded-xl bg-[#10B981]/10 border border-[#10B981]/20 p-4 flex items-center gap-3 text-[#059669] animate-fade-in">
+                  <CheckCircle2 className="h-6 w-6 flex-shrink-0" />
+                  <p className="font-semibold text-sm">
+                    شكراً لك! تم استلام رسالتك بنجاح. سنرد عليك في أقرب وقت.
+                  </p>
+                </div>
+              )}
+            </form>
+          </div>
         </div>
 
         {/* FAQ Link */}
-        <section className="mt-20 rounded-3xl bg-gradient-to-r from-teal-50 to-emerald-50 border-2 border-teal-200 p-10 text-center">
-          <h2 className="mb-4 text-2xl font-black text-slate-900">
-            لم تجد ما تبحث عنه؟
+        <section className="mt-24 card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-12 text-center animate-fade-in-up">
+          <h2 className="mb-4 text-3xl font-black text-[var(--color-foreground)]">
+            تبحث عن إجابة سريعة؟
           </h2>
-          <p className="mb-6 text-slate-600">
-            تصفح صفحة الأسئلة الشائعة — قد تجد الإجابة التي تبحث عنها هناك
+          <p className="mb-8 text-lg text-slate-600 max-w-2xl mx-auto">
+            قمنا بتجميع إجابات وافية لأكثر الأسئلة شيوعاً. تفضل بزيارة صفحة الأسئلة الشائعة، فقد تجد ضالتك هناك فوراً.
           </p>
-          <a
+          <Link
             href="/faq"
-            className="inline-flex items-center gap-2 rounded-full bg-teal-600 px-8 py-3 font-bold text-white transition hover:bg-teal-700"
+            className="inline-flex items-center gap-3 rounded-full bg-[#EEF2FF] px-8 py-4 font-bold text-[#6366F1] transition-premium hover:bg-[#E0E7FF] hover:-translate-y-1"
           >
-            الأسئلة الشائعة ←
-          </a>
+            تصفح الأسئلة الشائعة
+            <span className="text-xl">←</span>
+          </Link>
         </section>
       </div>
     </div>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+      <path d="m6 9 6 6 6-6"/>
+    </svg>
   );
 }
