@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -32,8 +32,8 @@ model TherapistProfile {
   id               String   @id @default(cuid())
   userId           String   @unique
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bio              String
-  specializations  String
+  bio              String   @db.Text
+  specializations  String   @db.Text
   languages        String   @default("العربية")
   pricePerSession  Int
   yearsExperience  Int      @default(1)
@@ -41,7 +41,7 @@ model TherapistProfile {
   reviewCount      Int      @default(0)
   isVerified       Boolean  @default(false)
   isAvailable      Boolean  @default(true)
-  certificates     String?  // JSON string: [{ name: String, url: String, uploadedAt: String, status: String }]
+  certificates     String?  @db.Text // JSON string: [{ name: String, url: String, uploadedAt: String, status: String }]
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
@@ -73,7 +73,7 @@ model Message {
   appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
   senderId      String
   sender        User        @relation(fields: [senderId], references: [id])
-  content       String
+  content       String   @db.Text
   fileUrl       String?     // URL for shared file
   fileName      String?     // Original name of the shared file
   createdAt     DateTime    @default(now())
@@ -97,7 +97,7 @@ model SessionNote {
   appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
   therapistId   String
   therapist     User        @relation(fields: [therapistId], references: [id])
-  notes         String
+  notes         String   @db.Text
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
@@ -106,7 +106,7 @@ model Article {
   id        String   @id @default(cuid())
   title     String
   slug      String   @unique
-  content   String
+  content   String   @db.Text
   author    String
   category  String   @default("عام")
   readTime  String   @default("5 دقائق")
@@ -129,9 +129,9 @@ model SupportTicket {
   userName    String
   userEmail   String
   subject     String
-  message     String
+  message     String   @db.Text
   status      String   @default("OPEN") // OPEN, RESOLVED, CLOSED
-  response    String?
+  response    String?  @db.Text
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -139,7 +139,7 @@ model SupportTicket {
 model SystemNotification {
   id        String   @id @default(cuid())
   title     String
-  message   String
+  message   String   @db.Text
   target    String   @default("ALL") // ALL, PATIENTS, THERAPISTS
   createdAt DateTime @default(now())
 }
