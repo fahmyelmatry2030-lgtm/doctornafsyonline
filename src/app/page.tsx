@@ -24,7 +24,22 @@ async function getFeaturedTherapists() {
 }
 
 export default async function HomePage() {
-  const therapists = await getFeaturedTherapists();
+  let therapists = [];
+  let dbError = null;
+  try {
+    therapists = await getFeaturedTherapists();
+  } catch (err: any) {
+    dbError = err.message || String(err);
+  }
+
+  if (dbError) {
+    return (
+      <div style={{ padding: '50px', color: 'red', direction: 'ltr' }}>
+        <h1>Fatal Database Error</h1>
+        <pre style={{ whiteSpace: 'pre-wrap', background: '#f5f5f5', padding: '20px' }}>{dbError}</pre>
+      </div>
+    );
+  }
 
   return (
     <>
