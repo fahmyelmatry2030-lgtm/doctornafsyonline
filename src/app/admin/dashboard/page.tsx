@@ -3,8 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getSettings } from "@/app/admin/settings/actions";
 import { 
   Users, UserCheck, Video, TrendingUp, 
-  Calendar, Clock, ShieldAlert, ArrowUpRight,
-  DollarSign, Activity
+  Calendar, ShieldAlert, ArrowUpRight,
+  DollarSign, Activity, FileText, CheckCircle
 } from "lucide-react";
 import Link from "next/link";
 
@@ -52,167 +52,217 @@ export default async function AdminDashboardPage() {
     IN_PROGRESS: "جارية", COMPLETED: "مكتملة", CANCELLED: "ملغية"
   };
   const statusColor: Record<string, string> = {
-    PENDING: "bg-amber-100 text-amber-700", CONFIRMED: "bg-blue-100 text-blue-700",
-    IN_PROGRESS: "bg-green-100 text-green-700", COMPLETED: "bg-slate-100 text-slate-600", CANCELLED: "bg-red-100 text-red-700"
+    PENDING: "bg-amber-50 text-amber-600 border border-amber-200", 
+    CONFIRMED: "bg-blue-50 text-blue-600 border border-blue-200",
+    IN_PROGRESS: "bg-indigo-50 text-indigo-600 border border-indigo-200", 
+    COMPLETED: "bg-emerald-50 text-emerald-600 border border-emerald-200", 
+    CANCELLED: "bg-rose-50 text-rose-600 border border-rose-200"
   };
 
   return (
-    <div className="animate-fade-in space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-black text-slate-900">لوحة القيادة</h1>
-          <p className="text-slate-600 mt-1">نظرة شاملة على أداء المنصة وإحصائياتها</p>
+    <div className="animate-fade-in space-y-6">
+      
+      {/* Welcome Banner */}
+      <div className="bg-white rounded-[24px] p-8 shadow-sm flex flex-col md:flex-row items-center justify-between relative overflow-hidden">
+        <div className="absolute right-0 top-0 w-64 h-64 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute left-0 bottom-0 w-64 h-64 bg-gradient-to-tr from-emerald-50 to-teal-50 rounded-full blur-3xl -z-10 -translate-x-1/2 translate-y-1/2"></div>
+        
+        <div className="z-10">
+          <h1 className="text-2xl font-black text-[#2B3674] mb-2 flex items-center gap-2">
+            مرحباً بعودتك للوحة القيادة 👋
+          </h1>
+          <p className="text-[#A3AED0] font-medium text-sm max-w-lg">
+            إليك ملخص سريع لأداء المنصة اليوم. لديك <strong className="text-indigo-600">{pendingVerifications} طلبات توثيق</strong> تحتاج لمراجعتك.
+          </p>
         </div>
-        <div className="text-xs text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full">
-          {today.toLocaleDateString("ar-EG", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+        <div className="hidden md:flex items-center gap-4 z-10">
+          <div className="bg-[#F4F7FE] px-5 py-3 rounded-2xl">
+            <p className="text-xs text-[#A3AED0] font-bold mb-1">تاريخ اليوم</p>
+            <p className="text-sm font-black text-[#2B3674]">
+              {today.toLocaleDateString("ar-EG", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Main Stats */}
+      {/* Main Stats Row */}
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "إجمالي المرضى", value: totalPatients, icon: <Users className="w-6 h-6" />, color: "text-indigo-600", bg: "bg-indigo-50", href: "/admin/patients" },
-          { label: "إجمالي الأخصائيين", value: totalTherapists, icon: <UserCheck className="w-6 h-6" />, color: "text-emerald-600", bg: "bg-emerald-50", href: "/admin/therapists" },
-          { label: "جلسات اليوم", value: todaysSessions, icon: <Calendar className="w-6 h-6" />, color: "text-amber-600", bg: "bg-amber-50", href: "/admin/operations" },
-          { label: "جارية الآن", value: activeNow, icon: <Activity className="w-6 h-6" />, color: "text-green-600", bg: "bg-green-50", href: "/admin/operations" },
-        ].map((stat) => (
-          <Link href={stat.href} key={stat.label}
-            className="card-glow glass rounded-2xl p-6 border border-[var(--color-border-soft)] hover:shadow-premium transition-all group"
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-semibold text-slate-500 mb-1">{stat.label}</p>
-                <p className={`text-4xl font-black ${stat.color}`}>{stat.value}</p>
-              </div>
-              <div className={`${stat.bg} ${stat.color} p-3 rounded-xl group-hover:scale-110 transition-transform`}>
+          { label: "إجمالي المرضى", value: totalPatients, icon: <Users className="w-6 h-6" />, color: "text-blue-600", bg: "bg-blue-50", iconBg: "bg-white", shadow: "shadow-blue-500/10" },
+          { label: "إجمالي الأخصائيين", value: totalTherapists, icon: <UserCheck className="w-6 h-6" />, color: "text-emerald-600", bg: "bg-emerald-50", iconBg: "bg-white", shadow: "shadow-emerald-500/10" },
+          { label: "جلسات اليوم", value: todaysSessions, icon: <Calendar className="w-6 h-6" />, color: "text-amber-600", bg: "bg-amber-50", iconBg: "bg-white", shadow: "shadow-amber-500/10" },
+          { label: "جلسات جارية الآن", value: activeNow, icon: <Activity className="w-6 h-6" />, color: "text-rose-500", bg: "bg-rose-50", iconBg: "bg-white", shadow: "shadow-rose-500/10" },
+        ].map((stat, i) => (
+          <div key={i} className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+            <div className="flex items-center justify-between">
+              <div className={`w-14 h-14 rounded-full ${stat.bg} ${stat.color} flex items-center justify-center`}>
                 {stat.icon}
               </div>
+              <div className="text-left">
+                <p className="text-sm font-bold text-[#A3AED0] mb-1">{stat.label}</p>
+                <p className="text-3xl font-black text-[#2B3674]">{stat.value}</p>
+              </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
 
-      {/* Revenue + Session Stats Row */}
-      <div className="grid gap-5 md:grid-cols-3">
-        <div className="card-glow glass rounded-2xl p-6 border border-[var(--color-border-soft)] bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-xl shadow-indigo-900/20 md:col-span-1">
-          <div className="flex items-center gap-2 mb-3">
-            <DollarSign className="w-5 h-5 text-indigo-200" />
-            <h3 className="text-indigo-100 font-semibold">إيرادات المنصة (الشهر)</h3>
+      {/* Complex Data Row */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        
+        {/* Revenue Card (Gradient) */}
+        <div className="lg:col-span-1 rounded-[24px] p-7 bg-gradient-to-br from-[#4318FF] to-[#868CFF] text-white shadow-xl shadow-[#4318FF]/20 relative overflow-hidden flex flex-col justify-between h-full min-h-[220px]">
+          <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+          <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+          
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
+              <DollarSign className="w-6 h-6 text-white" />
+            </div>
+            <p className="text-indigo-100 font-bold text-sm mb-1">أرباح المنصة (الشهر الحالي)</p>
+            <h2 className="text-4xl font-black mb-4">{monthlyRevenue.toFixed(0)} <span className="text-xl font-bold opacity-80">ج.م</span></h2>
           </div>
-          <p className="text-4xl font-black">{monthlyRevenue.toFixed(0)} <span className="text-xl text-indigo-200">ج.م</span></p>
-          <div className="flex items-center gap-1 mt-3">
-            <TrendingUp className="w-4 h-4 text-green-300" />
-            <span className={`text-sm font-bold ${revenueGrowth >= 0 ? "text-green-300" : "text-red-300"}`}>
-              {revenueGrowth >= 0 ? "+" : ""}{revenueGrowth}% عن الشهر الماضي
-            </span>
+          
+          <div className="relative z-10 flex items-center justify-between bg-white/10 backdrop-blur-md px-4 py-3 rounded-2xl">
+            <span className="text-sm font-semibold opacity-90">مقارنة بالشهر الماضي</span>
+            <div className="flex items-center gap-1">
+              <TrendingUp className="w-4 h-4 text-green-300" />
+              <span className={`text-sm font-bold ${revenueGrowth >= 0 ? "text-green-300" : "text-rose-300"}`}>
+                {revenueGrowth >= 0 ? "+" : ""}{revenueGrowth}%
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="card-glow glass rounded-2xl p-6 border border-[var(--color-border-soft)] md:col-span-2">
-          <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <Video className="w-5 h-5 text-indigo-500" /> إحصائيات الجلسات الكلية
-          </h3>
-          <div className="grid grid-cols-3 gap-4">
-            {[
-              { label: "إجمالي الحجوزات", value: totalAppointments, color: "text-slate-800" },
-              { label: "مكتملة", value: completedAppointments, color: "text-emerald-600" },
-              { label: "ملغية", value: cancelledAppointments, color: "text-red-500" },
-            ].map(s => (
-              <div key={s.label} className="text-center p-3 bg-slate-50 rounded-xl">
-                <p className={`text-3xl font-black ${s.color}`}>{s.value}</p>
-                <p className="text-xs text-slate-500 mt-1 font-medium">{s.label}</p>
+        {/* Total Sessions Breakdown */}
+        <div className="lg:col-span-2 bg-white rounded-[24px] p-7 shadow-sm">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="font-black text-[#2B3674] text-lg flex items-center gap-2">
+              <Video className="w-5 h-5 text-[#4318FF]" /> ملخص حالة الجلسات
+            </h3>
+            <span className="text-xs font-bold bg-[#F4F7FE] text-[#4318FF] px-3 py-1.5 rounded-lg">إجمالي: {totalAppointments} جلسة</span>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-6">
+            <div className="bg-[#F4F7FE] rounded-2xl p-5 border border-transparent hover:border-emerald-200 transition-colors">
+              <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
+                <CheckCircle className="w-5 h-5" />
               </div>
-            ))}
+              <p className="text-3xl font-black text-[#2B3674] mb-1">{completedAppointments}</p>
+              <p className="text-sm font-bold text-[#A3AED0]">جلسات مكتملة</p>
+            </div>
+            
+            <div className="bg-[#F4F7FE] rounded-2xl p-5 border border-transparent hover:border-amber-200 transition-colors">
+              <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center mb-4">
+                <Activity className="w-5 h-5" />
+              </div>
+              <p className="text-3xl font-black text-[#2B3674] mb-1">{activeNow + todaysSessions}</p>
+              <p className="text-sm font-bold text-[#A3AED0]">جلسات نشطة/مؤكدة</p>
+            </div>
+            
+            <div className="bg-[#F4F7FE] rounded-2xl p-5 border border-transparent hover:border-rose-200 transition-colors">
+              <div className="w-10 h-10 bg-rose-100 text-rose-500 rounded-xl flex items-center justify-center mb-4">
+                <ShieldAlert className="w-5 h-5" />
+              </div>
+              <p className="text-3xl font-black text-[#2B3674] mb-1">{cancelledAppointments}</p>
+              <p className="text-sm font-bold text-[#A3AED0]">جلسات ملغية</p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Pending Verifications + Recent Activity */}
+      {/* Lists Row */}
       <div className="grid gap-6 lg:grid-cols-2">
-
-        {/* Pending Therapist Verifications */}
-        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] overflow-hidden">
-          <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <ShieldAlert className="w-5 h-5 text-amber-500" />
-              <h2 className="font-bold text-slate-800">طلبات توثيق معلقة</h2>
-              {pendingVerifications > 0 && (
-                <span className="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full">{pendingVerifications}</span>
-              )}
-            </div>
-            <Link href="/admin/therapists" className="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">
-              عرض الكل <ArrowUpRight className="w-3.5 h-3.5" />
+        
+        {/* Pending Therapists Table/List */}
+        <div className="bg-white rounded-[24px] shadow-sm overflow-hidden flex flex-col">
+          <div className="px-7 py-6 flex items-center justify-between border-b border-[#F4F7FE]">
+            <h2 className="font-black text-[#2B3674] text-lg flex items-center gap-2">
+              طلبات التوثيق <span className="bg-amber-100 text-amber-700 text-xs font-black px-2 py-0.5 rounded-md">{pendingVerifications}</span>
+            </h2>
+            <Link href="/admin/therapists" className="text-sm font-bold text-[#4318FF] hover:text-[#3311DB] flex items-center gap-1 transition-colors">
+              إدارة الكل <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="p-4 space-y-3">
+          <div className="p-4 flex-1">
             {pendingTherapists.length === 0 ? (
-              <p className="text-center py-6 text-sm text-slate-400">لا توجد طلبات توثيق معلقة حالياً.</p>
-            ) : (
-              pendingTherapists.map(t => (
-                <div key={t.id} className="flex items-center justify-between p-3 bg-amber-50/60 rounded-xl border border-amber-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm">
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-slate-800">{t.name}</p>
-                      <p className="text-xs text-slate-500">{t.email}</p>
-                    </div>
-                  </div>
-                  <Link href="/admin/therapists"
-                    className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-lg transition-colors">
-                    مراجعة
-                  </Link>
+              <div className="flex flex-col items-center justify-center h-full py-8">
+                <div className="w-16 h-16 bg-[#F4F7FE] rounded-full flex items-center justify-center mb-3">
+                  <ShieldAlert className="w-8 h-8 text-[#A3AED0]" />
                 </div>
-              ))
+                <p className="text-[#A3AED0] font-bold text-sm">لا توجد طلبات توثيق معلقة</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {pendingTherapists.map(t => (
+                  <div key={t.id} className="flex items-center justify-between p-4 bg-[#F4F7FE]/50 rounded-2xl hover:bg-[#F4F7FE] transition-colors border border-transparent hover:border-[#4318FF]/10">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4318FF] to-purple-500 flex items-center justify-center text-white font-black text-sm shadow-md">
+                        {t.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-[#2B3674]">{t.name}</p>
+                        <p className="text-xs font-bold text-[#A3AED0]">{t.email}</p>
+                      </div>
+                    </div>
+                    <Link href="/admin/therapists"
+                      className="text-xs font-bold bg-white text-[#4318FF] px-4 py-2 rounded-xl shadow-sm border border-[#F4F7FE] hover:bg-[#4318FF] hover:text-white transition-all">
+                      مراجعة
+                    </Link>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>
 
-        {/* Recent Appointments */}
-        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] overflow-hidden">
-          <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-slate-400" />
-              <h2 className="font-bold text-slate-800">آخر الحجوزات</h2>
-            </div>
-            <Link href="/admin/operations" className="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">
-              عرض الكل <ArrowUpRight className="w-3.5 h-3.5" />
+        {/* Recent Appointments Table */}
+        <div className="bg-white rounded-[24px] shadow-sm overflow-hidden flex flex-col">
+          <div className="px-7 py-6 flex items-center justify-between border-b border-[#F4F7FE]">
+            <h2 className="font-black text-[#2B3674] text-lg">أحدث الحجوزات</h2>
+            <Link href="/admin/operations" className="text-sm font-bold text-[#4318FF] hover:text-[#3311DB] flex items-center gap-1 transition-colors">
+              عرض العمليات <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="divide-y divide-slate-50">
-            {recentAppointments.map(app => (
-              <div key={app.id} className="flex items-center justify-between px-6 py-3.5 hover:bg-slate-50/50 transition-colors">
-                <div>
-                  <p className="text-sm font-bold text-slate-800">{app.patient.name} → {app.therapist.name}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">{app.scheduledAt.toLocaleDateString("ar-EG")} · {app.price} ج.م</p>
-                </div>
-                <span className={`text-[10px] font-bold px-2 py-1 rounded-lg ${statusColor[app.status]}`}>
-                  {statusLabel[app.status]}
-                </span>
-              </div>
-            ))}
+          <div className="p-0">
+            <div className="w-full">
+              {recentAppointments.length === 0 ? (
+                <div className="text-center py-12 text-[#A3AED0] font-bold text-sm">لا توجد حجوزات حديثة</div>
+              ) : (
+                <table className="w-full text-right border-collapse">
+                  <thead>
+                    <tr className="bg-[#F4F7FE]/50 text-[#A3AED0] text-xs uppercase tracking-wider">
+                      <th className="px-6 py-4 font-bold">المريض / الأخصائي</th>
+                      <th className="px-6 py-4 font-bold">التاريخ والتكلفة</th>
+                      <th className="px-6 py-4 font-bold">الحالة</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#F4F7FE]">
+                    {recentAppointments.map(app => (
+                      <tr key={app.id} className="hover:bg-[#F4F7FE]/30 transition-colors">
+                        <td className="px-6 py-4">
+                          <p className="text-sm font-black text-[#2B3674]">{app.patient.name}</p>
+                          <p className="text-xs font-bold text-[#A3AED0]">مع: {app.therapist.name}</p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="text-sm font-bold text-[#2B3674]">{app.scheduledAt.toLocaleDateString("ar-EG")}</p>
+                          <p className="text-xs font-bold text-[#A3AED0]">{app.price} ج.م</p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`text-[10px] font-black px-3 py-1.5 rounded-lg ${statusColor[app.status]}`}>
+                            {statusLabel[app.status]}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Quick Action Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
-        {[
-          { icon: "📝", title: "إدارة المقالات", desc: "إضافة وتعديل مقالات المدونة الطبية", href: "/admin/content" },
-          { icon: "🎫", title: "أكواد الخصم", desc: "إنشاء وإدارة كوبونات الخصم الترويجية", href: "/admin/marketing" },
-          { icon: "💬", title: "الدعم الفني", desc: "متابعة تذاكر الدعم الفني والرد عليها", href: "/admin/marketing" },
-        ].map(card => (
-          <Link key={card.href + card.title} href={card.href}
-            className="card-glow glass rounded-2xl border border-[var(--color-border-soft)] p-6 hover:shadow-premium transition-all group hover:border-indigo-200 flex items-start gap-4">
-            <span className="text-3xl group-hover:scale-110 transition-transform inline-block">{card.icon}</span>
-            <div>
-              <h3 className="font-bold text-slate-800 mb-1">{card.title}</h3>
-              <p className="text-sm text-slate-500">{card.desc}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
     </div>
   );
 }

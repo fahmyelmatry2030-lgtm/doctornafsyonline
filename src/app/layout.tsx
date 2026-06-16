@@ -23,6 +23,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+import { LayoutWrapper } from "@/components/LayoutWrapper";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -58,9 +60,9 @@ export default async function RootLayout({
     <html lang="ar" dir="rtl" className={`h-full ${tajawal.variable}`}>
       <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground">
         <Providers>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <LayoutWrapper header={<Header />} footer={<Footer />}>
+            {children}
+          </LayoutWrapper>
         </Providers>
       </body>
     </html>
