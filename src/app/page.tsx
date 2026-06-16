@@ -327,7 +327,7 @@ export default async function HomePage() {
             انضم لمنصة دكتور نفسى اونلاين وقدّم خدماتك لآلاف الباحثين عن الدعم النفسي والعلاج المتخصص في بيئة احترافية متكاملة.
           </p>
           <Link
-            href="/register"
+            href="/register?role=therapist"
             className="inline-flex items-center gap-3 rounded-full bg-white px-10 py-5 text-lg font-bold text-[#312E81] transition-bounce hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:scale-105"
           >
             ابدأ معنا الآن

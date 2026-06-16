@@ -53,6 +53,8 @@ export default async function SessionPage({ params }: Props) {
     });
   }
 
+  const isTherapist = session.user.role === "THERAPIST";
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <Link
@@ -72,6 +74,7 @@ export default async function SessionPage({ params }: Props) {
         currentUserId={session.user.id}
         currentUserName={session.user.name || ""}
         otherParticipantName={otherParticipantName}
+        isTherapist={isTherapist}
       />
     </div>
   );

@@ -1,21 +1,22 @@
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth";
 import { Heart, LayoutDashboard, LogOut, User, Menu } from "lucide-react";
+import { getSettings } from "@/app/admin/settings/actions";
 
 export async function Header() {
-  const session = await auth();
+  const [session, settings] = await Promise.all([
+    auth(),
+    getSettings()
+  ]);
+
+  const platformName = settings?.platformName || "دكتور نفسي";
 
   return (
     <header className="sticky top-0 z-50 glass-strong border-b border-indigo-100/40">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white shadow-premium transition-premium group-hover:shadow-premium-lg group-hover:animate-pulse-glow">
-            <Heart className="h-5 w-5 fill-white text-white" />
-          </div>
-          <span className="text-lg font-black gradient-text transition-premium">
-            دكتور نفسى
-          </span>
+          <img src="/logo.jpeg" alt={platformName} className="h-12 w-auto object-contain drop-shadow-md transition-transform group-hover:scale-105 rounded-xl" />
         </Link>
 
         {/* Desktop Navigation */}

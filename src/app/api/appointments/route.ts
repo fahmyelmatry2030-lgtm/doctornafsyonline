@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createLiveKitToken } from "@/lib/livekit";
-import { SessionType } from "@/generated/prisma/client";
+import { SessionType } from "@prisma/client";
 
 export async function POST(request: Request) {
   const session = await auth();

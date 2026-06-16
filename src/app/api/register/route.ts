@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { Role } from "@/generated/prisma/client";
+import { Role } from "@prisma/client";
+import { getSettings } from "@/app/admin/settings/actions";
 
 export async function POST(request: Request) {
   try {
@@ -31,6 +32,21 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 12);
     const userRole = role === "THERAPIST" ? Role.THERAPIST : Role.PATIENT;
+
+    // التحقق من إعدادات المنصة
+    const settings = await getSettings();
+    if (userRole === Role.THERAPIST && !settings.allowNewTherapists) {
+      return NextResponse.json(
+        { error: "تسجيل الأخصائيين الجدد معطل حالياً من قبل الإدارة" },
+        { status: 400 }
+      );
+    }
+    if (userRole === Role.PATIENT && !settings.allowNewPatients) {
+      return NextResponse.json(
+        { error: "تسجيل المرضى الجدد معطل حالياً من قبل الإدارة" },
+        { status: 400 }
+      );
+    }
 
     const user = await prisma.user.create({
       data: {

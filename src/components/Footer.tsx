@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { Heart, Mail, Phone, MapPin, ArrowLeft } from "lucide-react";
+import { getSettings } from "@/app/admin/settings/actions";
 
-export function Footer() {
+export async function Footer() {
+  const settings = await getSettings();
+  const platformName = settings?.platformName || "دكتور نفسي";
+
   return (
     <footer className="relative bg-[#1E1B3A] text-gray-300">
       {/* Gradient top line */}
@@ -12,12 +16,7 @@ export function Footer() {
           {/* Column 1: Brand */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white shadow-premium transition-premium group-hover:shadow-premium-lg">
-                <Heart className="h-5 w-5 fill-white text-white" />
-              </div>
-              <span className="text-lg font-black text-white">
-                دكتور نفسى
-              </span>
+              <img src="/logo.jpeg" alt={platformName} className="h-12 w-auto object-contain drop-shadow-md transition-transform group-hover:scale-105 rounded-xl" />
             </Link>
             <p className="text-sm leading-relaxed text-gray-400">
               منصة علاج نفسى عربية آمنة وسهلة الاستخدام. جلسات صوت وفيديو وشات داخل المنصة بخصوصية تامة.
@@ -106,7 +105,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-sm text-gray-500">
-            © 2026 دكتور نفسى اونلاين. جميع الحقوق محفوظة.
+            © 2026 {platformName}. جميع الحقوق محفوظة.
           </p>
           <p className="text-sm text-indigo-400/70">
             صُنع بعناية لصحتك النفسية

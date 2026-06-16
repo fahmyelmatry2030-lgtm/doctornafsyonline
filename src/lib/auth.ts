@@ -25,6 +25,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!user) return null;
 
+        // Block suspended accounts
+        if (user.isSuspended) return null;
+
         const valid = await bcrypt.compare(
           credentials.password as string,
           user.password
