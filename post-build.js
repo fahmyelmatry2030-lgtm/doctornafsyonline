@@ -9,107 +9,40 @@ if (!fs.existsSync(standaloneServerPath)) {
 }
 
 // Read the original standalone server.js
-const originalCode = fs.readFileSync(standaloneServerPath, 'utf8');
+let originalCode = fs.readFileSync(standaloneServerPath, 'utf8');
 console.log('📄 Original server.js length:', originalCode.length);
 
-// Find where Next.js starts the server
-const startMarker = "require('next')";
-const markerIndex = originalCode.indexOf(startMarker);
-
-if (markerIndex === -1) {
-  console.error('❌ Could not find startup marker in standalone server.js!');
-  console.log('First 500 chars:', originalCode.substring(0, 500));
-  process.exit(1);
+// Next.js standalone server uses parseInt(process.env.PORT, 10) || 3000
+// For Hostinger Passenger, process.env.PORT is a Unix socket path (e.g. "/tmp/passenger.xxx.sock")
+// parseInt on a string returns NaN, causing it to fall back to 3000 instead of the socket.
+// We patch it to correctly use the socket path if it's not a number.
+if (originalCode.includes('parseInt(process.env.PORT, 10)')) {
+    originalCode = originalCode.replace(
+        /parseInt\(process\.env\.PORT,\s*10\)/g,
+        "(isNaN(Number(process.env.PORT)) ? process.env.PORT : parseInt(process.env.PORT, 10))"
+    );
+    console.log('✅ Patched standalone server.js port/socket detection for Phusion Passenger!');
+} else {
+    console.log('⚠️ Could not find parseInt(process.env.PORT, 10) in standalone server.js. It may have a different structure.');
 }
 
-console.log('✅ Found startup marker at index:', markerIndex);
-
-// Keep config section (path, fs, nextConfig, etc.) — drop the rest
-const configCode = originalCode.substring(0, markerIndex);
-
-// Replacement: use standard next() API with proper socket/port handling
-const passengerStartupCode = `
-process.env.__NEXT_PRIVATE_STANDALONE_CONFIG = JSON.stringify(nextConfig)
-
-var http = require('http')
-var next = require('next')
-var url  = require('url')
-var fs   = require('fs')
-var path = require('path')
-
-// ── Logging ───────────────────────────────────────────────────────────────────
-var logFile = path.join(process.cwd(), 'startup-error.log')
-function log(msg) {
-  var ts = new Date().toISOString()
-  try { fs.appendFileSync(logFile, '[' + ts + '] ' + msg + '\\n') } catch (e) {}
-  console.log(msg)
-}
-function logError(msg, err) {
-  var ts  = new Date().toISOString()
-  var det = err ? (err.stack || String(err)) : ''
-  try { fs.appendFileSync(logFile, '[' + ts + '] ERROR: ' + msg + '\\n' + det + '\\n') } catch (e) {}
-  console.error(msg, err || '')
-}
-
-log('=== Starting Nafsi App on Hostinger/Passenger ===')
-log('Node: ' + process.version)
-log('CWD: ' + process.cwd())
-log('__dirname: ' + __dirname)
-
-// ── Port / Socket detection ───────────────────────────────────────────────────
-// Passenger passes either a TCP port number OR a Unix socket path
-var rawPort = process.env.PORT || '3000'
-var isSocket = (rawPort.indexOf('/') !== -1) || (rawPort.indexOf('.sock') !== -1) || isNaN(Number(rawPort))
-log('PORT: ' + rawPort + ' | isSocket: ' + isSocket)
-
-// ── Create Next.js app ────────────────────────────────────────────────────────
-var appDir = process.cwd()
-var app    = next({ dev: false, dir: appDir, conf: nextConfig })
-var handle = app.getRequestHandler()
-
-log('Preparing Next.js...')
-app.prepare()
-  .then(function () {
-    log('Next.js ready! Creating HTTP server...')
-
-    var server = http.createServer(function (req, res) {
-      var parsedUrl = url.parse(req.url, true)
-      handle(req, res, parsedUrl).catch(function (err) {
-        logError('Request error: ' + req.url, err)
-        res.statusCode = 500
-        res.end('Internal Server Error')
-      })
-    })
-
-    server.on('error', function (err) {
-      logError('Server error', err)
-      process.exit(1)
-    })
-
-    if (isSocket) {
-      // Unix socket mode (Phusion Passenger on Hostinger)
-      try { if (fs.existsSync(rawPort)) fs.unlinkSync(rawPort) } catch (e) {}
-      server.listen(rawPort, function () {
-        try { fs.chmodSync(rawPort, '777') } catch (e) {}
-        log('Listening on socket: ' + rawPort)
-      })
-    } else {
-      // TCP port mode (direct / local)
-      var port = parseInt(rawPort, 10) || 3000
-      server.listen(port, function () {
-        log('Listening on port: ' + port)
-      })
+// Add chmod 777 to socket after listening if it's a socket
+if (originalCode.includes('.listen(')) {
+    // Basic patch to attempt to chmod socket when listening
+    originalCode += `\n
+// -- Hostinger Socket Chmod Patch --
+try {
+    const rawPort = process.env.PORT;
+    if (rawPort && isNaN(Number(rawPort))) {
+        require('fs').chmodSync(rawPort, '777');
+        console.log('✅ Set chmod 777 on Passenger socket: ' + rawPort);
     }
-  })
-  .catch(function (err) {
-    logError('FATAL: Next.js prepare() failed', err)
-    process.exit(1)
-  })
+} catch (e) {}
 `;
+}
 
-const newCode = configCode + passengerStartupCode;
-fs.writeFileSync(standaloneServerPath, newCode, 'utf8');
-console.log('✅ Patched standalone server.js for Phusion Passenger!');
+fs.writeFileSync(standaloneServerPath, originalCode, 'utf8');
+console.log('✅ Updated standalone server.js!');
 
 // Copy public/ to standalone/public/
 const publicSrc  = path.join(__dirname, 'public');
