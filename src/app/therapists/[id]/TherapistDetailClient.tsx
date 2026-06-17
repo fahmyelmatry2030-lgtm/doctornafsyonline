@@ -65,7 +65,13 @@ export default function TherapistDetailPage({
 
   const minDate = new Date();
   minDate.setHours(minDate.getHours() + 1);
-  const minDateStr = minDate.toISOString().slice(0, 16);
+  // Construct datetime-local string format YYYY-MM-DDTHH:mm based on local time fields
+  const year = minDate.getFullYear();
+  const month = String(minDate.getMonth() + 1).padStart(2, "0");
+  const day = String(minDate.getDate()).padStart(2, "0");
+  const hours = String(minDate.getHours()).padStart(2, "0");
+  const minutes = String(minDate.getMinutes()).padStart(2, "0");
+  const minDateStr = `${year}-${month}-${day}T${hours}:${minutes}`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
