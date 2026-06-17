@@ -133,4 +133,38 @@ try {
   console.error('❌ Failed to copy .next/static/:', err);
 }
 
+// ── Copy Prisma Linux engine binaries into standalone ─────────────────────────
+// Windows build only includes the Windows engine; we need Linux engines for Hostinger.
+const prismaClientSrc  = path.join(__dirname, 'node_modules', '.prisma', 'client');
+const prismaClientDest = path.join(__dirname, '.next', 'standalone', 'node_modules', '.prisma', 'client');
+try {
+  if (fs.existsSync(prismaClientSrc)) {
+    // Copy all engine files (*.node) including Linux ones
+    const files = fs.readdirSync(prismaClientSrc);
+    fs.mkdirSync(prismaClientDest, { recursive: true });
+    files.forEach(file => {
+      const src  = path.join(prismaClientSrc, file);
+      const dest = path.join(prismaClientDest, file);
+      fs.copyFileSync(src, dest);
+    });
+    console.log('✅ Copied Prisma client engines to standalone (files: ' + files.join(', ') + ')');
+  } else {
+    console.warn('⚠️  node_modules/.prisma/client not found – skipping Prisma engine copy.');
+  }
+} catch (err) {
+  console.error('❌ Failed to copy Prisma engines:', err);
+}
+
+// Also ensure @prisma/client is in standalone node_modules
+const prismaAtSrc  = path.join(__dirname, 'node_modules', '@prisma', 'client');
+const prismaAtDest = path.join(__dirname, '.next', 'standalone', 'node_modules', '@prisma', 'client');
+try {
+  if (fs.existsSync(prismaAtSrc) && !fs.existsSync(prismaAtDest)) {
+    fs.cpSync(prismaAtSrc, prismaAtDest, { recursive: true, force: true });
+    console.log('✅ Copied @prisma/client to standalone');
+  }
+} catch (err) {
+  console.error('❌ Failed to copy @prisma/client:', err);
+}
+
 console.log('🎉 post-build.js complete!');

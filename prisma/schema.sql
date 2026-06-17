@@ -29,6 +29,7 @@ CREATE TABLE `TherapistProfile` (
     `isVerified` BOOLEAN NOT NULL DEFAULT false,
     `isAvailable` BOOLEAN NOT NULL DEFAULT true,
     `certificates` TEXT NULL,
+    `contractUrl` TEXT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
