@@ -53,13 +53,13 @@ export function DashboardLayout({
   } else if (role === "ADMIN") {
     navItems = [
       { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" /> },
-      { name: "إدارة العمليات", href: "/admin/operations", icon: <Activity className="h-5 w-5" /> },
-      { name: "إدارة الأخصائيين", href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" /> },
-      { name: "إدارة المرضى", href: "/admin/patients", icon: <Users className="h-5 w-5" /> },
-      { name: "التقارير المالية", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" /> },
-      { name: "المقالات والتقييمات", href: "/admin/content", icon: <BookOpen className="h-5 w-5" /> },
-      { name: "الدعم والتسويق", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" /> },
-      { name: "إعدادات المنصة", href: "/admin/settings", icon: <Settings className="h-5 w-5" /> },
+      { name: "إدارة الجلسات والعمليات 📅", href: "/admin/operations", icon: <Activity className="h-5 w-5" /> },
+      { name: "توثيق واعتماد الأخصائيين ✅", href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" /> },
+      { name: "إدارة المرضى 👥", href: "/admin/patients", icon: <Users className="h-5 w-5" /> },
+      { name: "إدارة الأرباح وطلبات السحب 💰", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" /> },
+      { name: "المقالات والتقييمات 📝", href: "/admin/content", icon: <BookOpen className="h-5 w-5" /> },
+      { name: "الدعم، الإشعارات وأكواد الخصم 🎟️", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" /> },
+      { name: "إعدادات المنصة ⚙️", href: "/admin/settings", icon: <Settings className="h-5 w-5" /> },
     ];
   }
 
