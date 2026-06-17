@@ -1,0 +1,27 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function GET() {
+  try {
+    const results = [];
+    
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE TherapistProfile ADD COLUMN certificates TEXT NULL;`);
+      results.push("Added certificates to TherapistProfile");
+    } catch (e: any) { results.push("certificates: " + e.message); }
+
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE TherapistProfile ADD COLUMN contractUrl TEXT NULL;`);
+      results.push("Added contractUrl to TherapistProfile");
+    } catch (e: any) { results.push("contractUrl: " + e.message); }
+
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE User ADD COLUMN isSuspended BOOLEAN NOT NULL DEFAULT false;`);
+      results.push("Added isSuspended to User");
+    } catch (e: any) { results.push("isSuspended: " + e.message); }
+
+    return NextResponse.json({ success: true, results });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
