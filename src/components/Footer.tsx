@@ -3,7 +3,12 @@ import { Heart, Mail, Phone, MapPin, ArrowLeft } from "lucide-react";
 import { getSettings } from "@/app/admin/settings/actions";
 
 export async function Footer() {
-  const settings = await getSettings();
+  let settings = null;
+  try {
+    settings = await getSettings();
+  } catch (error) {
+    console.error("Failed to load footer settings:", error);
+  }
   const platformName = settings?.platformName || "دكتور نفسي";
 
   return (

@@ -35,10 +35,31 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [settings, session] = await Promise.all([
-    getSettings(),
-    auth()
-  ]);
+  let settings = null;
+  let session = null;
+  try {
+    const [sett, sess] = await Promise.all([
+      getSettings().catch((e) => {
+        console.error("Layout getSettings error:", e);
+        return null;
+      }),
+      auth().catch((e) => {
+        console.error("Layout auth error:", e);
+        return null;
+      })
+    ]);
+    settings = sett;
+    session = sess;
+  } catch (error) {
+    console.error("RootLayout data fetch failed:", error);
+  }
+
+  if (!settings) {
+    settings = {
+      platformName: "دكتور نفسي",
+      maintenanceMode: false,
+    } as any;
+  }
 
   const isAdmin = session?.user?.role === "ADMIN";
 

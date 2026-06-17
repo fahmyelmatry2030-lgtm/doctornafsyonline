@@ -15,9 +15,9 @@ export function LayoutWrapper({
   
   // التحقق مما إذا كان المسار الحالي ينتمي إلى أي من لوحات التحكم
   const isDashboard = 
-    pathname?.startsWith("/admin") || 
-    pathname?.startsWith("/patient") || 
-    pathname?.startsWith("/therapist") || 
+    pathname?.startsWith("/admin/") || pathname === "/admin" ||
+    pathname?.startsWith("/patient/") || pathname === "/patient" ||
+    pathname?.startsWith("/therapist/") || pathname === "/therapist" ||
     pathname === "/dashboard";
 
   return (

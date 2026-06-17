@@ -4,10 +4,24 @@ import { LayoutDashboard, LogOut, User } from "lucide-react";
 import { getSettings } from "@/app/admin/settings/actions";
 
 export async function Header() {
-  const [session, settings] = await Promise.all([
-    auth(),
-    getSettings()
-  ]);
+  let session = null;
+  let settings = null;
+  try {
+    const [sess, sett] = await Promise.all([
+      auth().catch((e) => {
+        console.error("Auth error in Header:", e);
+        return null;
+      }),
+      getSettings().catch((e) => {
+        console.error("Settings error in Header:", e);
+        return null;
+      })
+    ]);
+    session = sess;
+    settings = sett;
+  } catch (error) {
+    console.error("Failed to load header details:", error);
+  }
 
   const platformName = settings?.platformName || "دكتور نفسي";
 
