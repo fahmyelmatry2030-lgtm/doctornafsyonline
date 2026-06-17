@@ -2,8 +2,13 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function DashboardRedirect() {
-  const session = await auth();
-  
+  let session = null;
+  try {
+    session = await auth();
+  } catch (e) {
+    console.error("Dashboard auth error:", e);
+  }
+
   if (!session?.user) {
     redirect("/login");
   }
