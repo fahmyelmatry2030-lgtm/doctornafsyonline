@@ -23,26 +23,11 @@ if (originalCode.includes('parseInt(process.env.PORT, 10)')) {
     );
     console.log('✅ Patched standalone server.js port/socket detection for Phusion Passenger!');
 } else {
-    console.log('⚠️ Could not find parseInt(process.env.PORT, 10) in standalone server.js. It may have a different structure.');
-}
-
-// Add chmod 777 to socket after listening if it's a socket
-if (originalCode.includes('.listen(')) {
-    // Basic patch to attempt to chmod socket when listening
-    originalCode += `\n
-// -- Hostinger Socket Chmod Patch --
-try {
-    const rawPort = process.env.PORT;
-    if (rawPort && isNaN(Number(rawPort))) {
-        require('fs').chmodSync(rawPort, '777');
-        console.log('✅ Set chmod 777 on Passenger socket: ' + rawPort);
-    }
-} catch (e) {}
-`;
+    console.log('⚠️ Could not find parseInt(process.env.PORT, 10) in standalone server.js.');
 }
 
 fs.writeFileSync(standaloneServerPath, originalCode, 'utf8');
-console.log('✅ Updated standalone server.js!');
+console.log('✅ Updated standalone server.js to true standalone mode for Hostinger!');
 
 // Copy public/ to standalone/public/
 const publicSrc  = path.join(__dirname, 'public');
@@ -69,12 +54,10 @@ try {
 }
 
 // ── Copy Prisma Linux engine binaries into standalone ─────────────────────────
-// Windows build only includes the Windows engine; we need Linux engines for Hostinger.
 const prismaClientSrc  = path.join(__dirname, 'node_modules', '.prisma', 'client');
 const prismaClientDest = path.join(__dirname, '.next', 'standalone', 'node_modules', '.prisma', 'client');
 try {
   if (fs.existsSync(prismaClientSrc)) {
-    // Copy the entire directory including subfolders like 'deno'
     fs.cpSync(prismaClientSrc, prismaClientDest, { recursive: true, force: true });
     console.log('✅ Copied Prisma client engines to standalone');
   } else {
@@ -84,7 +67,6 @@ try {
   console.error('❌ Failed to copy Prisma engines:', err);
 }
 
-// Also ensure @prisma/client is in standalone node_modules
 const prismaAtSrc  = path.join(__dirname, 'node_modules', '@prisma', 'client');
 const prismaAtDest = path.join(__dirname, '.next', 'standalone', 'node_modules', '@prisma', 'client');
 try {
