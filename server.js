@@ -18,47 +18,7 @@ function log(msg) {
 
 log('=== Starting Application from Root server.js ===');
 
-// ─── Hostinger Auto-Build System ─────────────────────────────────────────────
-// This automatically builds the app when it detects a new Git commit,
-// completely removing the need for manual builds.
-try {
-  const buildFlagPath = path.join(__dirname, '.build_stamp');
-  let lastBuild = '';
-  if (fs.existsSync(buildFlagPath)) {
-    lastBuild = fs.readFileSync(buildFlagPath, 'utf8').trim();
-  }
 
-  let currentCommit = '';
-  try {
-    currentCommit = execSync('git rev-parse HEAD').toString().trim();
-  } catch (e) {
-    // Fallback if git is not available: use the modification time of package.json
-    currentCommit = fs.statSync(path.join(__dirname, 'package.json')).mtimeMs.toString();
-  }
-
-  if (currentCommit && currentCommit !== lastBuild) {
-    log(`🔄 New update detected (${currentCommit}). Starting automatic build...`);
-    
-    // Set database URL if missing so build doesn't fail
-    if (!process.env.DATABASE_URL) {
-      process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@127.0.0.1:3306/u465666297_u465666297";
-    }
-
-    log('Running: npm install...');
-    execSync('npm install --production=false', { stdio: 'inherit' });
-    
-    log('Running: npx prisma generate...');
-    execSync('npx prisma generate', { stdio: 'inherit' });
-
-    log('Running: npm run build...');
-    execSync('npm run build', { stdio: 'inherit' });
-    
-    fs.writeFileSync(buildFlagPath, currentCommit, 'utf8');
-    log('✅ Automatic build completed successfully!');
-  }
-} catch (error) {
-  log(`⚠️ Auto-build system encountered an issue (skipping): ${error.message}`);
-}
 
 // ─── Fix DATABASE_URL for runtime ────────────────────────────────────────────
 if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("mysql://")) {
