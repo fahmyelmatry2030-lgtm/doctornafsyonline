@@ -1,15 +1,37 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { authenticate } from "./actions";
 import { Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get("error");
+
+  // Map NextAuth error codes to user-friendly Arabic messages
+  const getErrorMessage = (code: string | null) => {
+    if (!code) return "";
+    switch (code) {
+      case "CredentialsSignin":
+        return "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.";
+      case "SessionRequired":
+        return "يرجى تسجيل الدخول للوصول إلى هذه الصفحة.";
+      case "Configuration":
+        return "حدث خطأ في إعدادات الاتصال بالخادم (Configuration Error). يرجى التحقق من متغيرات البيئة.";
+      case "AccessDenied":
+        return "تم رفض الدخول. قد يكون الحساب معطلاً أو غير مصرح له.";
+      default:
+        return "حدث خطأ أثناء تسجيل الدخول. رمز الخطأ: " + code;
+    }
+  };
+
+  const displayError = error || getErrorMessage(urlError);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -95,10 +117,10 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {error && (
+            {displayError && (
               <div className="rounded-xl bg-red-50 border border-red-100 p-4 animate-fade-in">
                 <p className="text-sm text-red-600 font-medium text-center">
-                  {error}
+                  {displayError}
                 </p>
               </div>
             )}
@@ -144,5 +166,20 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)]">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-[#6366F1]" />
+          <p className="text-slate-500 font-bold">جاري التحميل...</p>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
