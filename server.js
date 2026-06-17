@@ -41,7 +41,7 @@ if (majorVersion < 18) {
   process.exit(1)
 }
 
-const dev = process.env.NODE_ENV === 'development'
+const dev = false // Force production mode on server to prevent Passenger from running in dev mode with Turbopack
 const port = process.env.PORT || 3000
 
 log(`Environment: dev=${dev}, PORT=${port}`)
