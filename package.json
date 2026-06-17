@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "rimraf .next && next build",
-    "postbuild": "node -e \"require('fs').utimesSync('tmp/restart.txt', new Date(), new Date())\"",
+    "postbuild": "node post-build.js && node -e \"require('fs').utimesSync('tmp/restart.txt', new Date(), new Date())\"",
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "prisma migrate dev",
