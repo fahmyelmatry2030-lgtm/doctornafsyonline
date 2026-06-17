@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSettings } from "@/app/admin/settings/actions";
 import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
@@ -10,12 +13,13 @@ export async function GET() {
     let therapistCount = 0;
     let adminAuthTest = "not tested";
     let adminPasswordTest = "not tested";
+    let testTherapistRegister = "not tested";
     
     try {
       therapistCount = await prisma.user.count({ where: { role: "THERAPIST" } });
       dbStatus = "connected";
 
-      const bcrypt = require("bcryptjs");
+      // Test admin credentials
       const adminUser = await prisma.user.findUnique({ where: { email: "admin@nafsi.com" } });
       if (adminUser) {
         // Test new password
@@ -26,6 +30,38 @@ export async function GET() {
         adminAuthTest = `role=${adminUser.role}, suspended=${adminUser.isSuspended}, passwordWorks=${validNew}`;
       } else {
         adminAuthTest = "failed: user not found";
+      }
+
+      // Test therapist registration query
+      try {
+        const testEmail = `temp-test-therapist-${Date.now()}@nafsi.com`;
+        const testHashedPassword = await bcrypt.hash("password123", 12);
+        const testUser = await prisma.user.create({
+          data: {
+            name: "دكتور تجريبي",
+            email: testEmail,
+            password: testHashedPassword,
+            phone: "01099999999",
+            role: "THERAPIST",
+            therapistProfile: {
+              create: {
+                bio: "أخصائي نفسي جديد تجريبي",
+                specializations: JSON.stringify(["القلق", "الاكتئاب"]),
+                pricePerSession: 300,
+                yearsExperience: 5,
+              },
+            },
+          },
+        });
+        
+        // Delete right after
+        await prisma.user.delete({
+          where: { id: testUser.id },
+        });
+        
+        testTherapistRegister = "success ✅";
+      } catch (err: any) {
+        testTherapistRegister = `failed ❌: ${err?.message || err}`;
       }
 
     } catch (dbErr: any) {
@@ -45,6 +81,7 @@ export async function GET() {
       therapistCount,
       adminAuthTest,
       adminPasswordTest,
+      testTherapistRegister,
       authSecretInfo,
       envAuthTrustHost: process.env.AUTH_TRUST_HOST || "not set",
       envAuthUrl: process.env.AUTH_URL || "not set",
