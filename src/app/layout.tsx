@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Providers } from "@/components/Providers";
 import { getSettings } from "@/app/admin/settings/actions";
-import { auth } from "@/lib/auth";
+
 
 const tajawal = Tajawal({
   subsets: ["arabic"],
@@ -38,18 +38,10 @@ export default async function RootLayout({
   let settings = null;
   let session = null;
   try {
-    const [sett, sess] = await Promise.all([
-      getSettings().catch((e) => {
-        console.error("Layout getSettings error:", e);
-        return null;
-      }),
-      auth().catch((e) => {
-        console.error("Layout auth error:", e);
-        return null;
-      })
-    ]);
-    settings = sett;
-    session = sess;
+    settings = await getSettings().catch((e) => {
+      console.error("Layout getSettings error:", e);
+      return null;
+    });
   } catch (error) {
     console.error("RootLayout data fetch failed:", error);
   }
@@ -61,7 +53,7 @@ export default async function RootLayout({
     } as any;
   }
 
-  const isAdmin = session?.user?.role === "ADMIN";
+  const isAdmin = false; // maintenance bypass handled client-side
 
   if (settings.maintenanceMode && !isAdmin) {
     return (
@@ -86,7 +78,7 @@ export default async function RootLayout({
     <html lang="ar" dir="rtl" className={`h-full ${tajawal.variable}`}>
       <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground">
         <Providers>
-          <LayoutWrapper header={<Header />} footer={<Footer />}>
+          <LayoutWrapper header={<Header platformName={settings?.platformName || "دكتور نفسي"} />} footer={<Footer />}>
             {children}
           </LayoutWrapper>
         </Providers>
