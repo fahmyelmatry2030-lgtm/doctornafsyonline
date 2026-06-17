@@ -38,8 +38,9 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(appointment, { status: 201 });
-  } catch {
-    return NextResponse.json({ error: "فشل الحجز" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Booking error details:", error);
+    return NextResponse.json({ error: `فشل الحجز: ${error.message || error}` }, { status: 500 });
   }
 }
 
