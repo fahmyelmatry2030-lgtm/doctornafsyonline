@@ -82,3 +82,28 @@ try {
 const newCode = configCode + passengerStartupCode;
 fs.writeFileSync(standaloneServerPath, newCode, 'utf8');
 console.log('✅ Successfully patched standalone server.js for Phusion Passenger compatibility!');
+
+// Copy public folder to standalone/public
+const publicSrc = path.join(__dirname, 'public');
+const publicDest = path.join(__dirname, '.next', 'standalone', 'public');
+try {
+  if (fs.existsSync(publicSrc)) {
+    fs.cpSync(publicSrc, publicDest, { recursive: true, force: true });
+    console.log('✅ Successfully copied public folder to standalone');
+  }
+} catch (err) {
+  console.error('❌ Failed to copy public folder to standalone:', err);
+}
+
+// Copy .next/static folder to standalone/.next/static
+const staticSrc = path.join(__dirname, '.next', 'static');
+const staticDest = path.join(__dirname, '.next', 'standalone', '.next', 'static');
+try {
+  if (fs.existsSync(staticSrc)) {
+    fs.cpSync(staticSrc, staticDest, { recursive: true, force: true });
+    console.log('✅ Successfully copied .next/static folder to standalone');
+  }
+} catch (err) {
+  console.error('❌ Failed to copy .next/static folder to standalone:', err);
+}
+
