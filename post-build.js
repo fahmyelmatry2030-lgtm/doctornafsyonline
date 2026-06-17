@@ -34,6 +34,8 @@ process.env.__NEXT_PRIVATE_STANDALONE_CONFIG = JSON.stringify(nextConfig)
 var http = require('http')
 var next = require('next')
 var url  = require('url')
+var fs   = require('fs')
+var path = require('path')
 
 // ── Logging ───────────────────────────────────────────────────────────────────
 var logFile = path.join(process.cwd(), 'startup-error.log')
