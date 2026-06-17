@@ -26,6 +26,8 @@ const passengerStartupCode = `
 process.env.__NEXT_PRIVATE_STANDALONE_CONFIG = JSON.stringify(nextConfig)
 
 const http = require('http')
+const fs = require('fs')
+const path = require('path')
 const NextServer = require('next/dist/server/next-server').default
 
 const MIME_TYPES = {
@@ -68,7 +70,6 @@ function logError(msg, err) {
 
 log(\`Starting NextNodeServer on Passenger/Hostinger. CWD: \${process.cwd()}\`)
 log(\`__dirname: \${__dirname}\`)
-log(\`dir: \${dir}\`)
 
 // Check if static files exist
 const staticDir = path.join(__dirname, '.next', 'static')
@@ -94,10 +95,14 @@ function serveStaticFile(filePath, res) {
 }
 
 try {
+  const appDir = path.join(__dirname)
+  const appHostname = process.env.HOSTNAME || 'localhost'
+  const appPort = parseInt(process.env.PORT || '3000', 10)
+
   const nextServer = new NextServer({
-    hostname,
-    port: currentPort,
-    dir,
+    hostname: appHostname,
+    port: appPort,
+    dir: appDir,
     dev: false,
     customServer: false,
     conf: nextConfig,
@@ -133,12 +138,12 @@ try {
     }
   })
 
-  server.listen(currentPort, (err) => {
+  server.listen(appPort, (err) => {
     if (err) {
       logError('Server listen failed', err)
       throw err
     }
-    log(\`Server is listening on \${currentPort}\`)
+    log(\`Server is listening on \${appPort}\`)
   })
 } catch (err) {
   logError('FATAL: Failed to start NextNodeServer', err)
