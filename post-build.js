@@ -28,6 +28,31 @@ process.env.__NEXT_PRIVATE_STANDALONE_CONFIG = JSON.stringify(nextConfig)
 const http = require('http')
 const NextServer = require('next/dist/server/next-server').default
 
+const MIME_TYPES = {
+  '.js': 'application/javascript',
+  '.css': 'text/css',
+  '.html': 'text/html',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf',
+  '.eot': 'application/vnd.ms-fontobject',
+  '.otf': 'font/otf',
+  '.webp': 'image/webp',
+  '.txt': 'text/plain',
+  '.map': 'application/json',
+}
+function getMime(filePath) {
+  const ext = path.extname(filePath).toLowerCase()
+  return MIME_TYPES[ext] || 'application/octet-stream'
+}
+
 const logFile = path.join(__dirname, 'startup-error.log')
 function log(msg) {
   const timestamp = new Date().toISOString()
@@ -42,6 +67,31 @@ function logError(msg, err) {
 }
 
 log(\`Starting NextNodeServer on Passenger/Hostinger. CWD: \${process.cwd()}\`)
+log(\`__dirname: \${__dirname}\`)
+log(\`dir: \${dir}\`)
+
+// Check if static files exist
+const staticDir = path.join(__dirname, '.next', 'static')
+const publicDir = path.join(__dirname, 'public')
+log(\`Static dir exists: \${fs.existsSync(staticDir)} at \${staticDir}\`)
+log(\`Public dir exists: \${fs.existsSync(publicDir)} at \${publicDir}\`)
+
+function serveStaticFile(filePath, res) {
+  try {
+    if (fs.existsSync(filePath)) {
+      const stat = fs.statSync(filePath)
+      const mimeType = getMime(filePath)
+      res.writeHead(200, {
+        'Content-Type': mimeType,
+        'Content-Length': stat.size,
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      })
+      fs.createReadStream(filePath).pipe(res)
+      return true
+    }
+  } catch (e) {}
+  return false
+}
 
 try {
   const nextServer = new NextServer({
@@ -58,6 +108,23 @@ try {
   log('Creating HTTP server for Passenger...')
   const server = http.createServer(async (req, res) => {
     try {
+      const url = req.url || '/'
+
+      // Serve /_next/static/ files manually
+      if (url.startsWith('/_next/static/')) {
+        const relativePath = url.replace('/_next/static/', '')
+        const filePath = path.join(__dirname, '.next', 'static', relativePath.split('?')[0])
+        if (serveStaticFile(filePath, res)) return
+      }
+
+      // Serve public files manually (fonts, images etc)
+      if (!url.startsWith('/_next/') && !url.startsWith('/api/')) {
+        const filePath = path.join(__dirname, 'public', url.split('?')[0])
+        if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+          if (serveStaticFile(filePath, res)) return
+        }
+      }
+
       await handle(req, res)
     } catch (err) {
       logError(\`Error handling request \${req.url}\`, err)
@@ -78,6 +145,7 @@ try {
   process.exit(1)
 }
 `;
+
 
 const newCode = configCode + passengerStartupCode;
 fs.writeFileSync(standaloneServerPath, newCode, 'utf8');
