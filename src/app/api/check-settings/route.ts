@@ -6,49 +6,50 @@ export async function GET() {
   try {
     const settings = await getSettings();
     
-    // Check if database is reachable
     let dbStatus = "unreachable";
     let therapistCount = 0;
     let adminAuthTest = "not tested";
-    let patientAuthTest = "not tested";
+    let adminPasswordTest = "not tested";
     
     try {
       therapistCount = await prisma.user.count({ where: { role: "THERAPIST" } });
       dbStatus = "connected";
 
-      // Test admin credentials
       const bcrypt = require("bcryptjs");
       const adminUser = await prisma.user.findUnique({ where: { email: "admin@nafsi.com" } });
       if (adminUser) {
-        const adminValid = await bcrypt.compare("123456", adminUser.password);
-        adminAuthTest = adminValid ? "success" : "failed: password mismatch";
+        // Test new password
+        const validNew = await bcrypt.compare("Doctor1346790", adminUser.password);
+        // Test old password
+        const validOld = await bcrypt.compare("123456", adminUser.password);
+        adminPasswordTest = validNew ? "Doctor1346790 ✅" : (validOld ? "123456 ✅" : "UNKNOWN ❌");
+        adminAuthTest = `role=${adminUser.role}, suspended=${adminUser.isSuspended}, passwordWorks=${validNew}`;
       } else {
         adminAuthTest = "failed: user not found";
-      }
-
-      // Test patient credentials
-      const patientUser = await prisma.user.findUnique({ where: { email: "patient@nafsi.com" } });
-      if (patientUser) {
-        const patientValid = await bcrypt.compare("123456", patientUser.password);
-        patientAuthTest = patientValid ? "success" : "failed: password mismatch";
-      } else {
-        patientAuthTest = "failed: user not found";
       }
 
     } catch (dbErr: any) {
       dbStatus = `failed: ${dbErr?.message || dbErr}`;
     }
 
+    // Get auth secret info (partial only for security)
+    const authSecret = process.env.AUTH_SECRET || "";
+    const authSecretInfo = authSecret 
+      ? `set (length=${authSecret.length}, starts=${authSecret.substring(0, 6)}...)` 
+      : "NOT SET ❌";
+
     return NextResponse.json({
       status: "success",
+      timestamp: new Date().toISOString(),
       dbStatus,
       therapistCount,
       adminAuthTest,
-      patientAuthTest,
-      settings,
-      timestamp: new Date().toISOString(),
+      adminPasswordTest,
+      authSecretInfo,
       envAuthTrustHost: process.env.AUTH_TRUST_HOST || "not set",
       envAuthUrl: process.env.AUTH_URL || "not set",
+      envNextAuthUrl: process.env.NEXTAUTH_URL || "not set",
+      nodeEnv: process.env.NODE_ENV || "not set",
     });
   } catch (err: any) {
     return NextResponse.json({
