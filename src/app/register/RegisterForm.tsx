@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { authenticateAfterRegister } from "./actions";
 import { User, Mail, Lock, Phone, ArrowRight, Loader2, Heart, ShieldCheck, Briefcase, Clock, DollarSign } from "lucide-react";
 
 export default function RegisterForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get("role") === "therapist" ? "THERAPIST" : "PATIENT";
 
@@ -24,34 +23,43 @@ export default function RegisterForm() {
   
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error || "فشل التسجيل. يرجى التأكد من البيانات والمحاولة مرة أخرى.");
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "فشل التسجيل. يرجى التأكد من البيانات والمحاولة مرة أخرى.");
+        setLoading(false);
+        return;
+      }
+
+      // Auto-login using server action
+      startTransition(async () => {
+        const result = await authenticateAfterRegister(form.email, form.password);
+        if (result) {
+          // If auto-login failed, redirect to login page
+          setError(result);
+          setLoading(false);
+          window.location.href = "/login";
+        }
+      });
+    } catch {
+      setError("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
       setLoading(false);
-      return;
     }
-
-    await signIn("credentials", {
-      email: form.email,
-      password: form.password,
-      redirect: false,
-    });
-
-    router.push("/dashboard");
-    router.refresh();
   }
+
 
   return (
     <div className="bg-[var(--color-background)] min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
