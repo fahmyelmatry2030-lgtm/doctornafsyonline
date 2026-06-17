@@ -139,15 +139,9 @@ const prismaClientSrc  = path.join(__dirname, 'node_modules', '.prisma', 'client
 const prismaClientDest = path.join(__dirname, '.next', 'standalone', 'node_modules', '.prisma', 'client');
 try {
   if (fs.existsSync(prismaClientSrc)) {
-    // Copy all engine files (*.node) including Linux ones
-    const files = fs.readdirSync(prismaClientSrc);
-    fs.mkdirSync(prismaClientDest, { recursive: true });
-    files.forEach(file => {
-      const src  = path.join(prismaClientSrc, file);
-      const dest = path.join(prismaClientDest, file);
-      fs.copyFileSync(src, dest);
-    });
-    console.log('✅ Copied Prisma client engines to standalone (files: ' + files.join(', ') + ')');
+    // Copy the entire directory including subfolders like 'deno'
+    fs.cpSync(prismaClientSrc, prismaClientDest, { recursive: true, force: true });
+    console.log('✅ Copied Prisma client engines to standalone');
   } else {
     console.warn('⚠️  node_modules/.prisma/client not found – skipping Prisma engine copy.');
   }
