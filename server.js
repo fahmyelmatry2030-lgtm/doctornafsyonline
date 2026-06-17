@@ -1,3 +1,7 @@
+if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("mysql://")) {
+  process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@localhost:3306/u465666297_u465666297";
+}
+
 const { createServer } = require('http')
 const { parse } = require('url')
 const next = require('next')
