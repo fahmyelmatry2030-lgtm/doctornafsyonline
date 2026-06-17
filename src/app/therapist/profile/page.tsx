@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import CertificatesManager from "@/components/CertificatesManager";
+import ContractManager from "@/components/ContractManager";
 import { getSettings } from "@/app/admin/settings/actions";
 
 export default async function TherapistProfilePage() {
@@ -99,6 +100,7 @@ export default async function TherapistProfilePage() {
         </form>
 
         <CertificatesManager />
+        <ContractManager />
       </div>
     </div>
   );
