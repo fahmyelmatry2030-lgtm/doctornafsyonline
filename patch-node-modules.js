@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const v8Mock = '({ setHeapSnapshotNearHeapLimit: function(){}, setFlagsFromString: function(){}, writeHeapSnapshot: function(){}, getHeapStatistics: function(){ return { heap_size_limit: 4294967296, total_available_size: 4294967296, used_heap_size: 0 }; }, getHeapSpaceStatistics: function(){ return []; }, getHeapCodeStatistics: function(){ return {}; } })';
+const mockBody = "setHeapSnapshotNearHeapLimit: function(){}, setFlagsFromString: function(){}, writeHeapSnapshot: function(){}, getHeapStatistics: function(){ return { heap_size_limit: 4294967296, total_available_size: 4294967296, used_heap_size: 0 }; }, getHeapSpaceStatistics: function(){ return []; }, getHeapCodeStatistics: function(){ return {}; }";
+const v8Mock = `({ ${mockBody}, default: { ${mockBody} } })`;
 
 function walkDir(dir, callback) {
   if (!fs.existsSync(dir)) return;
