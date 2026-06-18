@@ -2,7 +2,7 @@
   "name": "nafsi-platform",
   "version": "0.1.0",
   "private": true,
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
