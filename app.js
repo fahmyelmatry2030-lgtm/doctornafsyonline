@@ -29,6 +29,14 @@ try {
   }
 } catch (_) {}
 
+// ─── Fix Hostinger MySQL Connection ──────────────────────────────────────────
+// Hostinger often fails when connecting to "localhost" because it tries to use
+// a Unix socket. Changing it to "127.0.0.1" forces a TCP connection.
+if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('@localhost:')) {
+  process.env.DATABASE_URL = process.env.DATABASE_URL.replace('@localhost:', '@127.0.0.1:');
+  log('🔧 Auto-fixed DATABASE_URL: Replaced localhost with 127.0.0.1');
+}
+
 // ─── Emergency server helper ────────────────────────────────────────────────
 function startEmergencyServer(errorMessage, errorStack) {
   const rawPort  = process.env.PORT || '3000';
