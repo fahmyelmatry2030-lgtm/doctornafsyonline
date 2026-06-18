@@ -159,7 +159,7 @@ export default function PatientsList({ initialPatients }: PatientsListProps) {
               className="card-glow glass rounded-2xl border border-[var(--color-border-soft)] p-6 bg-white hover:shadow-premium transition-all cursor-pointer group hover:border-indigo-200"
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-xl font-bold text-indigo-600 group-hover:scale-105 transition-transform">
+                <div className="w-16 h-16 rounded-full bg-indigo-50 border-2 border-white ring-4 ring-indigo-50 shadow-[0_0_15px_rgba(99,102,241,0.2)] flex items-center justify-center text-2xl font-bold text-indigo-600 group-hover:scale-105 transition-transform">
                   {patient.name.charAt(0)}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -214,7 +214,7 @@ export default function PatientsList({ initialPatients }: PatientsListProps) {
                   {/* Patient Info Card */}
                   <div className="p-5 bg-indigo-50/50 border border-indigo-100 rounded-2xl flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-lg font-black text-indigo-600">
+                      <div className="w-16 h-16 rounded-full bg-indigo-100 border-2 border-white ring-4 ring-indigo-50 shadow-[0_0_15px_rgba(99,102,241,0.2)] flex items-center justify-center text-2xl font-black text-indigo-600">
                         {patientData.patient.name.charAt(0)}
                       </div>
                       <div>

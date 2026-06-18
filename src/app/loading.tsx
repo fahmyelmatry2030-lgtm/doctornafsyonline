@@ -8,12 +8,12 @@ export default function GlobalLoading() {
         <div className="absolute inset-0 rounded-full border-4 border-indigo-100 border-t-indigo-600 animate-spin" />
         
         {/* اللوجو في المنتصف مع تأثير نبض */}
-        <div className="relative w-24 h-24 rounded-full overflow-hidden animate-pulse shadow-lg">
+        <div className="relative w-24 h-24 rounded-full overflow-hidden animate-pulse shadow-lg bg-white flex items-center justify-center p-2">
           <Image 
             src="/logo.jpeg" 
             alt="جاري التحميل..." 
             fill 
-            className="object-cover"
+            className="object-contain p-1"
             priority
           />
         </div>

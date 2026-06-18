@@ -33,8 +33,8 @@ export function TherapistCard({
 
   return (
     <article className="group flex flex-col rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-      <div className="mb-4 flex items-start justify-between gap-4">
-        <div className="relative h-16 w-16 rounded-full overflow-hidden bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex-shrink-0 shadow-md">
+      <div className="mb-6 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 w-full">
+        <div className="relative h-28 w-28 rounded-full overflow-hidden bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex-shrink-0 shadow-[0_0_20px_rgba(99,102,241,0.3)] ring-4 ring-indigo-50 border-4 border-white">
           <img
             src={imageUrl || "/therapist-placeholder.png"}
             alt={name}
@@ -42,7 +42,7 @@ export function TherapistCard({
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.style.display = 'none';
-              target.parentElement!.innerHTML = `<span class="flex h-full w-full items-center justify-center text-xl font-bold text-white">${name.charAt(0)}</span>`;
+              target.parentElement!.innerHTML = `<span class="flex h-full w-full items-center justify-center text-3xl font-bold text-white">${name.charAt(0)}</span>`;
             }}
           />
         </div>
