@@ -1,139 +1,91 @@
-// ─── Nafsi Platform – Production Entry Point for Hostinger Passenger ─────────
-// Passenger loads this file. It boots .next/standalone/server.js which handles
-// everything (port/socket binding, Next.js serving, etc.).
-// ──────────────────────────────────────────────────────────────────────────────
-
-const fs   = require('fs');
-const path = require('path');
 const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const url = require('url');
 
-// ─── Logging ────────────────────────────────────────────────────────────────
-const LOG_FILE = path.join(__dirname, 'startup-error.log');
+const rawPort = process.env.PORT || '3000';
+const isSocket = isNaN(Number(rawPort)) || rawPort.startsWith('/');
 
-function log(msg) {
-  const line = `[${new Date().toISOString()}] ${msg}\n`;
-  try { fs.appendFileSync(LOG_FILE, line); } catch (_) {}
-  console.log(msg);
-}
-
-// ─── Load .env ──────────────────────────────────────────────────────────────
-try {
-  require('dotenv').config({ path: path.join(__dirname, '.env') });
-} catch (_) {}
-
-// Also try loading .env inside standalone (post-build copies it there)
-try {
-  const standaloneEnv = path.join(__dirname, '.next', 'standalone', '.env');
-  if (fs.existsSync(standaloneEnv)) {
-    require('dotenv').config({ path: standaloneEnv, override: false });
-  }
-} catch (_) {}
-
-// ─── Fix Hostinger MySQL Connection ──────────────────────────────────────────
-// Hostinger often fails when connecting to "localhost" because it tries to use
-// a Unix socket. Changing it to "127.0.0.1" forces a TCP connection.
-if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('@localhost:')) {
-  process.env.DATABASE_URL = process.env.DATABASE_URL.replace('@localhost:', '@127.0.0.1:');
-  log('🔧 Auto-fixed DATABASE_URL: Replaced localhost with 127.0.0.1');
-}
-
-// ─── Emergency server helper ────────────────────────────────────────────────
-function startEmergencyServer(errorMessage, errorStack) {
-  const rawPort  = process.env.PORT || '3000';
-  const isSocket = isNaN(Number(rawPort)) || rawPort.startsWith('/');
-
-  const server = http.createServer((_req, res) => {
+function emergencyServer(message, details) {
+  const server = http.createServer((req, res) => {
     res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(`<!DOCTYPE html>
-<html dir="rtl" lang="ar">
-<head><meta charset="utf-8"><title>خطأ</title></head>
-<body style="font-family:system-ui;padding:40px;background:#1a1a2e;color:#eee;">
-<div style="max-width:700px;margin:auto;background:#16213e;padding:30px;border-radius:12px;border:1px solid #e94560;">
-  <h1 style="color:#e94560;">🚨 خطأ أثناء تشغيل السيرفر</h1>
-  <p>${errorMessage.replace(/</g,'&lt;')}</p>
-  <pre style="background:#0f3460;padding:15px;border-radius:8px;overflow-x:auto;color:#ff6b6b;font-size:13px;direction:ltr;text-align:left;">${
-    (errorStack || errorMessage).replace(/</g,'&lt;')
-  }</pre>
-  <h2>معلومات التشخيص:</h2>
-  <pre style="background:#0f3460;padding:15px;border-radius:8px;color:#aaa;direction:ltr;text-align:left;">
-Node: ${process.version}
-Platform: ${process.platform} ${process.arch}
-CWD: ${process.cwd()}
-__dirname: ${__dirname}
-PORT: ${rawPort}
-NODE_ENV: ${process.env.NODE_ENV || 'not set'}
-DATABASE_URL: ${process.env.DATABASE_URL ? 'SET' : 'NOT SET'}
-  </pre>
-</div>
-</body></html>`);
+    res.end(`
+      <div dir="rtl" style="padding:20px;font-family:sans-serif;color:#721c24;background-color:#f8d7da;border:1px solid #f5c6cb;border-radius:5px;margin:20px;">
+        <h2>🚨 تم اكتشاف خطأ في السيرفر</h2>
+        <p><b>${message}</b></p>
+        <pre style="background:#fff;padding:10px;border-radius:3px;text-align:left;direction:ltr;">${details}</pre>
+        <hr>
+        <p>إذا كنت ترى هذه الشاشة، فهذا يعني أن سيرفر Hostinger يعمل بنجاح ولكن الكود واجه مشكلة.</p>
+      </div>
+    `);
   });
-
   if (isSocket) {
-    try { if (fs.existsSync(rawPort)) fs.unlinkSync(rawPort); } catch (_) {}
-    server.listen(rawPort, () => {
-      try { fs.chmodSync(rawPort, '777'); } catch (_) {}
-      log(`Emergency server on socket: ${rawPort}`);
-    });
+    if (fs.existsSync(rawPort)) { try { fs.unlinkSync(rawPort); } catch(e){} }
+    server.listen(rawPort, () => { try { fs.chmodSync(rawPort, '777'); } catch(e){} });
   } else {
-    server.listen(parseInt(rawPort, 10), () => {
-      log(`Emergency server on port: ${rawPort}`);
-    });
+    server.listen(parseInt(rawPort, 10));
   }
 }
 
-// ─── Main startup ───────────────────────────────────────────────────────────
-log('=== Nafsi Platform Starting ===');
-log(`Node ${process.version} | ${process.platform} ${process.arch} | PID ${process.pid}`);
-log(`CWD: ${process.cwd()}`);
-log(`__dirname: ${__dirname}`);
-log(`PORT: ${process.env.PORT || 'not set'}`);
-log(`NODE_ENV: ${process.env.NODE_ENV || 'not set'}`);
-log(`DATABASE_URL: ${process.env.DATABASE_URL ? 'SET' : 'NOT SET'}`);
-
-// Check what files exist
-const filesToCheck = [
-  'app.js',
-  '.next/standalone/server.js',
-  '.next/standalone/.env',
-  '.next/standalone/node_modules/next/package.json',
-  'node_modules/next/package.json',
-  'node_modules/dotenv/package.json',
-  '.env',
-];
-filesToCheck.forEach(f => {
-  const full = path.join(__dirname, f);
-  log(`  ${f}: ${fs.existsSync(full) ? '✅ EXISTS' : '❌ MISSING'}`);
-});
-
-const standaloneServer = path.join(__dirname, '.next', 'standalone', 'server.js');
-
-if (fs.existsSync(standaloneServer)) {
-  log('Loading .next/standalone/server.js ...');
+try {
+  // Check if Next.js is installed
+  const next = require('next');
+  
+  // ─── Auto-load .env ─────────────────────────────────────────────────────────
   try {
-    // Set process.env.PORT so standalone picks it up
-    // standalone/server.js already handles socket vs port
-    require(standaloneServer);
-    log('✅ standalone/server.js loaded successfully');
-  } catch (err) {
-    log(`❌ FATAL: standalone/server.js crashed: ${err.message}`);
-    log(err.stack || '');
-    startEmergencyServer(
-      'Next.js standalone server crashed during startup',
-      err.stack || err.message
-    );
+    const envPath = path.join(__dirname, '.env');
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, 'utf8');
+      content.split('\n').forEach(line => {
+        const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+        if (match) {
+          let key = match[1];
+          let value = match[2] || '';
+          if (value.length > 0 && value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
+            value = value.replace(/\\n/gm, '\n');
+          }
+          value = value.replace(/(^['"]|['"]$)/g, '').trim();
+          if (!process.env[key]) process.env[key] = value;
+        }
+      });
+    }
+  } catch (e) {}
+
+  if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('@localhost:')) {
+    process.env.DATABASE_URL = process.env.DATABASE_URL.replace('@localhost:', '@127.0.0.1:');
   }
-} else {
-  log('❌ .next/standalone/server.js NOT FOUND');
-  startEmergencyServer(
-    'مجلد التشغيل (standalone) غير موجود على السيرفر!',
-    `لم يتم العثور على المسار التالي:\n${standaloneServer}\n\nهذا يعني أن عملية الـ Build لم تكتمل بنجاح، أو أن Hostinger لم يقم بسحب مجلد .next/standalone من Git.`
-  );
+
+  const app = next({ dev: false });
+  const handle = app.getRequestHandler();
+
+  app.prepare().then(() => {
+    const server = http.createServer((req, res) => {
+      try {
+        const parsedUrl = url.parse(req.url, true);
+        handle(req, res, parsedUrl);
+      } catch (err) {
+        res.statusCode = 500;
+        res.end('internal server error');
+      }
+    });
+
+    if (isSocket) {
+      if (fs.existsSync(rawPort)) { try { fs.unlinkSync(rawPort); } catch (e) {} }
+      server.listen(rawPort, () => { try { fs.chmodSync(rawPort, '777'); } catch (e) {} });
+    } else {
+      server.listen(parseInt(rawPort, 10));
+    }
+  }).catch(err => {
+    emergencyServer('فشل تشغيل Next.js (تأكد من وجود مجلد .next وقاعدة البيانات)', err.stack || err.message);
+  });
+} catch (err) {
+  emergencyServer('حزم Node.js غير مثبتة (NPM Install Required)', err.stack || err.message);
 }
 
-// ─── Global error handlers ──────────────────────────────────────────────────
 process.on('uncaughtException', (err) => {
-  log(`UNCAUGHT: ${err.message}\n${err.stack}`);
+  console.error('Uncaught Exception:', err);
+  // Do not exit to keep Passenger alive with potential errors
 });
 process.on('unhandledRejection', (reason) => {
-  log(`UNHANDLED: ${reason}`);
+  console.error('Unhandled Rejection:', reason);
 });
