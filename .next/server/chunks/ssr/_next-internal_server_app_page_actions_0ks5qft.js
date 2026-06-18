@@ -1,3 +1,3 @@
-module.exports=[37046,a=>{"use strict";var b=a.i(63425);a.s([],88380),a.i(88380),a.s(["003a71c24d03c7a72bf41dcbc9a403fb3d04a8c53d",()=>b.getSettings,"40edf3c869f3ef0b51c364dc660e3e2b6bf43c62f8",()=>b.updateSettings],37046)}];
+module.exports=[37046,a=>{"use strict";var b=a.i(63425);a.s([],88380),a.i(88380),a.s(["00f29300f0973f2036a1086cf830d1698846062f95",()=>b.getSettings,"4092a80d10f3a2b6fa1c8b5b26f740e302bbb01844",()=>b.updateSettings],37046)}];
 
 //# sourceMappingURL=_next-internal_server_app_page_actions_0ks5qft.js.map

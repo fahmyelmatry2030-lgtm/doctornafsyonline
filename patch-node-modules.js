@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const mockBody = "setHeapSnapshotNearHeapLimit: function(){}, setFlagsFromString: function(){}, writeHeapSnapshot: function(){}, getHeapStatistics: function(){ return { heap_size_limit: 4294967296, total_available_size: 4294967296, used_heap_size: 0 }; }, getHeapSpaceStatistics: function(){ return []; }, getHeapCodeStatistics: function(){ return {}; }";
-const v8Mock = `({ ${mockBody}, default: { ${mockBody} } })`;
+const v8Mock = "new Proxy({ default: new Proxy({}, { get: function(t, p) { if (p === 'getHeapStatistics') return function(){ return { heap_size_limit: 4294967296, total_available_size: 4294967296, used_heap_size: 0 }; }; if (p === 'getHeapSpaceStatistics') return function(){ return []; }; if (p === 'getHeapCodeStatistics') return function(){ return {}; }; return function(){}; } }) }, { get: function(target, prop) { if (prop === 'default') return target.default; if (prop === 'getHeapStatistics') return function(){ return { heap_size_limit: 4294967296, total_available_size: 4294967296, used_heap_size: 0 }; }; if (prop === 'getHeapSpaceStatistics') return function(){ return []; }; if (prop === 'getHeapCodeStatistics') return function(){ return {}; }; return function(){}; } })";
 
 function walkDir(dir, callback) {
   if (!fs.existsSync(dir)) return;

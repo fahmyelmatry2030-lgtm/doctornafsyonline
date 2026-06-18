@@ -1,6 +1,6 @@
 {
   "node": {
-    "003a71c24d03c7a72bf41dcbc9a403fb3d04a8c53d": {
+    "00f29300f0973f2036a1086cf830d1698846062f95": {
       "workers": {
         "app/patient/reviews/page": {
           "moduleId": 12530,
@@ -12,7 +12,7 @@
       "exportedName": "getSettings",
       "filename": "src/app/admin/settings/actions.ts"
     },
-    "40edf3c869f3ef0b51c364dc660e3e2b6bf43c62f8": {
+    "4092a80d10f3a2b6fa1c8b5b26f740e302bbb01844": {
       "workers": {
         "app/patient/reviews/page": {
           "moduleId": 12530,

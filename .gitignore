@@ -13,8 +13,8 @@
 # testing
 /coverage
 
-# next.js output (Allowing it to be committed to bypass server build)
-# /.next/
+# next.js output should NOT be included in git (Windows/Linux mismatch)
+/.next/
 
 # production
 /build
