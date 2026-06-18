@@ -13,13 +13,8 @@
 # testing
 /coverage
 
-# next.js
-/.next/*
-!/.next/standalone/
-!/.next/static/
-# Exclude platform-specific native modules (built on Windows, won't work on Linux)
-.next/standalone/node_modules/sharp/
-/out/
+# next.js output is intentionally included in git for Hostinger
+!/.next/
 
 # production
 /build

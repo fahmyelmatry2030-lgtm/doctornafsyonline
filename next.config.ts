@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
   productionBrowserSourceMaps: false,
-  output: "standalone",
   images: {
     unoptimized: true,
   },

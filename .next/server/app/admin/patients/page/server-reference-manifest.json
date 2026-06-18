@@ -1,0 +1,53 @@
+{
+  "node": {
+    "003a71c24d03c7a72bf41dcbc9a403fb3d04a8c53d": {
+      "workers": {
+        "app/admin/patients/page": {
+          "moduleId": 35538,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getSettings",
+      "filename": "src/app/admin/settings/actions.ts"
+    },
+    "40edf3c869f3ef0b51c364dc660e3e2b6bf43c62f8": {
+      "workers": {
+        "app/admin/patients/page": {
+          "moduleId": 35538,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateSettings",
+      "filename": "src/app/admin/settings/actions.ts"
+    },
+    "40689f7e25d28183768f980fd8c788f7cf40c0fe24": {
+      "workers": {
+        "app/admin/patients/page": {
+          "moduleId": 35538,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_1",
+          "filename": "src/app/admin/patients/page.tsx"
+        }
+      },
+      "exportedName": "$$RSC_SERVER_ACTION_1",
+      "filename": "src/app/admin/patients/page.tsx"
+    },
+    "602f9b24caa7abb82e3632aa6b88bb4511d4e4a194": {
+      "workers": {
+        "app/admin/patients/page": {
+          "moduleId": 35538,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "src/app/admin/patients/page.tsx"
+        }
+      },
+      "exportedName": "$$RSC_SERVER_ACTION_0",
+      "filename": "src/app/admin/patients/page.tsx"
+    }
+  },
+  "edge": {}
+}

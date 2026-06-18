@@ -6,13 +6,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "node post-build.js",
-    "start": "node app.js",
+    "start": "next start",
     "lint": "next lint",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "npx tsx prisma/seed.ts",
-    "db:setup": "prisma migrate dev && npx tsx prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "db:push": "prisma db push",
+    "db:seed": "node prisma/seed.js",
+    "postinstall": "prisma generate && next build"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
