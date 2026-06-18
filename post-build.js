@@ -91,4 +91,18 @@ try {
   console.error('❌ Failed to copy @prisma/client:', err);
 }
 
+// ── Copy .env to standalone so the server can find it at runtime ──────────────
+const envSrc  = path.join(__dirname, '.env');
+const envDest = path.join(__dirname, '.next', 'standalone', '.env');
+try {
+  if (fs.existsSync(envSrc)) {
+    fs.copyFileSync(envSrc, envDest);
+    console.log('✅ Copied .env to .next/standalone/.env');
+  } else {
+    console.warn('⚠️  .env not found – make sure env vars are set in the hosting panel.');
+  }
+} catch (err) {
+  console.error('❌ Failed to copy .env:', err);
+}
+
 console.log('🎉 post-build.js complete!');
