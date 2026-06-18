@@ -54,7 +54,7 @@ const features = [
   },
   {
     title: "أمان كامل",
-    description: "تشفير عسكري وحماية صارمة لبياناتك الشخصية وجلساتك العلاجية",
+    description: "تشفير سري وحماية صارمة لبياناتك الشخصية وجلساتك العلاجية",
     icon: "🔒",
   },
   {
@@ -83,7 +83,7 @@ export default function HowItWorksPage() {
           <div className="max-w-3xl mx-auto animate-fade-in-up stagger-1">
             <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#312E81] shadow-premium">
               <Zap className="h-4 w-4 text-[#6366F1]" />
-              كيف تعمل المنصة
+              خطة التعافي
             </span>
             <h1 className="mb-6 text-5xl font-black leading-tight text-[var(--color-foreground)] md:text-6xl animate-fade-in-up stagger-2">
               <span className="gradient-text">6 خطوات</span> بسيطة لرحلة التعافي

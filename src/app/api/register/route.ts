@@ -8,13 +8,14 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { 
-      name, email, password, phone, role,
+      name, email, password, phone, gender, role,
       specializations, yearsExperience, pricePerSession 
     } = body as {
       name: string;
       email: string;
       password: string;
       phone?: string;
+      gender?: string;
       role?: string;
       specializations?: string;
       yearsExperience?: string;
@@ -60,6 +61,7 @@ export async function POST(request: Request) {
         email,
         password: hashedPassword,
         phone,
+        gender,
         role: userRole,
         ...(userRole === "THERAPIST" && {
           therapistProfile: {

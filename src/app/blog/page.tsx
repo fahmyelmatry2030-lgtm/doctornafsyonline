@@ -51,7 +51,7 @@ export default function BlogPage() {
           <div className="max-w-3xl">
             <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm font-semibold text-white">
               <BookOpen className="h-4 w-4" />
-              المدونة
+              مقالات تهمك
             </span>
             <h1 className="mb-6 text-5xl font-black text-white md:text-6xl">
               مقالات عن <span className="text-yellow-200">الصحة النفسية</span>
@@ -162,7 +162,7 @@ export default function BlogPage() {
         {/* Categories */}
         <section className="mb-20">
           <div className="mb-12 text-center">
-            <p className="mb-3 text-sm font-bold uppercase text-teal-600 tracking-widest">📚 أقسام المدونة</p>
+            <p className="mb-3 text-sm font-bold uppercase text-teal-600 tracking-widest">📚 أقسام المقالات</p>
             <h2 className="mb-4 text-4xl font-black text-slate-900">تصفح حسب الفئة</h2>
           </div>
 
@@ -190,7 +190,7 @@ export default function BlogPage() {
             <BookOpen className="mb-4 h-12 w-12" />
             <h2 className="mb-3 text-3xl font-black">محتوى جديد بانتظارك</h2>
             <p className="mb-6 text-lg opacity-95">
-              نضيف مقالات وموارس جديدة بشكل منتظم لمساعدتك في رحلة صحتك النفسية. ابق على تواصل معنا!
+              نضيف مقالات جديدة بشكل منتظم لمساعدتك في رحلة صحتك النفسية. ابق على تواصل معنا!
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link

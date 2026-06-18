@@ -6,11 +6,11 @@ import { LayoutDashboard, LogOut, User, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const NAV_LINKS = [
-  { href: "/about",       label: "من نحن" },
+  { href: "/how-it-works",label: "خطة التعافي" },
   { href: "/services",    label: "الخدمات" },
-  { href: "/how-it-works",label: "كيف تعمل" },
   { href: "/therapists",  label: "الأخصائيين" },
-  { href: "/blog",        label: "المدونة" },
+  { href: "/blog",        label: "المقالات" },
+  { href: "/about",       label: "من نحن" },
   { href: "/faq",         label: "الأسئلة" },
 ];
 

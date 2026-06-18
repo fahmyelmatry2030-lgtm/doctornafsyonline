@@ -158,7 +158,7 @@ export default async function HomePage() {
               {
                 icon: Shield,
                 title: "خصوصية وأمان عالي",
-                desc: "تشفير عسكري للجلسات وحماية بياناتك وفق أعلى المعايير الدولية",
+                desc: "تشفير سري للجلسات وحماية بياناتك وفق أعلى المعايير الدولية",
               },
               {
                 icon: Clock,
@@ -198,7 +198,7 @@ export default async function HomePage() {
         
         <div className="mx-auto max-w-6xl px-4 relative z-10">
           <div className="mb-16 text-center animate-fade-in">
-            <h2 className="mb-4 text-4xl font-black text-[var(--color-foreground)]">كيف تعمل المنصة؟</h2>
+            <h2 className="mb-4 text-4xl font-black text-[var(--color-foreground)]">خطة التعافي</h2>
             <p className="text-lg text-slate-600">أربع خطوات فقط لبدء رحلتك مع الدعم النفسي</p>
           </div>
 

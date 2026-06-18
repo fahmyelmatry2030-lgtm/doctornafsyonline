@@ -33,7 +33,7 @@ const reasons = [
     icon: Shield,
     title: "أمان وخصوصية مطلقة",
     description:
-      "نعتمد تشفيراً عسكرياً لكافة جلساتك، ونلتزم التزاماً كاملاً بحماية بياناتك وسريتك.",
+      "نعتمد تشفيراً سرياً لكافة جلساتك، ونلتزم التزاماً كاملاً بحماية بياناتك وسريتك.",
   },
   {
     icon: HeartHandshake,
@@ -238,7 +238,7 @@ export default function ServicesPage() {
             <div className="grid gap-4 w-full md:w-auto">
               <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-lg border border-white/20 shadow-xl transform transition-premium hover:-translate-y-1 hover:bg-white/15">
                 <div className="text-lg font-medium text-[#C7D2FE] mb-1">جلسات تبدأ من</div>
-                <div className="text-4xl font-black">50 <span className="text-2xl font-bold">ريال</span></div>
+                <div className="text-4xl font-black">300 <span className="text-2xl font-bold">جنيهاً</span></div>
               </div>
               <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-lg border border-white/20 shadow-xl transform transition-premium hover:-translate-y-1 hover:bg-white/15">
                 <div className="text-lg font-medium text-[#C7D2FE] mb-1">رسوم مخفية</div>

@@ -40,7 +40,7 @@ export async function Footer() {
               {[
                 { href: "/about", label: "من نحن" },
                 { href: "/services", label: "الخدمات" },
-                { href: "/how-it-works", label: "كيف تعمل" },
+                { href: "/how-it-works", label: "خطة التعافي" },
                 { href: "/therapists", label: "الأخصائيين" },
               ].map((item) => (
                 <li key={item.href}>
@@ -64,7 +64,7 @@ export async function Footer() {
               {[
                 { href: "/faq", label: "الأسئلة الشائعة" },
                 { href: "/contact", label: "تواصل معنا" },
-                { href: "/blog", label: "المدونة" },
+                { href: "/blog", label: "المقالات" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link

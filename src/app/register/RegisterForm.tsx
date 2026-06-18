@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { authenticateAfterRegister } from "./actions";
-import { User, Mail, Lock, Phone, ArrowRight, Loader2, Heart, ShieldCheck, Briefcase, Clock, DollarSign } from "lucide-react";
+import { User, Mail, Lock, Phone, ArrowRight, Loader2, Heart, ShieldCheck, Briefcase, Clock, DollarSign, Users } from "lucide-react";
 
 export default function RegisterForm() {
   const searchParams = useSearchParams();
@@ -15,6 +15,7 @@ export default function RegisterForm() {
     email: "",
     password: "",
     phone: "",
+    gender: "",
     role: defaultRole as "PATIENT" | "THERAPIST",
     specializations: "",
     yearsExperience: "",
@@ -87,29 +88,29 @@ export default function RegisterForm() {
         <div className="bg-white/90 backdrop-blur-xl rounded-[32px] border border-slate-100 p-8 sm:p-10 shadow-xl shadow-slate-200/50">
           
           {/* Role Toggle */}
-          <div className="mb-8 p-1.5 bg-slate-50 rounded-[20px] flex relative overflow-hidden border border-slate-100">
+          <div className="mb-8 p-2 bg-slate-50 rounded-[20px] flex relative overflow-hidden border border-slate-100">
             <button
               type="button"
               onClick={() => setForm({ ...form, role: "PATIENT" })}
-              className={`flex-1 flex items-center justify-center gap-2 rounded-[16px] py-3.5 text-sm font-bold transition-all relative z-10 ${
+              className={`flex-1 flex items-center justify-center gap-3 rounded-[16px] py-4 text-base font-black transition-all relative z-10 ${
                 form.role === "PATIENT"
-                  ? "bg-white text-[#4318FF] shadow-sm border border-slate-100"
+                  ? "bg-white text-[#4318FF] shadow-md border-2 border-[#4318FF]/20"
                   : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
               }`}
             >
-              <Heart className={`h-4 w-4 ${form.role === "PATIENT" ? "text-[#4318FF]" : "text-slate-400"}`} />
-              أبحث عن علاج (مريض)
+              <Heart className={`h-5 w-5 ${form.role === "PATIENT" ? "text-[#4318FF]" : "text-slate-400"}`} />
+              ابحث عن علاج
             </button>
             <button
               type="button"
               onClick={() => setForm({ ...form, role: "THERAPIST" })}
-              className={`flex-1 flex items-center justify-center gap-2 rounded-[16px] py-3.5 text-sm font-bold transition-all relative z-10 ${
+              className={`flex-1 flex items-center justify-center gap-3 rounded-[16px] py-4 text-base font-black transition-all relative z-10 ${
                 form.role === "THERAPIST"
-                  ? "bg-emerald-500 text-white shadow-sm border border-emerald-600"
+                  ? "bg-emerald-500 text-white shadow-md border-2 border-emerald-600"
                   : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
               }`}
             >
-              <ShieldCheck className={`h-4 w-4 ${form.role === "THERAPIST" ? "text-white" : "text-slate-400"}`} />
+              <ShieldCheck className={`h-5 w-5 ${form.role === "THERAPIST" ? "text-white" : "text-slate-400"}`} />
               أنا أخصائي نفسي
             </button>
           </div>
@@ -161,7 +162,7 @@ export default function RegisterForm() {
               </div>
             </div>
 
-            {/* Common Fields Row 2 */}
+            {/* Phone + Gender Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Phone */}
               <div>
@@ -185,27 +186,49 @@ export default function RegisterForm() {
                 </div>
               </div>
 
-              {/* Password */}
+              {/* Gender */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                  كلمة المرور
+                  الجنس
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
-                    <Lock className="h-5 w-5" />
+                    <Users className="h-5 w-5" />
                   </div>
-                  <input
-                    type="password"
+                  <select
                     required
-                    minLength={6}
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-[#4318FF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-medium"
-                    placeholder="••••••••"
-                    dir="ltr"
-                    style={{ textAlign: 'right' }}
-                  />
+                    value={form.gender}
+                    onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                    className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 focus:border-[#4318FF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-medium appearance-none"
+                  >
+                    <option value="" disabled>اختر الجنس</option>
+                    <option value="MALE">رجل</option>
+                    <option value="FEMALE">أنثى</option>
+                  </select>
                 </div>
+              </div>
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">
+                كلمة المرور
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-[#4318FF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-medium"
+                  placeholder="••••••••"
+                  dir="ltr"
+                  style={{ textAlign: 'right' }}
+                />
               </div>
             </div>
 
