@@ -1,6 +1,6 @@
 // ─── Fix DATABASE_URL for Hostinger MySQL ────────────────────────────────────
 if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("mysql://")) {
-  process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@127.0.0.1:3306/u465666297_u465666297";
+  process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@localhost:3306/u465666297_u465666297";
 }
 
 try { require('dotenv').config(); } catch(e) {}
@@ -22,7 +22,7 @@ log('=== Starting Application from Root server.js ===');
 
 // ─── Fix DATABASE_URL for runtime ────────────────────────────────────────────
 if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("mysql://")) {
-  process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@127.0.0.1:3306/u465666297_u465666297";
+  process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@localhost:3306/u465666297_u465666297";
 }
 
 // ─── Launch Server ───────────────────────────────────────────────────────────
