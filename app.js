@@ -124,51 +124,10 @@ if (fs.existsSync(standaloneServer)) {
   }
 } else {
   log('❌ .next/standalone/server.js NOT FOUND');
-  
-  // Try direct Next.js as last resort
-  try {
-    log('Trying direct Next.js boot...');
-    const next   = require('next');
-    const { parse } = require('url');
-    const app    = next({ dev: false, dir: __dirname });
-    const handle = app.getRequestHandler();
-    
-    app.prepare().then(() => {
-      const rawPort  = process.env.PORT || '3000';
-      const isSocket = isNaN(Number(rawPort)) || rawPort.startsWith('/');
-      
-      const server = http.createServer(async (req, res) => {
-        try {
-          await handle(req, res, parse(req.url, true));
-        } catch (err) {
-          log(`Request error: ${err.message}`);
-          res.statusCode = 500;
-          res.end('Internal Server Error');
-        }
-      });
-
-      if (isSocket) {
-        try { if (fs.existsSync(rawPort)) fs.unlinkSync(rawPort); } catch (_) {}
-        server.listen(rawPort, () => {
-          try { fs.chmodSync(rawPort, '777'); } catch (_) {}
-          log(`Next.js direct on socket: ${rawPort}`);
-        });
-      } else {
-        server.listen(parseInt(rawPort, 10), () => {
-          log(`Next.js direct on port: ${rawPort}`);
-        });
-      }
-    }).catch(err => {
-      log(`❌ Next.js prepare() failed: ${err.message}`);
-      startEmergencyServer('Next.js failed to start', err.stack || err.message);
-    });
-  } catch (err) {
-    log(`❌ Cannot load Next.js at all: ${err.message}`);
-    startEmergencyServer(
-      'Cannot find standalone build or Next.js module',
-      `standalone/server.js: MISSING\nnext module: ${err.message}\n\nMake sure to run 'npm run build' or check the GitHub Actions workflow.`
-    );
-  }
+  startEmergencyServer(
+    'مجلد التشغيل (standalone) غير موجود على السيرفر!',
+    `لم يتم العثور على المسار التالي:\n${standaloneServer}\n\nهذا يعني أن عملية الـ Build لم تكتمل بنجاح، أو أن Hostinger لم يقم بسحب مجلد .next/standalone من Git.`
+  );
 }
 
 // ─── Global error handlers ──────────────────────────────────────────────────
