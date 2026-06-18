@@ -13,6 +13,15 @@ export async function POST(request: Request) {
   try {
     const { therapistId, scheduledAt, type, duration } = await request.json();
 
+    if (!scheduledAt) {
+      return NextResponse.json({ error: "الرجاء تحديد موعد وتاريخ الجلسة بشكل صحيح." }, { status: 400 });
+    }
+
+    const parsedDate = new Date(scheduledAt);
+    if (isNaN(parsedDate.getTime())) {
+      return NextResponse.json({ error: "صيغة التاريخ غير صحيحة، يرجى التأكد من تحديد الموعد." }, { status: 400 });
+    }
+
     const therapist = await prisma.user.findUnique({
       where: { id: therapistId, role: "THERAPIST" },
       include: { therapistProfile: true },
@@ -28,7 +37,7 @@ export async function POST(request: Request) {
       data: {
         patientId: session.user.id,
         therapistId,
-        scheduledAt: new Date(scheduledAt),
+        scheduledAt: parsedDate,
         type: type || "VIDEO",
         duration: duration || 50,
         price: therapist.therapistProfile.pricePerSession,
