@@ -1,112 +1,96 @@
-// ─── Fix DATABASE_URL for Hostinger MySQL ────────────────────────────────────
-if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("mysql://")) {
-  process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@localhost:3306/u465666297_u465666297";
-}
+// ─── Diagnostic Server for Hostinger ─────────────────────────────────────────
+// This is a TEMPORARY minimal server to diagnose 503 errors.
+// It intentionally does NOT load Next.js to isolate the problem.
 
-try { require('dotenv').config(); } catch(e) {}
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
 
-const logFile = path.join(__dirname, 'startup-error.log');
+const logFile = path.join(__dirname, 'startup-debug.log');
 
 function log(msg) {
-  const timestamp = new Date().toISOString();
-  try { fs.appendFileSync(logFile, `[${timestamp}] ${msg}\n`); } catch (e) {}
+  const ts = new Date().toISOString();
+  const line = `[${ts}] ${msg}\n`;
+  try { fs.appendFileSync(logFile, line); } catch (e) {}
   console.log(msg);
 }
 
-log('=== Starting Application from Root server.js ===');
+log('=== DIAGNOSTIC SERVER STARTING ===');
+log('Node version: ' + process.version);
+log('Platform: ' + process.platform);
+log('Arch: ' + process.arch);
+log('PORT env: ' + (process.env.PORT || 'NOT SET'));
+log('HOSTNAME env: ' + (process.env.HOSTNAME || 'NOT SET'));
+log('CWD: ' + process.cwd());
+log('__dirname: ' + __dirname);
 
-// Global error handlers to prevent silent 503 crashes on Hostinger
-let globalError = null;
-process.on('uncaughtException', (err) => {
-  log(`UNCAUGHT EXCEPTION: ${err.message}\n${err.stack}`);
-  globalError = err;
+// Check what files exist
+const checks = [
+  '.next/standalone/server.js',
+  '.next/standalone/node_modules/next/package.json',
+  'node_modules/next/package.json',
+  '.env',
+  'package.json',
+];
+checks.forEach(f => {
+  const full = path.join(__dirname, f);
+  log(`  ${f}: ${fs.existsSync(full) ? 'EXISTS' : 'MISSING'}`);
 });
-process.on('unhandledRejection', (reason, promise) => {
-  log(`UNHANDLED REJECTION: ${reason}`);
-  globalError = reason;
-});
 
-// ─── Fix DATABASE_URL for runtime ────────────────────────────────────────────
-if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("mysql://")) {
-  process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@localhost:3306/u465666297_u465666297";
-}
-
-// ─── Launch Server ───────────────────────────────────────────────────────────
-const standaloneServer = path.join(__dirname, '.next', 'standalone', 'server.js');
-
-if (fs.existsSync(standaloneServer)) {
-  log("🚀 Found standalone server! Loading it natively...");
-  try {
-    require(standaloneServer);
-  } catch (startupError) {
-    log(`FATAL STARTUP ERROR: ${startupError.message}\n${startupError.stack}`);
-    
-    // Start an emergency server to show the error instead of 503
-    const { createServer } = require('http');
-    const emergencyServer = createServer((req, res) => {
-      res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end(`
-        <div style="font-family: monospace; padding: 20px; background: #ffebee; color: #b71c1c; border-radius: 8px;">
-          <h2>🚨 النظام يواجه خطأ أثناء التشغيل</h2>
-          <p>بدلاً من خطأ 503، التقطنا هذا الخطأ البرمجي لك:</p>
-          <pre style="background: white; padding: 15px; overflow-x: auto;">${startupError.stack || startupError.message}</pre>
-          <p>أرسل هذا الخطأ للمبرمج لحله فوراً.</p>
-        </div>
-      `);
-    });
-    const rawPort = process.env.PORT || '3000';
-    const isSocket = isNaN(Number(rawPort)) || rawPort.startsWith('/');
-    if (isSocket) {
-      try { if (fs.existsSync(rawPort)) fs.unlinkSync(rawPort); } catch (e) {}
-      emergencyServer.listen(rawPort, () => {
-        try { fs.chmodSync(rawPort, '777'); } catch (e) {}
-      });
-    } else {
-      emergencyServer.listen(parseInt(rawPort, 10));
-    }
-  }
-} else {
-  log("❌ ERROR: Standalone server not found even after build attempt!");
-  log("Attempting to run in dev mode to prevent 503 crash...");
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
   
-  const { createServer } = require('http');
-  const { parse } = require('url');
-  const next = require('next');
+  let debugLog = 'لا يوجد ملف debug';
+  try { debugLog = fs.readFileSync(logFile, 'utf8'); } catch(e) {}
+  
+  res.end(`
+<!DOCTYPE html>
+<html dir="rtl">
+<head><meta charset="utf-8"><title>تشخيص السيرفر</title></head>
+<body style="font-family: monospace; padding: 30px; background: #e8f5e9; color: #1b5e20;">
+  <h1>✅ السيرفر شغال!</h1>
+  <p>لو بتشوف الصفحة دي يبقى Passenger شغال صح.</p>
+  <h2>معلومات النظام:</h2>
+  <pre style="background: white; padding: 15px; border-radius: 8px; overflow-x: auto;">${debugLog}</pre>
+  <h2>متغيرات البيئة:</h2>
+  <pre style="background: white; padding: 15px; border-radius: 8px;">
+PORT = ${process.env.PORT || 'NOT SET'}
+NODE_ENV = ${process.env.NODE_ENV || 'NOT SET'}
+HOSTNAME = ${process.env.HOSTNAME || 'NOT SET'}
+DATABASE_URL = ${process.env.DATABASE_URL ? 'SET (hidden)' : 'NOT SET'}
+  </pre>
+</body>
+</html>
+  `);
+});
 
-  const app = next({ dev: false });
-  const handle = app.getRequestHandler();
+// Handle Passenger Unix socket
+const rawPort = process.env.PORT || '3000';
+const isSocket = isNaN(Number(rawPort));
 
-  app.prepare().then(() => {
-    const server = createServer(async (req, res) => {
-      try {
-        const parsedUrl = parse(req.url, true);
-        await handle(req, res, parsedUrl);
-      } catch (err) {
-        log(`Request error: ${err.message}`);
-        res.statusCode = 500;
-        res.end('internal server error');
-      }
-    });
-
-    const rawPort = process.env.PORT || '3000';
-    const isSocket = isNaN(Number(rawPort)) || rawPort.startsWith('/');
-
-    if (isSocket) {
-      try { if (fs.existsSync(rawPort)) fs.unlinkSync(rawPort); } catch (e) {}
-      server.listen(rawPort, () => {
-        try { fs.chmodSync(rawPort, '777'); } catch (e) {}
-        log(`Server listening on socket: ${rawPort}`);
-      });
-    } else {
-      server.listen(parseInt(rawPort, 10), () => {
-        log(`Server listening on port: ${rawPort}`);
-      });
-    }
-  }).catch(err => {
-    log(`FATAL DEV FALLBACK ERROR: ${err.message}`);
-    process.exit(1);
+if (isSocket) {
+  log('Detected Unix socket: ' + rawPort);
+  try { if (fs.existsSync(rawPort)) fs.unlinkSync(rawPort); } catch (e) {}
+  server.listen(rawPort, () => {
+    log('Listening on socket: ' + rawPort);
+    try { fs.chmodSync(rawPort, '777'); } catch (e) {}
+  });
+} else {
+  const port = parseInt(rawPort, 10);
+  log('Detected numeric port: ' + port);
+  server.listen(port, () => {
+    log('Listening on port: ' + port);
   });
 }
+
+server.on('error', (err) => {
+  log('SERVER ERROR: ' + err.message + '\n' + err.stack);
+});
+
+process.on('uncaughtException', (err) => {
+  log('UNCAUGHT: ' + err.message + '\n' + err.stack);
+});
+
+process.on('unhandledRejection', (reason) => {
+  log('UNHANDLED: ' + reason);
+});
