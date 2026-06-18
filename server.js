@@ -30,7 +30,35 @@ const standaloneServer = path.join(__dirname, '.next', 'standalone', 'server.js'
 
 if (fs.existsSync(standaloneServer)) {
   log("🚀 Found standalone server! Loading it natively...");
-  require(standaloneServer);
+  try {
+    require(standaloneServer);
+  } catch (startupError) {
+    log(`FATAL STARTUP ERROR: ${startupError.message}\n${startupError.stack}`);
+    
+    // Start an emergency server to show the error instead of 503
+    const { createServer } = require('http');
+    const emergencyServer = createServer((req, res) => {
+      res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(`
+        <div style="font-family: monospace; padding: 20px; background: #ffebee; color: #b71c1c; border-radius: 8px;">
+          <h2>🚨 النظام يواجه خطأ أثناء التشغيل</h2>
+          <p>بدلاً من خطأ 503، التقطنا هذا الخطأ البرمجي لك:</p>
+          <pre style="background: white; padding: 15px; overflow-x: auto;">${startupError.stack || startupError.message}</pre>
+          <p>أرسل هذا الخطأ للمبرمج لحله فوراً.</p>
+        </div>
+      `);
+    });
+    const rawPort = process.env.PORT || '3000';
+    const isSocket = isNaN(Number(rawPort)) || rawPort.startsWith('/');
+    if (isSocket) {
+      try { if (fs.existsSync(rawPort)) fs.unlinkSync(rawPort); } catch (e) {}
+      emergencyServer.listen(rawPort, () => {
+        try { fs.chmodSync(rawPort, '777'); } catch (e) {}
+      });
+    } else {
+      emergencyServer.listen(parseInt(rawPort, 10));
+    }
+  }
 } else {
   log("❌ ERROR: Standalone server not found even after build attempt!");
   log("Attempting to run in dev mode to prevent 503 crash...");
