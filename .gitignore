@@ -17,6 +17,8 @@
 /.next/*
 !/.next/standalone/
 !/.next/static/
+# Exclude platform-specific native modules (built on Windows, won't work on Linux)
+.next/standalone/node_modules/sharp/
 /out/
 
 # production

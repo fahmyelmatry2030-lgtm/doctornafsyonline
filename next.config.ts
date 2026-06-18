@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   typescript: { ignoreBuildErrors: true },
   productionBrowserSourceMaps: false,
   output: "standalone",
+  images: {
+    unoptimized: true,
+  },
   experimental: {
     cpus: 1,
     workerThreads: false,
