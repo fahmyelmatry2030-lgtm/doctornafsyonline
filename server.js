@@ -4,6 +4,11 @@ const next = require('next');
 const fs = require('fs');
 const path = require('path');
 
+process.on('uncaughtException', (err) => {
+  fs.writeFileSync(path.join(__dirname, 'startup-error.log'), err.stack || err.toString());
+  process.exit(1);
+});
+
 // ─── Auto-load .env ─────────────────────────────────────────────────────────
 try {
   const envPath = path.join(__dirname, '.env');
