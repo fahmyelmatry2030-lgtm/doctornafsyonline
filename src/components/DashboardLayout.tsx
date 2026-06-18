@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
-type Role = "PATIENT" | "THERAPIST" | "ADMIN";
+type Role = "PATIENT" | "THERAPIST" | "ADMIN" | "ADMIN_HR" | "ADMIN_ACCOUNTING" | string;
 
 export function DashboardLayout({
   children,
@@ -50,17 +50,19 @@ export function DashboardLayout({
       { name: "الملف الشخصي", href: "/therapist/profile", icon: <UserIcon className="h-5 w-5" /> },
       { name: "الإعدادات", href: "/therapist/settings", icon: <Settings className="h-5 w-5" /> },
     ];
-  } else if (role === "ADMIN") {
-    navItems = [
+  } else if (role?.startsWith("ADMIN")) {
+    const allAdminNavItems = [
       { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" /> },
-      { name: "إدارة الجلسات والعمليات 📅", href: "/admin/operations", icon: <Activity className="h-5 w-5" /> },
-      { name: "توثيق واعتماد الأخصائيين ✅", href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" /> },
-      { name: "إدارة المرضى 👥", href: "/admin/patients", icon: <Users className="h-5 w-5" /> },
-      { name: "إدارة الأرباح وطلبات السحب 💰", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" /> },
-      { name: "المقالات والتقييمات 📝", href: "/admin/content", icon: <BookOpen className="h-5 w-5" /> },
-      { name: "الدعم، الإشعارات وأكواد الخصم 🎟️", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" /> },
-      { name: "إعدادات المنصة ⚙️", href: "/admin/settings", icon: <Settings className="h-5 w-5" /> },
+      { name: "إدارة المديرين 👑", href: "/admin/managers", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN"] },
+      { name: "إدارة الجلسات والعمليات 📅", href: "/admin/operations", icon: <Activity className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR"] },
+      { name: "توثيق واعتماد الأخصائيين ✅", href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR"] },
+      { name: "إدارة المرضى 👥", href: "/admin/patients", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR"] },
+      { name: "إدارة الأرباح وطلبات السحب 💰", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING"] },
+      { name: "المقالات والتقييمات 📝", href: "/admin/content", icon: <BookOpen className="h-5 w-5" />, roles: ["ADMIN"] },
+      { name: "الدعم، الإشعارات وأكواد الخصم 🎟️", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN"] },
+      { name: "إعدادات المنصة ⚙️", href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN"] },
     ];
+    navItems = allAdminNavItems.filter(item => !item.roles || item.roles.includes(role as string));
   }
 
   const userInitials = userName ? userName.substring(0, 2).toUpperCase() : "م";
@@ -102,7 +104,7 @@ export function DashboardLayout({
                 {userInitials}
               </div>
               <div className="font-bold text-white text-lg">{userName}</div>
-              <div className="text-xs text-indigo-300 mt-1">{role === "PATIENT" ? "مريض" : role === "THERAPIST" ? "أخصائي" : "مدير عام"}</div>
+              <div className="text-xs text-indigo-300 mt-1">{role === "PATIENT" ? "مريض" : role === "THERAPIST" ? "أخصائي" : role === "ADMIN_HR" ? "مدير HR" : role === "ADMIN_ACCOUNTING" ? "مدير حسابات" : "مدير عام"}</div>
             </div>
             
             <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-2 custom-scrollbar">
@@ -181,7 +183,7 @@ export function DashboardLayout({
             <div className="flex items-center gap-3 pl-2 border-r border-slate-100 mr-2 pr-4 cursor-pointer hover:opacity-80 transition-opacity">
               <div className="flex flex-col items-end">
                 <span className="text-sm font-bold text-[#2B3674]">{userName}</span>
-                <span className="text-xs font-semibold text-slate-400">{role === 'ADMIN' ? 'مدير عام' : role === 'THERAPIST' ? 'أخصائي' : 'مريض'}</span>
+                <span className="text-xs font-semibold text-slate-400">{role?.startsWith('ADMIN') ? (role === "ADMIN_HR" ? "مدير HR" : role === "ADMIN_ACCOUNTING" ? "مدير حسابات" : "مدير عام") : role === 'THERAPIST' ? 'أخصائي' : 'مريض'}</span>
               </div>
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-500/20">
                 {userInitials}

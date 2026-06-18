@@ -26,6 +26,12 @@
           "exportedName": "getSettings",
           "filename": "src/app/admin/settings/actions.ts"
         },
+        "app/admin/managers/page": {
+          "moduleId": 50407,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
         "app/admin/marketing/page": {
           "moduleId": 76331,
           "async": false,
@@ -274,6 +280,12 @@
         },
         "app/admin/dashboard/page": {
           "moduleId": 15883,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
+        "app/admin/managers/page": {
+          "moduleId": 50407,
           "async": false,
           "exportedName": "updateSettings",
           "filename": "src/app/admin/settings/actions.ts"

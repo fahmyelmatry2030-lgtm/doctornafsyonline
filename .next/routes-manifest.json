@@ -139,6 +139,12 @@
       "namedRegex": "^/admin/dashboard(?:/)?$"
     },
     {
+      "page": "/admin/managers",
+      "regex": "^/admin/managers(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/managers(?:/)?$"
+    },
+    {
       "page": "/admin/marketing",
       "regex": "^/admin/marketing(?:/)?$",
       "routeKeys": {},
@@ -185,6 +191,12 @@
       "regex": "^/api/admin/debug\\-error(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/admin/debug\\-error(?:/)?$"
+    },
+    {
+      "page": "/api/admin/managers",
+      "regex": "^/api/admin/managers(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/managers(?:/)?$"
     },
     {
       "page": "/api/admin/notifications",

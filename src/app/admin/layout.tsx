@@ -13,12 +13,12 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  if (session.user.role !== "ADMIN") {
+  if (!session.user.role.startsWith("ADMIN")) {
     redirect("/dashboard"); // will redirect to correct dashboard
   }
 
   return (
-    <DashboardLayout role="ADMIN" userName={session.user.name || "مدير النظام"}>
+    <DashboardLayout role={session.user.role as any} userName={session.user.name || "مدير النظام"}>
       {children}
     </DashboardLayout>
   );

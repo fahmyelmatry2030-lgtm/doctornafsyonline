@@ -193,7 +193,7 @@ export default function AdminSettingsPage() {
                       <div className="relative mt-0.5">
                         <input type="checkbox" className="sr-only" checked={toggle.value} onChange={e => toggle.set(e.target.checked)} />
                         <div className={`w-11 h-6 rounded-full transition-colors ${toggle.value ? "bg-indigo-600" : "bg-slate-200"}`}>
-                          <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${toggle.value ? "translate-x-5" : "translate-x-0.5"}`} />
+                          <div className={`absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${toggle.value ? "-translate-x-5" : "translate-x-0"}`} />
                         </div>
                       </div>
                       <div className="flex-1">
@@ -222,7 +222,7 @@ export default function AdminSettingsPage() {
                     <div className="relative mt-0.5">
                       <input type="checkbox" className="sr-only" checked={toggle.value} onChange={e => toggle.set(e.target.checked)} />
                       <div className={`w-11 h-6 rounded-full transition-colors ${toggle.value ? "bg-indigo-600" : "bg-slate-200"}`}>
-                        <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${toggle.value ? "translate-x-5" : "translate-x-0.5"}`} />
+                        <div className={`absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${toggle.value ? "-translate-x-5" : "translate-x-0"}`} />
                       </div>
                     </div>
                     <div className="flex-1">
@@ -245,7 +245,7 @@ export default function AdminSettingsPage() {
                   <div className="relative mt-0.5">
                     <input type="checkbox" className="sr-only" checked={twoFactor} onChange={e => setTwoFactor(e.target.checked)} />
                     <div className={`w-11 h-6 rounded-full transition-colors ${twoFactor ? "bg-indigo-600" : "bg-slate-200"}`}>
-                      <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${twoFactor ? "translate-x-5" : "translate-x-0.5"}`} />
+                      <div className={`absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${twoFactor ? "-translate-x-5" : "translate-x-0"}`} />
                     </div>
                   </div>
                   <div className="flex-1">
