@@ -18,7 +18,16 @@ function log(msg) {
 
 log('=== Starting Application from Root server.js ===');
 
-
+// Global error handlers to prevent silent 503 crashes on Hostinger
+let globalError = null;
+process.on('uncaughtException', (err) => {
+  log(`UNCAUGHT EXCEPTION: ${err.message}\n${err.stack}`);
+  globalError = err;
+});
+process.on('unhandledRejection', (reason, promise) => {
+  log(`UNHANDLED REJECTION: ${reason}`);
+  globalError = reason;
+});
 
 // ─── Fix DATABASE_URL for runtime ────────────────────────────────────────────
 if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("mysql://")) {
