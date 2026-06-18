@@ -2,6 +2,7 @@
   "name": "nafsi-platform",
   "version": "0.1.0",
   "private": true,
+  "main": "server.js",
   "scripts": {
     "dev": "next dev",
     "build": "rimraf .next && next build",
