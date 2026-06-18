@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { 
   X, Mail, Phone, Calendar, Star, Award, ShieldCheck, ShieldAlert, 
@@ -37,6 +38,7 @@ type TherapistDetailsModalProps = {
   onToggleSuspend: (userId: string, currentStatus: boolean) => Promise<void>;
   onDelete: (userId: string) => Promise<void>;
   onUpdateCertificate: (userId: string, certId: string, status: "APPROVED" | "REJECTED") => Promise<void>;
+  isReadOnly?: boolean;
 };
 
 export function TherapistDetailsModal({ 
@@ -45,10 +47,12 @@ export function TherapistDetailsModal({
   onToggleVerification, 
   onToggleSuspend, 
   onDelete,
-  onUpdateCertificate
+  onUpdateCertificate,
+  isReadOnly = false
 }: TherapistDetailsModalProps) {
   const [localTherapist, setLocalTherapist] = useState<Therapist>(therapist);
   const [uploadingContract, setUploadingContract] = useState(false);
+  const [selectedContractFile, setSelectedContractFile] = useState<File | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -56,6 +60,7 @@ export function TherapistDetailsModal({
   const certs = profile?.certificates ? JSON.parse(profile.certificates) : [];
 
   const handleToggleVerification = async () => {
+    if (isReadOnly) return;
     setActionLoading(true);
     try {
       const currentStatus = profile?.isVerified || false;
@@ -75,6 +80,7 @@ export function TherapistDetailsModal({
   };
 
   const handleToggleSuspend = async () => {
+    if (isReadOnly) return;
     setActionLoading(true);
     try {
       const currentStatus = localTherapist.isSuspended;
@@ -91,6 +97,7 @@ export function TherapistDetailsModal({
   };
 
   const handleCertificateStatus = async (certId: string, status: "APPROVED" | "REJECTED") => {
+    if (isReadOnly) return;
     try {
       await onUpdateCertificate(localTherapist.id, certId, status);
       const updatedCerts = certs.map((c: any) => c.id === certId ? { ...c, status } : c);
@@ -108,30 +115,38 @@ export function TherapistDetailsModal({
 
   const handleUploadContract = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isReadOnly) return;
+    if (!selectedContractFile) {
+      setError("يرجى اختيار ملف عقد بصيغة PDF قبل الرفع.");
+      return;
+    }
+
     setUploadingContract(true);
     setError("");
 
     try {
-      const mockContractUrl = `/mock-docs/admin_uploaded_contract_${Date.now()}.pdf`;
+      const formData = new FormData();
+      formData.append("file", selectedContractFile);
+      formData.append("therapistId", localTherapist.id);
+
       const res = await fetch("/api/therapist/contract", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          contractUrl: mockContractUrl,
-          therapistId: localTherapist.id 
-        })
+        body: formData,
       });
 
       if (res.ok) {
+        const data = await res.json();
         setLocalTherapist(prev => ({
           ...prev,
           therapistProfile: prev.therapistProfile ? {
             ...prev.therapistProfile,
-            contractUrl: mockContractUrl
+            contractUrl: data.contractUrl
           } : null
         }));
+        setSelectedContractFile(null);
       } else {
-        setError("فشل رفع عقد المنصة");
+        const errData = await res.json();
+        setError(errData.error || "فشل رفع عقد المنصة");
       }
     } catch {
       setError("حدث خطأ أثناء الاتصال بالخادم");
@@ -267,65 +282,108 @@ export function TherapistDetailsModal({
                 )}
 
                 {/* Upload/Replace contract by Admin */}
-                <form onSubmit={handleUploadContract} className="pt-2 border-t border-slate-200/50">
-                  <button 
-                    type="submit"
-                    disabled={uploadingContract}
-                    className="w-full inline-flex items-center justify-center gap-2 text-xs font-bold text-slate-700 bg-white border border-slate-200 rounded-xl py-2.5 hover:bg-slate-50 transition-colors disabled:opacity-50"
-                  >
-                    {uploadingContract ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <UploadCloud className="w-4 h-4" />
-                    )}
-                    {profile?.contractUrl ? "استبدال العقد الموقّع" : "رفع عقد للأخصائي"}
-                  </button>
-                </form>
+                {!isReadOnly && (
+                  <form onSubmit={handleUploadContract} className="pt-2 border-t border-slate-200/50 space-y-3">
+                    <div className="space-y-2">
+                      <label htmlFor="contractFile" className="block text-xs font-semibold text-slate-700">
+                        اختيار ملف عقد PDF
+                      </label>
+                      <input
+                        id="contractFile"
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => {
+                          const file = e.currentTarget.files?.[0] || null;
+                          setError("");
+                          setSelectedContractFile(file);
+                        }}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-700 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
+                      />
+                      {selectedContractFile && (
+                        <p className="text-xs text-slate-500">الملف المحدد: {selectedContractFile.name}</p>
+                      )}
+                    </div>
+                    <button 
+                      type="submit"
+                      disabled={uploadingContract || !selectedContractFile}
+                      className="w-full inline-flex items-center justify-center gap-2 text-xs font-bold text-slate-700 bg-white border border-slate-200 rounded-xl py-2.5 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                    >
+                      {uploadingContract ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <UploadCloud className="w-4 h-4" />
+                      )}
+                      {profile?.contractUrl ? "استبدال العقد الموقّع" : "رفع عقد للأخصائي"}
+                    </button>
+                  </form>
+                )}
+
+                <div className="mt-4 border-t border-slate-200/50 pt-4 text-xs text-slate-500 space-y-2">
+                  <p className="font-semibold text-slate-700">تذكير بالعقود والسياسات</p>
+                  <p>
+                    عند قبول العقد، يجب أن يكون الأخصائي ومستخدمي الخدمة على علم بـ 
+                    <Link href="/terms" className="text-indigo-600 font-semibold hover:underline">
+                      الشروط والأحكام
+                    </Link>
+                    {' '}و
+                    <Link href="/privacy" className="text-indigo-600 font-semibold hover:underline">
+                      سياسة الخصوصية
+                    </Link>
+                    .
+                  </p>
+                  <p className="text-slate-400">يمكن عرض هذه المستندات أو تنزيلها من الصفحات العامة للمنصة.</p>
+                </div>
               </div>
 
               {/* Status control */}
               <div className="p-5 rounded-2xl border border-slate-150 bg-white space-y-3">
                 <h4 className="font-bold text-slate-800 text-sm">حالة الحساب والتوثيق</h4>
-                <div className="grid gap-2">
-                  <button
-                    onClick={handleToggleVerification}
-                    disabled={actionLoading}
-                    className={`w-full inline-flex items-center justify-center gap-2 text-xs font-bold py-3 rounded-xl border transition-colors ${
-                      profile?.isVerified
-                        ? "bg-slate-100 text-slate-600 hover:bg-slate-200 border-slate-200"
-                        : "bg-emerald-600 text-white hover:bg-emerald-700 border-emerald-600 shadow-md shadow-emerald-600/10"
-                    }`}
-                  >
-                    <ShieldCheck className="w-4 h-4" />
-                    {profile?.isVerified ? "إلغاء توثيق الحساب" : "توثيق حساب الأخصائي"}
-                  </button>
+                {isReadOnly ? (
+                  <div className="text-xs text-slate-400 font-semibold text-center py-2">
+                    وضع العرض فقط — لا يمكن تعديل الحساب أو حذفه.
+                  </div>
+                ) : (
+                  <div className="grid gap-2">
+                    <button
+                      onClick={handleToggleVerification}
+                      disabled={actionLoading}
+                      className={`w-full inline-flex items-center justify-center gap-2 text-xs font-bold py-3 rounded-xl border transition-colors ${
+                        profile?.isVerified
+                          ? "bg-slate-100 text-slate-600 hover:bg-slate-200 border-slate-200"
+                          : "bg-emerald-600 text-white hover:bg-emerald-700 border-emerald-600 shadow-md shadow-emerald-600/10"
+                      }`}
+                    >
+                      <ShieldCheck className="w-4 h-4" />
+                      {profile?.isVerified ? "إلغاء توثيق الحساب" : "توثيق حساب الأخصائي"}
+                    </button>
 
-                  <button
-                    onClick={handleToggleSuspend}
-                    disabled={actionLoading}
-                    className={`w-full inline-flex items-center justify-center gap-2 text-xs font-bold py-3 rounded-xl border transition-colors ${
-                      localTherapist.isSuspended
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-250 hover:bg-emerald-100"
-                        : "bg-amber-50 text-amber-700 border-amber-250 hover:bg-amber-100"
-                    }`}
-                  >
-                    {localTherapist.isSuspended ? <CheckCircle className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
-                    {localTherapist.isSuspended ? "تفعيل حساب الأخصائي" : "إيقاف حساب الأخصائي مؤقتاً"}
-                  </button>
+                    <button
+                      onClick={handleToggleSuspend}
+                      disabled={actionLoading}
+                      className={`w-full inline-flex items-center justify-center gap-2 text-xs font-bold py-3 rounded-xl border transition-colors ${
+                        localTherapist.isSuspended
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-250 hover:bg-emerald-100"
+                          : "bg-amber-50 text-amber-700 border-amber-250 hover:bg-amber-100"
+                      }`}
+                    >
+                      {localTherapist.isSuspended ? <CheckCircle className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+                      {localTherapist.isSuspended ? "تفعيل حساب الأخصائي" : "إيقاف حساب الأخصائي مؤقتاً"}
+                    </button>
 
-                  <button
-                    onClick={async () => {
-                      if (confirm(`هل أنت متأكد من حذف حساب الأخصائي ${localTherapist.name} نهائياً من النظام؟`)) {
-                        await onDelete(localTherapist.id);
-                        onClose();
-                      }
-                    }}
-                    className="w-full inline-flex items-center justify-center gap-2 text-xs font-bold py-3 rounded-xl border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    حذف الحساب نهائياً
-                  </button>
-                </div>
+                    <button
+                      onClick={async () => {
+                        if (confirm(`هل أنت متأكد من حذف حساب الأخصائي ${localTherapist.name} نهائياً من النظام؟`)) {
+                          await onDelete(localTherapist.id);
+                          onClose();
+                        }
+                      }}
+                      className="w-full inline-flex items-center justify-center gap-2 text-xs font-bold py-3 rounded-xl border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      حذف الحساب نهائياً
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -371,7 +429,7 @@ export function TherapistDetailsModal({
                         {c.status === "APPROVED" ? "مقبول ✓" : c.status === "REJECTED" ? "مرفوض ✗" : "معلق ⌛"}
                       </span>
 
-                      {c.status === "PENDING" && (
+                      {c.status === "PENDING" && !isReadOnly && (
                         <div className="flex gap-1">
                           <button 
                             onClick={() => handleCertificateStatus(c.id, "APPROVED")} 

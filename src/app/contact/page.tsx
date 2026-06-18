@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, MapPin, Phone, Send, MessageCircle, Clock, CheckCircle2 } from "lucide-react";
+import { Mail, MapPin, Phone, Send, MessageCircle, Clock, CheckCircle2, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
 export default function ContactPage() {
@@ -58,14 +58,14 @@ export default function ContactPage() {
                 {
                   icon: <Mail className="h-6 w-6 text-[#6366F1]" />,
                   title: "البريد الإلكتروني",
-                  info: "support@nafsi.com",
+                  info: "support@doctornafsyonline.com",
                   desc: "للاستفسارات العامة والدعم التقني",
                   bg: "from-[#6366F1] to-[#8B5CF6]",
                 },
                 {
                   icon: <Phone className="h-6 w-6 text-[#10B981]" />,
                   title: "رقم الهاتف",
-                  info: "+20 100 123 4567",
+                  info: "+201129639257",
                   desc: "متاح من 9 صباحاً حتى 9 مساءً بتوقيت مكة",
                   bg: "from-[#10B981] to-[#059669]",
                 },
@@ -161,7 +161,7 @@ export default function ContactPage() {
                     <option>أخرى</option>
                   </select>
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <ChevronDownIcon />
+                    <ChevronDown className="h-5 w-5 text-slate-400" />
                   </div>
                 </div>
               </div>
@@ -219,13 +219,5 @@ export default function ContactPage() {
         </section>
       </div>
     </div>
-  );
-}
-
-function ChevronDownIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
-      <path d="m6 9 6 6 6-6"/>
-    </svg>
   );
 }
