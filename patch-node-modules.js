@@ -1,33 +1,25 @@
 const fs = require('fs');
 const path = require('path');
 
-function patchFile(filePath, replacements) {
-  if (fs.existsSync(filePath)) {
+const v8Mock = '({ setHeapSnapshotNearHeapLimit: function(){}, setFlagsFromString: function(){}, writeHeapSnapshot: function(){}, getHeapStatistics: function(){ return { heap_size_limit: 4294967296, total_available_size: 4294967296, used_heap_size: 0 }; }, getHeapSpaceStatistics: function(){ return []; }, getHeapCodeStatistics: function(){ return {}; } })';
+
+function walkDir(dir, callback) {
+  if (!fs.existsSync(dir)) return;
+  fs.readdirSync(dir).forEach(f => {
+    let dirPath = path.join(dir, f);
+    let isDirectory = fs.statSync(dirPath).isDirectory();
+    isDirectory ? walkDir(dirPath, callback) : callback(path.join(dir, f));
+  });
+}
+
+walkDir(path.join(__dirname, 'node_modules', 'next'), function(filePath) {
+  if (filePath.endsWith('.js')) {
     let content = fs.readFileSync(filePath, 'utf8');
-    let modified = false;
-    for (const [search, replace] of replacements) {
-      if (content.includes(search)) {
-        content = content.replace(new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), replace);
-        modified = true;
-      }
-    }
-    if (modified) {
+    if (content.includes('require("v8")') || content.includes("require('v8')")) {
+      content = content.replace(/require\("v8"\)/g, v8Mock).replace(/require\('v8'\)/g, v8Mock);
       fs.writeFileSync(filePath, content);
       console.log('Patched', filePath);
     }
   }
-}
-
-// 1. Patch v8 in startup.js
-patchFile(path.join(__dirname, 'node_modules', 'next', 'dist', 'lib', 'memory', 'startup.js'), [
-  ['require("v8")', '({ setHeapSnapshotNearHeapLimit: function(){}, setFlagsFromString: function(){}, writeHeapSnapshot: function(){} })'],
-  ["require('v8')", "({ setHeapSnapshotNearHeapLimit: function(){}, setFlagsFromString: function(){}, writeHeapSnapshot: function(){} })"]
-]);
-
-// 2. Patch v8 in trace.js
-patchFile(path.join(__dirname, 'node_modules', 'next', 'dist', 'lib', 'memory', 'trace.js'), [
-  ['require("v8")', '({ getHeapSpaceStatistics: function(){ return []; } })'],
-  ["require('v8')", "({ getHeapSpaceStatistics: function(){ return []; } })"]
-]);
-
-console.log("Node modules patch complete.");
+});
+console.log("Global v8 patch complete.");
