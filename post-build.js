@@ -14,12 +14,15 @@ console.log('📄 Original server.js length:', originalCode.length);
 
 // Next.js standalone server uses parseInt(process.env.PORT, 10) || 3000
 // For Hostinger Passenger, process.env.PORT is a Unix socket path (e.g. "/tmp/passenger.xxx.sock")
-// parseInt on a string returns NaN, causing it to fall back to 3000 instead of the socket.
-// We patch it to correctly use the socket path if it's not a number.
 if (originalCode.includes('parseInt(process.env.PORT, 10)')) {
     originalCode = originalCode.replace(
         /parseInt\(process\.env\.PORT,\s*10\)/g,
         "(isNaN(Number(process.env.PORT)) ? process.env.PORT : parseInt(process.env.PORT, 10))"
+    );
+    // Also patch hostname to be undefined if port is a Unix socket
+    originalCode = originalCode.replace(
+        /const hostname = process\.env\.HOSTNAME \|\| '0\.0\.0\.0'/g,
+        "const hostname = (isNaN(Number(process.env.PORT)) && typeof process.env.PORT === 'string') ? undefined : (process.env.HOSTNAME || '0.0.0.0')"
     );
     console.log('✅ Patched standalone server.js port/socket detection for Phusion Passenger!');
 } else {
