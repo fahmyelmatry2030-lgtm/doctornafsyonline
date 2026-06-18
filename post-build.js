@@ -105,4 +105,16 @@ try {
   console.error('❌ Failed to copy .env:', err);
 }
 
+// ── Copy dotenv to standalone ─────────────────────────────────────────────────
+const dotenvSrc = path.join(__dirname, 'node_modules', 'dotenv');
+const dotenvDest = path.join(__dirname, '.next', 'standalone', 'node_modules', 'dotenv');
+try {
+  if (fs.existsSync(dotenvSrc)) {
+    fs.cpSync(dotenvSrc, dotenvDest, { recursive: true, force: true });
+    console.log('✅ Copied dotenv to standalone');
+  }
+} catch (err) {
+  console.error('❌ Failed to copy dotenv:', err);
+}
+
 console.log('🎉 post-build.js complete!');
