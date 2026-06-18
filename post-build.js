@@ -24,6 +24,16 @@ if (originalCode.includes('parseInt(process.env.PORT, 10)')) {
         /const hostname = process\.env\.HOSTNAME \|\| '0\.0\.0\.0'/g,
         "const hostname = (isNaN(Number(process.env.PORT)) && typeof process.env.PORT === 'string') ? undefined : (process.env.HOSTNAME || '0.0.0.0')"
     );
+    // Inject fs.unlinkSync to prevent EADDRINUSE on Hostinger Passenger sockets
+    originalCode = originalCode.replace(
+        "startServer({",
+        "const fs = require('fs');\nif (typeof currentPort === 'string' && fs.existsSync(currentPort)) { try { fs.unlinkSync(currentPort); } catch(e){} }\nstartServer({"
+    );
+    // Replace silent exit with emergency server
+    originalCode = originalCode.replace(
+        "}).catch((err) => {\n  console.error(err);\n  process.exit(1);\n});",
+        "}).catch((err) => { console.error('FATAL NEXT.JS STARTUP ERROR:', err); const { createServer } = require('http'); const emergency = createServer((req, res) => { res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' }); res.end('<div style=\"padding:20px;color:#b71c1c;background:#ffebee;font-family:monospace;\"><h2>🚨 خطأ فادح أثناء تشغيل الخادم (Next.js)</h2><pre>' + (err.stack || err.message) + '</pre></div>'); }); if (typeof currentPort === 'string') { try { if (require('fs').existsSync(currentPort)) require('fs').unlinkSync(currentPort); } catch(e){} emergency.listen(currentPort, () => { try { require('fs').chmodSync(currentPort, '777'); } catch(e){} }); } else { emergency.listen(currentPort || 3000); } });"
+    );
     console.log('✅ Patched standalone server.js port/socket detection for Phusion Passenger!');
 } else {
     console.log('⚠️ Could not find parseInt(process.env.PORT, 10) in standalone server.js.');

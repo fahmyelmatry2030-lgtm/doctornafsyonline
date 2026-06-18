@@ -24,6 +24,8 @@ if (
   keepAliveTimeout = undefined
 }
 
+const fs = require('fs');
+if (typeof currentPort === 'string' && fs.existsSync(currentPort)) { try { fs.unlinkSync(currentPort); } catch(e){} }
 startServer({
   dir,
   isDev: false,
@@ -32,7 +34,4 @@ startServer({
   port: currentPort,
   allowRetry: false,
   keepAliveTimeout,
-}).catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+}).catch((err) => { console.error('FATAL NEXT.JS STARTUP ERROR:', err); const { createServer } = require('http'); const emergency = createServer((req, res) => { res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' }); res.end('<div style="padding:20px;color:#b71c1c;background:#ffebee;font-family:monospace;"><h2>🚨 خطأ فادح أثناء تشغيل الخادم (Next.js)</h2><pre>' + (err.stack || err.message) + '</pre></div>'); }); if (typeof currentPort === 'string') { try { if (require('fs').existsSync(currentPort)) require('fs').unlinkSync(currentPort); } catch(e){} emergency.listen(currentPort, () => { try { require('fs').chmodSync(currentPort, '777'); } catch(e){} }); } else { emergency.listen(currentPort || 3000); } });
