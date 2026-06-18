@@ -3,7 +3,7 @@ if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("mysql://"
   process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@127.0.0.1:3306/u465666297_u465666297";
 }
 
-require('dotenv').config();
+try { require('dotenv').config(); } catch(e) {}
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
