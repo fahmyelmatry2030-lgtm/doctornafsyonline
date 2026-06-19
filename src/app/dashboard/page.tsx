@@ -15,13 +15,15 @@ export default async function DashboardRedirect() {
 
   const role = session.user.role;
 
+  if (role?.startsWith("ADMIN")) {
+    redirect("/admin/dashboard");
+  }
+
   switch (role) {
     case "PATIENT":
       redirect("/patient/dashboard");
     case "THERAPIST":
       redirect("/therapist/dashboard");
-    case "ADMIN":
-      redirect("/admin/dashboard");
     default:
       // Fallback
       redirect("/patient/dashboard");
