@@ -21,21 +21,30 @@ export default async function AdminDashboardPage() {
 
   let dbData;
   try {
-    dbData = await Promise.all([
-      prisma.user.count({ where: { role: "PATIENT" } }),
-      prisma.user.count({ where: { role: "THERAPIST" } }),
-      prisma.appointment.count({ where: { scheduledAt: { gte: today, lte: endOfDay } } }),
-      prisma.appointment.count({ where: { status: "IN_PROGRESS" } }),
-      prisma.therapistProfile.count({ where: { isVerified: false } }),
-      prisma.appointment.count(),
-      prisma.appointment.count({ where: { status: "COMPLETED" } }),
-      prisma.appointment.count({ where: { status: "CANCELLED" } }),
-      prisma.appointment.aggregate({ _sum: { price: true }, where: { status: "COMPLETED", createdAt: { gte: firstDayOfMonth } } }),
-      prisma.appointment.aggregate({ _sum: { price: true }, where: { status: "COMPLETED", createdAt: { gte: lastMonth, lt: firstDayOfMonth } } }),
-      prisma.appointment.findMany({ include: { patient: { select: { name: true } }, therapist: { select: { name: true } } }, orderBy: { createdAt: "desc" }, take: 5 }),
-      prisma.user.findMany({ where: { role: "THERAPIST", therapistProfile: { isVerified: false } }, include: { therapistProfile: true }, take: 4 }),
-      getSettings(),
-    ]);
+    const totalPatients = await prisma.user.count({ where: { role: "PATIENT" } });
+    const totalTherapists = await prisma.user.count({ where: { role: "THERAPIST" } });
+    const todaysSessions = await prisma.appointment.count({ where: { scheduledAt: { gte: today, lte: endOfDay } } });
+    const activeNow = await prisma.appointment.count({ where: { status: "IN_PROGRESS" } });
+    const pendingVerifications = await prisma.therapistProfile.count({ where: { isVerified: false } });
+    const totalAppointments = await prisma.appointment.count();
+    const completedAppointments = await prisma.appointment.count({ where: { status: "COMPLETED" } });
+    const cancelledAppointments = await prisma.appointment.count({ where: { status: "CANCELLED" } });
+    
+    const monthlyEarningsData = await prisma.appointment.aggregate({ _sum: { price: true }, where: { status: "COMPLETED", createdAt: { gte: firstDayOfMonth } } });
+    const lastMonthEarningsData = await prisma.appointment.aggregate({ _sum: { price: true }, where: { status: "COMPLETED", createdAt: { gte: lastMonth, lt: firstDayOfMonth } } });
+    
+    const recentAppointments = await prisma.appointment.findMany({ include: { patient: { select: { name: true } }, therapist: { select: { name: true } } }, orderBy: { createdAt: "desc" }, take: 5 });
+    const pendingTherapists = await prisma.user.findMany({ where: { role: "THERAPIST", therapistProfile: { isVerified: false } }, include: { therapistProfile: true }, take: 4 });
+    const settings = await getSettings();
+
+    dbData = [
+      totalPatients, totalTherapists, todaysSessions,
+      activeNow, pendingVerifications, totalAppointments,
+      completedAppointments, cancelledAppointments,
+      monthlyEarningsData, lastMonthEarningsData,
+      recentAppointments, pendingTherapists,
+      settings
+    ];
   } catch (error: any) {
     console.error("Dashboard Error:", error);
     return (
