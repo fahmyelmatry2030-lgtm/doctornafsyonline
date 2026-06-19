@@ -1,21 +1,31 @@
 import { PrismaClient } from "@prisma/client";
 
+// Auto-detect and handle database URL
+if (!process.env.DATABASE_URL) {
+  // Default to dev SQLite for local development
+  if (process.env.NODE_ENV !== "production") {
+    console.log("ℹ️  No DATABASE_URL found. Using SQLite for local development.");
+    process.env.DATABASE_URL = "file:./prisma/dev.db";
+  } else {
+    const errorMsg = "❌ ERROR: DATABASE_URL must be set in production!";
+    console.error(errorMsg);
+    throw new Error(errorMsg);
+  }
+}
+
 // Handle legacy dev database URL on Hostinger
 if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes("file:./dev.db")) {
-  console.warn("⚠️  WARNING: Old dev database URL detected. Using Hostinger MySQL instead.");
-  process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@localhost:3306/u465666297_u465666297";
+  if (process.env.NODE_ENV === "production") {
+    console.warn("⚠️  WARNING: Dev database URL in production. Switching to MySQL.");
+    process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@localhost:3306/u465666297_u465666297";
+  }
 }
 
-// Validate DATABASE_URL
-if (!process.env.DATABASE_URL) {
-  const errorMsg = "❌ ERROR: DATABASE_URL environment variable is not set. Cannot start server.";
-  console.error(errorMsg);
-  throw new Error(errorMsg);
-}
-
-// Validate it's a MySQL connection string
-if (!process.env.DATABASE_URL.startsWith("mysql://")) {
-  const errorMsg = `❌ ERROR: DATABASE_URL must start with 'mysql://'. Got: ${process.env.DATABASE_URL.substring(0, 30)}...`;
+// Validate format
+if (process.env.DATABASE_URL && 
+    !process.env.DATABASE_URL.startsWith("mysql://") && 
+    !process.env.DATABASE_URL.startsWith("file:")) {
+  const errorMsg = `❌ ERROR: Invalid DATABASE_URL format: ${process.env.DATABASE_URL.substring(0, 30)}...`;
   console.error(errorMsg);
   throw new Error(errorMsg);
 }
