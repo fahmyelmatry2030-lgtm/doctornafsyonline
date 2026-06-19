@@ -5,8 +5,12 @@ const fs = require('fs');
 const path = require('path');
 
 process.on('uncaughtException', (err) => {
-  fs.writeFileSync(path.join(__dirname, 'startup-error.log'), err.stack || err.toString());
+  fs.writeFileSync(path.join(__dirname, 'startup-error.log'), (err.stack || err.toString()) + '\n', { flag: 'a' });
   process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  fs.writeFileSync(path.join(__dirname, 'startup-error.log'), 'Unhandled Rejection at: ' + promise + ' reason: ' + reason + '\n', { flag: 'a' });
 });
 
 // ─── Auto-load .env ─────────────────────────────────────────────────────────
