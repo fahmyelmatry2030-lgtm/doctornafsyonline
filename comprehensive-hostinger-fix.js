@@ -128,9 +128,49 @@ try {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// STEP 4: PRISMA MIGRATE
+// STEP 4: TEST DATABASE CONNECTION
 // ═══════════════════════════════════════════════════════════════════════
-console.log('🗄️  STEP 4: Applying database migrations...');
+console.log('🗄️  STEP 4: Testing database connection...');
+console.log('─'.repeat(60));
+
+try {
+  console.log('Testing Prisma connection to database...');
+  const testCode = `
+    const { PrismaClient } = require('@prisma/client');
+    const prisma = new PrismaClient();
+    
+    (async () => {
+      try {
+        await prisma.$queryRaw\`SELECT 1\`;
+        console.log('✅ Database connection successful');
+        process.exit(0);
+      } catch (error) {
+        console.error('❌ Database connection failed:', error.message);
+        process.exit(1);
+      } finally {
+        await prisma.$disconnect();
+      }
+    })();
+  `;
+  
+  fs.writeFileSync(path.join(projectRoot, 'test-db-connection.js'), testCode);
+  execSync('node test-db-connection.js', { 
+    cwd: projectRoot, 
+    stdio: 'inherit',
+    env: { ...process.env, DATABASE_URL: databaseUrl }
+  });
+  fs.unlinkSync(path.join(projectRoot, 'test-db-connection.js'));
+  console.log('\n');
+} catch (error) {
+  console.warn('⚠️  Database connection test failed (check credentials and ensure MySQL is running)');
+  console.warn('Error:', error.message);
+  console.log('Continuing with migrations anyway...\n');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// STEP 5: PRISMA MIGRATE
+// ═══════════════════════════════════════════════════════════════════════
+console.log('🗄️  STEP 5: Applying database migrations...');
 console.log('─'.repeat(60));
 
 try {
@@ -142,15 +182,29 @@ try {
   });
   console.log('✅ Database migrations applied\n');
 } catch (error) {
-  console.warn('⚠️  Prisma migrate encountered an issue (may be normal if DB is already migrated)');
+  console.warn('⚠️  Prisma migrate encountered an issue');
   console.warn(error.message);
-  console.log('Continuing...\n');
+  
+  // Try db push as alternative
+  try {
+    console.log('\nTrying alternative: npx prisma db push...');
+    execSync('npx prisma db push --skip-generate', { 
+      cwd: projectRoot, 
+      stdio: 'inherit',
+      env: { ...process.env, DATABASE_URL: databaseUrl }
+    });
+    console.log('✅ Database schema pushed\n');
+  } catch (dbPushError) {
+    console.warn('⚠️  Both migrate and db push failed (may be normal if DB is already set up)');
+    console.warn(dbPushError.message);
+    console.log('Continuing...\n');
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// STEP 5: BUILD
+// STEP 6: BUILD
 // ═══════════════════════════════════════════════════════════════════════
-console.log('🔨 STEP 5: Building Next.js application...');
+console.log('🔨 STEP 6: Building Next.js application...');
 console.log('─'.repeat(60));
 
 try {
