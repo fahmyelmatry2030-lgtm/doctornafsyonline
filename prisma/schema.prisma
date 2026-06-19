@@ -62,6 +62,7 @@ model Appointment {
   price       Int
   roomName    String            @unique
   notes       String?
+  paymentScreenshot String?     @db.Text
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 

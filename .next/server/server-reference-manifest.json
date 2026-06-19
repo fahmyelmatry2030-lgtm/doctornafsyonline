@@ -57,7 +57,7 @@
           "filename": "src/app/admin/settings/actions.ts"
         },
         "app/admin/reports/page": {
-          "moduleId": 40946,
+          "moduleId": 54463,
           "async": false,
           "exportedName": "getSettings",
           "filename": "src/app/admin/settings/actions.ts"
@@ -176,6 +176,12 @@
           "exportedName": "getSettings",
           "filename": "src/app/admin/settings/actions.ts"
         },
+        "app/privacy/page": {
+          "moduleId": 99745,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
         "app/register/page": {
           "moduleId": 54037,
           "async": false,
@@ -190,6 +196,12 @@
         },
         "app/session/[id]/page": {
           "moduleId": 32389,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
+        "app/terms/page": {
+          "moduleId": 68568,
           "async": false,
           "exportedName": "getSettings",
           "filename": "src/app/admin/settings/actions.ts"
@@ -315,7 +327,7 @@
           "filename": "src/app/admin/settings/actions.ts"
         },
         "app/admin/reports/page": {
-          "moduleId": 40946,
+          "moduleId": 54463,
           "async": false,
           "exportedName": "updateSettings",
           "filename": "src/app/admin/settings/actions.ts"
@@ -434,6 +446,12 @@
           "exportedName": "updateSettings",
           "filename": "src/app/admin/settings/actions.ts"
         },
+        "app/privacy/page": {
+          "moduleId": 99745,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
         "app/register/page": {
           "moduleId": 54037,
           "async": false,
@@ -448,6 +466,12 @@
         },
         "app/session/[id]/page": {
           "moduleId": 32389,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
+        "app/terms/page": {
+          "moduleId": 68568,
           "async": false,
           "exportedName": "updateSettings",
           "filename": "src/app/admin/settings/actions.ts"
@@ -523,6 +547,12 @@
           "async": false,
           "exportedName": "updateAppointmentStatus",
           "filename": "src/app/admin/operations/actions.ts"
+        },
+        "app/admin/reports/page": {
+          "moduleId": 54463,
+          "async": false,
+          "exportedName": "updateAppointmentStatus",
+          "filename": "src/app/admin/operations/actions.ts"
         }
       },
       "filename": "src/app/admin/operations/actions.ts",
@@ -551,6 +581,18 @@
       },
       "filename": "src/app/admin/patients/page.tsx",
       "exportedName": "$$RSC_SERVER_ACTION_0"
+    },
+    "40287b8409ac5482158379d333018c6fdf968a74b3": {
+      "workers": {
+        "app/admin/reports/page": {
+          "moduleId": 54463,
+          "async": false,
+          "exportedName": "rejectAppointmentPayment",
+          "filename": "src/app/admin/operations/actions.ts"
+        }
+      },
+      "filename": "src/app/admin/operations/actions.ts",
+      "exportedName": "rejectAppointmentPayment"
     },
     "40bf1a8a6a9b1533a28c13ee7b7af3e32bd52ffd71": {
       "workers": {

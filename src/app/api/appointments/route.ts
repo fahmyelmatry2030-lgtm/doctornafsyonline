@@ -42,7 +42,7 @@ export async function POST(request: Request) {
         duration: duration || 50,
         price: therapist.therapistProfile.pricePerSession,
         roomName,
-        status: "CONFIRMED",
+        status: "PENDING",
       },
     });
 

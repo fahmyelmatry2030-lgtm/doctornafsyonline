@@ -5,7 +5,9 @@ import { OperationsTabs } from "@/components/OperationsTabs";
 
 export default async function AdminOperationsPage() {
   const session = await auth();
-  if (!session?.user || session.user.role !== "ADMIN") return null;
+  const role = session?.user?.role;
+  if (!role || (role !== "ADMIN" && role !== "ADMIN_HR" && role !== "ADMIN_VIEWER")) return null;
+  const isReadOnly = role === "ADMIN_VIEWER";
 
   const [appointments, settings] = await Promise.all([
     prisma.appointment.findMany({
@@ -23,16 +25,24 @@ export default async function AdminOperationsPage() {
 
   return (
     <div className="animate-fade-in space-y-6">
-      <div>
-        <h1 className="text-3xl font-black text-slate-900">الحجوزات، الجلسات والمدفوعات</h1>
-        <p className="text-slate-500 mt-1">
-          إدارة متكاملة لجميع عمليات الحجوزات الطبية، غرف الجلسات المباشرة، وحساب الأرباح والمدفوعات
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900">الحجوزات، الجلسات والمدفوعات</h1>
+          <p className="text-slate-500 mt-1">
+            إدارة متكاملة لجميع عمليات الحجوزات الطبية، غرف الجلسات المباشرة، وحساب الأرباح والمدفوعات
+          </p>
+        </div>
+        {isReadOnly && (
+          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-xl text-sm font-bold">
+            🔍 عرض فقط — لا يمكن التعديل
+          </div>
+        )}
       </div>
 
       <OperationsTabs
         initialAppointments={appointments as any}
         commissionRate={settings.commission}
+        isReadOnly={isReadOnly}
       />
     </div>
   );

@@ -55,6 +55,14 @@
       "namedRegex": "^/api/appointments/(?<nxtPid>[^/]+?)/notes(?:/)?$"
     },
     {
+      "page": "/api/appointments/[id]/screenshot",
+      "regex": "^/api/appointments/([^/]+?)/screenshot(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/appointments/(?<nxtPid>[^/]+?)/screenshot(?:/)?$"
+    },
+    {
       "page": "/api/auth/[...nextauth]",
       "regex": "^/api/auth/(.+?)(?:/)?$",
       "routeKeys": {
@@ -277,6 +285,12 @@
       "namedRegex": "^/api/session/token(?:/)?$"
     },
     {
+      "page": "/api/therapist/avatar",
+      "regex": "^/api/therapist/avatar(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/therapist/avatar(?:/)?$"
+    },
+    {
       "page": "/api/therapist/certificates",
       "regex": "^/api/therapist/certificates(?:/)?$",
       "routeKeys": {},
@@ -385,6 +399,12 @@
       "namedRegex": "^/patient/reviews(?:/)?$"
     },
     {
+      "page": "/privacy",
+      "regex": "^/privacy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy(?:/)?$"
+    },
+    {
       "page": "/register",
       "regex": "^/register(?:/)?$",
       "routeKeys": {},
@@ -395,6 +415,12 @@
       "regex": "^/services(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/services(?:/)?$"
+    },
+    {
+      "page": "/terms",
+      "regex": "^/terms(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/terms(?:/)?$"
     },
     {
       "page": "/therapist/dashboard",

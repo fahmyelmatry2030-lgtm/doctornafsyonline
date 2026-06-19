@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import { useSession } from "next-auth/react";
+import AvatarManager from "@/components/AvatarManager";
 import {
   User,
   FileText,
@@ -42,6 +44,7 @@ interface CertificateFile {
 }
 
 export default function TherapistOnboardingPage() {
+  const { data: session } = useSession();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -249,6 +252,11 @@ export default function TherapistOnboardingPage() {
               <Heart className="w-5 h-5 text-rose-500" />
               أخبرنا عن نفسك
             </h2>
+
+            {/* Avatar Upload */}
+            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center">
+              <AvatarManager initialAvatar={session?.user?.avatar || null} name={session?.user?.name || "أخصائي"} />
+            </div>
 
             {/* Bio */}
             <div>

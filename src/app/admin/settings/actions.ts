@@ -37,7 +37,7 @@ const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitU
   platformName: "دكتور نفسي",
   heroTitle: "رعاية نفسية متخصصة في متناول يدك",
   heroSubtitle: "تواصل مع أفضل الأخصائيين النفسيين المعتمدين من راحة منزلك، عبر جلسات فيديو آمنة وسرية.",
-  contactEmail: "support@nafsi.com",
+  contactEmail: "support@doctornafsyonline.com",
   allowNewTherapists: true,
   allowNewPatients: true,
   maintenanceMode: false,
@@ -71,11 +71,14 @@ export async function getSettings(): Promise<SiteSettings> {
     settings = { ...defaultSettings };
   }
 
-  // Always bind credentials from environment variables for maximum security
+  const session = await auth();
+  const isAdmin = session?.user?.role === "ADMIN";
+
+  // Always bind credentials from environment variables for maximum security, but only expose to Super Admin
   return {
     ...settings,
-    stripeKey: process.env.STRIPE_SECRET_KEY || settings.stripeKey || "sk_test_***",
-    livekitKey: process.env.LIVEKIT_API_SECRET || settings.livekitKey || "lk_secret_***",
+    stripeKey: isAdmin ? (process.env.STRIPE_SECRET_KEY || settings.stripeKey || "sk_test_***") : "sk_test_***",
+    livekitKey: isAdmin ? (process.env.LIVEKIT_API_SECRET || settings.livekitKey || "lk_secret_***") : "lk_secret_***",
     livekitUrl: process.env.LIVEKIT_URL || settings.livekitUrl || "wss://your-livekit.livekit.cloud",
   };
 }

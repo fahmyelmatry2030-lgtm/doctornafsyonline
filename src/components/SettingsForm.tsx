@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Lock, Bell, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { Lock, Bell, Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from "lucide-react";
 
 type SettingsFormProps = {
   updatePasswordAction: (formData: FormData) => Promise<{ success: boolean; error?: string }>;
@@ -10,6 +10,8 @@ type SettingsFormProps = {
 export default function SettingsForm({ updatePasswordAction }: SettingsFormProps) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState("");
@@ -25,8 +27,10 @@ export default function SettingsForm({ updatePasswordAction }: SettingsFormProps
     setPasswordSuccess(false);
     setPasswordError("");
 
-    if (newPassword.length < 6) {
-      setPasswordError("يجب أن لا تقل كلمة المرور الجديدة عن 6 أحرف");
+    const hasLetter = /[a-zA-Z\u0600-\u06FF]/.test(newPassword);
+    const hasNumber = /\d/.test(newPassword);
+    if (newPassword.length < 8 || !hasLetter || !hasNumber) {
+      setPasswordError("يجب أن تتكون كلمة المرور الجديدة من 8 خانات على الأقل، وتحتوي على حرف واحد ورقم واحد على الأقل.");
       setPasswordLoading(false);
       return;
     }
@@ -91,25 +95,50 @@ export default function SettingsForm({ updatePasswordAction }: SettingsFormProps
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">كلمة المرور الحالية</label>
-              <input
-                type="password"
-                required
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
-              />
+              <div className="relative">
+                <input
+                  type={showCurrentPassword ? "text" : "password"}
+                  required
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
+                  dir="ltr"
+                  style={{ textAlign: 'right' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">كلمة المرور الجديدة</label>
-              <input
-                type="password"
-                required
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
-              />
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  required
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
+                  dir="ltr"
+                  style={{ textAlign: 'right' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-1">
+                يجب أن تكون 8 خانات على الأقل، وتحتوي على حرف واحد ورقم واحد على الأقل.
+              </p>
             </div>
           </div>
           <button

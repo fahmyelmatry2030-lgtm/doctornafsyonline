@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import { BookOpen, Plus, Pencil, Trash2, Star, X, ChevronRight, ChevronLeft, MessageSquare } from "lucide-react";
 
 type Article = {
@@ -28,6 +29,8 @@ const ICONS = ["📝", "🧠", "💊", "❤️", "🌿", "🔬", "🧘", "👶",
 const CATEGORIES = ["عام", "صحة نفسية", "علاج معرفي", "أسرة وعلاقات", "طفولة", "قلق واكتئاب", "تطوير ذات"];
 
 export default function ContentPage() {
+  const { data: session } = useSession();
+  const isReadOnly = session?.user?.role === "ADMIN_VIEWER";
   const [tab, setTab] = useState<"articles" | "reviews">("articles");
   const [articles, setArticles] = useState<Article[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -84,10 +87,15 @@ export default function ContentPage() {
           <h1 className="text-3xl font-black text-slate-900">المقالات والتقييمات</h1>
           <p className="text-slate-500 mt-1">إدارة محتوى المدونة وتقييمات المستخدمين</p>
         </div>
-        {tab === "articles" && (
+        {tab === "articles" && !isReadOnly && (
           <button onClick={openNew} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl transition-colors shadow-md shadow-indigo-900/20">
             <Plus className="w-4 h-4" /> مقال جديد
           </button>
+        )}
+        {isReadOnly && (
+          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-xl text-sm font-bold">
+            🔍 عرض فقط — لا يمكن التعديل
+          </div>
         )}
       </div>
 
@@ -129,12 +137,18 @@ export default function ContentPage() {
               </div>
               <p className="text-sm text-slate-600 line-clamp-2">{a.content}</p>
               <div className="flex gap-2 mt-auto pt-2 border-t border-slate-100">
-                <button onClick={() => openEdit(a)} className="flex-1 flex items-center justify-center gap-1.5 text-sm text-indigo-600 font-semibold hover:bg-indigo-50 py-1.5 rounded-lg transition-colors">
-                  <Pencil className="w-3.5 h-3.5" /> تعديل
-                </button>
-                <button onClick={() => deleteArticle(a.id)} className="flex-1 flex items-center justify-center gap-1.5 text-sm text-red-500 font-semibold hover:bg-red-50 py-1.5 rounded-lg transition-colors">
-                  <Trash2 className="w-3.5 h-3.5" /> حذف
-                </button>
+                {!isReadOnly ? (
+                  <>
+                    <button onClick={() => openEdit(a)} className="flex-1 flex items-center justify-center gap-1.5 text-sm text-indigo-600 font-semibold hover:bg-indigo-50 py-1.5 rounded-lg transition-colors">
+                      <Pencil className="w-3.5 h-3.5" /> تعديل
+                    </button>
+                    <button onClick={() => deleteArticle(a.id)} className="flex-1 flex items-center justify-center gap-1.5 text-sm text-red-500 font-semibold hover:bg-red-50 py-1.5 rounded-lg transition-colors">
+                      <Trash2 className="w-3.5 h-3.5" /> حذف
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex-1 text-center text-xs text-slate-400 py-1.5 font-medium">عرض فقط</div>
+                )}
               </div>
             </div>
           ))}

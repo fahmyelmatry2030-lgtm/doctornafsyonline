@@ -2,9 +2,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import {
-  Users, Video, DollarSign, Clock, TrendingUp, Star,
-  CalendarCheck, ArrowUpRight, PlayCircle, Mic,
-  MessageCircle, CheckCircle2, AlertCircle
+  Users, Video, Clock, CalendarCheck, ArrowUpRight, PlayCircle, Mic,
+  MessageCircle, CheckCircle2, BarChart2, TrendingUp
 } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
@@ -32,28 +31,22 @@ export default async function TherapistDashboardPage() {
   const endOfDay = new Date(today);
   endOfDay.setHours(23, 59, 59, 999);
 
-  const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
   const [
-    activePatientsCount, todaysSessions, totalEarningsAggr,
-    monthEarningsAggr, pendingCount, completedCount,
+    activePatientsCount, todaysSessions,
+    pendingCount, completedCount, scheduledCount,
     ongoingSession, upcomingAppointments, recentCompleted, therapistProfile,
   ] = await Promise.all([
     prisma.appointment.groupBy({ by: ["patientId"], where: { therapistId: userId, status: { in: ["COMPLETED", "CONFIRMED"] } } }).then((r) => r.length),
     prisma.appointment.count({ where: { therapistId: userId, scheduledAt: { gte: today, lte: endOfDay } } }),
-    prisma.appointment.aggregate({ _sum: { price: true }, where: { therapistId: userId, status: "COMPLETED" } }),
-    prisma.appointment.aggregate({ _sum: { price: true }, where: { therapistId: userId, status: "COMPLETED", createdAt: { gte: firstDayOfMonth } } }),
     prisma.appointment.count({ where: { therapistId: userId, status: "PENDING" } }),
     prisma.appointment.count({ where: { therapistId: userId, status: "COMPLETED" } }),
+    prisma.appointment.count({ where: { therapistId: userId, status: { in: ["CONFIRMED", "PENDING"] }, scheduledAt: { gte: now } } }),
     prisma.appointment.findFirst({ where: { therapistId: userId, status: "IN_PROGRESS" }, include: { patient: true } }),
     prisma.appointment.findMany({ where: { therapistId: userId, status: { in: ["PENDING", "CONFIRMED"] }, scheduledAt: { gte: now } }, include: { patient: true }, orderBy: { scheduledAt: "asc" }, take: 5 }),
     prisma.appointment.findMany({ where: { therapistId: userId, status: "COMPLETED" }, include: { patient: true }, orderBy: { scheduledAt: "desc" }, take: 4 }),
     prisma.therapistProfile.findUnique({ where: { userId } }),
   ]);
 
-  const totalEarnings = totalEarningsAggr._sum.price || 0;
-  const monthEarnings = monthEarningsAggr._sum.price || 0;
-  const netMonthEarnings = monthEarnings * 0.8;
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -127,8 +120,8 @@ export default async function TherapistDashboardPage() {
         {[
           { label: "مرضى نشطين", value: activePatientsCount, sub: `${completedCount} جلسة مكتملة إجمالاً`, icon: <Users className="w-6 h-6" />, color: "text-[#4318FF]", bg: "bg-[#4318FF]/10" },
           { label: "جلسات اليوم", value: todaysSessions, sub: pendingCount > 0 ? <span className="text-amber-500">{pendingCount} طلب بالانتظار</span> : "لا توجد طلبات معلقة", icon: <CalendarCheck className="w-6 h-6" />, color: "text-teal-600", bg: "bg-teal-100" },
-          { label: "أرباح الشهر (صافي)", value: netMonthEarnings, unit: "ج.م", sub: "بعد خصم عمولة المنصة", icon: <TrendingUp className="w-6 h-6" />, color: "text-amber-500", bg: "bg-amber-100" },
-          { label: "إجمالي الأرباح", value: totalEarnings * 0.8, unit: "ج.م", sub: "منذ انضمامك للمنصة", icon: <DollarSign className="w-6 h-6" />, color: "text-emerald-500", bg: "bg-emerald-100" },
+          { label: "جلسات مكتملة", value: completedCount, sub: "منذ انضمامك للمنصة", icon: <CheckCircle2 className="w-6 h-6" />, color: "text-emerald-500", bg: "bg-emerald-100" },
+          { label: "جلسات مجدولة", value: scheduledCount, sub: "جلسات قادمة بانتظارك", icon: <BarChart2 className="w-6 h-6" />, color: "text-violet-500", bg: "bg-violet-100" },
         ].map((stat, i) => (
           <div key={i} className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
@@ -137,7 +130,7 @@ export default async function TherapistDashboardPage() {
                 {stat.icon}
               </div>
             </div>
-            <p className="text-3xl font-black text-[#2B3674]">{stat.value} {stat.unit && <span className="text-base font-bold text-[#A3AED0]">{stat.unit}</span>}</p>
+            <p className="text-3xl font-black text-[#2B3674]">{stat.value}</p>
             <p className="text-xs font-bold text-[#A3AED0] mt-2">{stat.sub}</p>
           </div>
         ))}
@@ -194,8 +187,8 @@ export default async function TherapistDashboardPage() {
         <div className="bg-white rounded-[24px] shadow-sm overflow-hidden flex flex-col">
           <div className="px-7 py-6 flex items-center justify-between border-b border-[#F4F7FE]">
             <h2 className="font-black text-[#2B3674] text-lg">آخر الجلسات المكتملة</h2>
-            <Link href="/therapist/earnings" className="text-sm font-bold text-[#4318FF] hover:text-[#3311DB] flex items-center gap-1 transition-colors">
-              الأرباح <ArrowUpRight className="w-4 h-4" />
+            <Link href="/therapist/schedule" className="text-sm font-bold text-[#4318FF] hover:text-[#3311DB] flex items-center gap-1 transition-colors">
+              الجدول <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
           <div className="p-4 flex-1">
@@ -223,7 +216,7 @@ export default async function TherapistDashboardPage() {
                       </div>
                     </div>
                     <span className="shrink-0 text-xs font-black text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl">
-                      +{app.price * 0.8} ج.م
+                      جلسة مكتملة ✓
                     </span>
                   </div>
                 ))}

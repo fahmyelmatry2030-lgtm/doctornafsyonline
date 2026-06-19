@@ -84,6 +84,7 @@ export default function ManagersPage() {
     if (roleStr === "ADMIN") return { label: "مدير عام", color: "bg-purple-100 text-purple-700" };
     if (roleStr === "ADMIN_HR") return { label: "مدير موارد بشرية", color: "bg-indigo-100 text-indigo-700" };
     if (roleStr === "ADMIN_ACCOUNTING") return { label: "مدير حسابات", color: "bg-emerald-100 text-emerald-700" };
+    if (roleStr === "ADMIN_VIEWER") return { label: "مراقب — عرض فقط 🔍", color: "bg-amber-100 text-amber-700" };
     return { label: roleStr, color: "bg-slate-100 text-slate-700" };
   };
 
@@ -167,6 +168,7 @@ export default function ManagersPage() {
               >
                 <option value="ADMIN_HR">مدير موارد بشرية (أخصائيين، مرضى)</option>
                 <option value="ADMIN_ACCOUNTING">مدير حسابات (أرباح، فواتير)</option>
+                <option value="ADMIN_VIEWER">مراقب — عرض فقط 🔍 (لا يمكنه التعديل)</option>
                 <option value="ADMIN">مدير عام (كافة الصلاحيات)</option>
               </select>
             </div>

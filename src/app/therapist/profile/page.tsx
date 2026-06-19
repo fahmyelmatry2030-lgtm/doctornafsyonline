@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import CertificatesManager from "@/components/CertificatesManager";
 import ContractManager from "@/components/ContractManager";
 import { getSettings } from "@/app/admin/settings/actions";
+import AvatarManager from "@/components/AvatarManager";
 
 export default async function TherapistProfilePage() {
   const session = await auth();
@@ -53,6 +54,8 @@ export default async function TherapistProfilePage() {
       </div>
 
       <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-8 space-y-8">
+        <AvatarManager initialAvatar={profile.user.avatar} name={profile.user.name} />
+
         <form action={updateProfile} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div>

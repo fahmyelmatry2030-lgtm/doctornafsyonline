@@ -6,10 +6,13 @@ import {
   Calendar, Star, BarChart2, PieChart, Activity, ArrowUpRight,
   Clock, CheckCircle2, XCircle, AlertCircle
 } from "lucide-react";
+import TransferVerificationTable from "@/components/TransferVerificationTable";
 
 export default async function AdminReportsPage() {
   const session = await auth();
-  if (!session?.user || session.user.role !== "ADMIN") return null;
+  const role = session?.user?.role;
+  if (!role || (role !== "ADMIN" && role !== "ADMIN_ACCOUNTING" && role !== "ADMIN_VIEWER")) return null;
+  const isReadOnly = role === "ADMIN_VIEWER";
 
   const now = new Date();
   const startOfThisMonth  = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -28,6 +31,7 @@ export default async function AdminReportsPage() {
     recentActivity,
     suspendedUsers,
     settings,
+    pendingTransfers,
   ] = await Promise.all([
     prisma.user.count({ where: { role: "PATIENT" } }),
     prisma.user.count({ where: { role: "THERAPIST" } }),
@@ -64,6 +68,17 @@ export default async function AdminReportsPage() {
     }),
     prisma.user.count({ where: { isSuspended: true } }),
     getSettings(),
+    prisma.appointment.findMany({
+      where: {
+        status: "PENDING",
+        paymentScreenshot: { not: null },
+      },
+      include: {
+        patient: { select: { name: true, email: true } },
+        therapist: { select: { name: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
   ]);
 
   const commissionFactor = settings.commission / 100;
@@ -286,6 +301,11 @@ export default async function AdminReportsPage() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Transfer Verification Section */}
+      <div className="mt-8">
+        <TransferVerificationTable initialTransfers={pendingTransfers as any} isReadOnly={isReadOnly} />
       </div>
     </div>
   );

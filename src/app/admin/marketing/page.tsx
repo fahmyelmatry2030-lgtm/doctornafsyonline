@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import { Tag, Plus, Trash2, ToggleLeft, ToggleRight, X, Copy, Bell, Send, CheckCircle } from "lucide-react";
 
 type PromoCode = {
@@ -25,6 +26,8 @@ type Ticket = {
 };
 
 export default function MarketingPage() {
+  const { data: session } = useSession();
+  const isReadOnly = session?.user?.role === "ADMIN_VIEWER";
   const [tab, setTab] = useState<"promos" | "support" | "notifications">("promos");
   const [promos, setPromos] = useState<PromoCode[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -117,9 +120,16 @@ export default function MarketingPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-3xl font-black text-slate-900">التسويق والدعم الفني</h1>
-        <p className="text-slate-500 mt-1">إدارة أكواد الخصم، تذاكر الدعم، وإشعارات النظام</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900">التسويق والدعم الفني</h1>
+          <p className="text-slate-500 mt-1">إدارة أكواد الخصم، تذاكر الدعم، وإشعارات النظام</p>
+        </div>
+        {isReadOnly && (
+          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-xl text-sm font-bold">
+            🔍 عرض فقط — لا يمكن التعديل
+          </div>
+        )}
       </div>
 
       {/* Tabs */}
@@ -146,9 +156,11 @@ export default function MarketingPage() {
       ) : tab === "promos" ? (
         <div className="space-y-4">
           <div className="flex justify-end">
-            <button onClick={() => setShowPromoForm(true)} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl transition-colors shadow-md shadow-indigo-900/20">
-              <Plus className="w-4 h-4" /> كود خصم جديد
-            </button>
+            {!isReadOnly && (
+              <button onClick={() => setShowPromoForm(true)} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl transition-colors shadow-md shadow-indigo-900/20">
+                <Plus className="w-4 h-4" /> كود خصم جديد
+              </button>
+            )}
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {promos.length === 0 ? (
@@ -171,12 +183,18 @@ export default function MarketingPage() {
                   <span className="text-2xl font-black text-indigo-600">{p.discount}%</span>
                 </div>
                 <div className="flex items-center gap-2 pt-3 border-t border-slate-200">
-                  <button onClick={() => togglePromo(p.id, p.isActive)} className={`flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-1.5 rounded-lg transition-colors ${p.isActive ? "text-amber-600 hover:bg-amber-50" : "text-green-600 hover:bg-green-50"}`}>
-                    {p.isActive ? <><ToggleRight className="w-4 h-4" /> إيقاف</> : <><ToggleLeft className="w-4 h-4" /> تفعيل</>}
-                  </button>
-                  <button onClick={() => deletePromo(p.id)} className="flex-1 flex items-center justify-center gap-1.5 text-xs text-red-500 font-bold hover:bg-red-50 py-1.5 rounded-lg transition-colors">
-                    <Trash2 className="w-4 h-4" /> حذف
-                  </button>
+                  {!isReadOnly ? (
+                    <>
+                      <button onClick={() => togglePromo(p.id, p.isActive)} className={`flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-1.5 rounded-lg transition-colors ${p.isActive ? "text-amber-600 hover:bg-amber-50" : "text-green-600 hover:bg-green-50"}`}>
+                        {p.isActive ? <><ToggleRight className="w-4 h-4" /> إيقاف</> : <><ToggleLeft className="w-4 h-4" /> تفعيل</>}
+                      </button>
+                      <button onClick={() => deletePromo(p.id)} className="flex-1 flex items-center justify-center gap-1.5 text-xs text-red-500 font-bold hover:bg-red-50 py-1.5 rounded-lg transition-colors">
+                        <Trash2 className="w-4 h-4" /> حذف
+                      </button>
+                    </>
+                  ) : (
+                    <div className="flex-1 text-center text-xs text-slate-400 py-1.5 font-medium">عرض فقط</div>
+                  )}
                 </div>
               </div>
             ))}
@@ -211,13 +229,13 @@ export default function MarketingPage() {
                     </div>
                     <div className="flex flex-col gap-2 items-end">
                       <p className="text-xs text-slate-400">{new Date(t.createdAt).toLocaleDateString("ar-EG")}</p>
-                      {t.status === "OPEN" && (
+                      {t.status === "OPEN" && !isReadOnly && (
                         <button onClick={() => { setActiveTicket(t); setResponse(t.response || ""); }}
                           className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-lg transition-colors">
                           رد
                         </button>
                       )}
-                      {t.status !== "CLOSED" && (
+                      {t.status !== "CLOSED" && !isReadOnly && (
                         <button onClick={() => closeTicket(t.id)} className="text-xs text-slate-500 hover:text-red-500 font-semibold transition-colors">إغلاق</button>
                       )}
                     </div>
@@ -225,6 +243,13 @@ export default function MarketingPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      ) : isReadOnly ? (
+        <div className="max-w-xl mx-auto">
+          <div className="glass rounded-3xl border border-[var(--color-border-soft)] p-8 text-center">
+            <Bell className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+            <p className="text-slate-500 font-semibold">لا يمكنك إرسال إشعارات بصلاحية العرض فقط.</p>
           </div>
         </div>
       ) : (

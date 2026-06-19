@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { authenticateAfterRegister } from "./actions";
-import { User, Mail, Lock, Phone, ArrowRight, Loader2, Heart, ShieldCheck, Briefcase, Clock, DollarSign, Users } from "lucide-react";
+import { User, Mail, Lock, Phone, ArrowRight, Loader2, Heart, ShieldCheck, Briefcase, Clock, DollarSign, Users, Eye, EyeOff } from "lucide-react";
 
 export default function RegisterForm() {
   const searchParams = useSearchParams();
@@ -25,11 +25,21 @@ export default function RegisterForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    // التحقق من قوة كلمة المرور في المتصفح قبل الإرسال
+    const hasLetter = /[a-zA-Z\u0600-\u06FF]/.test(form.password);
+    const hasNumber = /\d/.test(form.password);
+    if (form.password.length < 8 || !hasLetter || !hasNumber) {
+      setError("يجب أن تتكون كلمة المرور من 8 أحرف على الأقل، وتحتوي على حرف واحد ورقم واحد على الأقل.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await fetch("/api/register", {
@@ -219,17 +229,26 @@ export default function RegisterForm() {
                   <Lock className="h-5 w-5" />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
-                  minLength={6}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-[#4318FF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-medium"
+                  className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-12 text-slate-900 placeholder-slate-400 focus:border-[#4318FF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-medium"
                   placeholder="••••••••"
                   dir="ltr"
                   style={{ textAlign: 'right' }}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
+              <p className="mt-1.5 text-xs text-slate-500">
+                يجب أن تكون 8 خانات على الأقل، وتحتوي على حرف ورقم واحد على الأقل.
+              </p>
             </div>
 
             {/* Therapist Specific Fields */}

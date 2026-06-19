@@ -19,11 +19,12 @@ const posts: Record<string, { title: string; content: string }> = {
 };
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
-export default function BlogArticlePage({ params }: Props) {
-  const post = posts[params.slug];
+export default async function BlogArticlePage({ params }: Props) {
+  const { slug } = await params;
+  const post = posts[slug];
   if (!post) notFound();
 
   return (

@@ -37,6 +37,7 @@ type TherapistsTableClientProps = {
   updateCertificateStatus: (userId: string, certId: string, status: "APPROVED" | "REJECTED") => Promise<void>;
   toggleSuspend: (userId: string, currentStatus: boolean) => Promise<void>;
   deleteTherapist: (userId: string) => Promise<void>;
+  isReadOnly?: boolean;
 };
 
 export function TherapistsTableClient({
@@ -44,7 +45,8 @@ export function TherapistsTableClient({
   toggleVerification,
   updateCertificateStatus,
   toggleSuspend,
-  deleteTherapist
+  deleteTherapist,
+  isReadOnly = false,
 }: TherapistsTableClientProps) {
   const [therapists, setTherapists] = useState<Therapist[]>(initialTherapists);
   const [searchQuery, setSearchQuery] = useState("");
@@ -224,7 +226,7 @@ export function TherapistsTableClient({
                                     }`}>
                                       {c.status === "APPROVED" ? "مقبول" : c.status === "REJECTED" ? "مرفوض" : "معلق"}
                                     </span>
-                                    {c.status === "PENDING" && (
+                                    {c.status === "PENDING" && !isReadOnly && (
                                       <div className="flex gap-1">
                                         <button 
                                           onClick={() => handleUpdateCertificateStatus(t.id, c.id, "APPROVED")} 
@@ -264,12 +266,14 @@ export function TherapistsTableClient({
                     <p className="text-xs text-slate-500">الخبرة</p>
                     <p className="font-black text-slate-800 text-base">{t.therapistProfile?.yearsExperience} سنوات</p>
                   </div>
-                  <button 
-                    onClick={() => handleToggleVerification(t.id, false)}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors flex items-center gap-1.5 shadow-md shadow-emerald-600/10"
-                  >
-                    <ShieldCheck className="w-4 h-4" /> توثيق الحساب
-                  </button>
+                  {!isReadOnly && (
+                    <button 
+                      onClick={() => handleToggleVerification(t.id, false)}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors flex items-center gap-1.5 shadow-md shadow-emerald-600/10"
+                    >
+                      <ShieldCheck className="w-4 h-4" /> توثيق الحساب
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -365,7 +369,7 @@ export function TherapistsTableClient({
                   </td>
                   <td className="px-5 py-3.5">
                     <div className="flex justify-center gap-1.5">
-                      {/* View Profile details modal */}
+                      {/* View Profile details modal - always visible */}
                       <button 
                         onClick={() => setSelectedTherapist(t)}
                         title="عرض الملف المهني الكامل للأخصائي"
@@ -373,42 +377,47 @@ export function TherapistsTableClient({
                       >
                         <FileText className="w-4 h-4" />
                       </button>
-                      {/* Verify / Unverify */}
-                      <button 
-                        onClick={() => handleToggleVerification(t.id, t.therapistProfile?.isVerified || false)}
-                        title={t.therapistProfile?.isVerified ? "إلغاء التوثيق" : "توثيق الحساب"}
-                        className={`p-2 rounded-lg text-xs font-bold transition-colors ${
-                          t.therapistProfile?.isVerified
-                            ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                            : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
-                        }`}
-                      >
-                        <ShieldCheck className="w-4 h-4" />
-                      </button>
-                      {/* Suspend / Unsuspend */}
-                      <button 
-                        onClick={() => handleToggleSuspend(t.id, t.isSuspended)}
-                        title={t.isSuspended ? "رفع الإيقاف" : "إيقاف الحساب"}
-                        className={`p-2 rounded-lg transition-colors ${
-                          t.isSuspended
-                            ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
-                            : "bg-amber-50 text-amber-700 hover:bg-amber-100"
-                        }`}
-                      >
-                        {t.isSuspended ? <CheckCircle className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
-                      </button>
-                      {/* Delete */}
-                      <button 
-                        onClick={() => {
-                          if (confirm(`هل أنت متأكد من حذف حساب الأخصائي ${t.name}؟`)) {
-                            handleDeleteTherapist(t.id);
-                          }
-                        }}
-                        title="حذف الحساب"
-                        className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      {/* Action buttons - hidden for ADMIN_VIEWER */}
+                      {!isReadOnly && (
+                        <>
+                          {/* Verify / Unverify */}
+                          <button 
+                            onClick={() => handleToggleVerification(t.id, t.therapistProfile?.isVerified || false)}
+                            title={t.therapistProfile?.isVerified ? "إلغاء التوثيق" : "توثيق الحساب"}
+                            className={`p-2 rounded-lg text-xs font-bold transition-colors ${
+                              t.therapistProfile?.isVerified
+                                ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                                : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                            }`}
+                          >
+                            <ShieldCheck className="w-4 h-4" />
+                          </button>
+                          {/* Suspend / Unsuspend */}
+                          <button 
+                            onClick={() => handleToggleSuspend(t.id, t.isSuspended)}
+                            title={t.isSuspended ? "رفع الإيقاف" : "إيقاف الحساب"}
+                            className={`p-2 rounded-lg transition-colors ${
+                              t.isSuspended
+                                ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                                : "bg-amber-50 text-amber-700 hover:bg-amber-100"
+                            }`}
+                          >
+                            {t.isSuspended ? <CheckCircle className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+                          </button>
+                          {/* Delete */}
+                          <button 
+                            onClick={() => {
+                              if (confirm(`هل أنت متأكد من حذف حساب الأخصائي ${t.name}؟`)) {
+                                handleDeleteTherapist(t.id);
+                              }
+                            }}
+                            title="حذف الحساب"
+                            className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -435,6 +444,7 @@ export function TherapistsTableClient({
           onToggleSuspend={handleToggleSuspend}
           onDelete={handleDeleteTherapist}
           onUpdateCertificate={handleUpdateCertificateStatus}
+          isReadOnly={isReadOnly}
         />
       )}
     </div>

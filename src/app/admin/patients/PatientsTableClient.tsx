@@ -34,9 +34,10 @@ type PatientsTableClientProps = {
   initialPatients: Patient[];
   toggleSuspend: (userId: string, currentStatus: boolean) => Promise<void>;
   deletePatient: (userId: string) => Promise<void>;
+  isReadOnly?: boolean;
 };
 
-export function PatientsTableClient({ initialPatients, toggleSuspend, deletePatient }: PatientsTableClientProps) {
+export function PatientsTableClient({ initialPatients, toggleSuspend, deletePatient, isReadOnly = false }: PatientsTableClientProps) {
   const [patients, setPatients] = useState<Patient[]>(initialPatients);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
@@ -209,7 +210,7 @@ export function PatientsTableClient({ initialPatients, toggleSuspend, deletePati
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center justify-center gap-2">
-                        {/* View Profile */}
+                        {/* View Profile - always visible */}
                         <button
                           onClick={() => setSelectedPatient(p)}
                           title="عرض ملف الحالة بالكامل"
@@ -217,24 +218,29 @@ export function PatientsTableClient({ initialPatients, toggleSuspend, deletePati
                         >
                           <FileText className="w-4 h-4" />
                         </button>
-                        {/* Suspend / Unsuspend */}
-                        <button
-                          onClick={() => handleToggleSuspend(p.id, p.isSuspended)}
-                          title={p.isSuspended ? "رفع الإيقاف" : "إيقاف الحساب"}
-                          className={`p-2 rounded-lg transition-colors ${
-                            p.isSuspended
-                              ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-600"
-                              : "bg-amber-50 hover:bg-amber-100 text-amber-600"
-                          }`}
-                        >
-                          {p.isSuspended ? <CheckCircle className="w-4 h-4" /> : <ShieldOff className="w-4 h-4" />}
-                        </button>
-                        {/* Delete */}
-                        <DeletePatientButton
-                          patientId={p.id}
-                          patientName={p.name}
-                          onDelete={handleDeletePatient}
-                        />
+                        {/* Action buttons - hidden for ADMIN_VIEWER */}
+                        {!isReadOnly && (
+                          <>
+                            {/* Suspend / Unsuspend */}
+                            <button
+                              onClick={() => handleToggleSuspend(p.id, p.isSuspended)}
+                              title={p.isSuspended ? "رفع الإيقاف" : "إيقاف الحساب"}
+                              className={`p-2 rounded-lg transition-colors ${
+                                p.isSuspended
+                                  ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-600"
+                                  : "bg-amber-50 hover:bg-amber-100 text-amber-600"
+                              }`}
+                            >
+                              {p.isSuspended ? <CheckCircle className="w-4 h-4" /> : <ShieldOff className="w-4 h-4" />}
+                            </button>
+                            {/* Delete */}
+                            <DeletePatientButton
+                              patientId={p.id}
+                              patientName={p.name}
+                              onDelete={handleDeletePatient}
+                            />
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

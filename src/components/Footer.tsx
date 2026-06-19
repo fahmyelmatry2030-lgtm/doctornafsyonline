@@ -84,13 +84,17 @@ export async function Footer() {
               تواصل معنا
             </h3>
             <ul className="space-y-3">
-              <li className="flex items-center gap-2.5 text-sm text-gray-400">
+              <li className="flex items-center gap-2.5 text-sm">
                 <Mail className="h-4 w-4 text-indigo-400 flex-shrink-0" />
-                support@nafsi.com
+                <a href="mailto:support@doctornafsyonline.com" className="text-white font-semibold hover:text-indigo-300 transition-colors">
+                  support@doctornafsyonline.com
+                </a>
               </li>
-              <li className="flex items-center gap-2.5 text-sm text-gray-400">
+              <li className="flex items-center gap-2.5 text-sm">
                 <Phone className="h-4 w-4 text-indigo-400 flex-shrink-0" />
-                +20 100 000 0000
+                <a href="tel:+201129639257" className="text-white font-semibold hover:text-indigo-300 transition-colors">
+                  +201129639257
+                </a>
               </li>
               <li className="flex items-center gap-2.5 text-sm text-gray-400">
                 <MapPin className="h-4 w-4 text-indigo-400 flex-shrink-0" />
@@ -112,6 +116,11 @@ export async function Footer() {
           <p className="text-sm text-gray-500">
             © 2026 {platformName}. جميع الحقوق محفوظة.
           </p>
+          <div className="flex gap-4 text-xs text-gray-400">
+            <Link href="/terms" className="hover:text-white transition-colors">الشروط والأحكام</Link>
+            <span>·</span>
+            <Link href="/privacy" className="hover:text-white transition-colors">سياسة الخصوصية</Link>
+          </div>
           <p className="text-sm text-indigo-400/70">
             صُنع بعناية لصحتك النفسية
           </p>

@@ -29,9 +29,10 @@ type Appointment = {
 interface OperationsTabsProps {
   initialAppointments: Appointment[];
   commissionRate: number;
+  isReadOnly?: boolean;
 }
 
-export function OperationsTabs({ initialAppointments, commissionRate }: OperationsTabsProps) {
+export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly = false }: OperationsTabsProps) {
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments);
   const [activeTab, setActiveTab] = useState<"bookings" | "sessions" | "payments">("bookings");
   const [search, setSearch] = useState("");
@@ -45,6 +46,7 @@ export function OperationsTabs({ initialAppointments, commissionRate }: Operatio
   const [actionMessage, setActionMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const handleStatusUpdate = async (id: string, newStatus: Appointment["status"]) => {
+    if (isReadOnly) return;
     setActionMessage(null);
     startTransition(async () => {
       const res = await updateAppointmentStatus(id, newStatus);
@@ -251,35 +253,41 @@ export function OperationsTabs({ initialAppointments, commissionRate }: Operatio
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex gap-2 justify-center">
-                          {app.status === "PENDING" && (
+                          {isReadOnly ? (
+                            <span className="text-xs text-slate-400 font-semibold">عرض فقط</span>
+                          ) : (
                             <>
-                              <button
-                                onClick={() => handleStatusUpdate(app.id, "CONFIRMED")}
-                                disabled={isPending}
-                                className="flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-colors shadow-sm"
-                              >
-                                <Check className="w-3.5 h-3.5" /> تأكيد الحجز
-                              </button>
-                              <button
-                                onClick={() => handleStatusUpdate(app.id, "CANCELLED")}
-                                disabled={isPending}
-                                className="flex items-center gap-1 border border-red-200 text-red-600 hover:bg-red-50 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
-                              >
-                                <X className="w-3.5 h-3.5" /> إلغاء الحجز
-                              </button>
+                              {app.status === "PENDING" && (
+                                <>
+                                  <button
+                                    onClick={() => handleStatusUpdate(app.id, "CONFIRMED")}
+                                    disabled={isPending}
+                                    className="flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-colors shadow-sm"
+                                  >
+                                    <Check className="w-3.5 h-3.5" /> تأكيد الحجز
+                                  </button>
+                                  <button
+                                    onClick={() => handleStatusUpdate(app.id, "CANCELLED")}
+                                    disabled={isPending}
+                                    className="flex items-center gap-1 border border-red-200 text-red-600 hover:bg-red-50 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
+                                  >
+                                    <X className="w-3.5 h-3.5" /> إلغاء الحجز
+                                  </button>
+                                </>
+                              )}
+                              {app.status === "CONFIRMED" && (
+                                <button
+                                  onClick={() => handleStatusUpdate(app.id, "CANCELLED")}
+                                  disabled={isPending}
+                                  className="flex items-center gap-1 border border-red-200 text-red-600 hover:bg-red-50 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
+                                >
+                                  <X className="w-3.5 h-3.5" /> إلغاء الحجز
+                                </button>
+                              )}
+                              {["COMPLETED", "CANCELLED", "IN_PROGRESS"].includes(app.status) && (
+                                <span className="text-xs text-slate-400 font-semibold">—</span>
+                              )}
                             </>
-                          )}
-                          {app.status === "CONFIRMED" && (
-                            <button
-                              onClick={() => handleStatusUpdate(app.id, "CANCELLED")}
-                              disabled={isPending}
-                              className="flex items-center gap-1 border border-red-200 text-red-600 hover:bg-red-50 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
-                            >
-                              <X className="w-3.5 h-3.5" /> إلغاء الحجز
-                            </button>
-                          )}
-                          {["COMPLETED", "CANCELLED", "IN_PROGRESS"].includes(app.status) && (
-                            <span className="text-xs text-slate-400 font-semibold">—</span>
                           )}
                         </div>
                       </td>
@@ -387,34 +395,58 @@ export function OperationsTabs({ initialAppointments, commissionRate }: Operatio
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex gap-2 justify-center">
-                          {app.status === "IN_PROGRESS" && (
-                            <button
-                              onClick={() => handleStatusUpdate(app.id, "COMPLETED")}
-                              disabled={isPending}
-                              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-colors shadow-sm"
-                            >
-                              إنهاء الجلسة
-                            </button>
-                          )}
-                          {app.status === "CONFIRMED" && (
-                            <button
-                              onClick={() => handleStatusUpdate(app.id, "IN_PROGRESS")}
-                              disabled={isPending}
-                              className="border border-green-600 text-green-700 hover:bg-green-50 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
-                            >
-                              بدء الجلسة
-                            </button>
-                          )}
-                          {app.status === "COMPLETED" && (
-                            <span className="text-xs text-emerald-600 font-bold flex items-center gap-0.5">
-                              ✓ مكتملة
-                            </span>
-                          )}
-                          {app.status === "PENDING" && (
-                            <span className="text-xs text-slate-400 font-semibold">بانتظار التأكيد</span>
-                          )}
-                          {app.status === "CANCELLED" && (
-                            <span className="text-xs text-red-500 font-bold">ملغية</span>
+                          {isReadOnly ? (
+                            <>
+                              {app.status === "COMPLETED" && (
+                                <span className="text-xs text-emerald-600 font-bold flex items-center gap-0.5">
+                                  ✓ مكتملة
+                                </span>
+                              )}
+                              {app.status === "PENDING" && (
+                                <span className="text-xs text-slate-400 font-semibold">بانتظار التأكيد</span>
+                              )}
+                              {app.status === "CANCELLED" && (
+                                <span className="text-xs text-red-500 font-bold">ملغية</span>
+                              )}
+                              {app.status === "CONFIRMED" && (
+                                <span className="text-xs text-slate-400 font-semibold">قادمة (مؤكدة)</span>
+                              )}
+                              {app.status === "IN_PROGRESS" && (
+                                <span className="text-xs text-green-600 font-bold">جارية الآن</span>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              {app.status === "IN_PROGRESS" && (
+                                <button
+                                  onClick={() => handleStatusUpdate(app.id, "COMPLETED")}
+                                  disabled={isPending}
+                                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-colors shadow-sm"
+                                >
+                                  إنهاء الجلسة
+                                </button>
+                              )}
+                              {app.status === "CONFIRMED" && (
+                                <button
+                                  onClick={() => handleStatusUpdate(app.id, "IN_PROGRESS")}
+                                  disabled={isPending}
+                                  className="border border-green-600 text-green-700 hover:bg-green-50 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
+                                >
+                                  بدء الجلسة
+                                </button>
+                              )}
+                              {app.status === "COMPLETED" && (
+                                <span className="text-xs text-emerald-600 font-bold flex items-center gap-0.5">
+                                  ✓ مكتملة
+                                </span>
+                              )}
+                              {app.status === "PENDING" && (
+                                <span className="text-xs text-slate-400 font-semibold">بانتظار التأكيد</span>
+                              )}
+                              {app.status === "CANCELLED" && (
+                                <span className="text-xs text-red-500 font-bold">ملغية</span>
+                              )}
+                            </>
                           )}
                         </div>
                       </td>

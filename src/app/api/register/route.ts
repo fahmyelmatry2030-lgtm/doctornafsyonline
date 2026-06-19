@@ -29,6 +29,16 @@ export async function POST(request: Request) {
       );
     }
 
+    // التحقق من قوة كلمة المرور (8 أحرف على الأقل، تحتوي على حرف ورقم)
+    const hasLetter = /[a-zA-Z\u0600-\u06FF]/.test(password);
+    const hasNumber = /\d/.test(password);
+    if (password.length < 8 || !hasLetter || !hasNumber) {
+      return NextResponse.json(
+        { error: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل، وتحتوي على حرف واحد ورقم واحد على الأقل." },
+        { status: 400 }
+      );
+    }
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       return NextResponse.json(
