@@ -72,7 +72,7 @@ export default async function AdminTherapistsPage() {
   }
 
   return (
-    <div className="animate-fade-in space-y-8">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black text-slate-900">إدارة الأخصائيين</h1>
