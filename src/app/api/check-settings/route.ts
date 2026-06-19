@@ -42,7 +42,7 @@ export async function GET() {
             name: "دكتور تجريبي",
             email: testEmail,
             password: testHashedPassword,
-            phone: PLATFORM_PHONE,
+            phone: "01010423661",
             role: "THERAPIST",
             therapistProfile: {
               create: {

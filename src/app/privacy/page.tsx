@@ -56,7 +56,7 @@ const sections = [
     icon: <Mail className="w-6 h-6" />,
     number: "٨",
     title: "كيفية الاتصال بنا",
-    body: `لأي سؤال حول سياسة الخصوصية، يرجى التواصل معنا عبر support@doctornafsyonline.com أو الهاتف ${PLATFORM_PHONE}. فريقنا جاهز للإجابة.`,
+    body: "لأي سؤال حول سياسة الخصوصية، يرجى التواصل معنا عبر support@doctornafsyonline.com أو الهاتف 01010423661. فريقنا جاهز للإجابة.",
     color: "from-slate-600 to-slate-800",
   },
 ];
@@ -156,10 +156,10 @@ export default function PrivacyPage() {
                 📧 support@doctornafsyonline.com
               </a>
               <a
-                href={PLATFORM_PHONE_TEL}
+                href="tel:01010423661"
                 className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl px-4 py-2.5 transition-colors font-semibold"
               >
-                📞 {PLATFORM_PHONE}
+                📞 01010423661
               </a>
             </div>
           </div>
