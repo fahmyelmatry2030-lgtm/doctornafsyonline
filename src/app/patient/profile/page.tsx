@@ -71,7 +71,7 @@ export default async function PatientProfilePage() {
                 name="phone"
                 defaultValue={user.phone || ""} 
                 className="block w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 py-3.5 px-4 text-slate-900 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm"
-                placeholder="مثال: 01010423661"
+                placeholder={`مثال: ${PLATFORM_PHONE}`}
               />
             </div>
 

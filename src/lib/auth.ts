@@ -3,6 +3,14 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
+export function isAdminRole(role?: string): boolean {
+  return role?.startsWith("ADMIN") ?? false;
+}
+
+export function isExactAdmin(role?: string): boolean {
+  return role === "ADMIN";
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   secret: process.env.AUTH_SECRET,

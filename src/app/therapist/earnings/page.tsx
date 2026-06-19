@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { CreditCard, Wallet, ArrowDownToLine, History } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
+import { PLATFORM_PHONE } from "@/lib/constants";
 import WithdrawalButton from "@/components/WithdrawalButton";
 
 export default async function TherapistEarningsPage() {
@@ -52,7 +53,7 @@ export default async function TherapistEarningsPage() {
             </p>
           </div>
           <span className="inline-block text-[10px] font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full w-fit mt-3">
-            01010423661 للتواصل
+            {PLATFORM_PHONE} للتواصل
           </span>
         </div>
       </div>

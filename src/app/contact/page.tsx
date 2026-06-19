@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Mail, MapPin, Phone, Send, MessageCircle, Clock, CheckCircle2, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { PLATFORM_PHONE } from "@/lib/constants";
 
 export default function ContactPage() {
   const [formState, setFormState] = useState({
@@ -65,7 +66,7 @@ export default function ContactPage() {
                 {
                   icon: <Phone className="h-6 w-6 text-[#10B981]" />,
                   title: "رقم الهاتف",
-                  info: "+201129639257",
+                  info: PLATFORM_PHONE,
                   desc: "متاح من 9 صباحاً حتى 9 مساءً بتوقيت مكة",
                   bg: "from-[#10B981] to-[#059669]",
                 },

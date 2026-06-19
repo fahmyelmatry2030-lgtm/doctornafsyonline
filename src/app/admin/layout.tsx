@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { auth, isAdminRole } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { DashboardLayout } from "@/components/DashboardLayout";
 
@@ -13,7 +13,7 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  if (!session.user.role.startsWith("ADMIN")) {
+  if (!isAdminRole(session.user.role)) {
     redirect("/dashboard"); // will redirect to correct dashboard
   }
 

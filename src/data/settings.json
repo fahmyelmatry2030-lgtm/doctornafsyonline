@@ -4,6 +4,9 @@
   "maxPrice": 1000,
   "sessionDuration": 50,
   "platformName": "دكتور نفسي",
+  "heroTitle": "رعاية نفسية متخصصة في متناول يدك",
+  "heroSubtitle": "تواصل مع أفضل الأخصائيين النفسيين المعتمدين من راحة منزلك، عبر جلسات فيديو آمنة وسرية.",
+  "contactEmail": "support@doctornafsyonline.com",
   "allowNewTherapists": true,
   "allowNewPatients": true,
   "maintenanceMode": false,
@@ -11,8 +14,5 @@
   "emailOnCancel": true,
   "smsEnabled": false,
   "twoFactor": false,
-  "sessionTimeout": 30,
-  "stripeKey": "sk_test_***",
-  "livekitKey": "lk_secret_***",
-  "livekitUrl": "wss://your-livekit.livekit.cloud"
+  "sessionTimeout": 30
 }

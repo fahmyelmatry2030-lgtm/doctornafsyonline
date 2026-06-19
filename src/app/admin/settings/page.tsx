@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { auth, isAdminRole } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getSettings } from "./actions";
 import { SettingsPageClient } from "./SettingsPageClient";
@@ -8,7 +8,7 @@ export default async function AdminSettingsPage() {
   const role = session?.user?.role;
 
   // Only ADMIN and ADMIN_VIEWER can access settings
-  if (!role || !role.startsWith("ADMIN")) {
+  if (!isAdminRole(role)) {
     redirect("/dashboard");
   }
 

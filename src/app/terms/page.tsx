@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Shield, FileText, CreditCard, User, Database, Bell, Scale, Gavel, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { PLATFORM_PHONE, PLATFORM_PHONE_TEL } from "@/lib/constants";
 
 const sections = [
   {
@@ -160,8 +161,8 @@ export default function TermsPage() {
               <a href="mailto:support@doctornafsyonline.com" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl px-4 py-2.5 transition-colors font-semibold">
                 📧 support@doctornafsyonline.com
               </a>
-              <a href="tel:+201129639257" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl px-4 py-2.5 transition-colors font-semibold">
-                📞 +201129639257
+              <a href={PLATFORM_PHONE_TEL} className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl px-4 py-2.5 transition-colors font-semibold">
+                📞 {PLATFORM_PHONE}
               </a>
             </div>
           </div>

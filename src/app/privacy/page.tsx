@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Shield, Eye, Lock, Share2, Cookie, UserCheck, RefreshCw, Mail, ArrowLeft, Database } from "lucide-react";
+import { PLATFORM_PHONE, PLATFORM_PHONE_TEL } from "@/lib/constants";
 
 const sections = [
   {
@@ -55,7 +56,7 @@ const sections = [
     icon: <Mail className="w-6 h-6" />,
     number: "٨",
     title: "كيفية الاتصال بنا",
-    body: "لأي سؤال حول سياسة الخصوصية، يرجى التواصل معنا عبر support@doctornafsyonline.com أو الهاتف +201129639257. فريقنا جاهز للإجابة.",
+    body: `لأي سؤال حول سياسة الخصوصية، يرجى التواصل معنا عبر support@doctornafsyonline.com أو الهاتف ${PLATFORM_PHONE}. فريقنا جاهز للإجابة.`,
     color: "from-slate-600 to-slate-800",
   },
 ];
@@ -155,10 +156,10 @@ export default function PrivacyPage() {
                 📧 support@doctornafsyonline.com
               </a>
               <a
-                href="tel:+201129639257"
+                href={PLATFORM_PHONE_TEL}
                 className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl px-4 py-2.5 transition-colors font-semibold"
               >
-                📞 +201129639257
+                📞 {PLATFORM_PHONE}
               </a>
             </div>
           </div>

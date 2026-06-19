@@ -22,6 +22,10 @@ export const SESSION_TYPES = {
   CHAT: { label: "محادثة نصية", icon: "message" },
 } as const;
 
+export const PLATFORM_PHONE = "01010423661";
+export const PLATFORM_PHONE_TEL = `tel:${PLATFORM_PHONE}`;
+export const PLATFORM_INSTAPAY = `${PLATFORM_PHONE}@instapay`;
+
 export function formatPrice(amount: number): string {
   return `${amount.toLocaleString("ar-EG")} ج.م`;
 }

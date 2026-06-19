@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSettings } from "@/app/admin/settings/actions";
 import { prisma } from "@/lib/prisma";
+import { PLATFORM_PHONE } from "@/lib/constants";
 import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
@@ -41,7 +42,7 @@ export async function GET() {
             name: "دكتور تجريبي",
             email: testEmail,
             password: testHashedPassword,
-            phone: "01099999999",
+            phone: PLATFORM_PHONE,
             role: "THERAPIST",
             therapistProfile: {
               create: {

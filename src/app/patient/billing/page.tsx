@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { CreditCard, FileText, CheckCircle2, Clock, Phone, Landmark, Wallet, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
+import { PLATFORM_PHONE, PLATFORM_INSTAPAY } from "@/lib/constants";
 import ScreenshotUploader from "@/components/ScreenshotUploader";
 import PayOnlineButton from "@/components/PayOnlineButton";
 
@@ -57,7 +58,7 @@ export default async function PatientBillingPage({
           <div className="space-y-2">
             <p className="text-xs text-slate-500">فودافون كاش / اتصالات كاش / أورنج كاش</p>
             <p className="text-2xl font-black text-indigo-600 tracking-wide select-all" dir="ltr">
-              01010423661
+              {PLATFORM_PHONE}
             </p>
             <span className="inline-block text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
               تحويل فوري
@@ -73,7 +74,7 @@ export default async function PatientBillingPage({
           <div className="space-y-2">
             <p className="text-xs text-slate-500">التحويل المباشر عبر تطبيق إنستا باي</p>
             <p className="text-2xl font-black text-emerald-600 tracking-all select-all" dir="ltr">
-              01010423661@instapay
+              {PLATFORM_INSTAPAY}
             </p>
             <span className="inline-block text-[10px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full">
               معتمد

@@ -92,8 +92,8 @@ export async function Footer() {
               </li>
               <li className="flex items-center gap-2.5 text-sm">
                 <Phone className="h-4 w-4 text-indigo-400 flex-shrink-0" />
-                <a href="tel:+201129639257" className="text-white font-semibold hover:text-indigo-300 transition-colors">
-                  +201129639257
+                <a href={PLATFORM_PHONE_TEL} className="text-white font-semibold hover:text-indigo-300 transition-colors">
+                  {PLATFORM_PHONE}
                 </a>
               </li>
               <li className="flex items-center gap-2.5 text-sm text-gray-400">
