@@ -1,3 +1,3 @@
-module.exports=[3994,a=>{"use strict";var b=a.i(63425);a.s([],34821),a.i(34821),a.s(["00f29300f0973f2036a1086cf830d1698846062f95",()=>b.getSettings,"4092a80d10f3a2b6fa1c8b5b26f740e302bbb01844",()=>b.updateSettings],3994)}];
+module.exports=[503994,a=>{"use strict";var b=a.i(763425);a.s([],934821),a.i(934821),a.s(["00f29300f0973f2036a1086cf830d1698846062f95",()=>b.getSettings,"4092a80d10f3a2b6fa1c8b5b26f740e302bbb01844",()=>b.updateSettings],503994)}];
 
 //# sourceMappingURL=_next-internal_server_app_therapist_earnings_page_actions_1cbhuvy.js.map

@@ -267,6 +267,18 @@
       "namedRegex": "^/api/fix\\-db(?:/)?$"
     },
     {
+      "page": "/api/payment/checkout",
+      "regex": "^/api/payment/checkout(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/payment/checkout(?:/)?$"
+    },
+    {
+      "page": "/api/payment/webhook",
+      "regex": "^/api/payment/webhook(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/payment/webhook(?:/)?$"
+    },
+    {
       "page": "/api/register",
       "regex": "^/api/register(?:/)?$",
       "routeKeys": {},

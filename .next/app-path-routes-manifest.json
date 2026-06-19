@@ -31,6 +31,8 @@
   "/api/auth/clear-cookies/route": "/api/auth/clear-cookies",
   "/api/check-settings/route": "/api/check-settings",
   "/api/fix-db/route": "/api/fix-db",
+  "/api/payment/checkout/route": "/api/payment/checkout",
+  "/api/payment/webhook/route": "/api/payment/webhook",
   "/api/register/route": "/api/register",
   "/api/reviews/route": "/api/reviews",
   "/api/session/token/route": "/api/session/token",

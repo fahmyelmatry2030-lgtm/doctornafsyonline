@@ -4,10 +4,18 @@ import { CreditCard, FileText, CheckCircle2, Clock, Phone, Landmark, Wallet, Ale
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import ScreenshotUploader from "@/components/ScreenshotUploader";
+import PayOnlineButton from "@/components/PayOnlineButton";
 
-export default async function PatientBillingPage() {
+export default async function PatientBillingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const session = await auth();
   if (!session?.user) return null;
+
+  const resolvedSearchParams = await searchParams;
+  const status = resolvedSearchParams.status;
 
   const appointments = await prisma.appointment.findMany({
     where: { patientId: session.user.id },
@@ -17,6 +25,24 @@ export default async function PatientBillingPage() {
 
   return (
     <div className="animate-fade-in space-y-8">
+      {status === "success" && (
+        <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 text-green-800 rounded-2xl animate-fade-in">
+          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+          <div className="text-sm font-bold">
+            تمت عملية الدفع بنجاح وتأكيد موعد جلستك! ستصلك رسالة تفصيلية على الجوال والواتساب قريباً.
+          </div>
+        </div>
+      )}
+
+      {status === "cancelled" && (
+        <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl animate-fade-in">
+          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+          <div className="text-sm font-bold">
+            تم إلغاء عملية الدفع. يمكنك إعادة المحاولة في أي وقت أو رفع لقطة شاشة التحويل اليدوي.
+          </div>
+        </div>
+      )}
+
       <div>
         <h1 className="text-3xl font-black text-slate-900">الفواتير والمدفوعات</h1>
         <p className="text-slate-600 mt-2 text-lg">بيانات حسابات التحويل المالي وسجل الجلسات الخاص بك.</p>
@@ -82,7 +108,7 @@ export default async function PatientBillingPage() {
                 <th className="px-6 py-4">الأخصائي</th>
                 <th className="px-6 py-4">المبلغ</th>
                 <th className="px-6 py-4">الحالة</th>
-                <th className="px-6 py-4">تأكيد الدفع / الفاتورة</th>
+                <th className="px-6 py-4">خيارات تأكيد الدفع الإلكتروني واليدوي</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -113,7 +139,14 @@ export default async function PatientBillingPage() {
                       app.paymentScreenshot ? (
                         <span className="text-xs text-slate-400 font-semibold">تم رفع الإثبات وفي مراجعة الحسابات</span>
                       ) : (
-                        <div className="max-w-[200px]">
+                        <div className="flex flex-col gap-2 max-w-[200px]">
+                          <PayOnlineButton appointmentId={app.id} />
+                          <div className="relative flex items-center justify-center my-1">
+                            <span className="absolute inset-0 flex items-center">
+                              <span className="w-full border-t border-slate-200"></span>
+                            </span>
+                            <span className="relative bg-white px-2 text-[10px] text-slate-400 font-bold">أو تحويل يدوي</span>
+                          </div>
                           <ScreenshotUploader appointmentId={app.id} />
                         </div>
                       )
@@ -137,3 +170,4 @@ export default async function PatientBillingPage() {
     </div>
   );
 }
+

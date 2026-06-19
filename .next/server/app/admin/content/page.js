@@ -16,5 +16,5 @@ R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_unauthor
 R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_global-error_0-o-goa.js")
 R.c("server/chunks/ssr/src_1pumuyh._.js")
 R.c("server/chunks/ssr/_next-internal_server_app_admin_content_page_actions_0xct8x2.js")
-R.m(24860)
-module.exports=R.m(24860).exports
+R.m(924860)
+module.exports=R.m(924860).exports
