@@ -156,8 +156,8 @@ export function TherapistDetailsModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm" dir="rtl">
-      <div className="relative w-full max-w-4xl rounded-3xl bg-white shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-fade-in border border-slate-100">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm" dir="rtl">
+      <div className="relative w-full max-w-4xl rounded-3xl bg-white shadow-2xl overflow-hidden max-h-[92vh] flex flex-col animate-fade-in border border-slate-100">
         
         {/* Header */}
         <div className="bg-slate-50 px-8 py-6 border-b border-slate-100 flex items-center justify-between shrink-0">
