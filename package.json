@@ -11,7 +11,7 @@
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.js",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate && node patch-node-modules.js && next build"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
