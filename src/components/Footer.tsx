@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Heart, Mail, Phone, MapPin, ArrowLeft } from "lucide-react";
 import { getSettings } from "@/app/admin/settings/actions";
+import { PLATFORM_PHONE, PLATFORM_PHONE_TEL } from "@/lib/constants";
 
 export async function Footer() {
   let settings = null;
