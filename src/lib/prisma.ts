@@ -17,7 +17,7 @@ if (!process.env.DATABASE_URL) {
 if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes("file:./dev.db")) {
   if (process.env.NODE_ENV === "production") {
     console.warn("⚠️  WARNING: Dev database URL in production. Switching to MySQL.");
-    process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@localhost:3306/u465666297_u465666297";
+    process.env.DATABASE_URL = "mysql://u465666297_u465666297:Doctor1346790@127.0.0.1:3306/u465666297_u465666297";
   }
 }
 
