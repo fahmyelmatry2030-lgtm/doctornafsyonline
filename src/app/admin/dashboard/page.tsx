@@ -19,6 +19,34 @@ export default async function AdminDashboardPage() {
   const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
 
+  let dbData;
+  try {
+    dbData = await Promise.all([
+      prisma.user.count({ where: { role: "PATIENT" } }),
+      prisma.user.count({ where: { role: "THERAPIST" } }),
+      prisma.appointment.count({ where: { scheduledAt: { gte: today, lte: endOfDay } } }),
+      prisma.appointment.count({ where: { status: "IN_PROGRESS" } }),
+      prisma.therapistProfile.count({ where: { isVerified: false } }),
+      prisma.appointment.count(),
+      prisma.appointment.count({ where: { status: "COMPLETED" } }),
+      prisma.appointment.count({ where: { status: "CANCELLED" } }),
+      prisma.appointment.aggregate({ _sum: { price: true }, where: { status: "COMPLETED", createdAt: { gte: firstDayOfMonth } } }),
+      prisma.appointment.aggregate({ _sum: { price: true }, where: { status: "COMPLETED", createdAt: { gte: lastMonth, lt: firstDayOfMonth } } }),
+      prisma.appointment.findMany({ include: { patient: { select: { name: true } }, therapist: { select: { name: true } } }, orderBy: { createdAt: "desc" }, take: 5 }),
+      prisma.user.findMany({ where: { role: "THERAPIST", therapistProfile: { isVerified: false } }, include: { therapistProfile: true }, take: 4 }),
+      getSettings(),
+    ]);
+  } catch (error: any) {
+    console.error("Dashboard Error:", error);
+    return (
+      <div className="p-8 bg-white rounded-2xl shadow-sm text-center">
+        <h2 className="text-2xl font-black text-rose-600 mb-4">حدث خطأ أثناء تحميل لوحة التحكم</h2>
+        <p className="text-slate-600">{error.message || "خطأ غير معروف في قاعدة البيانات"}</p>
+        <p className="text-sm mt-4 text-slate-400">يرجى المحاولة مرة أخرى أو الاتصال بالدعم الفني.</p>
+      </div>
+    );
+  }
+
   const [
     totalPatients, totalTherapists, todaysSessions,
     activeNow, pendingVerifications, totalAppointments,
@@ -26,21 +54,7 @@ export default async function AdminDashboardPage() {
     monthlyEarningsData, lastMonthEarningsData,
     recentAppointments, pendingTherapists,
     settings
-  ] = await Promise.all([
-    prisma.user.count({ where: { role: "PATIENT" } }),
-    prisma.user.count({ where: { role: "THERAPIST" } }),
-    prisma.appointment.count({ where: { scheduledAt: { gte: today, lte: endOfDay } } }),
-    prisma.appointment.count({ where: { status: "IN_PROGRESS" } }),
-    prisma.therapistProfile.count({ where: { isVerified: false } }),
-    prisma.appointment.count(),
-    prisma.appointment.count({ where: { status: "COMPLETED" } }),
-    prisma.appointment.count({ where: { status: "CANCELLED" } }),
-    prisma.appointment.aggregate({ _sum: { price: true }, where: { status: "COMPLETED", createdAt: { gte: firstDayOfMonth } } }),
-    prisma.appointment.aggregate({ _sum: { price: true }, where: { status: "COMPLETED", createdAt: { gte: lastMonth, lt: firstDayOfMonth } } }),
-    prisma.appointment.findMany({ include: { patient: { select: { name: true } }, therapist: { select: { name: true } } }, orderBy: { createdAt: "desc" }, take: 5 }),
-    prisma.user.findMany({ where: { role: "THERAPIST", therapistProfile: { isVerified: false } }, include: { therapistProfile: true }, take: 4 }),
-    getSettings(),
-  ]);
+  ] = dbData;
 
   const commissionFactor = settings.commission / 100;
   const monthlyRevenue = (monthlyEarningsData._sum.price || 0) * commissionFactor;
