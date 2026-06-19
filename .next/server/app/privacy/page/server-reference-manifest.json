@@ -1,0 +1,29 @@
+{
+  "node": {
+    "00f29300f0973f2036a1086cf830d1698846062f95": {
+      "workers": {
+        "app/privacy/page": {
+          "moduleId": 99745,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getSettings",
+      "filename": "src/app/admin/settings/actions.ts"
+    },
+    "4092a80d10f3a2b6fa1c8b5b26f740e302bbb01844": {
+      "workers": {
+        "app/privacy/page": {
+          "moduleId": 99745,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateSettings",
+      "filename": "src/app/admin/settings/actions.ts"
+    }
+  },
+  "edge": {}
+}

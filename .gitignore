@@ -13,8 +13,8 @@
 # testing
 /coverage
 
-# next.js output should NOT be included in git (Windows/Linux mismatch)
-/.next/
+# next.js build cache only (build output IS committed for Hostinger)
+/.next/cache/
 
 # production
 /build
