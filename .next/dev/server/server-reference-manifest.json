@@ -1,5 +1,42 @@
 {
-  "node": {},
+  "node": {
+    "00c0cdf1a2c28edd23f70d115308c725816f5cb5af": {
+      "workers": {
+        "app/how-it-works/page": {
+          "moduleId": "[project]/.next-internal/server/app/how-it-works/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/admin/settings/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/admin/settings/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        }
+      },
+      "filename": "src/app/admin/settings/actions.ts",
+      "exportedName": "getSettings"
+    },
+    "404dedcd1f80bea7850aa54590a87c4684918ade69": {
+      "workers": {
+        "app/how-it-works/page": {
+          "moduleId": "[project]/.next-internal/server/app/how-it-works/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/admin/settings/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/admin/settings/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        }
+      },
+      "filename": "src/app/admin/settings/actions.ts",
+      "exportedName": "updateSettings"
+    }
+  },
   "edge": {},
-  "encryptionKey": "upkBewZguCZHXG+4uonrVELvDNJu9u4MM71DNfNMCew="
+  "encryptionKey": "usPB3i1TRxDJpC2xfJhz8ZINPi0+qh/lSkOwh0N21oE="
 }

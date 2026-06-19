@@ -1,0 +1,29 @@
+{
+  "node": {
+    "00c0cdf1a2c28edd23f70d115308c725816f5cb5af": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/admin/settings/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getSettings",
+      "filename": "src/app/admin/settings/actions.ts"
+    },
+    "404dedcd1f80bea7850aa54590a87c4684918ade69": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/admin/settings/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateSettings",
+      "filename": "src/app/admin/settings/actions.ts"
+    }
+  },
+  "edge": {}
+}

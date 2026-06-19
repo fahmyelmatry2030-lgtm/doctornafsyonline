@@ -28,7 +28,6 @@ model User {
   therapistAppointments Appointment[] @relation("TherapistAppointments")
   messages      Message[]
   reviews       Review[]
-  sessionNotes  SessionNote[]
 }
 
 model TherapistProfile {

@@ -1,6 +1,6 @@
 {
   "node": {
-    "00f29300f0973f2036a1086cf830d1698846062f95": {
+    "00702d19ac9aae13d8d16c3c8b1733e846bc94d4be": {
       "workers": {
         "app/therapist/settings/page": {
           "moduleId": 74277,
@@ -12,7 +12,7 @@
       "exportedName": "getSettings",
       "filename": "src/app/admin/settings/actions.ts"
     },
-    "4092a80d10f3a2b6fa1c8b5b26f740e302bbb01844": {
+    "409a7172b84f4338ce5cfa124590e95da5bea0d6fd": {
       "workers": {
         "app/therapist/settings/page": {
           "moduleId": 74277,
@@ -24,7 +24,7 @@
       "exportedName": "updateSettings",
       "filename": "src/app/admin/settings/actions.ts"
     },
-    "4066249198b200c297d845ccc9808268a8e943f5e4": {
+    "403e29e2c201e2204708b02e504195c3801358008e": {
       "workers": {
         "app/therapist/settings/page": {
           "moduleId": 74277,
