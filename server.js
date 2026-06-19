@@ -5,12 +5,12 @@ const fs = require('fs');
 const path = require('path');
 
 process.on('uncaughtException', (err) => {
-  fs.writeFileSync(path.join(__dirname, 'startup-error.log'), (err.stack || err.toString()) + '\n', { flag: 'a' });
+  try { fs.writeFileSync(path.join(__dirname, 'startup-error.log'), (err.stack || err.toString()) + '\n', { flag: 'a' }); } catch(e){}
   process.exit(1);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  fs.writeFileSync(path.join(__dirname, 'startup-error.log'), 'Unhandled Rejection at: ' + promise + ' reason: ' + reason + '\n', { flag: 'a' });
+  try { fs.writeFileSync(path.join(__dirname, 'startup-error.log'), 'Unhandled Rejection at: ' + promise + ' reason: ' + reason + '\n', { flag: 'a' }); } catch(e){}
 });
 
 // ─── Auto-load .env ─────────────────────────────────────────────────────────
@@ -74,6 +74,7 @@ app.prepare().then(() => {
     });
   }
 }).catch((err) => {
+  try { fs.writeFileSync(path.join(__dirname, 'startup-error.log'), 'Next.js failed to prepare: ' + (err.stack || err.toString()) + '\n', { flag: 'a' }); } catch(e){}
   console.error('Next.js failed to prepare:', err);
   process.exit(1);
 });
