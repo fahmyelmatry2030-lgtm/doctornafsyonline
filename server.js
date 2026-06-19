@@ -38,6 +38,47 @@ if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('@localhost:')
   process.env.DATABASE_URL = process.env.DATABASE_URL.replace('@localhost:', '@127.0.0.1:');
 }
 
+// Run database schema updates automatically on startup on Hostinger
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+async function runSchemaFixes() {
+  try {
+    console.log('⏳ Running database schema auto-fixes on startup...');
+    // 1. Try to add paymentScreenshot to Appointment table
+    try {
+      await prisma.$executeRawUnsafe(
+        'ALTER TABLE `Appointment` ADD COLUMN `paymentScreenshot` TEXT NULL;'
+      );
+      console.log('✅ Auto-added paymentScreenshot column to Appointment table.');
+    } catch (e) {
+      if (!e.message.includes('1060') && !e.message.includes('Duplicate column')) {
+        console.error('Error adding paymentScreenshot column:', e.message);
+      } else {
+        console.log('ℹ️ paymentScreenshot column already exists.');
+      }
+    }
+
+    // 2. Try to add gender to User table
+    try {
+      await prisma.$executeRawUnsafe(
+        'ALTER TABLE `User` ADD COLUMN `gender` VARCHAR(191) NULL;'
+      );
+      console.log('✅ Auto-added gender column to User table.');
+    } catch (e) {
+      if (!e.message.includes('1060') && !e.message.includes('Duplicate column')) {
+        console.error('Error adding gender column:', e.message);
+      } else {
+        console.log('ℹ️ gender column already exists.');
+      }
+    }
+  } catch (err) {
+    console.error('Failed to run schema fixes on startup:', err.message);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+runSchemaFixes().catch(() => {});
+
 const dev = false;
 const hostname = 'localhost';
 const port = process.env.PORT || 3000;

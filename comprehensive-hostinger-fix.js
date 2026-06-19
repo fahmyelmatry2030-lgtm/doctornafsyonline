@@ -168,10 +168,23 @@ try {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// STEP 5: PRISMA MIGRATE
+// STEP 5: APPLY DATABASE MIGRATIONS & SCHEMA FIXES
 // ═══════════════════════════════════════════════════════════════════════
-console.log('🗄️  STEP 5: Applying database migrations...');
+console.log('🗄️  STEP 5: Applying database migrations and schema fixes...');
 console.log('─'.repeat(60));
+
+// Run the schema fix script first to ensure columns exist
+try {
+  console.log('Running: node fix-db-schema.js');
+  execSync('node fix-db-schema.js', { 
+    cwd: projectRoot, 
+    stdio: 'inherit',
+    env: { ...process.env, DATABASE_URL: databaseUrl }
+  });
+  console.log('✅ Custom schema fixes applied\n');
+} catch (error) {
+  console.warn('⚠️  Could not run fix-db-schema.js directly:', error.message);
+}
 
 try {
   console.log('Running: npx prisma migrate deploy');
