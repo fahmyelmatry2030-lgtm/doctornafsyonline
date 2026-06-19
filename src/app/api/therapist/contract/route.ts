@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import fs from "fs/promises";
 import path from "path";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -62,11 +63,20 @@ export async function POST(request: Request) {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       const safeName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-      const uploadDir = path.join(process.cwd(), "public", "uploads", "contracts", targetUserId);
-      await fs.mkdir(uploadDir, { recursive: true });
-      const filePath = path.join(uploadDir, safeName);
-      await fs.writeFile(filePath, buffer);
-      contractUrl = `/uploads/contracts/${targetUserId}/${safeName}`;
+
+      try {
+        // Upload to Cloudinary
+        contractUrl = await uploadToCloudinary(buffer, `contracts/${targetUserId}`, safeName);
+        console.log("[Contract Upload] Uploaded successfully to Cloudinary:", contractUrl);
+      } catch (cloudinaryError) {
+        console.warn("[Contract Upload] Cloudinary upload failed, falling back to local file system:", cloudinaryError);
+        
+        const uploadDir = path.join(process.cwd(), "public", "uploads", "contracts", targetUserId);
+        await fs.mkdir(uploadDir, { recursive: true });
+        const filePath = path.join(uploadDir, safeName);
+        await fs.writeFile(filePath, buffer);
+        contractUrl = `/uploads/contracts/${targetUserId}/${safeName}`;
+      }
 
       const profile = await prisma.therapistProfile.findUnique({ where: { userId: targetUserId } });
       if (!profile) {
@@ -80,6 +90,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json({ success: true, contractUrl });
     }
+
 
     const body = await request.json();
     contractUrl = body.contractUrl;

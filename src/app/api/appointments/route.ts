@@ -33,6 +33,11 @@ export async function POST(request: Request) {
 
     const roomName = `session-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
+    const patientUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { name: true, phone: true }
+    });
+
     const appointment = await prisma.appointment.create({
       data: {
         patientId: session.user.id,
@@ -46,12 +51,37 @@ export async function POST(request: Request) {
       },
     });
 
+    try {
+      const { notifyNewAppointment } = await import("@/lib/notifications");
+      const formattedDate = parsedDate.toLocaleString("ar-EG", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      });
+
+      await notifyNewAppointment({
+        patientName: patientUser?.name || "مريض نفسي",
+        patientPhone: patientUser?.phone,
+        therapistName: therapist.name,
+        therapistPhone: therapist.phone,
+        dateTimeStr: formattedDate,
+        price: appointment.price,
+      });
+    } catch (notifErr) {
+      console.error("Failed to send booking notifications:", notifErr);
+    }
+
     return NextResponse.json(appointment, { status: 201 });
   } catch (error: any) {
     console.error("Booking error details:", error);
     return NextResponse.json({ error: `فشل الحجز: ${error.message || error}` }, { status: 500 });
   }
 }
+
 
 export async function GET() {
   const session = await auth();

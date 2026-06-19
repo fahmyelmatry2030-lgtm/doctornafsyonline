@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import fs from "fs/promises";
 import path from "path";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 export async function POST(
   request: Request,
@@ -50,19 +51,27 @@ export async function POST(
 
     const fileExtension = file.name.split(".").pop() || "png";
     const fileName = `appt_${appointmentId}_screenshot_${Date.now()}.${fileExtension}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "screenshots");
-
-    // Ensure upload directory exists
-    await fs.mkdir(uploadDir, { recursive: true });
-
-    const filePath = path.join(uploadDir, fileName);
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Save locally
-    await fs.writeFile(filePath, buffer);
+    let screenshotUrl = "";
 
-    const screenshotUrl = `/uploads/screenshots/${fileName}`;
+    try {
+      // Try Cloudinary upload
+      screenshotUrl = await uploadToCloudinary(buffer, "screenshots", fileName);
+      console.log("[Screenshot Upload] Uploaded successfully to Cloudinary:", screenshotUrl);
+    } catch (cloudinaryError) {
+      console.warn("[Screenshot Upload] Cloudinary upload failed, falling back to local file system:", cloudinaryError);
+      
+      const uploadDir = path.join(process.cwd(), "public", "uploads", "screenshots");
+      // Ensure upload directory exists
+      await fs.mkdir(uploadDir, { recursive: true });
+
+      const filePath = path.join(uploadDir, fileName);
+      // Save locally
+      await fs.writeFile(filePath, buffer);
+      screenshotUrl = `/uploads/screenshots/${fileName}`;
+    }
 
     // Update appointment
     await prisma.appointment.update({
@@ -79,3 +88,4 @@ export async function POST(
     return NextResponse.json({ error: "حدث خطأ أثناء رفع لقطة الشاشة" }, { status: 500 });
   }
 }
+

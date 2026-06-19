@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import fs from "fs/promises";
 import path from "path";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -33,19 +34,27 @@ export async function POST(request: Request) {
 
     const fileExtension = file.name.split(".").pop() || "png";
     const fileName = `${userId}_avatar.${fileExtension}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "avatars");
-
-    // Ensure upload directory exists
-    await fs.mkdir(uploadDir, { recursive: true });
-
-    const filePath = path.join(uploadDir, fileName);
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Save image locally
-    await fs.writeFile(filePath, buffer);
+    let avatarUrl = "";
 
-    const avatarUrl = `/uploads/avatars/${fileName}`;
+    try {
+      // Try to upload to Cloudinary
+      avatarUrl = await uploadToCloudinary(buffer, "avatars", fileName);
+      console.log("[Avatar Upload] Uploaded successfully to Cloudinary:", avatarUrl);
+    } catch (cloudinaryError) {
+      console.warn("[Avatar Upload] Cloudinary upload failed, falling back to local file system:", cloudinaryError);
+      
+      const uploadDir = path.join(process.cwd(), "public", "uploads", "avatars");
+      // Ensure upload directory exists
+      await fs.mkdir(uploadDir, { recursive: true });
+
+      const filePath = path.join(uploadDir, fileName);
+      // Save image locally
+      await fs.writeFile(filePath, buffer);
+      avatarUrl = `/uploads/avatars/${fileName}`;
+    }
 
     // Update User model
     await prisma.user.update({
@@ -59,3 +68,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "حدث خطأ أثناء رفع الصورة" }, { status: 500 });
   }
 }
+

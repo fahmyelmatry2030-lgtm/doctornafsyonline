@@ -11,10 +11,39 @@ export async function updateAppointmentStatus(id: string, status: string) {
       return { success: false, error: "غير مصرح لك بالقيام بهذا الإجراء" };
     }
 
-    await prisma.appointment.update({
+    const appointment = await prisma.appointment.update({
       where: { id },
       data: { status },
+      include: {
+        patient: { select: { name: true, phone: true } },
+        therapist: { select: { name: true } },
+      },
     });
+
+    if (status === "CONFIRMED") {
+      try {
+        const { notifyAppointmentConfirmed } = await import("@/lib/notifications");
+        const formattedDate = appointment.scheduledAt.toLocaleString("ar-EG", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        });
+
+        await notifyAppointmentConfirmed({
+          patientName: appointment.patient.name,
+          patientPhone: appointment.patient.phone,
+          therapistName: appointment.therapist.name,
+          dateTimeStr: formattedDate,
+        });
+      } catch (notifErr) {
+        console.error("Failed to send confirmation notification:", notifErr);
+      }
+    }
+
     revalidatePath("/admin/operations");
     revalidatePath("/admin/dashboard");
     revalidatePath("/admin/reports");
@@ -24,6 +53,7 @@ export async function updateAppointmentStatus(id: string, status: string) {
     return { success: false, error: "فشل تحديث حالة الموعد" };
   }
 }
+
 
 export async function rejectAppointmentPayment(id: string) {
   try {
