@@ -23,7 +23,7 @@ export default function ManagersPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("ADMIN_HR");
+  const [role, setRole] = useState("ADMIN_ACCOUNTING");
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -69,7 +69,7 @@ export default function ManagersPage() {
         setEmail("");
         setPassword("");
         setShowPassword(false);
-        setRole("ADMIN_HR");
+        setRole("ADMIN_ACCOUNTING");
         setIsAdding(false);
         fetchManagers();
       } else {
@@ -204,7 +204,6 @@ export default function ManagersPage() {
                 onChange={(e) => setRole(e.target.value)}
                 className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               >
-                <option value="ADMIN_HR">مدير موارد بشرية (أخصائيين، مرضى)</option>
                 <option value="ADMIN_ACCOUNTING">مدير حسابات (أرباح، فواتير)</option>
                 <option value="ADMIN_VIEWER">مراقب — عرض فقط 🔍 (لا يمكنه التعديل)</option>
                 <option value="ADMIN">مدير عام (كافة الصلاحيات)</option>

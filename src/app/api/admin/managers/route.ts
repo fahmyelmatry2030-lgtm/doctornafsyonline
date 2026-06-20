@@ -13,7 +13,8 @@ export async function GET() {
     const managers = await prisma.user.findMany({
       where: {
         role: {
-          startsWith: "ADMIN"
+          startsWith: "ADMIN",
+          not: "ADMIN_HR"
         }
       },
       select: {
