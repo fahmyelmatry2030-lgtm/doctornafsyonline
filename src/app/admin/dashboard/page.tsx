@@ -253,7 +253,7 @@ export default async function AdminDashboardPage() {
                   <thead>
                     <tr className="bg-[#F4F7FE]/50 text-[#A3AED0] text-xs uppercase tracking-wider">
                       <th className="px-6 py-4 font-bold">المريض / الأخصائي</th>
-                      <th className="px-6 py-4 font-bold">التاريخ والتكلفة</th>
+                      <th className="px-6 py-4 font-bold">التاريخ{session.user.role !== "ADMIN_HR" ? " والتكلفة" : ""}</th>
                       <th className="px-6 py-4 font-bold">الحالة</th>
                     </tr>
                   </thead>
@@ -266,7 +266,9 @@ export default async function AdminDashboardPage() {
                         </td>
                         <td className="px-6 py-4">
                           <p className="text-sm font-bold text-[#2B3674]">{app.scheduledAt.toLocaleDateString("ar-EG")}</p>
-                          <p className="text-xs font-bold text-[#A3AED0]">{app.price} ج.م</p>
+                          {session.user.role !== "ADMIN_HR" && (
+                            <p className="text-xs font-bold text-[#A3AED0]">{app.price} ج.م</p>
+                          )}
                         </td>
                         <td className="px-6 py-4">
                           <span className={`text-[10px] font-black px-3 py-1.5 rounded-lg ${statusColor[app.status]}`}>
