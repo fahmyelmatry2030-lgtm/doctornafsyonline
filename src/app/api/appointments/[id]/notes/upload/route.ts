@@ -59,9 +59,11 @@ export async function POST(
       const uploadDir = path.join(process.cwd(), "public", "uploads", "notes");
       // Ensure upload directory exists
       await fs.mkdir(uploadDir, { recursive: true });
+      try { await fs.chmod(uploadDir, 0o755); } catch (e) {}
 
       const filePath = path.join(uploadDir, fileName);
       await fs.writeFile(filePath, buffer);
+      try { await fs.chmod(filePath, 0o644); } catch (e) {}
       fileUrl = `/uploads/notes/${fileName}`;
     }
 

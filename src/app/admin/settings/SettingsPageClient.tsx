@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Settings, Percent, Globe, Key, Bell, Shield, CheckCircle, ChevronLeft, Loader2, Eye, FileText, UploadCloud, AlertCircle } from "lucide-react";
 import { getSettings, updateSettings, getWebsiteContent, updateWebsiteContent, WebsiteContent } from "./actions";
 
@@ -30,6 +30,17 @@ export function SettingsPageClient({
   const [subActiveTab, setSubActiveTab] = useState("home");
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get("tab");
+      if (tab && allSections.some(s => s.id === tab)) {
+        setActive(tab);
+      }
+    }
+  }, []);
+
 
   const [commission, setCommission] = useState(initialSettings.commission);
   const [minPrice, setMinPrice] = useState(initialSettings.minPrice);

@@ -2,6 +2,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { TherapistsTableClient } from "./TherapistsTableClient";
+import Link from "next/link";
+import { Settings } from "lucide-react";
 
 export default async function AdminTherapistsPage() {
   const session = await auth();
@@ -73,16 +75,26 @@ export default async function AdminTherapistsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-3xl font-black text-slate-900">إدارة الأخصائيين</h1>
           <p className="text-slate-500 mt-1">مراجعة وتوثيق حسابات الأخصائيين وإدارة ملفاتهم المهنية وعقودهم</p>
         </div>
-        {isReadOnly && (
-          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-xl text-sm font-bold">
-            🔍 عرض فقط — لا يمكن التعديل
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          {role === "ADMIN" && (
+            <Link
+              href="/admin/settings?tab=contracts"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-all text-xs font-bold shadow-sm"
+            >
+              <Settings className="w-4 h-4" /> تعديل نماذج العقود الرسمية
+            </Link>
+          )}
+          {isReadOnly && (
+            <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-xl text-sm font-bold">
+              🔍 عرض فقط — لا يمكن التعديل
+            </div>
+          )}
+        </div>
       </div>
 
       <TherapistsTableClient

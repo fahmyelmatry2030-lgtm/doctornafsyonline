@@ -32,6 +32,18 @@ export default async function PatientDashboardPage() {
     where: { patientId: userId, status: { in: ["PENDING", "CONFIRMED"] }, scheduledAt: { gte: new Date() } }
   });
 
+  // Fetch if there is any unrated completed appointment
+  const unratedAppointment = await prisma.appointment.findFirst({
+    where: {
+      patientId: userId,
+      status: "COMPLETED",
+      review: null,
+    },
+    include: {
+      therapist: { select: { name: true } }
+    }
+  });
+
   return (
     <div className="animate-fade-in space-y-6">
       
@@ -54,6 +66,29 @@ export default async function PatientDashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* Review Alert Banner */}
+      {unratedAppointment && (
+        <div className="bg-amber-50 border border-amber-200 rounded-[24px] p-6 flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+              <span className="text-xl">⭐</span>
+            </div>
+            <div>
+              <h3 className="font-black text-[#2B3674] text-base mb-1">تقييم جلستك السابقة</h3>
+              <p className="text-sm font-medium text-amber-800">
+                لديك جلسة مكتملة مع د. {unratedAppointment.therapist.name}. رأيك يهمنا ويساعدنا في تحسين جودة الخدمة.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/patient/reviews"
+            className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-bold transition-all text-sm flex items-center gap-2 shadow-md shadow-amber-500/20"
+          >
+            تقييم الجلسة الآن
+          </Link>
+        </div>
+      )}
 
       {/* Main Stats Row */}
       <div className="grid gap-5 md:grid-cols-3">

@@ -182,9 +182,13 @@ export function TherapistsTableClient({
             {pending.map(t => (
               <div key={t.id} className="px-6 py-5 flex items-start justify-between gap-6 flex-wrap md:flex-nowrap">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-black text-lg shrink-0 mt-1">
-                    {t.name.charAt(0)}
-                  </div>
+                  {t.avatar ? (
+                    <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover shrink-0 mt-1" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-black text-lg shrink-0 mt-1">
+                      {t.name.charAt(0)}
+                    </div>
+                  )}
                   <div className="space-y-1">
                     <div>
                       <button 

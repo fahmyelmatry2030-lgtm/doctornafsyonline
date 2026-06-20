@@ -39,6 +39,7 @@ export async function POST(request: Request) {
     // Save to public/docs
     const uploadDir = path.join(process.cwd(), "public", "docs");
     await fs.mkdir(uploadDir, { recursive: true });
+    try { await fs.chmod(uploadDir, 0o755); } catch(e){}
 
     let filename = "";
     if (templateType === "trial") {
@@ -51,6 +52,7 @@ export async function POST(request: Request) {
 
     const filePath = path.join(uploadDir, filename);
     await fs.writeFile(filePath, buffer);
+    try { await fs.chmod(filePath, 0o644); } catch(e){}
 
     return NextResponse.json({ 
       success: true, 

@@ -47,10 +47,12 @@ export async function POST(
     // Create a local uploads folder
     const uploadDir = path.join(process.cwd(), "public/uploads", appointmentId);
     await fs.mkdir(uploadDir, { recursive: true });
+    try { await fs.chmod(uploadDir, 0o755); } catch (e) {}
 
     const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
     const filePath = path.join(uploadDir, safeFileName);
     await fs.writeFile(filePath, buffer);
+    try { await fs.chmod(filePath, 0o644); } catch (e) {}
 
     const fileUrl = `/uploads/${appointmentId}/${safeFileName}`;
 
