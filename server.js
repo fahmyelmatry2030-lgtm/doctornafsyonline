@@ -34,8 +34,8 @@ try {
 } catch (e) {}
 
 // Fix database URL for Hostinger
-if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('@localhost:')) {
-  process.env.DATABASE_URL = process.env.DATABASE_URL.replace('@localhost:', '@127.0.0.1:');
+if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("mysql://")) {
+  console.warn("WARNING: DATABASE_URL is missing or invalid in server.js");
 }
 
 const dev = false;
