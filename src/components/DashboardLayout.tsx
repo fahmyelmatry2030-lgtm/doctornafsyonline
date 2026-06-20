@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { 
   Home, Users, Calendar, Settings, 
   MessageCircle, CreditCard, Menu, X, 
-  LogOut, Bell, Search, UserIcon, ShieldCheck, Activity, BookOpen
+  LogOut, Bell, Search, UserIcon, ShieldCheck, Activity, BookOpen,
+  Award
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -120,6 +121,7 @@ export function DashboardLayout({
       { name: "اعتماد التحويلات المالية 💰", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
       { name: "المقالات والتقييمات 📝", href: "/admin/content", icon: <BookOpen className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "الدعم، الإشعارات وأكواد الخصم 🎟️", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
+      { name: "شهادات الكورسات والتدريب 🎓", href: "/admin/certificates", icon: <Award className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "إعدادات المنصة ⚙️", href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
     ];
     navItems = allAdminNavItems.filter(item => !item.roles || item.roles.includes(role as string));

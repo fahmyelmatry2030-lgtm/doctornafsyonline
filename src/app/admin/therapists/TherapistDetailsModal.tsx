@@ -51,8 +51,7 @@ export function TherapistDetailsModal({
   isReadOnly = false
 }: TherapistDetailsModalProps) {
   const [localTherapist, setLocalTherapist] = useState<Therapist>(therapist);
-  const [uploadingContract, setUploadingContract] = useState(false);
-  const [selectedContractFile, setSelectedContractFile] = useState<File | null>(null);
+  const [uploadingContractType, setUploadingContractType] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -113,21 +112,82 @@ export function TherapistDetailsModal({
     }
   };
 
-  const handleUploadContract = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "APPROVED":
+        return (
+          <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-250 px-2 py-0.5 rounded-md font-bold">
+            مقبول
+          </span>
+        );
+      case "REJECTED":
+        return (
+          <span className="text-[10px] bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 rounded-md font-bold">
+            مرفوض
+          </span>
+        );
+      case "PENDING":
+        return (
+          <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-250 px-2 py-0.5 rounded-md font-bold animate-pulse">
+            قيد المراجعة
+          </span>
+        );
+      default:
+        return (
+          <span className="text-[10px] bg-slate-100 text-slate-500 border border-slate-200 px-2 py-0.5 rounded-md font-bold">
+            غير مرفوع
+          </span>
+        );
+    }
+  };
+
+  const handleUpdateContractStatus = async (contractType: string, status: "APPROVED" | "REJECTED") => {
     if (isReadOnly) return;
-    if (!selectedContractFile) {
-      setError("يرجى اختيار ملف عقد بصيغة PDF قبل الرفع.");
+    setError("");
+    try {
+      const res = await fetch("/api/therapist/contract", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          therapistId: localTherapist.id,
+          contractType,
+          status
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setLocalTherapist(prev => ({
+          ...prev,
+          therapistProfile: prev.therapistProfile ? {
+            ...prev.therapistProfile,
+            contractUrl: data.contractUrl
+          } : null
+        }));
+      } else {
+        const errData = await res.json();
+        setError(errData.error || "فشل تحديث حالة العقد");
+      }
+    } catch {
+      setError("حدث خطأ أثناء الاتصال بالخادم");
+    }
+  };
+
+  const handleAdminUploadContract = async (contractType: string, file: File) => {
+    if (isReadOnly) return;
+    if (file.size > 15 * 1024 * 1024) {
+      setError("حجم الملف يجب ألا يتجاوز 15 ميجابايت");
       return;
     }
 
-    setUploadingContract(true);
+    setUploadingContractType(contractType);
     setError("");
 
     try {
       const formData = new FormData();
-      formData.append("file", selectedContractFile);
+      formData.append("file", file);
       formData.append("therapistId", localTherapist.id);
+      formData.append("contractType", contractType);
 
       const res = await fetch("/api/therapist/contract", {
         method: "POST",
@@ -143,15 +203,14 @@ export function TherapistDetailsModal({
             contractUrl: data.contractUrl
           } : null
         }));
-        setSelectedContractFile(null);
       } else {
         const errData = await res.json();
-        setError(errData.error || "فشل رفع عقد المنصة");
+        setError(errData.error || "فشل رفع العقد");
       }
     } catch {
       setError("حدث خطأ أثناء الاتصال بالخادم");
     } finally {
-      setUploadingContract(false);
+      setUploadingContractType(null);
     }
   };
 
@@ -258,65 +317,105 @@ export function TherapistDetailsModal({
             {/* Left Column: Actions & Platform Contract */}
             <div className="space-y-6">
               <div className="p-5 rounded-2xl border border-slate-150 bg-slate-50/50 space-y-4">
-                <h4 className="font-bold text-slate-800 text-sm">عقد المنصة المبرم</h4>
-                {profile?.contractUrl ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 p-3 rounded-xl font-bold">
-                      <ShieldCheck className="w-4 h-4 shrink-0" />
-                      <span>تم توقيع العقد وإرفاقه بنجاح</span>
-                    </div>
-                    <a 
-                      href={profile.contractUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-2 text-xs font-bold text-indigo-600 bg-white border border-slate-200 rounded-xl py-3 hover:bg-slate-50 transition-colors shadow-sm"
-                    >
-                      <Download className="w-4 h-4" /> تحميل العقد الموقّع
-                    </a>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 p-3 rounded-xl font-bold">
-                    <ShieldAlert className="w-4 h-4 shrink-0" />
-                    <span>العقد لم يرفع بعد من الأخصائي</span>
-                  </div>
-                )}
+                <h4 className="font-bold text-slate-800 text-sm">العقود والمستندات الثلاثة</h4>
+                
+                <div className="space-y-4">
+                  {[
+                    { id: "trial", name: "عقد فترة التجربة (١٤ يوم)" },
+                    { id: "marketing", name: "إقرار الحملة الدعائية" },
+                    { id: "annual", name: "العقد السنوي الشامل" }
+                  ].map((contract) => {
+                    const rawContractUrl = profile?.contractUrl;
+                    let parsedContracts: any = {};
+                    if (rawContractUrl) {
+                      if (rawContractUrl.startsWith("{")) {
+                        try {
+                          parsedContracts = JSON.parse(rawContractUrl);
+                        } catch {
+                          parsedContracts = {
+                            trial: { url: rawContractUrl, status: "APPROVED", uploadedAt: new Date().toISOString() }
+                          };
+                        }
+                      } else {
+                        parsedContracts = {
+                          trial: { url: rawContractUrl, status: "APPROVED", uploadedAt: new Date().toISOString() }
+                        };
+                      }
+                    }
 
-                {/* Upload/Replace contract by Admin */}
-                {!isReadOnly && (
-                  <form onSubmit={handleUploadContract} className="pt-2 border-t border-slate-200/50 space-y-3">
-                    <div className="space-y-2">
-                      <label htmlFor="contractFile" className="block text-xs font-semibold text-slate-700">
-                        اختيار ملف عقد PDF
-                      </label>
-                      <input
-                        id="contractFile"
-                        type="file"
-                        accept="application/pdf"
-                        onChange={(e) => {
-                          const file = e.currentTarget.files?.[0] || null;
-                          setError("");
-                          setSelectedContractFile(file);
-                        }}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-700 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
-                      />
-                      {selectedContractFile && (
-                        <p className="text-xs text-slate-500">الملف المحدد: {selectedContractFile.name}</p>
-                      )}
-                    </div>
-                    <button 
-                      type="submit"
-                      disabled={uploadingContract || !selectedContractFile}
-                      className="w-full inline-flex items-center justify-center gap-2 text-xs font-bold text-slate-700 bg-white border border-slate-200 rounded-xl py-2.5 hover:bg-slate-50 transition-colors disabled:opacity-50"
-                    >
-                      {uploadingContract ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <UploadCloud className="w-4 h-4" />
-                      )}
-                      {profile?.contractUrl ? "استبدال العقد الموقّع" : "رفع عقد للأخصائي"}
-                    </button>
-                  </form>
-                )}
+                    const detail = parsedContracts[contract.id];
+                    const isUploading = uploadingContractType === contract.id;
+                    
+                    return (
+                      <div key={contract.id} className="bg-white p-3 rounded-xl border border-slate-150 space-y-2.5">
+                        <div className="flex justify-between items-start gap-2">
+                          <span className="font-bold text-slate-800 text-[11px] leading-tight">{contract.name}</span>
+                          {getStatusBadge(detail?.status || "NOT_UPLOADED")}
+                        </div>
+                        
+                        {detail?.url && (
+                          <div className="flex gap-1.5 items-center">
+                            <a 
+                              href={detail.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-1 inline-flex items-center justify-center gap-1 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-lg py-1 text-[10px] font-bold hover:bg-indigo-100 transition-colors"
+                            >
+                              <Download className="w-3 h-3" /> عرض الملف
+                            </a>
+                            
+                            {detail.status === "PENDING" && !isReadOnly && (
+                              <div className="flex gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateContractStatus(contract.id, "APPROVED")}
+                                  className="bg-emerald-600 hover:bg-emerald-700 text-white p-1 rounded-lg transition-colors"
+                                  title="قبول المستند"
+                                >
+                                  <ShieldCheck className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateContractStatus(contract.id, "REJECTED")}
+                                  className="bg-red-600 hover:bg-red-700 text-white p-1 rounded-lg transition-colors"
+                                  title="رفض المستند"
+                                >
+                                  <Ban className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        
+                        {!isReadOnly && (
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="file"
+                              accept="application/pdf,image/jpeg,image/png,image/jpg"
+                              id={`admin-file-${contract.id}`}
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  handleAdminUploadContract(contract.id, file);
+                                }
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => document.getElementById(`admin-file-${contract.id}`)?.click()}
+                              disabled={!!uploadingContractType}
+                              className="w-full inline-flex items-center justify-center gap-1 text-[10px] font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg py-1.5 hover:bg-slate-100 transition-colors disabled:opacity-50"
+                            >
+                              {isUploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <UploadCloud className="w-3.5 h-3.5" />}
+                              {detail?.url ? "استبدال الملف" : "رفع المستند بالنيابة"}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
 
                 <div className="mt-4 border-t border-slate-200/50 pt-4 text-xs text-slate-500 space-y-2">
                   <p className="font-semibold text-slate-700">تذكير بالعقود والسياسات</p>
@@ -331,7 +430,6 @@ export function TherapistDetailsModal({
                     </Link>
                     .
                   </p>
-                  <p className="text-slate-400">يمكن عرض هذه المستندات أو تنزيلها من الصفحات العامة للمنصة.</p>
                 </div>
               </div>
 

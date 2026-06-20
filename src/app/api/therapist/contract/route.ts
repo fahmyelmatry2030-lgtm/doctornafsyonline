@@ -5,6 +5,54 @@ import fs from "fs/promises";
 import path from "path";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 
+const updateContractJson = (currentVal: string | null, type: string, url: string | null) => {
+  let contracts: Record<string, any> = {};
+  if (currentVal) {
+    if (currentVal.startsWith("{")) {
+      try {
+        contracts = JSON.parse(currentVal);
+      } catch {
+        contracts = { trial: { url: currentVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
+      }
+    } else {
+      contracts = { trial: { url: currentVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
+    }
+  }
+  
+  if (url) {
+    contracts[type] = {
+      url,
+      status: "PENDING",
+      uploadedAt: new Date().toISOString()
+    };
+  } else {
+    delete contracts[type];
+  }
+  
+  return JSON.stringify(contracts);
+};
+
+const updateContractStatusJson = (currentVal: string | null, type: string, status: string) => {
+  let contracts: Record<string, any> = {};
+  if (currentVal) {
+    if (currentVal.startsWith("{")) {
+      try {
+        contracts = JSON.parse(currentVal);
+      } catch {
+        contracts = { trial: { url: currentVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
+      }
+    } else {
+      contracts = { trial: { url: currentVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
+    }
+  }
+  
+  if (contracts[type]) {
+    contracts[type].status = status;
+  }
+  
+  return JSON.stringify(contracts);
+};
+
 export async function GET(request: Request) {
   const session = await auth();
   if (!session?.user) {
@@ -46,13 +94,13 @@ export async function POST(request: Request) {
 
   try {
     const contentType = request.headers.get("content-type") || "";
-    let contractUrl: string | null = null;
     let therapistId: string | null = null;
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await request.formData();
       const file = formData.get("file") as File | null;
       therapistId = (formData.get("therapistId") as string) || null;
+      const contractType = (formData.get("contractType") as string) || "trial"; // trial, marketing, annual
 
       const targetUserId = role === "ADMIN" && therapistId ? therapistId : session.user.id;
 
@@ -63,11 +111,11 @@ export async function POST(request: Request) {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       const safeName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+      let uploadedUrl: string | null = null;
 
       try {
         // Upload to Cloudinary
-        contractUrl = await uploadToCloudinary(buffer, `contracts/${targetUserId}`, safeName);
-        console.log("[Contract Upload] Uploaded successfully to Cloudinary:", contractUrl);
+        uploadedUrl = await uploadToCloudinary(buffer, `contracts/${targetUserId}`, safeName);
       } catch (cloudinaryError) {
         console.warn("[Contract Upload] Cloudinary upload failed, falling back to local file system:", cloudinaryError);
         
@@ -75,7 +123,7 @@ export async function POST(request: Request) {
         await fs.mkdir(uploadDir, { recursive: true });
         const filePath = path.join(uploadDir, safeName);
         await fs.writeFile(filePath, buffer);
-        contractUrl = `/uploads/contracts/${targetUserId}/${safeName}`;
+        uploadedUrl = `/uploads/contracts/${targetUserId}/${safeName}`;
       }
 
       const profile = await prisma.therapistProfile.findUnique({ where: { userId: targetUserId } });
@@ -83,17 +131,19 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "ملف الأخصائي غير موجود" }, { status: 404 });
       }
 
+      const updatedContractJson = updateContractJson(profile.contractUrl, contractType, uploadedUrl);
+
       await prisma.therapistProfile.update({
         where: { userId: targetUserId },
-        data: { contractUrl }
+        data: { contractUrl: updatedContractJson }
       });
 
-      return NextResponse.json({ success: true, contractUrl });
+      return NextResponse.json({ success: true, contractUrl: updatedContractJson });
     }
 
-
+    // JSON payload (Admin status updates or direct edits)
     const body = await request.json();
-    contractUrl = body.contractUrl;
+    const { contractType, status, contractUrl } = body;
     therapistId = body.therapistId;
     const targetUserId = role === "ADMIN" && therapistId ? therapistId : session.user.id;
 
@@ -105,12 +155,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "ملف الأخصائي غير موجود" }, { status: 404 });
     }
 
+    let updatedContractJson = profile.contractUrl;
+
+    if (status) {
+      // Update existing contract status (e.g. APPROVED, REJECTED)
+      updatedContractJson = updateContractStatusJson(profile.contractUrl, contractType || "trial", status);
+    } else if (contractUrl) {
+      // Direct URL upload / set
+      updatedContractJson = updateContractJson(profile.contractUrl, contractType || "trial", contractUrl);
+    }
+
     await prisma.therapistProfile.update({
       where: { userId: targetUserId },
-      data: { contractUrl }
+      data: { contractUrl: updatedContractJson }
     });
 
-    return NextResponse.json({ success: true, contractUrl });
+    return NextResponse.json({ success: true, contractUrl: updatedContractJson });
   } catch (error) {
     console.error("Contract upload error:", error);
     return NextResponse.json({ error: "فشل تحديث العقد" }, { status: 500 });

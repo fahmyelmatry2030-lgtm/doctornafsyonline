@@ -68,7 +68,7 @@ export function TherapistCard({
       </div>
 
       <p className="mb-5 min-h-[3rem] text-sm leading-relaxed text-slate-600">
-        {bio}
+        {bio.length > 150 ? `${bio.slice(0, 150)}...` : bio}
       </p>
 
       <div className="mb-6 flex flex-wrap gap-2">
