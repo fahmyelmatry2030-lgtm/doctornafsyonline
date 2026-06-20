@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { 
   Users, Mail, Phone, Calendar, ArrowRight, ShieldAlert,
-  User, CheckCircle, Clock, Video, FileText, ChevronDown, ChevronUp, Search, AlertCircle
+  User, CheckCircle, Clock, Video, FileText, ChevronDown, ChevronUp, Search, AlertCircle, X
 } from "lucide-react";
 
 type Appointment = {
@@ -64,19 +64,25 @@ export function PatientDetailsModal({ patient, onClose }: PatientDetailsModalPro
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm" dir="rtl">
-      <div className="relative w-full max-w-4xl rounded-3xl bg-white shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-fade-in border border-slate-100">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm cursor-pointer" 
+      dir="rtl"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="relative w-full max-w-2xl rounded-3xl bg-white shadow-2xl overflow-hidden max-h-[85vh] flex flex-col animate-fade-in border border-slate-100 cursor-default">
         
         {/* Header */}
-        <div className="bg-slate-50 px-8 py-6 border-b border-slate-100 flex items-center justify-between shrink-0">
+        <div className="bg-slate-50 px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center font-black text-lg shadow-md shadow-indigo-500/10">
               {patient.name.charAt(0)}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-black text-slate-800">{patient.name}</h2>
-                <span className="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border border-indigo-100">
+                <h2 className="text-lg font-black text-slate-800">{patient.name}</h2>
+                <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-lg text-xs font-black tracking-wider border border-indigo-100">
                   {patientCode}
                 </span>
               </div>
@@ -85,9 +91,10 @@ export function PatientDetailsModal({ patient, onClose }: PatientDetailsModalPro
           </div>
           <button 
             onClick={onClose}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-all text-sm font-bold"
+            className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
+            aria-label="إغلاق"
           >
-            <ArrowRight className="w-4 h-4" /> إغلاق الملف
+            <X className="w-6 h-6" />
           </button>
         </div>
 

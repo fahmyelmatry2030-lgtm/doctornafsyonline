@@ -105,6 +105,7 @@ export function DashboardLayout({
       { name: "الرئيسية", href: "/therapist/dashboard", icon: <Home className="h-5 w-5" /> },
       { name: "المرضى", href: "/therapist/patients", icon: <Users className="h-5 w-5" /> },
       { name: "الجدول", href: "/therapist/schedule", icon: <Calendar className="h-5 w-5" /> },
+      { name: "الإشعارات", href: "/therapist/notifications", icon: <Bell className="h-5 w-5" /> },
       { name: "غرفة العلاج", href: "/therapist/messages", icon: <MessageCircle className="h-5 w-5" /> },
       { name: "الملف الشخصي", href: "/therapist/profile", icon: <UserIcon className="h-5 w-5" /> },
       { name: "الإعدادات", href: "/therapist/settings", icon: <Settings className="h-5 w-5" /> },
@@ -178,7 +179,7 @@ export function DashboardLayout({
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="text-[11px] font-bold text-slate-800 leading-snug">{n.title}</h4>
-                          <p className="text-[10px] text-slate-500 mt-0.5 leading-relaxed truncate">{n.description}</p>
+                          <p className="text-[10px] text-slate-500 mt-0.5 leading-relaxed break-words">{n.description}</p>
                           <span className="text-[8px] text-slate-400 mt-1 block">
                             {new Date(n.time).toLocaleDateString("ar-EG", {
                               hour: "2-digit",
@@ -193,6 +194,15 @@ export function DashboardLayout({
                 {role === "PATIENT" && (
                   <Link 
                     href="/patient/notifications" 
+                    onClick={() => setShowNotifications(false)}
+                    className="px-4 py-2 text-center text-[10px] font-bold text-indigo-600 bg-slate-50 hover:bg-indigo-50/50 border-t border-slate-100 transition-colors block"
+                  >
+                    عرض جميع الإشعارات
+                  </Link>
+                )}
+                {role === "THERAPIST" && (
+                  <Link 
+                    href="/therapist/notifications" 
                     onClick={() => setShowNotifications(false)}
                     className="px-4 py-2 text-center text-[10px] font-bold text-indigo-600 bg-slate-50 hover:bg-indigo-50/50 border-t border-slate-100 transition-colors block"
                   >
@@ -348,7 +358,7 @@ export function DashboardLayout({
                           </div>
                           <div className="flex-1 min-w-0">
                             <h4 className="text-xs font-bold text-slate-800 leading-snug">{n.title}</h4>
-                            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed truncate">{n.description}</p>
+                            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed break-words">{n.description}</p>
                             <span className="text-[9px] text-slate-400 mt-1 block">
                               {new Date(n.time).toLocaleDateString("ar-EG", {
                                 hour: "2-digit",
@@ -363,6 +373,15 @@ export function DashboardLayout({
                   {role === "PATIENT" && (
                     <Link 
                       href="/patient/notifications" 
+                      onClick={() => setShowNotifications(false)}
+                      className="px-4 py-2.5 text-center text-xs font-bold text-indigo-600 bg-slate-50 hover:bg-indigo-50/50 border-t border-slate-100 transition-colors block"
+                    >
+                      عرض جميع الإشعارات
+                    </Link>
+                  )}
+                  {role === "THERAPIST" && (
+                    <Link 
+                      href="/therapist/notifications" 
                       onClick={() => setShowNotifications(false)}
                       className="px-4 py-2.5 text-center text-xs font-bold text-indigo-600 bg-slate-50 hover:bg-indigo-50/50 border-t border-slate-100 transition-colors block"
                     >

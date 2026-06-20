@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2 } from "lucide-react";
+import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2, Eye, EyeOff } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 
@@ -27,6 +27,7 @@ export default function ManagersPage() {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const fetchManagers = async () => {
     try {
@@ -67,6 +68,7 @@ export default function ManagersPage() {
         setName("");
         setEmail("");
         setPassword("");
+        setShowPassword(false);
         setRole("ADMIN_HR");
         setIsAdding(false);
         fetchManagers();
@@ -174,15 +176,25 @@ export default function ManagersPage() {
 
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700 block">كلمة المرور</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                placeholder="••••••••"
-                dir="ltr"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full border border-slate-200 bg-slate-50 rounded-xl pl-12 pr-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  placeholder="••••••••"
+                  dir="ltr"
+                  style={{ textAlign: 'right' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors z-10"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-2">

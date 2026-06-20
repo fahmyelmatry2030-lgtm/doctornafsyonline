@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Star, BadgeCheck, Clock, Video, Phone, MessageCircle } from "lucide-react";
 import { formatPrice, parseSpecializations } from "@/lib/constants";
@@ -33,6 +33,41 @@ export default function TherapistDetailPage({
   const [scheduledAt, setScheduledAt] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const [availableDays] = useState(() => {
+    const days = [];
+    const today = new Date();
+    for (let i = 0; i < 45; i++) {
+      const d = new Date();
+      d.setDate(today.getDate() + i);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const key = `${yyyy}-${mm}-${dd}`;
+      const label = d.toLocaleDateString("ar-EG", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+      days.push({ key, label });
+    }
+    return days;
+  });
+
+  const [selectedDay, setSelectedDay] = useState(availableDays[0]?.key || "");
+  const [selectedHour, setSelectedHour] = useState("08");
+  const [selectedMinute, setSelectedMinute] = useState("00");
+  const [selectedPeriod, setSelectedPeriod] = useState("PM");
+
+  useEffect(() => {
+    if (!selectedDay) return;
+    let hr = parseInt(selectedHour, 10);
+    if (selectedPeriod === "PM" && hr < 12) hr += 12;
+    if (selectedPeriod === "AM" && hr === 12) hr = 0;
+    const hrStr = String(hr).padStart(2, "0");
+    setScheduledAt(`${selectedDay}T${hrStr}:${selectedMinute}`);
+  }, [selectedDay, selectedHour, selectedMinute, selectedPeriod]);
 
   // Coupon Code State
   const [coupon, setCoupon] = useState("");
@@ -97,7 +132,7 @@ export default function TherapistDetailPage({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         therapistId: therapist.id,
-        scheduledAt,
+        scheduledAt: new Date(scheduledAt).toISOString(),
         type: sessionType,
         promoCode: appliedDiscount !== null ? coupon : undefined,
       }),
@@ -241,21 +276,70 @@ export default function TherapistDetailPage({
               </div>
             </div>
 
-            <div className="mb-4">
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+            <div className="mb-4 space-y-3">
+              <label className="block text-sm font-medium text-slate-700">
                 موعد الجلسة
               </label>
-              <input
-                type="datetime-local"
-                required
-                min={minDateStr}
-                value={scheduledAt}
-                onChange={(e) => setScheduledAt(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-400 text-right"
-              />
+              
+              <div className="space-y-1">
+                <span className="text-[11px] text-slate-500 font-bold block">اختر اليوم:</span>
+                <select
+                  value={selectedDay}
+                  onChange={(e) => setSelectedDay(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-400 bg-white font-medium text-slate-800"
+                >
+                  {availableDays.map((day) => (
+                    <option key={day.key} value={day.key}>
+                      {day.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div className="space-y-1">
+                  <span className="text-[11px] text-slate-500 font-bold block">الساعة:</span>
+                  <select
+                    value={selectedHour}
+                    onChange={(e) => setSelectedHour(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 px-3 py-3 text-sm outline-none focus:border-teal-400 bg-white text-center font-bold text-slate-800"
+                  >
+                    {["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"].map((h) => (
+                      <option key={h} value={h}>{h}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[11px] text-slate-500 font-bold block">الدقيقة:</span>
+                  <select
+                    value={selectedMinute}
+                    onChange={(e) => setSelectedMinute(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 px-3 py-3 text-sm outline-none focus:border-teal-400 bg-white text-center font-bold text-slate-800"
+                  >
+                    {["00", "15", "30", "45"].map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[11px] text-slate-500 font-bold block">الفترة:</span>
+                  <select
+                    value={selectedPeriod}
+                    onChange={(e) => setSelectedPeriod(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 px-3 py-3 text-sm outline-none focus:border-teal-400 bg-white text-center font-bold text-slate-800"
+                  >
+                    <option value="PM">مساءً</option>
+                    <option value="AM">صباحاً</option>
+                  </select>
+                </div>
+              </div>
+
               {scheduledAt && (
-                <div className="mt-2 p-3 bg-teal-50/50 border border-teal-100 rounded-xl text-xs font-bold text-teal-800 text-right animate-fade-in">
-                  الموعد المختار: {getArabicDatePreview(scheduledAt)}
+                <div className="mt-3 p-3 bg-teal-50/50 border border-teal-100 rounded-xl text-xs font-bold text-teal-800 text-right animate-fade-in flex items-center justify-between">
+                  <span>الموعد المختار:</span>
+                  <span className="text-teal-900">{getArabicDatePreview(scheduledAt)}</span>
                 </div>
               )}
             </div>

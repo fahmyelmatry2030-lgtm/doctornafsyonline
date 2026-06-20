@@ -19,8 +19,12 @@ export default async function PatientProfilePage() {
   async function updateProfile(formData: FormData) {
     "use server";
     const name = formData.get("name") as string;
-    const phone = formData.get("phone") as string;
+    let phone = formData.get("phone") as string;
     const gender = formData.get("gender") as string;
+    
+    if (phone) {
+      phone = phone.replace(/\D/g, "").slice(0, 11);
+    }
     
     await prisma.user.update({
       where: { id: userId },
@@ -78,6 +82,9 @@ export default async function PatientProfilePage() {
                 defaultValue={user.phone || ""} 
                 className="block w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 py-3.5 px-4 text-slate-900 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm"
                 placeholder={`مثال: ${PLATFORM_PHONE}`}
+                maxLength={11}
+                pattern="[0-9]{11}"
+                title="رقم الهاتف يجب أن يتكون من 11 رقماً بالضبط"
               />
             </div>
 

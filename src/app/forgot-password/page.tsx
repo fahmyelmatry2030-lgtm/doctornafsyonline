@@ -15,12 +15,20 @@ export default function ForgotPasswordPage() {
     setLoading(true);
     setError("");
 
-    // Simulate API call for password reset
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setSubmitted(true);
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setError(data.error || "حدث خطأ أثناء إرسال الطلب.");
+      }
     } catch (err) {
-      setError("حدث خطأ ما. يرجى المحاولة مرة أخرى.");
+      setError("حدث خطأ في الاتصال بالسيرفر. يرجى المحاولة لاحقاً.");
     } finally {
       setLoading(false);
     }

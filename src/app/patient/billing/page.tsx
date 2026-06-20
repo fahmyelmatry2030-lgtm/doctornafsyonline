@@ -165,7 +165,7 @@ export default async function PatientBillingPage({
                         </div>
                       )
                     ) : (
-                      <button className="text-indigo-600 font-semibold text-xs hover:underline">تحميل PDF</button>
+                      <span className="text-slate-400">—</span>
                     )}
                   </td>
                 </tr>

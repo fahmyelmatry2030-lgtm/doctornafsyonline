@@ -41,6 +41,12 @@ export default function RegisterForm() {
       return;
     }
 
+    if (form.phone.length !== 11) {
+      setError("رقم الهاتف يجب أن يتكون من 11 رقماً بالضبط (مثال: 01012345678)");
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch("/api/register", {
         method: "POST",
@@ -187,11 +193,15 @@ export default function RegisterForm() {
                     type="tel"
                     required
                     value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, "").slice(0, 11);
+                      setForm({ ...form, phone: val });
+                    }}
                     className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-[#4318FF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-medium"
                     placeholder="01xxxxxxxxx"
                     dir="ltr"
                     style={{ textAlign: 'right' }}
+                    maxLength={11}
                   />
                 </div>
               </div>
