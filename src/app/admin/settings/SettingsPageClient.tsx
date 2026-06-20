@@ -73,6 +73,13 @@ export function SettingsPageClient({
   const [contactEmail, setContactEmail] = useState(initialContent.contactEmail || "");
   const [contactAddress, setContactAddress] = useState(initialContent.contactAddress || "");
 
+  // Therapists / Booking
+  const [therapistsHeroBadge, setTherapistsHeroBadge] = useState(initialContent.therapistsHeroBadge || "");
+  const [therapistsHeroTitle, setTherapistsHeroTitle] = useState(initialContent.therapistsHeroTitle || "");
+  const [therapistsHeroTitleGradient, setTherapistsHeroTitleGradient] = useState(initialContent.therapistsHeroTitleGradient || "");
+  const [therapistsHeroSubtitle, setTherapistsHeroSubtitle] = useState(initialContent.therapistsHeroSubtitle || "");
+  const [therapistsFilterTitle, setTherapistsFilterTitle] = useState(initialContent.therapistsFilterTitle || "");
+
   // How it works
   const [howItWorksHeroBadge, setHowItWorksHeroBadge] = useState(initialContent.howItWorksHeroBadge || "");
   const [howItWorksHeroTitle, setHowItWorksHeroTitle] = useState(initialContent.howItWorksHeroTitle || "");
@@ -105,6 +112,7 @@ export function SettingsPageClient({
           homeHeroBadge, homeHeroTitle, homeHeroSubtitle,
           aboutTitle, aboutSubtitle, aboutContent,
           contactPhone, contactEmail, contactAddress,
+          therapistsHeroBadge, therapistsHeroTitle, therapistsHeroTitleGradient, therapistsHeroSubtitle, therapistsFilterTitle,
           howItWorksHeroBadge, howItWorksHeroTitle, howItWorksHeroSubtitle,
           howItWorksSteps, howItWorksFeatures,
           faqHeroBadge, faqHeroTitle, faqHeroSubtitle,
@@ -137,7 +145,7 @@ export function SettingsPageClient({
   const inputCls = `w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 ${isReadOnly ? "bg-slate-50 cursor-not-allowed text-slate-500" : "bg-white"}`;
 
   return (
-    <div className="animate-fade-in space-y-6 max-w-5xl">
+    <div className="animate-fade-in space-y-6">
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-black text-slate-900">إعدادات النظام</h1>
@@ -457,6 +465,7 @@ export function SettingsPageClient({
                   { id: "home", label: "الرئيسية" },
                   { id: "about", label: "من نحن" },
                   { id: "contact", label: "بيانات الاتصال" },
+                  { id: "therapists", label: "الحجز والأخصائيين" },
                   { id: "howitworks", label: "كيف نعمل" },
                   { id: "faq", label: "الأسئلة الشائعة" },
                   { id: "terms", label: "الشروط والأحكام" },
@@ -538,6 +547,37 @@ export function SettingsPageClient({
                       <div>
                         <label className="block text-xs font-bold text-slate-700 mb-1">عنوان المقر / الدولة</label>
                         <input type="text" value={contactAddress} onChange={e => !isReadOnly && setContactAddress(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Therapists Page Section */}
+                {subActiveTab === "therapists" && (
+                  <div className="space-y-4 animate-fade-in">
+                    <h3 className="text-sm font-bold text-indigo-600 border-r-4 border-indigo-500 pr-2">صفحة الحجز والأخصائيين</h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">شارة البانر التعريفي</label>
+                        <input type="text" value={therapistsHeroBadge} onChange={e => !isReadOnly && setTherapistsHeroBadge(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">عنوان البانر (الجزء العادي)</label>
+                          <input type="text" value={therapistsHeroTitle} onChange={e => !isReadOnly && setTherapistsHeroTitle(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">عنوان البانر (الجزء الملون البارز)</label>
+                          <input type="text" value={therapistsHeroTitleGradient} onChange={e => !isReadOnly && setTherapistsHeroTitleGradient(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">الوصف الفرعي</label>
+                        <textarea value={therapistsHeroSubtitle} onChange={e => !isReadOnly && setTherapistsHeroSubtitle(e.target.value)} disabled={isReadOnly} rows={3} className={`${inputCls} resize-none`} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">عنوان الفلترة (تصفية حسب التخصص)</label>
+                        <input type="text" value={therapistsFilterTitle} onChange={e => !isReadOnly && setTherapistsFilterTitle(e.target.value)} disabled={isReadOnly} className={inputCls} />
                       </div>
                     </div>
                   </div>

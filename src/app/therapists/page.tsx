@@ -3,6 +3,7 @@ import { SPECIALIZATIONS } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Users, Filter } from "lucide-react";
+import { getWebsiteContent } from "@/app/admin/settings/actions";
 
 type Props = {
   searchParams: Promise<{ specialization?: string }>;
@@ -10,6 +11,8 @@ type Props = {
 
 export default async function TherapistsPage({ searchParams }: Props) {
   const { specialization } = await searchParams;
+
+  const content = await getWebsiteContent();
 
   const therapists = await prisma.user.findMany({
     where: {
@@ -38,13 +41,13 @@ export default async function TherapistsPage({ searchParams }: Props) {
           <div className="max-w-3xl mx-auto animate-fade-in-up stagger-1">
             <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#312E81] shadow-premium">
               <Users className="h-4 w-4 text-[#6366F1]" />
-              نخبة الأخصائيين
+              {content.therapistsHeroBadge || "نخبة الأخصائيين"}
             </span>
             <h1 className="mb-6 text-4xl font-black leading-tight text-[var(--color-foreground)] md:text-5xl animate-fade-in-up stagger-2">
-              تحدث مع <span className="gradient-text">الخبراء المعتمدين</span>
+              {content.therapistsHeroTitle || "تحدث مع"} <span className="gradient-text">{content.therapistsHeroTitleGradient || "الخبراء المعتمدين"}</span>
             </h1>
             <p className="text-lg leading-relaxed text-slate-700 animate-fade-in-up stagger-3">
-              نخبة من الأخصائيين النفسيين ذوي الكفاءة العالية، جاهزون لمساعدتك في التغلب على التحديات والمضي قدماً في حياتك.
+              {content.therapistsHeroSubtitle || "نخبة من الأخصائيين النفسيين ذوي الكفاءة العالية، جاهزون لمساعدتك في التغلب على التحديات والمضي قدماً في حياتك."}
             </p>
           </div>
         </div>
@@ -59,7 +62,7 @@ export default async function TherapistsPage({ searchParams }: Props) {
             <div className="bg-[#EEF2FF] p-2 rounded-xl text-[#6366F1]">
               <Filter className="h-5 w-5" />
             </div>
-            <h2 className="text-xl font-bold text-[var(--color-foreground)]">تصفية حسب التخصص</h2>
+            <h2 className="text-xl font-bold text-[var(--color-foreground)]">{content.therapistsFilterTitle || "تصفية حسب التخصص"}</h2>
           </div>
           
           <div className="flex flex-wrap gap-3">

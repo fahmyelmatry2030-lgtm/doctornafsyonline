@@ -126,6 +126,13 @@ export type WebsiteContent = {
   contactEmail: string;
   contactAddress: string;
 
+  // Therapists / Booking
+  therapistsHeroBadge?: string;
+  therapistsHeroTitle?: string;
+  therapistsHeroTitleGradient?: string;
+  therapistsHeroSubtitle?: string;
+  therapistsFilterTitle?: string;
+
   // How it works
   howItWorksHeroBadge?: string;
   howItWorksHeroTitle?: string;
@@ -166,6 +173,13 @@ const defaultContent: WebsiteContent = {
   contactPhone: "01012345678",
   contactEmail: "support@doctornafsyonline.com",
   contactAddress: "القاهرة، جمهورية مصر العربية",
+
+  // Therapists / Booking
+  therapistsHeroBadge: "نخبة الأخصائيين",
+  therapistsHeroTitle: "تحدث مع",
+  therapistsHeroTitleGradient: "الخبراء المعتمدين",
+  therapistsHeroSubtitle: "نخبة من الأخصائيين النفسيين ذوي الكفاءة العالية، جاهزون لمساعدتك في التغلب على التحديات والمضي قدماً في حياتك.",
+  therapistsFilterTitle: "تصفية حسب التخصص",
 
   // How it works
   howItWorksHeroBadge: "خطة التعافي",
@@ -426,6 +440,7 @@ export async function updateWebsiteContent(content: Partial<WebsiteContent>): Pr
   revalidatePath("/");
   revalidatePath("/about");
   revalidatePath("/contact");
+  revalidatePath("/therapists");
   revalidatePath("/how-it-works");
   revalidatePath("/faq");
   revalidatePath("/terms");
