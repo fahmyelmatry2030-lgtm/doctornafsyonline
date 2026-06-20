@@ -129,6 +129,7 @@ export default async function AdminDashboardPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         
         {/* Revenue Card (Gradient) */}
+        {session.user.role !== "ADMIN_HR" && (
         <div className="lg:col-span-1 rounded-[24px] p-7 bg-gradient-to-br from-[#4318FF] to-[#868CFF] text-white shadow-xl shadow-[#4318FF]/20 relative overflow-hidden flex flex-col justify-between h-full min-h-[220px]">
           <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
           <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
@@ -151,9 +152,10 @@ export default async function AdminDashboardPage() {
             </div>
           </div>
         </div>
+        )}
 
         {/* Total Sessions Breakdown */}
-        <div className="lg:col-span-2 bg-white rounded-[24px] p-7 shadow-sm">
+        <div className={`${session.user.role === "ADMIN_HR" ? "lg:col-span-3" : "lg:col-span-2"} bg-white rounded-[24px] p-7 shadow-sm`}>
           <div className="flex items-center justify-between mb-8">
             <h3 className="font-black text-[#2B3674] text-lg flex items-center gap-2">
               <Video className="w-5 h-5 text-[#4318FF]" /> ملخص حالة الجلسات
