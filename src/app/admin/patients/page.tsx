@@ -35,7 +35,7 @@ export default async function AdminPatientsPage() {
   async function toggleSuspend(userId: string, currentStatus: boolean) {
     "use server";
     const s = await auth();
-    if (!s?.user || s.user.role !== "ADMIN") throw new Error("غير مصرح لك");
+    if (!s?.user || (s.user.role !== "ADMIN" && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
     
     await prisma.user.update({
       where: { id: userId },
@@ -46,7 +46,7 @@ export default async function AdminPatientsPage() {
   async function deletePatient(userId: string) {
     "use server";
     const s = await auth();
-    if (!s?.user || s.user.role !== "ADMIN") throw new Error("غير مصرح لك");
+    if (!s?.user || (s.user.role !== "ADMIN" && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
 
     await prisma.user.delete({ where: { id: userId } });
   }
