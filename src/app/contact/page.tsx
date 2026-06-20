@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, MapPin, Phone, Send, MessageCircle, Clock, CheckCircle2, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { PLATFORM_PHONE } from "@/lib/constants";
@@ -12,6 +12,22 @@ export default function ContactPage() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [content, setContent] = useState({
+    contactPhone: PLATFORM_PHONE,
+    contactEmail: "support@doctornafsyonline.com",
+    contactAddress: "القاهرة، مصر",
+  });
+
+  useEffect(() => {
+    fetch("/api/content")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && !data.error) {
+          setContent(data);
+        }
+      })
+      .catch((err) => console.error("Failed to load contact info:", err));
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,21 +75,21 @@ export default function ContactPage() {
                 {
                   icon: <Mail className="h-6 w-6 text-[#6366F1]" />,
                   title: "البريد الإلكتروني",
-                  info: "support@doctornafsyonline.com",
+                  info: content.contactEmail,
                   desc: "للاستفسارات العامة والدعم التقني",
                   bg: "from-[#6366F1] to-[#8B5CF6]",
                 },
                 {
                   icon: <Phone className="h-6 w-6 text-[#10B981]" />,
                   title: "رقم الهاتف",
-                  info: PLATFORM_PHONE,
+                  info: content.contactPhone,
                   desc: "متاح من 9 صباحاً حتى 9 مساءً بتوقيت مكة",
                   bg: "from-[#10B981] to-[#059669]",
                 },
                 {
                   icon: <MapPin className="h-6 w-6 text-[#F59E0B]" />,
                   title: "المقر الرئيسي",
-                  info: "القاهرة، مصر",
+                  info: content.contactAddress,
                   desc: "نخدم جميع أنحاء الوطن العربي رقمياً",
                   bg: "from-[#F59E0B] to-[#D97706]",
                 },

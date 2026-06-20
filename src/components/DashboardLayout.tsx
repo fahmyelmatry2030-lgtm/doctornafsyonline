@@ -96,6 +96,7 @@ export function DashboardLayout({
     navItems = [
       { name: "الرئيسية", href: "/patient/dashboard", icon: <Home className="h-5 w-5" /> },
       { name: "مواعيدي", href: "/patient/appointments", icon: <Calendar className="h-5 w-5" /> },
+      { name: "التقييمات", href: "/patient/reviews", icon: <Award className="h-5 w-5" /> },
       { name: "الإشعارات", href: "/patient/notifications", icon: <Bell className="h-5 w-5" /> },
       { name: "غرفة العلاج", href: "/patient/messages", icon: <MessageCircle className="h-5 w-5" /> },
       { name: "الفواتير", href: "/patient/billing", icon: <CreditCard className="h-5 w-5" /> },
@@ -115,7 +116,7 @@ export function DashboardLayout({
     const allAdminNavItems = [
       { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" /> },
       { name: "إدارة المديرين 👑", href: "/admin/managers", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN"] },
-      { name: "إدارة الجلسات والعمليات 📅", href: "/admin/operations", icon: <Activity className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
+      { name: "إدارة الجلسات والعمليات 📅", href: "/admin/operations", icon: <Activity className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
       { name: "توثيق واعتماد الأخصائيين ✅", href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
       { name: "إدارة المرضى 👥", href: "/admin/patients", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
       { name: "اعتماد التحويلات المالية 💰", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },

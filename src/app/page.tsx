@@ -23,11 +23,20 @@ async function getFeaturedTherapists() {
   });
 }
 
+import { getWebsiteContent } from "@/app/admin/settings/actions";
+
 export default async function HomePage() {
   let therapists: any[] = [];
   let dbError = null;
+  let content = {
+    homeHeroBadge: "رعاية نفسية مبسطة بثقة وخصوصية",
+    homeHeroTitle: "الدعم النفسي الذي تحتاجه الآن مع أخصائيين موثوقين",
+    homeHeroSubtitle: "جلسات علاج نفسي عبر الفيديو والصوت والشات، ضمن منصة آمنة وسهلة الاستخدام. السرية والراحة هما الأساس، ونحن معك في كل خطوة."
+  };
+
   try {
     therapists = await getFeaturedTherapists();
+    content = await getWebsiteContent();
   } catch (err: any) {
     dbError = err.message || String(err);
   }
@@ -56,19 +65,17 @@ export default async function HomePage() {
             {/* Badge */}
             <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#312E81] animate-fade-in-up stagger-1 shadow-premium">
               <Sparkles className="h-4 w-4 text-[#8B5CF6]" />
-              رعاية نفسية مبسطة بثقة وخصوصية
+              {content.homeHeroBadge}
             </span>
 
             {/* Main Headline */}
             <h1 className="mb-6 text-5xl font-black leading-tight text-[var(--color-foreground)] md:text-6xl lg:text-7xl animate-fade-in-up stagger-2">
-              الدعم النفسي الذي تحتاجه الآن مع أخصائيين <span className="gradient-text">موثوقين</span>
+              {content.homeHeroTitle}
             </h1>
 
             {/* Subheadline */}
             <p className="mb-10 text-xl leading-relaxed text-slate-700 animate-fade-in-up stagger-3">
-              جلسات علاج نفسي عبر الفيديو والصوت والشات، ضمن منصة آمنة وسهلة الاستخدام.
-              <br className="hidden md:block" />
-              السرية والراحة هما الأساس، ونحن معك في كل خطوة.
+              {content.homeHeroSubtitle}
             </p>
 
             {/* CTA Buttons */}

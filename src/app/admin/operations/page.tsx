@@ -6,7 +6,7 @@ import { OperationsTabs } from "@/components/OperationsTabs";
 export default async function AdminOperationsPage() {
   const session = await auth();
   const role = session?.user?.role;
-  if (!role || (role !== "ADMIN" && role !== "ADMIN_HR" && role !== "ADMIN_VIEWER")) return null;
+  if (!role || (role !== "ADMIN" && role !== "ADMIN_HR" && role !== "ADMIN_ACCOUNTING" && role !== "ADMIN_VIEWER")) return null;
   const isReadOnly = role === "ADMIN_VIEWER";
 
   const [appointments, settings] = await Promise.all([

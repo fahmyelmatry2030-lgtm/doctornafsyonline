@@ -2,11 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { 
-  Calendar, Clock, DollarSign, TrendingUp, FileText, 
+  Calendar, Clock, DollarSign, TrendingUp, FileText, FileImage,
   Video, Headphones, MessageSquare, Check, X, Search, 
   AlertCircle, ChevronDown, Award, ExternalLink 
 } from "lucide-react";
-import { updateAppointmentStatus } from "@/app/admin/operations/actions";
+import { updateAppointmentStatus, rejectAppointmentPayment } from "@/app/admin/operations/actions";
 
 type Appointment = {
   id: string;
@@ -19,6 +19,7 @@ type Appointment = {
   price: number;
   roomName: string;
   notes: string | null;
+  paymentScreenshot: string | null;
   createdAt: Date | string;
   patient: { name: string; email: string };
   therapist: { name: string };
@@ -36,6 +37,7 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments);
   const [activeTab, setActiveTab] = useState<"bookings" | "sessions" | "payments">("bookings");
   const [search, setSearch] = useState("");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
   // Filters
   const [bookingStatusFilter, setBookingStatusFilter] = useState<string>("ALL");
@@ -57,6 +59,25 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
         setActionMessage({ type: "success", text: "تم تحديث حالة الموعد بنجاح!" });
       } else {
         setActionMessage({ type: "error", text: res.error || "فشل تحديث الحالة" });
+      }
+      setTimeout(() => setActionMessage(null), 3000);
+    });
+  };
+
+  const handleRejectPayment = async (id: string) => {
+    if (isReadOnly) return;
+    if (!confirm("هل أنت متأكد من رفض هذا التحويل؟ سيتم حذف إثبات الدفع وإعادة الحجز لحالة بانتظار الدفع.")) return;
+
+    setActionMessage(null);
+    startTransition(async () => {
+      const res = await rejectAppointmentPayment(id);
+      if (res.success) {
+        setAppointments(prev => 
+          prev.map(app => app.id === id ? { ...app, paymentScreenshot: null, status: "PENDING" } : app)
+        );
+        setActionMessage({ type: "success", text: "تم رفض التحويل وإعادة الجلسة لحالة بانتظار الدفع." });
+      } else {
+        setActionMessage({ type: "error", text: res.error || "فشل رفض التحويل" });
       }
       setTimeout(() => setActionMessage(null), 3000);
     });
@@ -221,6 +242,7 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                     <th className="px-5 py-4">الأخصائي</th>
                     <th className="px-5 py-4">تاريخ الموعد</th>
                     <th className="px-5 py-4">سعر الجلسة</th>
+                    <th className="px-5 py-4">إثبات الدفع</th>
                     <th className="px-5 py-4">الحالة</th>
                     <th className="px-5 py-4 text-center">الإجراءات</th>
                   </tr>
@@ -247,6 +269,20 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                         {app.price} ج.م
                       </td>
                       <td className="px-5 py-4">
+                        {app.paymentScreenshot ? (
+                          <button
+                            type="button"
+                            onClick={() => setSelectedImage(app.paymentScreenshot)}
+                            className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1.5 rounded-lg border border-indigo-200 transition-colors"
+                          >
+                            <FileImage className="w-3.5 h-3.5" />
+                            عرض الإيصال
+                          </button>
+                        ) : (
+                          <span className="text-slate-400 text-xs">لا يوجد إيصال</span>
+                        )}
+                      </td>
+                      <td className="px-5 py-4">
                         <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border ${statusColor[app.status]}`}>
                           {statusLabel[app.status]}
                         </span>
@@ -266,6 +302,15 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                                   >
                                     <Check className="w-3.5 h-3.5" /> تأكيد الحجز
                                   </button>
+                                  {app.paymentScreenshot && (
+                                    <button
+                                      onClick={() => handleRejectPayment(app.id)}
+                                      disabled={isPending}
+                                      className="flex items-center gap-1 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors border border-red-200"
+                                    >
+                                      <X className="w-3.5 h-3.5" /> رفض الإيصال
+                                    </button>
+                                  )}
                                   <button
                                     onClick={() => handleStatusUpdate(app.id, "CANCELLED")}
                                     disabled={isPending}
@@ -295,7 +340,7 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                   ))}
                   {filteredAppointments.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="px-6 py-16 text-center text-slate-400">
+                      <td colSpan={8} className="px-6 py-16 text-center text-slate-400">
                         <Calendar className="w-10 h-10 mx-auto mb-2 opacity-20" />
                         لا توجد حجوزات تطابق المعايير المحددة.
                       </td>
@@ -567,6 +612,36 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Image Modal Preview */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 animate-fade-in"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div
+            className="bg-white rounded-3xl overflow-hidden max-w-2xl w-full shadow-2xl relative animate-scale-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="font-bold text-slate-800">معاينة إثبات الدفع</h3>
+              <button
+                type="button"
+                onClick={() => setSelectedImage(null)}
+                className="p-1 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 bg-slate-50 flex justify-center items-center max-h-[70vh] overflow-y-auto">
+              <img
+                src={selectedImage}
+                alt="Payment Receipt"
+                className="max-w-full h-auto object-contain rounded-xl shadow-md border border-slate-200"
+              />
             </div>
           </div>
         </div>

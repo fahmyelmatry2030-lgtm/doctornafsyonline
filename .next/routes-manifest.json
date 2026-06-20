@@ -143,6 +143,12 @@
       "namedRegex": "^/admin(?:/)?$"
     },
     {
+      "page": "/admin/certificates",
+      "regex": "^/admin/certificates(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/certificates(?:/)?$"
+    },
+    {
       "page": "/admin/content",
       "regex": "^/admin/content(?:/)?$",
       "routeKeys": {},
@@ -201,6 +207,18 @@
       "regex": "^/api/admin/articles(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/admin/articles(?:/)?$"
+    },
+    {
+      "page": "/api/admin/certificates",
+      "regex": "^/api/admin/certificates(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/certificates(?:/)?$"
+    },
+    {
+      "page": "/api/admin/contracts/upload-template",
+      "regex": "^/api/admin/contracts/upload\\-template(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/contracts/upload\\-template(?:/)?$"
     },
     {
       "page": "/api/admin/debug-error",
@@ -263,10 +281,34 @@
       "namedRegex": "^/api/auth/clear\\-cookies(?:/)?$"
     },
     {
+      "page": "/api/auth/forgot-password",
+      "regex": "^/api/auth/forgot\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/forgot\\-password(?:/)?$"
+    },
+    {
+      "page": "/api/auth/reset-password",
+      "regex": "^/api/auth/reset\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/reset\\-password(?:/)?$"
+    },
+    {
+      "page": "/api/certificates/verify",
+      "regex": "^/api/certificates/verify(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/certificates/verify(?:/)?$"
+    },
+    {
       "page": "/api/check-settings",
       "regex": "^/api/check\\-settings(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/check\\-settings(?:/)?$"
+    },
+    {
+      "page": "/api/content",
+      "regex": "^/api/content(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/content(?:/)?$"
     },
     {
       "page": "/api/fix-db",
@@ -443,6 +485,12 @@
       "namedRegex": "^/register(?:/)?$"
     },
     {
+      "page": "/reset-password",
+      "regex": "^/reset\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/reset\\-password(?:/)?$"
+    },
+    {
       "page": "/services",
       "regex": "^/services(?:/)?$",
       "routeKeys": {},
@@ -471,6 +519,12 @@
       "regex": "^/therapist/messages(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/therapist/messages(?:/)?$"
+    },
+    {
+      "page": "/therapist/notifications",
+      "regex": "^/therapist/notifications(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/therapist/notifications(?:/)?$"
     },
     {
       "page": "/therapist/onboarding",
@@ -507,6 +561,12 @@
       "regex": "^/therapists(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/therapists(?:/)?$"
+    },
+    {
+      "page": "/verify-certificate",
+      "regex": "^/verify\\-certificate(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/verify\\-certificate(?:/)?$"
     }
   ],
   "dataRoutes": [],

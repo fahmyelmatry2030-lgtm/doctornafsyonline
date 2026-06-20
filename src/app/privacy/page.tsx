@@ -1,67 +1,68 @@
 import Link from "next/link";
-import { Shield, Eye, Lock, Share2, Cookie, UserCheck, RefreshCw, Mail, ArrowLeft, Database } from "lucide-react";
+import { Shield, Lock, ArrowLeft } from "lucide-react";
 import { PLATFORM_PHONE, PLATFORM_PHONE_TEL } from "@/lib/constants";
+import { getWebsiteContent } from "@/app/admin/settings/actions";
+import DynamicIcon from "@/components/DynamicIcon";
 
-const sections = [
+const defaultSections = [
   {
-    icon: <Database className="w-6 h-6" />,
     number: "١",
     title: "البيانات التي نجمعها",
     body: "نجمع بيانات التسجيل الأساسية مثل الاسم والبريد الإلكتروني ورقم الهاتف، بالإضافة إلى المعلومات المتعلقة بالحجز والجلسات لتحسين تجربتك.",
-    color: "from-[#6366F1] to-[#8B5CF6]",
+    iconName: "Database",
   },
   {
-    icon: <Eye className="w-6 h-6" />,
     number: "٢",
     title: "استخدام البيانات",
     body: "نستخدم بياناتك لتقديم الخدمات، التواصل معك، وإرسال التحديثات والعروض المرتبطة بخدماتنا. لن نشارك بياناتك مع أطراف ثالثة بدون إذن واضح منك.",
-    color: "from-teal-500 to-emerald-600",
+    iconName: "Eye",
   },
   {
-    icon: <Lock className="w-6 h-6" />,
     number: "٣",
     title: "الأمان والحماية",
     body: "نعتمد على إجراءات أمنية تقنية وتنظيمية لحماية بياناتك من الوصول غير المصرح به أو الضياع، وتشمل التشفير وجدران الحماية وبروتوكولات HTTPS.",
-    color: "from-violet-500 to-purple-600",
+    iconName: "Lock",
   },
   {
-    icon: <Cookie className="w-6 h-6" />,
     number: "٤",
     title: "ملفات تعريف الارتباط",
     body: "قد نستخدم ملفات تعريف الارتباط لتحسين تجربتك داخل المنصة وتحليل أداء الموقع. يمكنك تعديل تفضيلات المتصفح للتحكم في هذه الملفات.",
-    color: "from-amber-500 to-orange-500",
+    iconName: "Cookie",
   },
   {
-    icon: <Share2 className="w-6 h-6" />,
     number: "٥",
     title: "مشاركة المعلومات",
     body: "نشارك البيانات فقط مع مقدمي الخدمات الضروريين لتشغيل الموقع أو عند طلب قانوني. لا نبيع بياناتك لأي جهة تحت أي ظرف.",
-    color: "from-rose-500 to-pink-600",
+    iconName: "Share2",
   },
   {
-    icon: <UserCheck className="w-6 h-6" />,
     number: "٦",
     title: "حقوقك",
     body: "يمكنك طلب الاطلاع على بياناتك أو تعديلها أو حذفها. نعمل على احترام طلباتك ضمن الأطر القانونية المعمول بها، وسنرد خلال ٣٠ يوماً.",
-    color: "from-sky-500 to-blue-600",
+    iconName: "UserCheck",
   },
   {
-    icon: <RefreshCw className="w-6 h-6" />,
     number: "٧",
     title: "تحديثات السياسة",
     body: "قد نقوم بتحديث هذه السياسة من وقت لآخر. سنقوم بإعلامك بأي تغييرات مهمة عبر الموقع أو البريد الإلكتروني قبل تطبيقها.",
-    color: "from-orange-500 to-amber-600",
+    iconName: "RefreshCw",
   },
   {
-    icon: <Mail className="w-6 h-6" />,
     number: "٨",
     title: "كيفية الاتصال بنا",
     body: "لأي سؤال حول سياسة الخصوصية، يرجى التواصل معنا عبر support@doctornafsyonline.com أو الهاتف 01010423661. فريقنا جاهز للإجابة.",
-    color: "from-slate-600 to-slate-800",
+    iconName: "Mail",
   },
 ];
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const content = await getWebsiteContent();
+
+  const title = content.privacyHeroTitle || "سياسة الخصوصية";
+  const subtitle = content.privacyHeroSubtitle || "نحن في منصة دكتور نفسي أونلاين نلتزم بحماية بياناتك واحترام خصوصيتك التامة. خصوصيتك أمانة في عنقنا.";
+  const lastUpdated = content.privacyLastUpdated || "يونيو ٢٠٢٦";
+  const sections = content.privacySections && content.privacySections.length > 0 ? content.privacySections : defaultSections;
+
   return (
     <div className="bg-[var(--color-background)] min-h-screen" dir="rtl">
       {/* Hero */}
@@ -78,13 +79,13 @@ export default function PrivacyPage() {
           </div>
           <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-5 py-2.5 text-sm font-semibold backdrop-blur-sm">
             <Lock className="h-4 w-4 text-emerald-300" />
-            آخر تحديث: يونيو ٢٠٢٦
+            آخر تحديث: {lastUpdated}
           </span>
           <h1 className="mt-4 mb-6 text-5xl font-black md:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-200 to-white">
-            سياسة الخصوصية
+            {title}
           </h1>
           <p className="text-xl text-emerald-100/80 max-w-2xl mx-auto leading-relaxed">
-            نحن في منصة دكتور نفسي أونلاين نلتزم بحماية بياناتك واحترام خصوصيتك التامة. خصوصيتك أمانة في عنقنا.
+            {subtitle}
           </p>
         </div>
       </section>
@@ -112,9 +113,9 @@ export default function PrivacyPage() {
       <section className="py-20">
         <div className="mx-auto max-w-5xl px-4">
           <div className="grid gap-6 md:grid-cols-2">
-            {sections.map((sec) => (
+            {sections.map((sec, idx) => (
               <div
-                key={sec.number}
+                key={idx}
                 className="group relative bg-white rounded-3xl border border-slate-200 p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 <div className="absolute left-4 top-4 text-8xl font-black text-slate-50 select-none leading-none">
@@ -122,9 +123,9 @@ export default function PrivacyPage() {
                 </div>
                 <div className="relative z-10">
                   <div
-                    className={`mb-5 w-14 h-14 rounded-2xl bg-gradient-to-br ${sec.color} text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}
+                    className={`mb-5 w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}
                   >
-                    {sec.icon}
+                    <DynamicIcon name={sec.iconName} className="w-6 h-6" />
                   </div>
                   <h2 className="mb-3 text-xl font-black text-slate-900">{sec.title}</h2>
                   <p className="text-slate-600 leading-relaxed">{sec.body}</p>
@@ -156,10 +157,10 @@ export default function PrivacyPage() {
                 📧 support@doctornafsyonline.com
               </a>
               <a
-                href="tel:01010423661"
+                href={`tel:${PLATFORM_PHONE}`}
                 className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl px-4 py-2.5 transition-colors font-semibold"
               >
-                📞 01010423661
+                📞 {PLATFORM_PHONE}
               </a>
             </div>
           </div>

@@ -1,83 +1,68 @@
 import Link from "next/link";
-import { Shield, FileText, CreditCard, User, Database, Bell, Scale, Gavel, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Scale, FileText, ArrowLeft } from "lucide-react";
 import { PLATFORM_PHONE, PLATFORM_PHONE_TEL } from "@/lib/constants";
+import { getWebsiteContent } from "@/app/admin/settings/actions";
+import DynamicIcon from "@/components/DynamicIcon";
 
-const sections = [
+const defaultSections = [
   {
-    icon: <User className="w-6 h-6" />,
     number: "١",
     title: "القبول والتسجيل",
     body: "بالتسجيل في المنصة، فإنك تقر بأنك تستخدم بيانات صحيحة وحقيقية، وأنك مسؤول عن الحفاظ على سرية بيانات الدخول الخاصة بك.",
-    color: "from-[#6366F1] to-[#8B5CF6]",
-    bg: "bg-[#EEF2FF]",
-    text: "text-[#6366F1]",
+    iconName: "User"
   },
   {
-    icon: <Shield className="w-6 h-6" />,
     number: "٢",
     title: "حقوق المنصة",
     body: "تمتلك منصة دكتور نفسي أونلاين كافة حقوق المحتوى والخدمات المقدمة. لا يجوز نسخ أو إعادة نشر أي محتوى بدون إذن خطي مسبق.",
-    color: "from-violet-500 to-purple-600",
-    bg: "bg-violet-50",
-    text: "text-violet-600",
+    iconName: "Shield"
   },
   {
-    icon: <FileText className="w-6 h-6" />,
     number: "٣",
     title: "استخدام الخدمة",
     body: "يُمنع استخدام المنصة لأغراض غير قانونية أو مزعجة. يجب احترام سياسة السلوك المهني عند التواصل مع الأخصائيين.",
-    color: "from-teal-500 to-emerald-600",
-    bg: "bg-teal-50",
-    text: "text-teal-600",
+    iconName: "FileText"
   },
   {
-    icon: <CreditCard className="w-6 h-6" />,
     number: "٤",
     title: "الدفع والاسترداد",
     body: "تتم عمليات الدفع عبر قنوات الدفع المصرح بها داخل المنصة (فودافون كاش، موبينيل كاش، اتصالات كاش، انستاباي، التحويل البنكي). لا يمكن المطالبة باسترداد الأموال بعد بدء الجلسة إلا وفق سياسة الاسترداد الخاصة بالمنصة.",
-    color: "from-amber-500 to-orange-500",
-    bg: "bg-amber-50",
-    text: "text-amber-600",
+    iconName: "CreditCard"
   },
   {
-    icon: <User className="w-6 h-6" />,
     number: "٥",
     title: "مسؤولية المستخدم",
     body: "أنت مسؤول عن المعلومات التي تقدمها أثناء التسجيل أو أثناء الجلسات. احترس من مشاركة أي بيانات حساسة خارج إطار المنصة.",
-    color: "from-rose-500 to-pink-600",
-    bg: "bg-rose-50",
-    text: "text-rose-600",
+    iconName: "User"
   },
   {
-    icon: <Database className="w-6 h-6" />,
     number: "٦",
     title: "البيانات والمحتوى",
     body: "المحتوى الطبي والنفسي المقدم في المنصة هو معلومات عامة ولا يغني عن التشخيص الطبي أو النفسي الشخصي.",
-    color: "from-sky-500 to-blue-600",
-    bg: "bg-sky-50",
-    text: "text-sky-600",
+    iconName: "Database"
   },
   {
-    icon: <Bell className="w-6 h-6" />,
     number: "٧",
     title: "التعديلات والإشعارات",
     body: "نحتفظ بحق تعديل هذه الشروط في أي وقت. سيتم الإعلان عن التعديلات عبر الموقع أو البريد الإلكتروني.",
-    color: "from-orange-500 to-amber-600",
-    bg: "bg-orange-50",
-    text: "text-orange-600",
+    iconName: "Bell"
   },
   {
-    icon: <Gavel className="w-6 h-6" />,
     number: "٨",
     title: "القانون المعمول به",
     body: "تخضع هذه الشروط للقوانين السارية في جمهورية مصر العربية، وأي نزاع يتم حله أمام الجهات القضائية المختصة.",
-    color: "from-slate-600 to-slate-800",
-    bg: "bg-slate-100",
-    text: "text-slate-700",
+    iconName: "Gavel"
   },
 ];
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const content = await getWebsiteContent();
+
+  const title = content.termsHeroTitle || "الشروط والأحكام";
+  const subtitle = content.termsHeroSubtitle || "باستخدامك لمنصة دكتور نفسي أونلاين، فأنت توافق على الشروط التالية التي تضمن تجربة آمنة وموثوقة لكافة المستخدمين.";
+  const lastUpdated = content.termsLastUpdated || "يونيو ٢٠٢٦";
+  const sections = content.termsSections && content.termsSections.length > 0 ? content.termsSections : defaultSections;
+
   return (
     <div className="bg-[var(--color-background)] min-h-screen" dir="rtl">
       {/* Hero */}
@@ -92,13 +77,13 @@ export default function TermsPage() {
           </div>
           <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-5 py-2.5 text-sm font-semibold backdrop-blur-sm">
             <FileText className="h-4 w-4" />
-            آخر تحديث: يونيو ٢٠٢٦
+            آخر تحديث: {lastUpdated}
           </span>
           <h1 className="mt-4 mb-6 text-5xl font-black md:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-white to-[#C7D2FE]">
-            الشروط والأحكام
+            {title}
           </h1>
           <p className="text-xl text-[#A5B4FC] max-w-2xl mx-auto leading-relaxed">
-            باستخدامك لمنصة دكتور نفسي أونلاين، فأنت توافق على الشروط التالية التي تضمن تجربة آمنة وموثوقة لكافة المستخدمين.
+            {subtitle}
           </p>
         </div>
       </section>
@@ -126,17 +111,17 @@ export default function TermsPage() {
       <section className="py-20">
         <div className="mx-auto max-w-5xl px-4">
           <div className="grid gap-6 md:grid-cols-2">
-            {sections.map((sec) => (
+            {sections.map((sec, idx) => (
               <div
-                key={sec.number}
+                key={idx}
                 className="group relative bg-white rounded-3xl border border-slate-200 p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 {/* Background number */}
                 <div className="absolute left-4 top-4 text-8xl font-black text-slate-50 select-none leading-none">{sec.number}</div>
 
                 <div className="relative z-10">
-                  <div className={`mb-5 w-14 h-14 rounded-2xl bg-gradient-to-br ${sec.color} text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
-                    {sec.icon}
+                  <div className={`mb-5 w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-650 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+                    <DynamicIcon name={sec.iconName} className="w-6 h-6" />
                   </div>
                   <h2 className="mb-3 text-xl font-black text-slate-900">{sec.title}</h2>
                   <p className="text-slate-600 leading-relaxed">{sec.body}</p>

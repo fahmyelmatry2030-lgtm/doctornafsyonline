@@ -1,6 +1,6 @@
 import { auth, isAdminRole } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { getSettings } from "./actions";
+import { getSettings, getWebsiteContent } from "./actions";
 import { SettingsPageClient } from "./SettingsPageClient";
 
 export default async function AdminSettingsPage() {
@@ -14,6 +14,13 @@ export default async function AdminSettingsPage() {
 
   const isReadOnly = role === "ADMIN_VIEWER";
   const settings = await getSettings();
+  const content = await getWebsiteContent();
 
-  return <SettingsPageClient initialSettings={settings} isReadOnly={isReadOnly} />;
+  return (
+    <SettingsPageClient
+      initialSettings={settings}
+      initialContent={content}
+      isReadOnly={isReadOnly}
+    />
+  );
 }

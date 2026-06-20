@@ -29,7 +29,11 @@ const whyChooseUs = [
   { title: "أسعار منصفة", desc: "تسعير شفاف، عادل للجميع، وبدون أي رسوم خفية" },
 ];
 
-export default function AboutPage() {
+import { getWebsiteContent } from "@/app/admin/settings/actions";
+
+export default async function AboutPage() {
+  const content = await getWebsiteContent();
+
   return (
     <div className="bg-[var(--color-background)]">
       {/* ============ HERO SECTION ============ */}
@@ -43,13 +47,13 @@ export default function AboutPage() {
           <div className="max-w-3xl mx-auto animate-fade-in-up stagger-1">
             <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#312E81] shadow-premium">
               <Target className="h-4 w-4 text-[#8B5CF6]" />
-              من نحن
+              {content.aboutTitle}
             </span>
             <h1 className="mb-6 text-5xl font-black leading-tight text-[var(--color-foreground)] md:text-6xl animate-fade-in-up stagger-2">
-              دكتور نفسى <span className="gradient-text">اونلاين</span>
+              {content.aboutSubtitle}
             </h1>
             <p className="text-xl leading-relaxed text-slate-700 animate-fade-in-up stagger-3">
-              منصة عربية متخصصة في العلاج النفسي عن بعد، صُممت بعناية فائقة لتوفير أعلى معايير الجودة والسرية، ولتكون ملاذك الآمن.
+              {content.aboutContent}
             </p>
           </div>
         </div>

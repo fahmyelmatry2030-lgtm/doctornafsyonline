@@ -8,6 +8,7 @@ import { formatPrice, parseSpecializations } from "@/lib/constants";
 type Therapist = {
   id: string;
   name: string;
+  avatar: string | null;
   therapistProfile: {
     bio: string;
     specializations: string;
@@ -37,7 +38,7 @@ export default function TherapistDetailPage({
   const [availableDays] = useState(() => {
     const days = [];
     const today = new Date();
-    for (let i = 0; i < 90; i++) {
+    for (let i = 0; i < 365; i++) {
       const d = new Date();
       d.setDate(today.getDate() + i);
       const yyyy = d.getFullYear();
@@ -172,9 +173,17 @@ export default function TherapistDetailPage({
         <div className="lg:col-span-2">
           <div className="rounded-2xl border border-slate-100 bg-white p-8">
             <div className="mb-6 flex items-start gap-6">
-              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-100 to-teal-200 text-3xl font-bold text-teal-700">
-                {therapist.name.charAt(0)}
-              </div>
+              {therapist.avatar ? (
+                <img
+                  src={therapist.avatar}
+                  alt={therapist.name}
+                  className="h-20 w-20 shrink-0 rounded-full object-cover shadow-md"
+                />
+              ) : (
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-100 to-teal-200 text-3xl font-bold text-teal-700">
+                  {therapist.name.charAt(0)}
+                </div>
+              )}
               <div>
                 <div className="flex items-center gap-3">
                   <h1 className="text-2xl font-bold text-slate-900">

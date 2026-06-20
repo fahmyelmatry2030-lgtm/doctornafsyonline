@@ -21,6 +21,7 @@ export default async function TherapistPage({ params }: Props) {
       therapist={{
         id: therapist.id,
         name: therapist.name,
+        avatar: therapist.avatar,
         therapistProfile: therapist.therapistProfile,
       }}
     />

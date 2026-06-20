@@ -1,28 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import { Settings, Percent, Globe, Key, Bell, Shield, CheckCircle, ChevronLeft, Loader2, Eye } from "lucide-react";
-import { getSettings, updateSettings } from "./actions";
+import { Settings, Percent, Globe, Key, Bell, Shield, CheckCircle, ChevronLeft, Loader2, Eye, FileText, UploadCloud, AlertCircle } from "lucide-react";
+import { getSettings, updateSettings, getWebsiteContent, updateWebsiteContent, WebsiteContent } from "./actions";
 
 type SiteSettings = Awaited<ReturnType<typeof getSettings>>;
 
 export function SettingsPageClient({
   initialSettings,
+  initialContent,
   isReadOnly = false,
 }: {
   initialSettings: SiteSettings;
+  initialContent: WebsiteContent;
   isReadOnly?: boolean;
 }) {
   // Filter out API section for ADMIN_VIEWER (they can't see API keys)
   const allSections = [
     { id: "financial", label: "الإعدادات المالية", icon: <Percent className="w-4 h-4" /> },
     { id: "platform", label: "إعدادات المنصة", icon: <Globe className="w-4 h-4" /> },
+    { id: "webcontent", label: "محتوى صفحات الموقع 📝", icon: <FileText className="w-4 h-4" /> },
     { id: "notifications", label: "الإشعارات", icon: <Bell className="w-4 h-4" /> },
     { id: "security", label: "الأمان", icon: <Shield className="w-4 h-4" /> },
+    { id: "contracts", label: "نماذج العقود الرسمية 📄", icon: <FileText className="w-4 h-4" /> },
     ...(!isReadOnly ? [{ id: "api", label: "مفاتيح API", icon: <Key className="w-4 h-4" /> }] : []),
   ];
 
   const [active, setActive] = useState("financial");
+  const [subActiveTab, setSubActiveTab] = useState("home");
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -46,18 +51,68 @@ export function SettingsPageClient({
   const [walletInstapay, setWalletInstapay] = useState(initialSettings.walletInstapay || "");
   const [bankAccount, setBankAccount] = useState(initialSettings.bankAccount || "");
 
+  // Website Content State
+  const [homeHeroBadge, setHomeHeroBadge] = useState(initialContent.homeHeroBadge || "");
+  const [homeHeroTitle, setHomeHeroTitle] = useState(initialContent.homeHeroTitle || "");
+  const [homeHeroSubtitle, setHomeHeroSubtitle] = useState(initialContent.homeHeroSubtitle || "");
+  const [aboutTitle, setAboutTitle] = useState(initialContent.aboutTitle || "");
+  const [aboutSubtitle, setAboutSubtitle] = useState(initialContent.aboutSubtitle || "");
+  const [aboutContent, setAboutContent] = useState(initialContent.aboutContent || "");
+  const [contactPhone, setContactPhone] = useState(initialContent.contactPhone || "");
+  const [contactEmail, setContactEmail] = useState(initialContent.contactEmail || "");
+  const [contactAddress, setContactAddress] = useState(initialContent.contactAddress || "");
+
+  // How it works
+  const [howItWorksHeroBadge, setHowItWorksHeroBadge] = useState(initialContent.howItWorksHeroBadge || "");
+  const [howItWorksHeroTitle, setHowItWorksHeroTitle] = useState(initialContent.howItWorksHeroTitle || "");
+  const [howItWorksHeroSubtitle, setHowItWorksHeroSubtitle] = useState(initialContent.howItWorksHeroSubtitle || "");
+  const [howItWorksSteps, setHowItWorksSteps] = useState(initialContent.howItWorksSteps || []);
+  const [howItWorksFeatures, setHowItWorksFeatures] = useState(initialContent.howItWorksFeatures || []);
+
+  // FAQ
+  const [faqHeroBadge, setFaqHeroBadge] = useState(initialContent.faqHeroBadge || "");
+  const [faqHeroTitle, setFaqHeroTitle] = useState(initialContent.faqHeroTitle || "");
+  const [faqHeroSubtitle, setFaqHeroSubtitle] = useState(initialContent.faqHeroSubtitle || "");
+  const [faqItems, setFaqItems] = useState(initialContent.faqItems || []);
+
+  // Terms
+  const [termsHeroTitle, setTermsHeroTitle] = useState(initialContent.termsHeroTitle || "");
+  const [termsHeroSubtitle, setTermsHeroSubtitle] = useState(initialContent.termsHeroSubtitle || "");
+  const [termsSections, setTermsSections] = useState(initialContent.termsSections || []);
+
+  // Privacy
+  const [privacyHeroTitle, setPrivacyHeroTitle] = useState(initialContent.privacyHeroTitle || "");
+  const [privacyHeroSubtitle, setPrivacyHeroSubtitle] = useState(initialContent.privacyHeroSubtitle || "");
+  const [privacySections, setPrivacySections] = useState(initialContent.privacySections || []);
+
   const handleSave = async () => {
     if (isReadOnly) return;
     setSaving(true);
     try {
-      await updateSettings({
-        commission, minPrice, maxPrice, sessionDuration,
-        platformName, allowNewTherapists, allowNewPatients,
-        maintenanceMode, emailOnBooking, emailOnCancel,
-        smsEnabled, twoFactor, sessionTimeout,
-        stripeKey, livekitKey, livekitUrl,
-        walletVodafone, walletInstapay, bankAccount,
-      });
+      if (active === "webcontent") {
+        await updateWebsiteContent({
+          homeHeroBadge, homeHeroTitle, homeHeroSubtitle,
+          aboutTitle, aboutSubtitle, aboutContent,
+          contactPhone, contactEmail, contactAddress,
+          howItWorksHeroBadge, howItWorksHeroTitle, howItWorksHeroSubtitle,
+          howItWorksSteps, howItWorksFeatures,
+          faqHeroBadge, faqHeroTitle, faqHeroSubtitle,
+          faqItems,
+          termsHeroTitle, termsHeroSubtitle,
+          termsSections,
+          privacyHeroTitle, privacyHeroSubtitle,
+          privacySections,
+        });
+      } else {
+        await updateSettings({
+          commission, minPrice, maxPrice, sessionDuration,
+          platformName, allowNewTherapists, allowNewPatients,
+          maintenanceMode, emailOnBooking, emailOnCancel,
+          smsEnabled, twoFactor, sessionTimeout,
+          stripeKey, livekitKey, livekitUrl,
+          walletVodafone, walletInstapay, bankAccount,
+        });
+      }
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
@@ -281,6 +336,644 @@ export function SettingsPageClient({
                     className={`${inputCls} max-w-xs`} />
                   <p className="text-xs text-slate-400 mt-1">يتم تسجيل الخروج تلقائياً بعد فترة الخمول المحددة</p>
                 </div>
+              </div>
+            </>
+          )}
+
+          {active === "contracts" && (
+            <>
+              <h2 className="text-lg font-black text-slate-800 border-b border-slate-100 pb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-indigo-500" /> نماذج العقود الرسمية للمنصة
+              </h2>
+              <p className="text-xs text-slate-500 mb-6">
+                قم برفع وتحديث نماذج العقود والاتفاقيات الرسمية للمنصة بصيغة PDF. سيتمكن الأخصائيون من تحميل هذه النماذج وتوقيعها وإعادة رفعها للمراجعة.
+              </p>
+
+              <div className="space-y-6">
+                {[
+                  {
+                    id: "trial",
+                    title: "عقد فترة التجربة (١٤ يوم)",
+                    desc: "النموذج الرسمي لعقد فترة التجربة التجريبية للأخصائيين بعد التسجيل.",
+                    fileUrl: "/docs/trial_contract_template.pdf",
+                  },
+                  {
+                    id: "marketing",
+                    title: "إقرار الحملة الدعائية",
+                    desc: "إقرار خاص بالموافقة على الحملات التسويقية ونشر بيانات الأخصائيين.",
+                    fileUrl: "/docs/marketing_consent_template.pdf",
+                  },
+                  {
+                    id: "annual",
+                    title: "العقد السنوي الشامل",
+                    desc: "النموذج الرسمي لعقد العمل السنوي الشامل طويل الأجل.",
+                    fileUrl: "/docs/annual_contract_template.pdf",
+                  },
+                ].map((tpl) => {
+                  return (
+                    <div key={tpl.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-slate-200 rounded-2xl bg-slate-50/30 gap-4" dir="rtl">
+                      <div className="space-y-1">
+                        <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 bg-indigo-500 rounded-full"></span>
+                          {tpl.title}
+                        </h4>
+                        <p className="text-xs text-slate-500 max-w-xl">{tpl.desc}</p>
+                        <div className="pt-2 flex items-center gap-3">
+                          <a href={tpl.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                            <Eye className="w-3.5 h-3.5" /> عرض النموذج الحالي
+                          </a>
+                        </div>
+                      </div>
+                      
+                      {!isReadOnly ? (
+                        <div className="shrink-0 flex items-center">
+                          <label className="cursor-pointer bg-white hover:bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 flex items-center gap-2 shadow-sm transition hover:-translate-y-0.5">
+                            <UploadCloud className="w-4 h-4 text-indigo-500" />
+                            <span>تحديث النموذج</span>
+                            <input
+                              type="file"
+                              accept="application/pdf"
+                              className="hidden"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                if (file.size > 15 * 1024 * 1024) {
+                                  alert("حجم الملف يجب ألا يتجاوز 15 ميجابايت");
+                                  return;
+                                }
+                                const formData = new FormData();
+                                formData.append("file", file);
+                                formData.append("templateType", tpl.id);
+
+                                try {
+                                  const res = await fetch("/api/admin/contracts/upload-template", {
+                                    method: "POST",
+                                    body: formData,
+                                  });
+                                  const data = await res.json();
+                                  if (res.ok) {
+                                    alert("تم تحديث نموذج العقد بنجاح!");
+                                    window.location.reload();
+                                  } else {
+                                    alert(data.error || "فشل رفع النموذج");
+                                  }
+                                } catch {
+                                  alert("حدث خطأ أثناء الاتصال بالخادم لرفع الملف");
+                                }
+                              }}
+                            />
+                          </label>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-slate-400 italic">عرض فقط</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {active === "webcontent" && (
+            <>
+              <h2 className="text-lg font-black text-slate-800 border-b border-slate-100 pb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-indigo-500" /> محتوى صفحات الموقع الإلكتروني
+              </h2>
+
+              {/* Sub tabs list */}
+              <div className="flex gap-2 border-b border-slate-100 pb-3 flex-wrap">
+                {[
+                  { id: "home", label: "الرئيسية" },
+                  { id: "about", label: "من نحن" },
+                  { id: "contact", label: "بيانات الاتصال" },
+                  { id: "howitworks", label: "كيف نعمل" },
+                  { id: "faq", label: "الأسئلة الشائعة" },
+                  { id: "terms", label: "الشروط والأحكام" },
+                  { id: "privacy", label: "سياسة الخصوصية" }
+                ].map(sub => (
+                  <button
+                    key={sub.id}
+                    type="button"
+                    onClick={() => setSubActiveTab(sub.id)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                      subActiveTab === sub.id
+                        ? "bg-indigo-50 text-indigo-600 border border-indigo-200 shadow-sm"
+                        : "bg-slate-50 text-slate-500 border border-transparent hover:bg-slate-100"
+                    }`}
+                  >
+                    {sub.label}
+                  </button>
+                ))}
+              </div>
+              
+              <div className="space-y-6 pt-3">
+                {/* Home Page Section */}
+                {subActiveTab === "home" && (
+                  <div className="space-y-4 animate-fade-in">
+                    <h3 className="text-sm font-bold text-indigo-600 border-r-4 border-indigo-500 pr-2">الصفحة الرئيسية (الواجهة)</h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">شارة البانر التعريفي الصغير</label>
+                        <input type="text" value={homeHeroBadge} onChange={e => !isReadOnly && setHomeHeroBadge(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">العنوان الرئيسي للبانر (H1)</label>
+                        <input type="text" value={homeHeroTitle} onChange={e => !isReadOnly && setHomeHeroTitle(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">العنوان الفرعي للبانر</label>
+                        <textarea value={homeHeroSubtitle} onChange={e => !isReadOnly && setHomeHeroSubtitle(e.target.value)} disabled={isReadOnly} rows={3} className={`${inputCls} resize-none`} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* About Page Section */}
+                {subActiveTab === "about" && (
+                  <div className="space-y-4 animate-fade-in">
+                    <h3 className="text-sm font-bold text-indigo-600 border-r-4 border-indigo-500 pr-2">صفحة من نحن</h3>
+                    <div className="grid gap-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">عنوان الصفحة الرئيسي</label>
+                          <input type="text" value={aboutTitle} onChange={e => !isReadOnly && setAboutTitle(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 mb-1">العنوان الفرعي</label>
+                          <input type="text" value={aboutSubtitle} onChange={e => !isReadOnly && setAboutSubtitle(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">محتوى صفحة من نحن</label>
+                        <textarea value={aboutContent} onChange={e => !isReadOnly && setAboutContent(e.target.value)} disabled={isReadOnly} rows={4} className={`${inputCls} resize-none`} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Contact Page Section */}
+                {subActiveTab === "contact" && (
+                  <div className="space-y-4 animate-fade-in">
+                    <h3 className="text-sm font-bold text-indigo-600 border-r-4 border-indigo-500 pr-2">بيانات التواصل بالموقع</h3>
+                    <div className="grid gap-4 md:grid-cols-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف للاتصال</label>
+                        <input type="text" value={contactPhone} onChange={e => !isReadOnly && setContactPhone(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">البريد الإلكتروني للتواصل</label>
+                        <input type="text" value={contactEmail} onChange={e => !isReadOnly && setContactEmail(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">عنوان المقر / الدولة</label>
+                        <input type="text" value={contactAddress} onChange={e => !isReadOnly && setContactAddress(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* How it Works Page Section */}
+                {subActiveTab === "howitworks" && (
+                  <div className="space-y-6 animate-fade-in">
+                    <h3 className="text-sm font-bold text-indigo-600 border-r-4 border-indigo-500 pr-2">صفحة كيف نعمل</h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">شارة البانر</label>
+                        <input type="text" value={howItWorksHeroBadge} onChange={e => !isReadOnly && setHowItWorksHeroBadge(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">عنوان البانر الرئيسي</label>
+                        <input type="text" value={howItWorksHeroTitle} onChange={e => !isReadOnly && setHowItWorksHeroTitle(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">العنوان الفرعي للبانر</label>
+                        <textarea value={howItWorksHeroSubtitle} onChange={e => !isReadOnly && setHowItWorksHeroSubtitle(e.target.value)} disabled={isReadOnly} rows={3} className={`${inputCls} resize-none`} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 border-t border-slate-100 pt-6">
+                      <h4 className="font-bold text-slate-800 text-sm">خطوات التعافي (6 خطوات)</h4>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {howItWorksSteps.map((step: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-slate-200 rounded-2xl space-y-2.5 bg-slate-50/50">
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs font-black bg-indigo-100 text-indigo-700 w-6 h-6 rounded-full flex items-center justify-center">
+                                {step.number || (idx + 1)}
+                              </span>
+                              <span className="text-[10px] text-slate-400 font-bold">الخطوة {idx + 1}</span>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 mb-1">العنوان</label>
+                              <input
+                                type="text"
+                                value={step.title || ""}
+                                onChange={e => {
+                                  const updated = [...howItWorksSteps];
+                                  updated[idx] = { ...updated[idx], title: e.target.value };
+                                  setHowItWorksSteps(updated);
+                                }}
+                                disabled={isReadOnly}
+                                className={inputCls}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 mb-1">الوصف</label>
+                              <textarea
+                                value={step.description || ""}
+                                onChange={e => {
+                                  const updated = [...howItWorksSteps];
+                                  updated[idx] = { ...updated[idx], description: e.target.value };
+                                  setHowItWorksSteps(updated);
+                                }}
+                                disabled={isReadOnly}
+                                rows={3}
+                                className={`${inputCls} resize-none`}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 border-t border-slate-100 pt-6">
+                      <h4 className="font-bold text-slate-800 text-sm">مميزات التجربة (4 مميزات)</h4>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {howItWorksFeatures.map((feat: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-slate-200 rounded-2xl space-y-2.5 bg-slate-50/50">
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 mb-1">العنوان</label>
+                              <input
+                                type="text"
+                                value={feat.title || ""}
+                                onChange={e => {
+                                  const updated = [...howItWorksFeatures];
+                                  updated[idx] = { ...updated[idx], title: e.target.value };
+                                  setHowItWorksFeatures(updated);
+                                }}
+                                disabled={isReadOnly}
+                                className={inputCls}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 mb-1">الوصف</label>
+                              <textarea
+                                value={feat.description || ""}
+                                onChange={e => {
+                                  const updated = [...howItWorksFeatures];
+                                  updated[idx] = { ...updated[idx], description: e.target.value };
+                                  setHowItWorksFeatures(updated);
+                                }}
+                                disabled={isReadOnly}
+                                rows={2}
+                                className={`${inputCls} resize-none`}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 mb-1">الأيقونة (Emoji)</label>
+                              <input
+                                type="text"
+                                value={feat.icon || ""}
+                                onChange={e => {
+                                  const updated = [...howItWorksFeatures];
+                                  updated[idx] = { ...updated[idx], icon: e.target.value };
+                                  setHowItWorksFeatures(updated);
+                                }}
+                                disabled={isReadOnly}
+                                className="w-20 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-center bg-white"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* FAQ Page Section */}
+                {subActiveTab === "faq" && (
+                  <div className="space-y-6 animate-fade-in">
+                    <h3 className="text-sm font-bold text-indigo-600 border-r-4 border-indigo-500 pr-2">صفحة الأسئلة الشائعة</h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">شارة البانر</label>
+                        <input type="text" value={faqHeroBadge} onChange={e => !isReadOnly && setFaqHeroBadge(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">عنوان البانر الرئيسي</label>
+                        <input type="text" value={faqHeroTitle} onChange={e => !isReadOnly && setFaqHeroTitle(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">العنوان الفرعي للبانر</label>
+                        <textarea value={faqHeroSubtitle} onChange={e => !isReadOnly && setFaqHeroSubtitle(e.target.value)} disabled={isReadOnly} rows={3} className={`${inputCls} resize-none`} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 border-t border-slate-100 pt-6">
+                      <div className="flex justify-between items-center">
+                        <h4 className="font-bold text-slate-800 text-sm">قائمة الأسئلة الشائعة ({faqItems.length})</h4>
+                        {!isReadOnly && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFaqItems([...faqItems, { question: "سؤال جديد؟", answer: "الإجابة هنا...", category: "الاختيار" }]);
+                            }}
+                            className="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold border border-indigo-200 transition-colors shadow-sm"
+                          >
+                            + إضافة سؤال جديد
+                          </button>
+                        )}
+                      </div>
+                      <div className="space-y-4">
+                        {faqItems.map((faq: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-slate-200 rounded-2xl bg-slate-50/50 space-y-3 relative">
+                            {!isReadOnly && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setFaqItems(faqItems.filter((_, i) => i !== idx));
+                                }}
+                                className="absolute left-4 top-4 text-xs font-bold text-red-500 hover:text-red-750 transition-colors"
+                              >
+                                حذف السؤال ×
+                              </button>
+                            )}
+                            <div className="grid gap-3 md:grid-cols-3">
+                              <div className="col-span-2">
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1">السؤال</label>
+                                <input
+                                  type="text"
+                                  value={faq.question || ""}
+                                  onChange={e => {
+                                    const updated = [...faqItems];
+                                    updated[idx] = { ...updated[idx], question: e.target.value };
+                                    setFaqItems(updated);
+                                  }}
+                                  disabled={isReadOnly}
+                                  className={inputCls}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1">التصنيف</label>
+                                <select
+                                  value={faq.category || "الاختيار"}
+                                  onChange={e => {
+                                    const updated = [...faqItems];
+                                    updated[idx] = { ...updated[idx], category: e.target.value };
+                                    setFaqItems(updated);
+                                  }}
+                                  disabled={isReadOnly}
+                                  className={inputCls}
+                                >
+                                  {["الاختيار", "الأمان", "الخدمات", "الجدولة", "التسعير", "المتابعة"].map(cat => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 mb-1">الإجابة</label>
+                              <textarea
+                                value={faq.answer || ""}
+                                onChange={e => {
+                                  const updated = [...faqItems];
+                                  updated[idx] = { ...updated[idx], answer: e.target.value };
+                                  setFaqItems(updated);
+                                }}
+                                disabled={isReadOnly}
+                                rows={3}
+                                className={`${inputCls} resize-none`}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Terms Page Section */}
+                {subActiveTab === "terms" && (
+                  <div className="space-y-6 animate-fade-in">
+                    <h3 className="text-sm font-bold text-indigo-600 border-r-4 border-indigo-500 pr-2">صفحة الشروط والأحكام</h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">عنوان البانر الرئيسي</label>
+                        <input type="text" value={termsHeroTitle} onChange={e => !isReadOnly && setTermsHeroTitle(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">العنوان الفرعي للبانر</label>
+                        <textarea value={termsHeroSubtitle} onChange={e => !isReadOnly && setTermsHeroSubtitle(e.target.value)} disabled={isReadOnly} rows={2} className={`${inputCls} resize-none`} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 border-t border-slate-100 pt-6">
+                      <div className="flex justify-between items-center">
+                        <h4 className="font-bold text-slate-800 text-sm">بنود الشروط والأحكام ({termsSections.length})</h4>
+                        {!isReadOnly && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setTermsSections([...termsSections, { title: "بند جديد", body: "تفاصيل البند...", number: String(termsSections.length + 1), iconName: "User" }]);
+                            }}
+                            className="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold border border-indigo-200 transition-colors shadow-sm"
+                          >
+                            + إضافة بند جديد
+                          </button>
+                        )}
+                      </div>
+                      <div className="space-y-4">
+                        {termsSections.map((sec: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-slate-200 rounded-2xl bg-slate-50/50 space-y-3 relative">
+                            {!isReadOnly && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setTermsSections(termsSections.filter((_, i) => i !== idx));
+                                }}
+                                className="absolute left-4 top-4 text-xs font-bold text-red-500 hover:text-red-750 transition-colors"
+                              >
+                                حذف البند ×
+                              </button>
+                            )}
+                            <div className="grid gap-3 md:grid-cols-3">
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1">الرقم التعريفي (بالعربية)</label>
+                                <input
+                                  type="text"
+                                  value={sec.number || ""}
+                                  onChange={e => {
+                                    const updated = [...termsSections];
+                                    updated[idx] = { ...updated[idx], number: e.target.value };
+                                    setTermsSections(updated);
+                                  }}
+                                  disabled={isReadOnly}
+                                  className={inputCls}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1">العنوان</label>
+                                <input
+                                  type="text"
+                                  value={sec.title || ""}
+                                  onChange={e => {
+                                    const updated = [...termsSections];
+                                    updated[idx] = { ...updated[idx], title: e.target.value };
+                                    setTermsSections(updated);
+                                  }}
+                                  disabled={isReadOnly}
+                                  className={inputCls}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1">الأيقونة (Lucide Icon)</label>
+                                <select
+                                  value={sec.iconName || "User"}
+                                  onChange={e => {
+                                    const updated = [...termsSections];
+                                    updated[idx] = { ...updated[idx], iconName: e.target.value };
+                                    setTermsSections(updated);
+                                  }}
+                                  disabled={isReadOnly}
+                                  className={inputCls}
+                                >
+                                  {["User", "Shield", "FileText", "CreditCard", "Database", "Bell", "Gavel", "Scale"].map(ico => (
+                                    <option key={ico} value={ico}>{ico}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 mb-1">محتوى البند</label>
+                              <textarea
+                                value={sec.body || ""}
+                                onChange={e => {
+                                  const updated = [...termsSections];
+                                  updated[idx] = { ...updated[idx], body: e.target.value };
+                                  setTermsSections(updated);
+                                }}
+                                disabled={isReadOnly}
+                                rows={3}
+                                className={`${inputCls} resize-none`}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Privacy Page Section */}
+                {subActiveTab === "privacy" && (
+                  <div className="space-y-6 animate-fade-in">
+                    <h3 className="text-sm font-bold text-indigo-600 border-r-4 border-indigo-500 pr-2">صفحة سياسة الخصوصية</h3>
+                    <div className="grid gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">عنوان البانر الرئيسي</label>
+                        <input type="text" value={privacyHeroTitle} onChange={e => !isReadOnly && setPrivacyHeroTitle(e.target.value)} disabled={isReadOnly} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">العنوان الفرعي للبانر</label>
+                        <textarea value={privacyHeroSubtitle} onChange={e => !isReadOnly && setPrivacyHeroSubtitle(e.target.value)} disabled={isReadOnly} rows={2} className={`${inputCls} resize-none`} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 border-t border-slate-100 pt-6">
+                      <div className="flex justify-between items-center">
+                        <h4 className="font-bold text-slate-800 text-sm">بنود سياسة الخصوصية ({privacySections.length})</h4>
+                        {!isReadOnly && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPrivacySections([...privacySections, { title: "بند جديد", body: "تفاصيل السياسة...", number: String(privacySections.length + 1), iconName: "Database" }]);
+                            }}
+                            className="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold border border-indigo-200 transition-colors shadow-sm"
+                          >
+                            + إضافة بند جديد
+                          </button>
+                        )}
+                      </div>
+                      <div className="space-y-4">
+                        {privacySections.map((sec: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-slate-200 rounded-2xl bg-slate-50/50 space-y-3 relative">
+                            {!isReadOnly && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setPrivacySections(privacySections.filter((_, i) => i !== idx));
+                                }}
+                                className="absolute left-4 top-4 text-xs font-bold text-red-500 hover:text-red-750 transition-colors"
+                              >
+                                حذف البند ×
+                              </button>
+                            )}
+                            <div className="grid gap-3 md:grid-cols-3">
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1">الرقم التعريفي (بالعربية)</label>
+                                <input
+                                  type="text"
+                                  value={sec.number || ""}
+                                  onChange={e => {
+                                    const updated = [...privacySections];
+                                    updated[idx] = { ...updated[idx], number: e.target.value };
+                                    setPrivacySections(updated);
+                                  }}
+                                  disabled={isReadOnly}
+                                  className={inputCls}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1">العنوان</label>
+                                <input
+                                  type="text"
+                                  value={sec.title || ""}
+                                  onChange={e => {
+                                    const updated = [...privacySections];
+                                    updated[idx] = { ...updated[idx], title: e.target.value };
+                                    setPrivacySections(updated);
+                                  }}
+                                  disabled={isReadOnly}
+                                  className={inputCls}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1">الأيقونة (Lucide Icon)</label>
+                                <select
+                                  value={sec.iconName || "Database"}
+                                  onChange={e => {
+                                    const updated = [...privacySections];
+                                    updated[idx] = { ...updated[idx], iconName: e.target.value };
+                                    setPrivacySections(updated);
+                                  }}
+                                  disabled={isReadOnly}
+                                  className={inputCls}
+                                >
+                                  {["Database", "Eye", "Lock", "Share2", "Cookie", "UserCheck", "RefreshCw", "Mail"].map(ico => (
+                                    <option key={ico} value={ico}>{ico}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 mb-1">محتوى السياسة</label>
+                              <textarea
+                                value={sec.body || ""}
+                                onChange={e => {
+                                  const updated = [...privacySections];
+                                  updated[idx] = { ...updated[idx], body: e.target.value };
+                                  setPrivacySections(updated);
+                                }}
+                                disabled={isReadOnly}
+                                rows={3}
+                                className={`${inputCls} resize-none`}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </>
           )}

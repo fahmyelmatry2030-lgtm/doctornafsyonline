@@ -307,9 +307,13 @@ export function TherapistsTableClient({
                 <tr key={t.id} className={`hover:bg-slate-50/50 transition-colors ${t.isSuspended ? "bg-red-50/30" : ""}`}>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm shrink-0">
-                        {t.name.charAt(0)}
-                      </div>
+                      {t.avatar ? (
+                        <img src={t.avatar} alt={t.name} className="w-9 h-9 rounded-full object-cover shrink-0" />
+                      ) : (
+                        <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm shrink-0">
+                          {t.name.charAt(0)}
+                        </div>
+                      )}
                       <div>
                         <button 
                           onClick={() => setSelectedTherapist(t)}

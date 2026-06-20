@@ -1,7 +1,8 @@
 import { Calendar, Clock, MessageCircle, Phone, UserCheck, Video, ArrowRight, CheckCircle2, Zap } from "lucide-react";
 import Link from "next/link";
+import { getWebsiteContent } from "@/app/admin/settings/actions";
 
-const steps = [
+const defaultSteps = [
   {
     icon: UserCheck,
     title: "إنشاء الحساب",
@@ -46,7 +47,7 @@ const steps = [
   },
 ];
 
-const features = [
+const defaultFeatures = [
   {
     title: "تجربة سلسة",
     description: "من التسجيل إلى الجلسة، واجهة واحدة مصممة بعناية فائقة لراحتك",
@@ -69,7 +70,41 @@ const features = [
   },
 ];
 
-export default function HowItWorksPage() {
+const defaultTimelineItems = [
+  {
+    title: "التسجيل والاختيار",
+    time: "5 دقائق",
+    desc: "إنشاء حساب واختيار الأخصائي المناسب",
+  },
+  {
+    title: "حجز الموعد",
+    time: "دقيقتان",
+    desc: "تحديد الوقت المناسب وإتمام الحجز",
+  },
+  {
+    title: "بدء العلاج",
+    time: "فوراً",
+    desc: "دخول الجلسة في موعدها المحدد",
+  },
+];
+
+const iconsMap = [UserCheck, Calendar, Video, Clock, MessageCircle, Phone];
+
+export default async function HowItWorksPage() {
+  const content = await getWebsiteContent();
+
+  const steps = content.howItWorksSteps && content.howItWorksSteps.length > 0
+    ? content.howItWorksSteps
+    : defaultSteps;
+
+  const features = content.howItWorksFeatures && content.howItWorksFeatures.length > 0
+    ? content.howItWorksFeatures
+    : defaultFeatures;
+
+  const timelineItems = content.howItWorksTimelineItems && content.howItWorksTimelineItems.length > 0
+    ? content.howItWorksTimelineItems
+    : defaultTimelineItems;
+
   return (
     <div className="bg-[var(--color-background)] min-h-screen">
       {/* ============ HERO SECTION ============ */}
@@ -83,13 +118,13 @@ export default function HowItWorksPage() {
           <div className="max-w-3xl mx-auto animate-fade-in-up stagger-1">
             <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#312E81] shadow-premium">
               <Zap className="h-4 w-4 text-[#6366F1]" />
-              خطة التعافي
+              {content.howItWorksHeroBadge || "خطة التعافي"}
             </span>
             <h1 className="mb-6 text-5xl font-black leading-tight text-[var(--color-foreground)] md:text-6xl animate-fade-in-up stagger-2">
-              <span className="gradient-text">6 خطوات</span> بسيطة لرحلة التعافي
+              {content.howItWorksHeroTitle || "6 خطوات بسيطة لرحلة التعافي"}
             </h1>
             <p className="text-xl leading-relaxed text-slate-700 animate-fade-in-up stagger-3">
-              صممنا رحلتك معنا لتكون سلسلة، بديهية، ومريحة تماماً. من لحظة التسجيل وحتى الجلسة الأولى، كل شيء واضح ومبسط.
+              {content.howItWorksHeroSubtitle || "صممنا رحلتك معنا لتكون سلسلة، بديهية، ومريحة تماماً. من لحظة التسجيل وحتى الجلسة الأولى، كل شيء واضح ومبسط."}
             </p>
           </div>
         </div>
@@ -113,10 +148,10 @@ export default function HowItWorksPage() {
 
           <div className="space-y-12 relative z-10">
             {steps.map((step, idx) => {
-              const Icon = step.icon;
+              const Icon = iconsMap[idx] || UserCheck;
               const isEven = idx % 2 !== 0;
               return (
-                <div key={step.title} className={`flex flex-col md:flex-row items-center gap-8 md:gap-16 w-full animate-fade-in-up`} style={{ animationDelay: `${idx * 0.1}s` }}>
+                <div key={idx} className="flex flex-col md:flex-row items-center gap-8 md:gap-16 w-full animate-fade-in-up" style={{ animationDelay: `${idx * 0.1}s` }}>
                   
                   {/* Left Column */}
                   <div className={`w-full md:w-1/2 flex ${isEven ? 'md:justify-start' : 'md:justify-end'} order-2 ${isEven ? 'md:order-3' : 'md:order-1'}`}>
@@ -138,7 +173,7 @@ export default function HowItWorksPage() {
                   {/* Center Node */}
                   <div className="hidden md:flex flex-col items-center justify-center relative w-16 order-2">
                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#1E1B3A] to-[#312E81] border-4 border-white shadow-premium flex items-center justify-center z-10">
-                      <span className="text-xl font-black text-white">{step.number}</span>
+                      <span className="text-xl font-black text-white">{step.number || (idx + 1)}</span>
                     </div>
                   </div>
 
@@ -157,30 +192,14 @@ export default function HowItWorksPage() {
               <span className="text-xl">⏱️</span> كفاءة الوقت
             </p>
             <h2 className="mb-4 text-3xl font-black text-[var(--color-foreground)]">
-              أسرع مما تتخيل
+              {content.howItWorksTimelineTitle || "أسرع مما تتخيل"}
             </h2>
           </div>
 
           <div className="grid gap-8 md:grid-cols-3 relative">
             <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-gradient-to-r from-transparent via-[var(--color-border-soft)] to-transparent -translate-y-1/2 hidden md:block"></div>
             
-            {[
-              {
-                title: "التسجيل والاختيار",
-                time: "5 دقائق",
-                desc: "إنشاء حساب واختيار الأخصائي المناسب",
-              },
-              {
-                title: "حجز الموعد",
-                time: "دقيقتان",
-                desc: "تحديد الوقت المناسب وإتمام الحجز",
-              },
-              {
-                title: "بدء العلاج",
-                time: "فوراً",
-                desc: "دخول الجلسة في موعدها المحدد",
-              },
-            ].map((item, idx) => (
+            {timelineItems.map((item, idx) => (
               <div key={idx} className="glass rounded-2xl p-8 text-center border border-[var(--color-border-soft)] relative z-10 hover:shadow-md transition-premium hover:-translate-y-1">
                 <div className="mb-4 text-4xl font-black text-[#6366F1] animate-pulse-soft">{item.time}</div>
                 <h3 className="mb-2 text-xl font-bold text-[var(--color-foreground)]">{item.title}</h3>
@@ -204,7 +223,7 @@ export default function HowItWorksPage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {features.map((feature, idx) => (
               <div
-                key={feature.title}
+                key={idx}
                 className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-8 text-center transition-premium hover:shadow-premium-hover hover:-translate-y-2 animate-fade-in-up group"
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
