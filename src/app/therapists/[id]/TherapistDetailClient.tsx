@@ -37,7 +37,7 @@ export default function TherapistDetailPage({
   const [availableDays] = useState(() => {
     const days = [];
     const today = new Date();
-    for (let i = 0; i < 45; i++) {
+    for (let i = 0; i < 90; i++) {
       const d = new Date();
       d.setDate(today.getDate() + i);
       const yyyy = d.getFullYear();
@@ -317,7 +317,7 @@ export default function TherapistDetailPage({
                     onChange={(e) => setSelectedMinute(e.target.value)}
                     className="w-full rounded-xl border border-slate-200 px-3 py-3 text-sm outline-none focus:border-teal-400 bg-white text-center font-bold text-slate-800"
                   >
-                    {["00", "15", "30", "45"].map((m) => (
+                    {["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"].map((m) => (
                       <option key={m} value={m}>{m}</option>
                     ))}
                   </select>

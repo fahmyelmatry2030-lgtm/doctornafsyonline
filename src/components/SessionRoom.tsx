@@ -62,6 +62,22 @@ function SessionCountdownTimer({ scheduledAt, duration }: { scheduledAt: string;
 
     function updateTimer() {
       const now = Date.now();
+
+      if (now < start) {
+        // Session hasn't started yet. Show time until start.
+        const diffToStart = start - now;
+        const mins = Math.floor(diffToStart / 60000);
+        const secs = Math.floor((diffToStart % 60000) / 1000);
+
+        if (mins >= 60) {
+          setTimeLeft("تبدأ الجلسة قريباً");
+        } else {
+          setTimeLeft(`تبدأ خلال: ${mins}:${secs.toString().padStart(2, "0")}`);
+        }
+        setIsOver(false);
+        return;
+      }
+
       const remaining = end - now;
 
       if (remaining <= 0) {
@@ -81,8 +97,8 @@ function SessionCountdownTimer({ scheduledAt, duration }: { scheduledAt: string;
   }, [scheduledAt, duration]);
 
   return (
-    <div className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-colors border ${
-      isOver ? "bg-red-50 text-red-600 border-red-200 animate-pulse" : "bg-slate-700 text-white border-slate-650"
+    <div className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-colors border-2 ${
+      isOver ? "bg-red-50 text-red-700 border-red-200 animate-pulse" : "bg-slate-800 text-white border-slate-700"
     }`}>
       {timeLeft}
     </div>
