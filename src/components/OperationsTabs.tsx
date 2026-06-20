@@ -4,9 +4,9 @@ import { useState, useTransition } from "react";
 import { 
   Calendar, Clock, DollarSign, TrendingUp, FileText, FileImage,
   Video, Headphones, MessageSquare, Check, X, Search, 
-  AlertCircle, ChevronDown, Award, ExternalLink 
+  AlertCircle, ChevronDown, Award, ExternalLink, Edit3
 } from "lucide-react";
-import { updateAppointmentStatus, rejectAppointmentPayment } from "@/app/admin/operations/actions";
+import { updateAppointmentStatus, rejectAppointmentPayment, editAppointmentDetails } from "@/app/admin/operations/actions";
 
 type Appointment = {
   id: string;
@@ -46,6 +46,9 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
   
   const [isPending, startTransition] = useTransition();
   const [actionMessage, setActionMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
+  const [editForm, setEditForm] = useState({ scheduledAt: "", duration: 50, price: 0 });
 
   const handleStatusUpdate = async (id: string, newStatus: Appointment["status"]) => {
     if (isReadOnly) return;
@@ -296,6 +299,20 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                               {app.status === "PENDING" && (
                                 <>
                                   <button
+                                    onClick={() => {
+                                      const d = new Date(app.scheduledAt);
+                                      // format for datetime-local input: YYYY-MM-DDThh:mm
+                                      const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+                                      const localISOTime = (new Date(d.getTime() - tzoffset)).toISOString().slice(0, 16);
+                                      setEditForm({ scheduledAt: localISOTime, duration: app.duration, price: app.price });
+                                      setEditingAppointment(app);
+                                    }}
+                                    disabled={isPending}
+                                    className="flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors border border-amber-200"
+                                  >
+                                    <Edit3 className="w-3.5 h-3.5" /> تعديل
+                                  </button>
+                                  <button
                                     onClick={() => handleStatusUpdate(app.id, "CONFIRMED")}
                                     disabled={isPending}
                                     className="flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-colors shadow-sm"
@@ -321,13 +338,28 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                                 </>
                               )}
                               {app.status === "CONFIRMED" && (
-                                <button
-                                  onClick={() => handleStatusUpdate(app.id, "CANCELLED")}
-                                  disabled={isPending}
-                                  className="flex items-center gap-1 border border-red-200 text-red-600 hover:bg-red-50 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
-                                >
-                                  <X className="w-3.5 h-3.5" /> إلغاء الحجز
-                                </button>
+                                <>
+                                  <button
+                                    onClick={() => {
+                                      const d = new Date(app.scheduledAt);
+                                      const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+                                      const localISOTime = (new Date(d.getTime() - tzoffset)).toISOString().slice(0, 16);
+                                      setEditForm({ scheduledAt: localISOTime, duration: app.duration, price: app.price });
+                                      setEditingAppointment(app);
+                                    }}
+                                    disabled={isPending}
+                                    className="flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors border border-amber-200"
+                                  >
+                                    <Edit3 className="w-3.5 h-3.5" /> تعديل
+                                  </button>
+                                  <button
+                                    onClick={() => handleStatusUpdate(app.id, "CANCELLED")}
+                                    disabled={isPending}
+                                    className="flex items-center gap-1 border border-red-200 text-red-600 hover:bg-red-50 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
+                                  >
+                                    <X className="w-3.5 h-3.5" /> إلغاء الحجز
+                                  </button>
+                                </>
                               )}
                               {["COMPLETED", "CANCELLED", "IN_PROGRESS"].includes(app.status) && (
                                 <span className="text-xs text-slate-400 font-semibold">—</span>
@@ -643,6 +675,83 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                 className="max-w-full h-auto object-contain rounded-xl shadow-md border border-slate-200"
               />
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Appointment Modal */}
+      {editingAppointment && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 animate-fade-in"
+        >
+          <div className="bg-white rounded-3xl overflow-hidden max-w-md w-full shadow-2xl relative animate-scale-up">
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                <Edit3 className="w-4 h-4 text-indigo-600" />
+                تعديل بيانات الحجز
+              </h3>
+              <button
+                type="button"
+                onClick={() => setEditingAppointment(null)}
+                disabled={isPending}
+                className="p-1 rounded-full hover:bg-slate-200 text-slate-500 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleEditSubmit} className="p-5 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">تاريخ ووقت الجلسة</label>
+                <input
+                  type="datetime-local"
+                  required
+                  value={editForm.scheduledAt}
+                  onChange={(e) => setEditForm({ ...editForm, scheduledAt: e.target.value })}
+                  className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">مدة الجلسة (دقائق)</label>
+                  <input
+                    type="number"
+                    required
+                    min={15}
+                    value={editForm.duration}
+                    onChange={(e) => setEditForm({ ...editForm, duration: parseInt(e.target.value) || 0 })}
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">السعر (ج.م)</label>
+                  <input
+                    type="number"
+                    required
+                    min={0}
+                    value={editForm.price}
+                    onChange={(e) => setEditForm({ ...editForm, price: parseInt(e.target.value) || 0 })}
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  />
+                </div>
+              </div>
+              <div className="pt-4 border-t border-slate-100 flex gap-3">
+                <button
+                  type="submit"
+                  disabled={isPending}
+                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
+                >
+                  {isPending ? "جاري الحفظ..." : "حفظ التعديلات"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditingAppointment(null)}
+                  disabled={isPending}
+                  className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition-colors"
+                >
+                  إلغاء
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

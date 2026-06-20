@@ -16,6 +16,15 @@ export default async function TherapistPage({ params }: Props) {
 
   if (!therapist?.therapistProfile) notFound();
 
+  const reviews = await prisma.review.findMany({
+    where: { therapistId: id, comment: { not: null } },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+    include: {
+      patient: { select: { name: true, avatar: true } }
+    }
+  });
+
   return (
     <TherapistDetailClient
       therapist={{
@@ -24,6 +33,7 @@ export default async function TherapistPage({ params }: Props) {
         avatar: therapist.avatar,
         therapistProfile: therapist.therapistProfile,
       }}
+      reviews={JSON.parse(JSON.stringify(reviews))}
     />
   );
 }

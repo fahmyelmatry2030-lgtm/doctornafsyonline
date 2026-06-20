@@ -45,11 +45,31 @@ export default async function TherapistDashboardPage() {
     prisma.appointment.findMany({ where: { therapistId: userId, status: { in: ["PENDING", "CONFIRMED"] }, scheduledAt: { gte: now } }, include: { patient: true }, orderBy: { scheduledAt: "asc" }, take: 5 }),
     prisma.appointment.findMany({ where: { therapistId: userId, status: "COMPLETED" }, include: { patient: true }, orderBy: { scheduledAt: "desc" }, take: 4 }),
     prisma.therapistProfile.findUnique({ where: { userId } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { avatar: true } }),
   ]);
 
 
   return (
     <div className="animate-fade-in space-y-6">
+      {/* Avatar Reminder Banner */}
+      {!user?.avatar && (
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center shrink-0 shadow-inner">
+              <span className="text-amber-600 text-2xl font-black">!</span>
+            </div>
+            <div>
+              <h3 className="text-amber-900 font-bold text-sm md:text-base">تنبيه: صورتك الشخصية مفقودة</h3>
+              <p className="text-amber-700/90 text-xs md:text-sm mt-0.5 font-medium">
+                أكمل ملفك الشخصي وارفع صورتك الآن. الأخصائيون الذين يمتلكون صوراً شخصية واضحة يحصلون على حجوزات أكثر بـ 3 أضعاف!
+              </p>
+            </div>
+          </div>
+          <Link href="/therapist/profile" className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-500/30 transition-all">
+            رفع الصورة الآن
+          </Link>
+        </div>
+      )}
 
       {/* Welcome Banner */}
       <div className="bg-white rounded-[24px] p-8 shadow-sm flex flex-col md:flex-row items-center justify-between relative overflow-hidden">

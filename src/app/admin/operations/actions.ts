@@ -78,3 +78,28 @@ export async function rejectAppointmentPayment(id: string) {
     return { success: false, error: "فشل رفض الدفعة" };
   }
 }
+
+export async function editAppointmentDetails(id: string, data: { scheduledAt: string; duration: number; price: number }) {
+  try {
+    const session = await auth();
+    if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "ADMIN_ACCOUNTING")) {
+      return { success: false, error: "غير مصرح لك بالقيام بهذا الإجراء" };
+    }
+
+    await prisma.appointment.update({
+      where: { id },
+      data: {
+        scheduledAt: new Date(data.scheduledAt),
+        duration: data.duration,
+        price: data.price,
+      },
+    });
+
+    revalidatePath("/admin/operations");
+    revalidatePath("/admin/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to edit appointment details:", error);
+    return { success: false, error: "فشل حفظ التعديلات" };
+  }
+}

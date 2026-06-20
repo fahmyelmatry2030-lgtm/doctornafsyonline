@@ -21,10 +21,20 @@ type Therapist = {
   };
 };
 
+type Review = {
+  id: string;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  patient: { name: string; avatar: string | null };
+};
+
 export default function TherapistDetailPage({
   therapist,
+  reviews = [],
 }: {
   therapist: Therapist;
+  reviews?: Review[];
 }) {
   const router = useRouter();
   const profile = therapist.therapistProfile;
@@ -178,6 +188,14 @@ export default function TherapistDetailPage({
                   src={therapist.avatar}
                   alt={therapist.name}
                   className="h-20 w-20 shrink-0 rounded-full object-cover shadow-md"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `<div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-100 to-teal-200 text-3xl font-bold text-teal-700">${therapist.name.charAt(0)}</div>`;
+                    }
+                  }}
                 />
               ) : (
                 <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-100 to-teal-200 text-3xl font-bold text-teal-700">
@@ -227,6 +245,43 @@ export default function TherapistDetailPage({
             <p className="text-sm text-slate-500">
               اللغات: {profile.languages}
             </p>
+
+            {/* Reviews Section */}
+            {reviews.length > 0 && (
+              <div className="mt-12 pt-8 border-t border-slate-100">
+                <h2 className="mb-6 text-xl font-black text-slate-800 flex items-center gap-2">
+                  <Star className="w-6 h-6 fill-amber-400 text-amber-400" />
+                  آراء المتعافين ({profile.reviewCount})
+                </h2>
+                <div className="space-y-6">
+                  {reviews.map((review) => (
+                    <div key={review.id} className="bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-sm">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          {review.patient.avatar ? (
+                            <img src={review.patient.avatar} alt="Patient" className="w-12 h-12 rounded-full object-cover shadow-sm" />
+                          ) : (
+                            <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-lg shadow-sm">
+                              {review.patient.name.charAt(0)}
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-bold text-slate-800 text-sm">{review.patient.name}</p>
+                            <p className="text-[11px] font-semibold text-slate-400">{new Date(review.createdAt).toLocaleDateString("ar-EG")}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-0.5 bg-white px-2.5 py-1.5 rounded-full border border-slate-100 shadow-sm">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star key={s} className={`w-3.5 h-3.5 ${s <= review.rating ? "fill-amber-400 text-amber-400" : "text-slate-200 fill-slate-100"}`} />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap">{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

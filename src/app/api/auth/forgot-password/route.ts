@@ -35,46 +35,36 @@ export async function POST(request: Request) {
 
     console.log(`[PASSWORD RESET LINK]: ${resetLink}`);
 
-    // SMTP Mail Setup
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = parseInt(process.env.SMTP_PORT || "587", 10);
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
-    const smtpFrom = process.env.SMTP_FROM || "Nafsi Platform <no-reply@doctornafsyonline.com>";
+    // Send using centralized mailer
+    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+      const { sendEmail } = await import("@/lib/mail");
+      
+      const htmlContent = `
+        <div dir="rtl" style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px; text-align: right;">
+          <h2 style="color: #6366F1; text-align: center;">منصة نفسي للعلاج النفسي</h2>
+          <p>مرحباً ${user.name}،</p>
+          <p>لقد تلقينا طلباً لإعادة تعيين كلمة المرور الخاصة بحسابك على منصة نفسي.</p>
+          <p>يرجى الضغط على الزر أدناه لإعادة تعيين كلمة المرور (هذا الرابط صالح لمدة ساعة واحدة فقط):</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetLink}" style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">إعادة تعيين كلمة المرور</a>
+          </div>
+          <p>إذا لم تكن قد طلبت إعادة تعيين كلمة المرور، يمكنك تجاهل هذا البريد الإلكتروني بأمان.</p>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
+          <p style="font-size: 11px; color: #999; text-align: center;">هذا بريد إلكتروني تلقائي، يرجى عدم الرد عليه.</p>
+        </div>
+      `;
 
-    if (smtpHost && smtpUser && smtpPass) {
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpPort === 465, // true for 465, false for other ports
-        auth: {
-          user: smtpUser,
-          pass: smtpPass,
-        },
-      });
-
-      const mailOptions = {
-        from: smtpFrom,
+      const result = await sendEmail({
         to: user.email,
         subject: "إعادة تعيين كلمة المرور - منصة نفسي",
-        html: `
-          <div dir="rtl" style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px; text-align: right;">
-            <h2 style="color: #6366F1; text-align: center;">منصة نفسي للعلاج النفسي</h2>
-            <p>مرحباً ${user.name}،</p>
-            <p>لقد تلقينا طلباً لإعادة تعيين كلمة المرور الخاصة بحسابك على منصة نفسي.</p>
-            <p>يرجى الضغط على الزر أدناه لإعادة تعيين كلمة المرور (هذا الرابط صالح لمدة ساعة واحدة فقط):</p>
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetLink}" style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">إعادة تعيين كلمة المرور</a>
-            </div>
-            <p>إذا لم تكن قد طلبت إعادة تعيين كلمة المرور، يمكنك تجاهل هذا البريد الإلكتروني بأمان.</p>
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
-            <p style="font-size: 11px; color: #999; text-align: center;">هذا بريد إلكتروني تلقائي، يرجى عدم الرد عليه.</p>
-          </div>
-        `,
-      };
+        html: htmlContent,
+      });
 
-      await transporter.sendMail(mailOptions);
-      console.log(`[SMTP Email Sent] Reset link sent to ${user.email}`);
+      if (result.success) {
+        console.log(`[SMTP Email Sent] Reset link sent to ${user.email}`);
+      } else {
+        console.error(`[SMTP Email Failed] Could not send to ${user.email}`, result.error);
+      }
     } else {
       console.log("[SMTP Email Skip] SMTP credentials not fully configured in env variables.");
     }
