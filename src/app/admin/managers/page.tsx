@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, User, ShieldCheck, Mail, Calendar, Loader2 } from "lucide-react";
+import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 
@@ -77,6 +77,32 @@ export default function ManagersPage() {
       setError("حدث خطأ في الاتصال");
     } finally {
       setSubmitLoading(false);
+    }
+  };
+
+  const handleDeleteManager = async (id: string, name: string) => {
+    if (!confirm(`هل أنت متأكد من رغبتك في حذف المدير "${name}"؟ لا يمكن التراجع عن هذا الإجراء.`)) return;
+
+    setError("");
+    setSuccess("");
+
+    try {
+      const res = await fetch("/api/admin/managers", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setSuccess(`تم حذف المدير "${name}" بنجاح`);
+        fetchManagers();
+      } else {
+        setError(data.error || "حدث خطأ أثناء حذف المدير");
+      }
+    } catch (err) {
+      setError("حدث خطأ في الاتصال");
     }
   };
 
@@ -227,6 +253,13 @@ export default function ManagersPage() {
                       <Calendar className="w-3.5 h-3.5" />
                       تاريخ الإضافة: {format(new Date(manager.createdAt), "dd MMM yyyy", { locale: arSA })}
                     </span>
+                    <button
+                      onClick={() => handleDeleteManager(manager.id, manager.name)}
+                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                      title="حذف الحساب"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               );

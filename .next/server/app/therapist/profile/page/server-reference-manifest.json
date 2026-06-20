@@ -3,7 +3,7 @@
     "00702d19ac9aae13d8d16c3c8b1733e846bc94d4be": {
       "workers": {
         "app/therapist/profile/page": {
-          "moduleId": 156544,
+          "moduleId": 526809,
           "async": false,
           "exportedName": "getSettings",
           "filename": "src/app/admin/settings/actions.ts"
@@ -15,7 +15,7 @@
     "409a7172b84f4338ce5cfa124590e95da5bea0d6fd": {
       "workers": {
         "app/therapist/profile/page": {
-          "moduleId": 156544,
+          "moduleId": 526809,
           "async": false,
           "exportedName": "updateSettings",
           "filename": "src/app/admin/settings/actions.ts"
@@ -24,17 +24,17 @@
       "exportedName": "updateSettings",
       "filename": "src/app/admin/settings/actions.ts"
     },
-    "60e8cef376f84dfbb23483dbf8fb1d2587ed6b1d86": {
+    "405c9de8e3851314d6d18117623b68ade0523883a1": {
       "workers": {
         "app/therapist/profile/page": {
-          "moduleId": 156544,
+          "moduleId": 526809,
           "async": false,
-          "exportedName": "$$RSC_SERVER_ACTION_0",
-          "filename": "src/app/therapist/profile/page.tsx"
+          "exportedName": "updateTherapistProfile",
+          "filename": "src/app/therapist/profile/actions.ts"
         }
       },
-      "exportedName": "$$RSC_SERVER_ACTION_0",
-      "filename": "src/app/therapist/profile/page.tsx"
+      "exportedName": "updateTherapistProfile",
+      "filename": "src/app/therapist/profile/actions.ts"
     }
   },
   "edge": {}

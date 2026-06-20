@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { therapistId, scheduledAt, type, duration } = await request.json();
+    const { therapistId, scheduledAt, type, duration, promoCode } = await request.json();
 
     if (!scheduledAt) {
       return NextResponse.json({ error: "الرجاء تحديد موعد وتاريخ الجلسة بشكل صحيح." }, { status: 400 });
@@ -31,6 +31,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "الأخصائي غير موجود" }, { status: 404 });
     }
 
+    // Validate and apply promo code if provided
+    let discountPercent = 0;
+    if (promoCode?.trim()) {
+      const promo = await prisma.promoCode.findFirst({
+        where: {
+          code: {
+            equals: promoCode.trim(),
+          },
+          isActive: true,
+          expiresAt: {
+            gt: new Date(),
+          },
+        },
+      });
+      if (promo) {
+        discountPercent = promo.discount;
+      }
+    }
+
+    const originalPrice = therapist.therapistProfile.pricePerSession;
+    const finalPrice = Math.max(0, Math.round(originalPrice * (1 - discountPercent / 100)));
+
     const roomName = `session-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
     const patientUser = await prisma.user.findUnique({
@@ -45,7 +67,7 @@ export async function POST(request: Request) {
         scheduledAt: parsedDate,
         type: type || "VIDEO",
         duration: duration || 50,
-        price: therapist.therapistProfile.pricePerSession,
+        price: finalPrice,
         roomName,
         status: "PENDING",
       },

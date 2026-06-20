@@ -1,5 +1,5 @@
 var R=require("../../../chunks/ssr/[turbopack]_runtime.js")("server/app/therapist/profile/page.js")
-R.c("server/chunks/ssr/[root-of-the-server]__04uejy1._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__1m2kkyw._.js")
 R.c("server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_1ovtr9r.js")
 R.c("server/chunks/ssr/[root-of-the-server]__1-07chf._.js")
 R.c("server/chunks/ssr/node_modules_next_dist_compiled_@opentelemetry_api_index_1oy1nwh.js")
@@ -15,6 +15,6 @@ R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_forbidde
 R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_unauthorized_0l_sp0x.js")
 R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_global-error_0-o-goa.js")
 R.c("server/chunks/ssr/src_142ga4m._.js")
-R.c("server/chunks/ssr/_0fbw39-._.js")
+R.c("server/chunks/ssr/_next-internal_server_app_therapist_profile_page_actions_05lvpjy.js")
 R.m(779969)
 module.exports=R.m(779969).exports

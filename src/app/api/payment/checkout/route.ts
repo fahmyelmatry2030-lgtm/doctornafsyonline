@@ -36,39 +36,9 @@ export async function POST(request: Request) {
     }
 
     if (!stripe) {
-      // In development or if Stripe is not configured, we mock checkout redirection
-      console.log("[Stripe Mock] Stripe credentials missing. Mocking success redirect.");
-      
-      // Update appointment status to CONFIRMED automatically for demo purposes
-      await prisma.appointment.update({
-        where: { id: appointmentId },
-        data: { status: "CONFIRMED" },
-      });
-
-      // Send SMS/WhatsApp confirmation notification
-      try {
-        const { notifyAppointmentConfirmed } = await import("@/lib/notifications");
-        const formattedDate = appointment.scheduledAt.toLocaleString("ar-EG", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
-        });
-
-        await notifyAppointmentConfirmed({
-          patientName: appointment.patient.name,
-          patientPhone: (await prisma.user.findUnique({ where: { id: appointment.patientId } }))?.phone,
-          therapistName: appointment.therapist.name,
-          dateTimeStr: formattedDate,
-        });
-      } catch (err) {
-        console.error("Mock confirmation notification error:", err);
-      }
-
-      return NextResponse.json({ url: "/patient/billing?status=success" });
+      // In development or if Stripe is not configured, redirect to billing indicating Stripe is unavailable
+      console.log("[Stripe Mock] Stripe credentials missing. Redirecting to manual transfer request.");
+      return NextResponse.json({ url: "/patient/billing?status=mock_stripe_unavailable" });
     }
 
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";

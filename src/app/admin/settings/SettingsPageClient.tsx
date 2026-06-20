@@ -42,6 +42,9 @@ export function SettingsPageClient({
   const [stripeKey] = useState(initialSettings.stripeKey);
   const [livekitKey] = useState(initialSettings.livekitKey);
   const [livekitUrl] = useState(initialSettings.livekitUrl);
+  const [walletVodafone, setWalletVodafone] = useState(initialSettings.walletVodafone || "");
+  const [walletInstapay, setWalletInstapay] = useState(initialSettings.walletInstapay || "");
+  const [bankAccount, setBankAccount] = useState(initialSettings.bankAccount || "");
 
   const handleSave = async () => {
     if (isReadOnly) return;
@@ -53,6 +56,7 @@ export function SettingsPageClient({
         maintenanceMode, emailOnBooking, emailOnCancel,
         smsEnabled, twoFactor, sessionTimeout,
         stripeKey, livekitKey, livekitUrl,
+        walletVodafone, walletInstapay, bankAccount,
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -150,6 +154,31 @@ export function SettingsPageClient({
                     disabled={isReadOnly} min={200} className={inputCls} />
                 </div>
               </div>
+              
+              <div className="border-t border-slate-100 pt-6">
+                <h3 className="text-md font-black text-slate-800 mb-4">بيانات الدفع والتحويلات للمنصة</h3>
+                <div className="grid gap-5 md:grid-cols-3">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">رقم فودافون كاش للمنصة</label>
+                    <input type="text" value={walletVodafone}
+                      onChange={e => !isReadOnly && setWalletVodafone(e.target.value)}
+                      disabled={isReadOnly} placeholder="مثال: 01010423661" className={inputCls} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">حساب إنستاباي (Instapay IPN)</label>
+                    <input type="text" value={walletInstapay}
+                      onChange={e => !isReadOnly && setWalletInstapay(e.target.value)}
+                      disabled={isReadOnly} placeholder="مثال: name@instapay" className={inputCls} />
+                  </div>
+                  <div className="col-span-full md:col-span-1">
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">الحساب البنكي للتلقي</label>
+                    <input type="text" value={bankAccount}
+                      onChange={e => !isReadOnly && setBankAccount(e.target.value)}
+                      disabled={isReadOnly} placeholder="اسم البنك ورقم الحساب أو IBAN" className={inputCls} />
+                  </div>
+                </div>
+              </div>
+
               <div className="bg-indigo-50 rounded-xl p-4 border border-indigo-100">
                 <p className="text-sm text-indigo-700 font-semibold">ملاحظة: حصة الأخصائي = {100 - commission}% · حصة المنصة = {commission}%</p>
               </div>

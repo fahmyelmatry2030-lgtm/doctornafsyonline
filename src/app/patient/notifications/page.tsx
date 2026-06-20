@@ -48,12 +48,14 @@ export default async function PatientNotificationsPage() {
 
   // Add appointment notifications
   recentAppointments.forEach((app) => {
-    if (app.status === "CONFIRMED") {
+    if (app.status === "CONFIRMED" || app.status === "IN_PROGRESS") {
       notifications.push({
         id: `app-confirmed-${app.id}`,
         type: "appointment",
-        title: "تم تأكيد الموعد",
-        description: `تم تأكيد جلستك مع د. ${app.therapist.name} بتاريخ ${format(new Date(app.scheduledAt), "d MMMM yyyy", { locale: arSA })}`,
+        title: app.status === "IN_PROGRESS" ? "الجلسة جارية الآن" : "تم تأكيد الموعد",
+        description: app.status === "IN_PROGRESS" 
+          ? `جلسة العلاج مع د. ${app.therapist.name} جارية الآن. يرجى الدخول للغرفة.`
+          : `تم تأكيد جلستك مع د. ${app.therapist.name} بتاريخ ${format(new Date(app.scheduledAt), "d MMMM yyyy", { locale: arSA })}`,
         time: new Date(app.updatedAt),
         icon: <CheckCircle2 className="w-5 h-5" />,
         color: "text-green-500 bg-green-50",

@@ -87,7 +87,7 @@ export default async function PatientDashboardPage() {
               <MessageCircle className="w-6 h-6" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-bold text-[#A3AED0] mb-1">الرسائل الجديدة</p>
+              <p className="text-sm font-bold text-[#A3AED0] mb-1">رسائل غرفة العلاج الجديدة</p>
               <p className="text-3xl font-black text-[#2B3674]">0</p>
             </div>
           </div>

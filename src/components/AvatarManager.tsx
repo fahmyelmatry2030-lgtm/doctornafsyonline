@@ -4,7 +4,17 @@ import { useState, useRef } from "react";
 import { Camera, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function AvatarManager({ initialAvatar, name }: { initialAvatar: string | null; name: string }) {
+export default function AvatarManager({ 
+  initialAvatar, 
+  name,
+  label = "الصورة الشخصية للأخصائي",
+  subLabel = "تظهر للمرضى في صفحة الحجز وقائمة الأخصائيين"
+}: { 
+  initialAvatar: string | null; 
+  name: string;
+  label?: string;
+  subLabel?: string;
+}) {
   const [avatar, setAvatar] = useState<string | null>(initialAvatar);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -108,8 +118,8 @@ export default function AvatarManager({ initialAvatar, name }: { initialAvatar: 
       />
 
       <div className="text-center">
-        <h3 className="font-bold text-slate-800 text-base">الصورة الشخصية للأخصائي</h3>
-        <p className="text-xs text-slate-400 mt-1">تظهر للمرضى في صفحة الحجز وقائمة الأخصائيين</p>
+        <h3 className="font-bold text-slate-800 text-base">{label}</h3>
+        <p className="text-xs text-slate-400 mt-1">{subLabel}</p>
       </div>
 
       {error && (

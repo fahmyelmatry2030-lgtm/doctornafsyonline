@@ -55,8 +55,8 @@ export default async function TherapistMessagesPage() {
   return (
     <div className="animate-fade-in space-y-6">
       <div>
-        <h1 className="text-3xl font-black text-slate-900">الرسائل والمحادثات</h1>
-        <p className="text-slate-600 mt-2 text-lg">تواصل مباشر وآمن مع مرضاك المتعالجين.</p>
+        <h1 className="text-3xl font-black text-slate-900">غرفة العلاج والمحادثات</h1>
+        <p className="text-slate-600 mt-2 text-lg">تواصل مباشر وآمن مع مرضاك في غرفة العلاج.</p>
       </div>
 
       <TherapistChatWrapper

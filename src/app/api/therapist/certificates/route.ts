@@ -24,9 +24,26 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { name, url } = await request.json();
+    const formData = await request.formData();
+    const name = formData.get("name") as string | null;
+    const file = formData.get("file") as File | null;
+
     if (!name?.trim()) {
       return NextResponse.json({ error: "اسم الشهادة مطلوب" }, { status: 400 });
+    }
+    if (!file) {
+      return NextResponse.json({ error: "ملف الشهادة مطلوب" }, { status: 400 });
+    }
+
+    // Validate size (max 8MB)
+    if (file.size > 8 * 1024 * 1024) {
+      return NextResponse.json({ error: "حجم الملف يجب ألا يتجاوز 8 ميجابايت" }, { status: 400 });
+    }
+
+    // Validate type (Images and PDF allowed)
+    const validTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg", "application/pdf"];
+    if (!validTypes.includes(file.type)) {
+      return NextResponse.json({ error: "صيغة غير صالحة. يرجى رفع صورة أو ملف PDF" }, { status: 400 });
     }
 
     const profile = await prisma.therapistProfile.findUnique({
@@ -37,12 +54,39 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "ملف الأخصائي غير موجود" }, { status: 404 });
     }
 
+    const fileExtension = file.name.split(".").pop() || "pdf";
+    const fileName = `cert_${session.user.id}_${Date.now()}.${fileExtension}`;
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    let fileUrl = "";
+
+    try {
+      // Try Cloudinary upload
+      const { uploadToCloudinary } = await import("@/lib/cloudinary");
+      fileUrl = await uploadToCloudinary(buffer, "certificates", fileName);
+      console.log("[Certificate Upload] Uploaded successfully to Cloudinary:", fileUrl);
+    } catch (cloudinaryError) {
+      console.warn("[Certificate Upload] Cloudinary upload failed, falling back to local file system:", cloudinaryError);
+      
+      const fs = await import("fs/promises");
+      const path = await import("path");
+      const uploadDir = path.join(process.cwd(), "public", "uploads", "certificates");
+      // Ensure upload directory exists
+      await fs.mkdir(uploadDir, { recursive: true });
+
+      const filePath = path.join(uploadDir, fileName);
+      // Save locally
+      await fs.writeFile(filePath, buffer);
+      fileUrl = `/uploads/certificates/${fileName}`;
+    }
+
     const currentCerts = profile.certificates ? JSON.parse(profile.certificates) : [];
     
     const newCert = {
       id: `cert-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       name: name.trim(),
-      url: url || "/mock-docs/certificate_placeholder.pdf",
+      url: fileUrl,
       uploadedAt: new Date().toISOString(),
       status: "PENDING" // PENDING, APPROVED, REJECTED
     };
@@ -55,7 +99,8 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(newCert, { status: 201 });
-  } catch {
+  } catch (error: any) {
+    console.error("Certificate upload error:", error);
     return NextResponse.json({ error: "فشل إضافة الشهادة" }, { status: 500 });
   }
 }

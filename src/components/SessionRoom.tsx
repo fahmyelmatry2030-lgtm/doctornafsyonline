@@ -45,13 +45,58 @@ type SessionRoomProps = {
   currentUserName: string;
   otherParticipantName: string;
   isTherapist?: boolean;
+  scheduledAt?: string;
+  duration?: number;
 };
 
+// Countdown Timer Component
+function SessionCountdownTimer({ scheduledAt, duration }: { scheduledAt: string; duration: number }) {
+  const [timeLeft, setTimeLeft] = useState<string>("");
+  const [isOver, setIsOver] = useState(false);
+
+  useEffect(() => {
+    if (!scheduledAt) return;
+    const start = new Date(scheduledAt).getTime();
+    const durationMs = duration * 60 * 1000;
+    const end = start + durationMs;
+
+    function updateTimer() {
+      const now = Date.now();
+      const remaining = end - now;
+
+      if (remaining <= 0) {
+        setTimeLeft("انتهى وقت الجلسة");
+        setIsOver(true);
+        return;
+      }
+
+      const mins = Math.floor(remaining / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+      setTimeLeft(`الوقت المتبقي: ${mins}:${secs.toString().padStart(2, "0")}`);
+    }
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, [scheduledAt, duration]);
+
+  return (
+    <div className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-colors border ${
+      isOver ? "bg-red-50 text-red-600 border-red-200 animate-pulse" : "bg-slate-700 text-white border-slate-650"
+    }`}>
+      {timeLeft}
+    </div>
+  );
+}
+
 function TherapistNotesPanel({ appointmentId }: { appointmentId: string }) {
-  const [notes, setNotes] = useState("");
+  const [notesText, setNotesText] = useState("");
+  const [attachments, setAttachments] = useState<{ name: string; url: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     async function loadNotes() {
@@ -59,7 +104,20 @@ function TherapistNotesPanel({ appointmentId }: { appointmentId: string }) {
         const res = await fetch(`/api/appointments/${appointmentId}/notes`);
         if (res.ok) {
           const data = await res.json();
-          setNotes(data.notes || "");
+          const notesRaw = data.notes || "";
+          try {
+            const parsed = JSON.parse(notesRaw);
+            if (parsed && typeof parsed === "object" && "text" in parsed) {
+              setNotesText(parsed.text || "");
+              setAttachments(parsed.attachments || []);
+            } else {
+              setNotesText(notesRaw);
+              setAttachments([]);
+            }
+          } catch {
+            setNotesText(notesRaw);
+            setAttachments([]);
+          }
         }
       } catch (e) {
         console.error("Error loading notes", e);
@@ -74,10 +132,15 @@ function TherapistNotesPanel({ appointmentId }: { appointmentId: string }) {
     setSaving(true);
     setSaveStatus("saving");
     try {
+      const serialized = JSON.stringify({
+        text: notesText,
+        attachments: attachments,
+      });
+
       const res = await fetch(`/api/appointments/${appointmentId}/notes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ notes }),
+        body: JSON.stringify({ notes: serialized }),
       });
       if (res.ok) {
         setSaveStatus("saved");
@@ -91,6 +154,37 @@ function TherapistNotesPanel({ appointmentId }: { appointmentId: string }) {
       setSaving(false);
     }
   }
+
+  const handleAttachFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingFile(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch(`/api/appointments/${appointmentId}/notes/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setAttachments((prev) => [...prev, { name: result.name, url: result.url }]);
+      } else {
+        alert(result.error || "فشل رفع الملف المرفق");
+      }
+    } catch {
+      alert("حدث خطأ أثناء رفع الملف");
+    } finally {
+      setUploadingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveAttachment = (indexToRemove: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== indexToRemove));
+  };
 
   return (
     <div className="flex h-full flex-col bg-white p-4">
@@ -108,12 +202,64 @@ function TherapistNotesPanel({ appointmentId }: { appointmentId: string }) {
       ) : (
         <div className="flex flex-1 flex-col gap-3">
           <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
+            value={notesText}
+            onChange={(e) => setNotesText(e.target.value)}
             placeholder="ابدأ بكتابة تقرير الجلسة وملاحظاتك المهنية..."
-            className="flex-1 text-sm rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-slate-800 focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none resize-none transition-all"
+            className="flex-1 text-sm rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-slate-800 focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none resize-none transition-all min-h-[120px]"
           ></textarea>
-          <div className="flex items-center justify-between mt-1">
+
+          {/* Attachments Section */}
+          <div className="space-y-2 border-t border-slate-100 pt-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-700">الملفات المرفقة والتقارير المساعدة</span>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleAttachFile}
+                className="hidden"
+                accept="image/*,application/pdf"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingFile}
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition"
+              >
+                {uploadingFile ? "جاري الرفع..." : "+ إرفاق ملف جديد"}
+              </button>
+            </div>
+
+            {attachments.length === 0 ? (
+              <p className="text-[10px] text-slate-400">لا توجد ملفات مرفقة.</p>
+            ) : (
+              <div className="grid gap-2 grid-cols-1 max-h-32 overflow-y-auto">
+                {attachments.map((file, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100 text-xs">
+                    <span className="font-semibold text-slate-600 truncate max-w-[200px]" title={file.name}>{file.name}</span>
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={file.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-indigo-600 hover:underline font-bold text-[10px]"
+                      >
+                        تحميل
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAttachment(idx)}
+                        className="text-red-500 hover:text-red-700 font-bold text-[10px]"
+                      >
+                        حذف
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between mt-1 border-t border-slate-100 pt-2 shrink-0">
             <span className="text-xs text-slate-400">
               {saveStatus === "saving" && "جاري الحفظ..."}
               {saveStatus === "saved" && "✓ تم الحفظ بنجاح"}
@@ -140,9 +286,11 @@ function ChatOnlySession({
   currentUserName,
   otherParticipantName,
   isTherapist,
+  scheduledAt,
+  duration,
 }: Omit<
   SessionRoomProps,
-  "sessionType" | "livekitToken" | "livekitUrl" | "livekitConfigured"
+  "livekitToken" | "livekitUrl" | "livekitConfigured"
 >) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -202,11 +350,45 @@ function ChatOnlySession({
     }
   }
 
+  async function handleEndSession() {
+    if (!confirm("هل أنت متأكد من رغبتك في إنهاء هذه الجلسة العلاجية وإغلاقها نهائياً؟")) return;
+    try {
+      const res = await fetch(`/api/appointments/${appointmentId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "COMPLETED" }),
+      });
+      if (res.ok) {
+        window.location.href = "/dashboard";
+      } else {
+        alert("فشل إنهاء الجلسة");
+      }
+    } catch {
+      alert("حدث خطأ أثناء محاولة إنهاء الجلسة");
+    }
+  }
+
   const chatLayout = (
     <div className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white">
-      <div className="border-b border-slate-100 px-6 py-4">
-        <h2 className="font-bold text-slate-800">جلسة محادثة نصية</h2>
-        <p className="text-sm text-slate-500">مع {otherParticipantName}</p>
+      <div className="border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+        <div>
+          <h2 className="font-bold text-slate-800">جلسة محادثة نصية (غرفة العلاج)</h2>
+          <p className="text-sm text-slate-500">مع {otherParticipantName}</p>
+        </div>
+        <div className="flex items-center gap-3">
+          {scheduledAt && duration && (
+            <SessionCountdownTimer scheduledAt={scheduledAt} duration={duration} />
+          )}
+          {isTherapist && (
+            <button
+              onClick={handleEndSession}
+              className="flex items-center gap-1 rounded-xl bg-red-650 hover:bg-red-700 text-white px-4 py-2.5 text-xs font-bold transition-all shadow-md shadow-red-900/10"
+            >
+              <PhoneOff className="w-3.5 h-3.5" />
+              إنهاء الجلسة
+            </button>
+          )}
+        </div>
       </div>
       <ChatPanel
         messages={messages}
@@ -252,7 +434,7 @@ function ChatPanel({
     <div className="flex-1 space-y-3 overflow-y-auto p-4">
       {messages.length === 0 && (
         <p className="py-8 text-center text-sm text-slate-400">
-          ابدأ المحادثة — جميع الرسائل مشفرة وسرية
+          ابدأ المحادثة — جميع الرسائل مشفرة وسرية في غرفة العلاج
         </p>
       )}
       {messages.map((msg) => {
@@ -384,7 +566,6 @@ function RecordingConsentManager({
   const [showConsentModal, setShowConsentModal] = useState(false);
 
   const requestRecording = () => {
-    // In real system, this triggers a signaling event. Here we show consent interface
     setConsentRequested(true);
     setShowConsentModal(true);
   };
@@ -400,19 +581,24 @@ function RecordingConsentManager({
       {isRecording ? (
         <button
           onClick={onStopRecording}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold animate-pulse shadow-md"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-red-650 hover:bg-red-700 text-white rounded-xl text-xs font-bold animate-pulse shadow-md"
         >
           <span className="w-2 h-2 rounded-full bg-white animate-ping" />
           إيقاف التسجيل
         </button>
       ) : (
-        <button
-          onClick={requestRecording}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-700 rounded-xl text-xs font-bold"
-        >
-          <VideoIcon className="w-3.5 h-3.5" />
-          طلب تسجيل الجلسة
-        </button>
+        <div className="flex flex-col items-start gap-0.5">
+          <button
+            onClick={requestRecording}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-700 rounded-xl text-xs font-bold transition-all"
+          >
+            <VideoIcon className="w-3.5 h-3.5" />
+            طلب تسجيل الجلسة
+          </button>
+          <span className="text-[8px] text-slate-400 max-w-[170px] leading-tight text-right block">
+            * التسجيل يحتاج لموافقة الطرفين احتراماً للخصوصية الطبية
+          </span>
+        </div>
       )}
 
       {showConsentModal && (
@@ -421,7 +607,7 @@ function RecordingConsentManager({
             <VideoIcon className="w-12 h-12 text-indigo-600 mx-auto animate-bounce" />
             <h3 className="text-lg font-black text-slate-800">موافقة متبادلة على تسجيل الجلسة</h3>
             <p className="text-slate-500 text-xs leading-relaxed">
-              وفقاً لشروط الخصوصية الطبية، يتطلب تسجيل هذه المكالمة موافقة صريحة من كلا الطرفين. يرجى تأكيد موافقتك.
+              التسجيل يحتاج لموافقة الطرفين احتراماً للخصوصية الطبية، وسيتم إرسال طلب للطرف الآخر للموافقة عليه فور الضغط. هل توافق على بدء تسجيل هذه الجلسة؟
             </p>
             <div className="flex gap-2">
               <button
@@ -452,6 +638,8 @@ function LiveKitSession({
   currentUserId,
   otherParticipantName,
   isTherapist,
+  scheduledAt,
+  duration,
 }: SessionRoomProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -549,6 +737,24 @@ function LiveKitSession({
     }
   }
 
+  async function handleEndSession() {
+    if (!confirm("هل أنت متأكد من رغبتك في إنهاء هذه الجلسة العلاجية وإغلاقها نهائياً؟")) return;
+    try {
+      const res = await fetch(`/api/appointments/${appointmentId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "COMPLETED" }),
+      });
+      if (res.ok) {
+        window.location.href = "/dashboard";
+      } else {
+        alert("فشل إنهاء الجلسة");
+      }
+    } catch {
+      alert("حدث خطأ أثناء محاولة إنهاء الجلسة");
+    }
+  }
+
   if (!livekitToken || !livekitUrl) {
     return (
       <DemoSessionMode
@@ -561,6 +767,9 @@ function LiveKitSession({
         onStartRecording={startLocalRecording}
         onStopRecording={stopLocalRecording}
         isRecording={isRecording}
+        scheduledAt={scheduledAt}
+        duration={duration}
+        handleEndSession={handleEndSession}
       />
     );
   }
@@ -577,9 +786,14 @@ function LiveKitSession({
       <div className="flex h-full gap-4">
         <div className={`flex flex-1 flex-col ${showChat ? "lg:w-2/3" : "w-full"}`}>
           <div className="mb-2 flex items-center justify-between rounded-xl bg-slate-800 px-4 py-2 text-white flex-wrap gap-2">
-            <span className="text-sm">
-              {sessionType === "VIDEO" ? "جلسة فيديو" : "جلسة صوتية"} — {otherParticipantName}
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-bold">
+                {sessionType === "VIDEO" ? "جلسة فيديو" : "جلسة صوتية"} — {otherParticipantName}
+              </span>
+              {scheduledAt && duration && (
+                <SessionCountdownTimer scheduledAt={scheduledAt} duration={duration} />
+              )}
+            </div>
             <div className="flex items-center gap-3">
               <RecordingConsentManager
                 onStartRecording={startLocalRecording}
@@ -594,6 +808,15 @@ function LiveKitSession({
                 <MessageSquare className="h-4 w-4" />
                 {showChat ? "إخفاء الجوانب" : "عرض المحادثة والتقرير"}
               </button>
+              {isTherapist && (
+                <button
+                  onClick={handleEndSession}
+                  className="flex items-center gap-1 rounded-lg bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 text-xs font-bold transition-all shadow-md shadow-red-900/20"
+                >
+                  <PhoneOff className="h-4 w-4" />
+                  إنهاء وإغلاق الجلسة
+                </button>
+              )}
             </div>
           </div>
           <div className="flex-1 overflow-hidden rounded-2xl bg-slate-900">
@@ -628,7 +851,7 @@ function LiveKitSession({
             {(!isTherapist || activeTab === "chat") ? (
               <>
                 <div className="border-b border-slate-100 px-4 py-3">
-                  <h3 className="text-sm font-bold text-slate-800">محادثة الجلسة</h3>
+                  <h3 className="text-sm font-bold text-slate-800">محادثة الجلسة في غرفة العلاج</h3>
                 </div>
                 <ChatPanel messages={messages} currentUserId={currentUserId} bottomRef={bottomRef} />
                 <MessageInput input={input} setInput={setInput} onSubmit={sendMessage} sending={false} onFileUpload={handleFileUpload} />
@@ -655,6 +878,9 @@ function DemoSessionMode({
   onStartRecording,
   onStopRecording,
   isRecording,
+  scheduledAt,
+  duration,
+  handleEndSession,
 }: {
   sessionType: "VIDEO" | "AUDIO" | "CHAT";
   appointmentId: string;
@@ -665,6 +891,9 @@ function DemoSessionMode({
   onStartRecording: () => void;
   onStopRecording: () => void;
   isRecording: boolean;
+  scheduledAt?: string;
+  duration?: number;
+  handleEndSession: () => void;
 }) {
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(sessionType === "VIDEO");
@@ -700,7 +929,12 @@ function DemoSessionMode({
     <div className="flex h-[calc(100vh-8rem)] gap-4">
       <div className="flex flex-1 flex-col">
         <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 flex justify-between items-center flex-wrap gap-2">
-          <span>وضع تجريبي — أضف مفاتيح LiveKit في ملف .env لتفعيل الفيديو والصوت الحقيقي</span>
+          <div className="flex items-center gap-3">
+            <span>وضع تجريبي — أضف مفاتيح LiveKit في ملف .env لتفعيل الفيديو والصوت الحقيقي</span>
+            {scheduledAt && duration && (
+              <SessionCountdownTimer scheduledAt={scheduledAt} duration={duration} />
+            )}
+          </div>
           <RecordingConsentManager
             onStartRecording={onStartRecording}
             onStopRecording={onStopRecording}
@@ -739,9 +973,23 @@ function DemoSessionMode({
                 {camOn ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
               </button>
             )}
-            <button className="rounded-full bg-red-600 p-4 text-white hover:bg-red-700">
-              <PhoneOff className="h-5 w-5" />
-            </button>
+            {isTherapist ? (
+              <button 
+                onClick={handleEndSession}
+                className="rounded-full bg-red-600 p-4 text-white hover:bg-red-750 transition" 
+                title="إنهاء وإغلاق الجلسة"
+              >
+                <PhoneOff className="h-5 w-5" />
+              </button>
+            ) : (
+              <button 
+                onClick={() => window.location.href = "/dashboard"}
+                className="rounded-full bg-red-650 p-4 text-white hover:bg-red-700"
+                title="مغادرة"
+              >
+                <PhoneOff className="h-5 w-5" />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -771,7 +1019,7 @@ function DemoSessionMode({
         {(!isTherapist || activeTab === "chat") ? (
           <>
             <div className="border-b border-slate-100 px-4 py-3">
-              <h3 className="text-sm font-bold text-slate-800">محادثة الجلسة</h3>
+              <h3 className="text-sm font-bold text-slate-800">محادثة الجلسة في غرفة العلاج</h3>
             </div>
             <ChatPanel messages={messages} currentUserId={currentUserId} bottomRef={bottomRef} />
             <MessageInput input={input} setInput={setInput} onSubmit={sendMessage} sending={false} onFileUpload={onFileUpload} />
@@ -807,10 +1055,11 @@ export function SessionRoom(props: SessionRoomProps) {
         currentUserName={props.currentUserName}
         otherParticipantName={props.otherParticipantName}
         isTherapist={props.isTherapist}
+        scheduledAt={props.scheduledAt}
+        duration={props.duration}
       />
     );
   }
 
   return <LiveKitSession {...props} />;
 }
-

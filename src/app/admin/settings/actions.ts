@@ -27,6 +27,9 @@ export type SiteSettings = {
   stripeKey: string;
   livekitKey: string;
   livekitUrl: string;
+  walletVodafone?: string;
+  walletInstapay?: string;
+  bankAccount?: string;
 };
 
 const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitUrl"> & { stripeKey?: string; livekitKey?: string; livekitUrl?: string } = {
@@ -46,6 +49,9 @@ const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitU
   smsEnabled: false,
   twoFactor: false,
   sessionTimeout: 30,
+  walletVodafone: "01010423661",
+  walletInstapay: "01010423661@instapay",
+  bankAccount: "البنك الأهلي المصري - حساب رقم 1234567890123456",
 };
 
 async function verifyAdmin() {

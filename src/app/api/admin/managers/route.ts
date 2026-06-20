@@ -83,3 +83,45 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "حدث خطأ أثناء إنشاء المدير" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") {
+    return NextResponse.json({ error: "غير مصرح" }, { status: 403 });
+  }
+
+  try {
+    const { id } = await request.json();
+    if (!id) {
+      return NextResponse.json({ error: "معرف المدير مطلوب" }, { status: 400 });
+    }
+
+    // Prevent deleting oneself
+    if (session.user.id === id) {
+      return NextResponse.json({ error: "لا يمكنك حذف حسابك الشخصي" }, { status: 400 });
+    }
+
+    // Verify user exists and is actually an ADMIN
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "الحساب غير موجود" }, { status: 404 });
+    }
+
+    if (!user.role.startsWith("ADMIN")) {
+      return NextResponse.json({ error: "هذا الحساب ليس مديراً" }, { status: 400 });
+    }
+
+    // Delete manager user
+    await prisma.user.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error("Delete manager error:", error);
+    return NextResponse.json({ error: "فشل في حذف المدير" }, { status: 500 });
+  }
+}

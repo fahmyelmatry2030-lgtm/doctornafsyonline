@@ -25,13 +25,64 @@ export function DashboardLayout({
   children,
   role,
   userName = "مستخدم",
+  userAvatar = null,
 }: {
   children: React.ReactNode;
   role: Role;
   userName?: string | null;
+  userAvatar?: string | null;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname() || "";
+
+  // Notifications State
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [hasNew, setHasNew] = useState(false);
+
+  useEffect(() => {
+    async function loadNotifications() {
+      try {
+        const res = await fetch("/api/notifications");
+        if (res.ok) {
+          const data = await res.json();
+          setNotifications(data);
+          
+          const lastViewed = localStorage.getItem("lastViewedNotif");
+          if (data.length > 0) {
+            const latestNotifTime = new Date(data[0].time).getTime();
+            if (!lastViewed || latestNotifTime > new Date(lastViewed).getTime()) {
+              setHasNew(true);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load notifications", err);
+      }
+    }
+    loadNotifications();
+    const interval = setInterval(loadNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".notif-container")) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, []);
+
+  const handleBellClick = () => {
+    setShowNotifications(!showNotifications);
+    if (hasNew) {
+      setHasNew(false);
+      localStorage.setItem("lastViewedNotif", new Date().toISOString());
+    }
+  };
 
   // اغلق القائمة عند تغيير المسار
   useEffect(() => {
@@ -45,7 +96,7 @@ export function DashboardLayout({
       { name: "الرئيسية", href: "/patient/dashboard", icon: <Home className="h-5 w-5" /> },
       { name: "مواعيدي", href: "/patient/appointments", icon: <Calendar className="h-5 w-5" /> },
       { name: "الإشعارات", href: "/patient/notifications", icon: <Bell className="h-5 w-5" /> },
-      { name: "الرسائل", href: "/patient/messages", icon: <MessageCircle className="h-5 w-5" /> },
+      { name: "غرفة العلاج", href: "/patient/messages", icon: <MessageCircle className="h-5 w-5" /> },
       { name: "الفواتير", href: "/patient/billing", icon: <CreditCard className="h-5 w-5" /> },
       { name: "الملف الشخصي", href: "/patient/profile", icon: <UserIcon className="h-5 w-5" /> },
     ];
@@ -54,7 +105,7 @@ export function DashboardLayout({
       { name: "الرئيسية", href: "/therapist/dashboard", icon: <Home className="h-5 w-5" /> },
       { name: "المرضى", href: "/therapist/patients", icon: <Users className="h-5 w-5" /> },
       { name: "الجدول", href: "/therapist/schedule", icon: <Calendar className="h-5 w-5" /> },
-      { name: "الرسائل", href: "/therapist/messages", icon: <MessageCircle className="h-5 w-5" /> },
+      { name: "غرفة العلاج", href: "/therapist/messages", icon: <MessageCircle className="h-5 w-5" /> },
       { name: "الملف الشخصي", href: "/therapist/profile", icon: <UserIcon className="h-5 w-5" /> },
       { name: "الإعدادات", href: "/therapist/settings", icon: <Settings className="h-5 w-5" /> },
     ];
@@ -84,10 +135,73 @@ export function DashboardLayout({
           <img src="/logo.jpeg" alt="Logo" className="h-9 w-auto object-contain rounded-lg" />
         </Link>
         <div className="flex items-center gap-3">
-          <button className="p-2 rounded-full bg-slate-100 text-slate-600 relative">
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
-          </button>
+          <div className="relative notif-container">
+            <button 
+              onClick={handleBellClick}
+              className="p-2 rounded-full bg-slate-100 text-slate-600 relative"
+            >
+              <Bell className="h-5 w-5" />
+              {hasNew && (
+                <span className="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full border border-white animate-pulse"></span>
+              )}
+            </button>
+
+            {showNotifications && (
+              <div className="absolute left-0 mt-2 top-full w-72 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 overflow-hidden flex flex-col max-h-96">
+                <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                  <span className="font-bold text-slate-700 text-xs">الإشعارات</span>
+                  <button 
+                    onClick={() => {
+                      setNotifications([]);
+                      localStorage.setItem("lastViewedNotif", new Date().toISOString());
+                    }}
+                    className="text-[10px] text-indigo-600 hover:text-indigo-800 font-semibold"
+                  >
+                    مسح الكل
+                  </button>
+                </div>
+                <div className="overflow-y-auto flex-1 divide-y divide-slate-50 custom-scrollbar max-h-64">
+                  {notifications.length === 0 ? (
+                    <div className="p-6 text-center text-slate-400 text-[11px] font-medium">
+                      لا توجد إشعارات جديدة
+                    </div>
+                  ) : (
+                    notifications.slice(0, 10).map((n) => (
+                      <Link 
+                        key={n.id} 
+                        href={n.href || "#"} 
+                        onClick={() => setShowNotifications(false)}
+                        className="flex items-start gap-2.5 p-3.5 hover:bg-slate-50 transition-colors"
+                      >
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${n.color || "text-slate-500 bg-slate-50"}`}>
+                          <Bell className="w-3.5 h-3.5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-[11px] font-bold text-slate-800 leading-snug">{n.title}</h4>
+                          <p className="text-[10px] text-slate-500 mt-0.5 leading-relaxed truncate">{n.description}</p>
+                          <span className="text-[8px] text-slate-400 mt-1 block">
+                            {new Date(n.time).toLocaleDateString("ar-EG", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </span>
+                        </div>
+                      </Link>
+                    ))
+                  )}
+                </div>
+                {role === "PATIENT" && (
+                  <Link 
+                    href="/patient/notifications" 
+                    onClick={() => setShowNotifications(false)}
+                    className="px-4 py-2 text-center text-[10px] font-bold text-indigo-600 bg-slate-50 hover:bg-indigo-50/50 border-t border-slate-100 transition-colors block"
+                  >
+                    عرض جميع الإشعارات
+                  </Link>
+                )}
+              </div>
+            )}
+          </div>
           <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-800 bg-slate-100 rounded-full transition-colors">
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -108,9 +222,17 @@ export function DashboardLayout({
               <Link href="/" className="inline-block transition-transform hover:scale-105 bg-white/10 p-2 rounded-2xl backdrop-blur-sm border border-white/10 mb-4">
                 <img src="/logo.jpeg" alt="Logo" className="h-10 w-auto object-contain rounded-lg" />
               </Link>
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-xl mb-3 shadow-lg shadow-indigo-500/30">
-                {userInitials}
-              </div>
+              {userAvatar ? (
+                <img 
+                  src={userAvatar} 
+                  alt={userName || "User"} 
+                  className="w-16 h-16 rounded-full object-cover mb-3 shadow-lg border-2 border-white/20"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-xl mb-3 shadow-lg shadow-indigo-500/30">
+                  {userInitials}
+                </div>
+              )}
               <div className="font-bold text-white text-lg">{userName}</div>
               <div className="text-xs text-indigo-300 mt-1">{getRoleLabel(role)}</div>
               {role === "ADMIN_VIEWER" && (
@@ -183,11 +305,72 @@ export function DashboardLayout({
             </div>
             
             {/* Action Buttons */}
-            <div className="flex items-center gap-2">
-              <button className="p-2.5 rounded-full hover:bg-[#F4F7FE] text-slate-500 transition-colors relative">
+            <div className="flex items-center gap-2 relative notif-container">
+              <button 
+                onClick={handleBellClick}
+                className="p-2.5 rounded-full hover:bg-[#F4F7FE] text-slate-500 transition-colors relative"
+              >
                 <Bell className="w-5 h-5" />
-                <span className="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+                {hasNew && (
+                  <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white animate-pulse"></span>
+                )}
               </button>
+
+              {showNotifications && (
+                <div className="absolute left-0 mt-2 top-full w-80 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 overflow-hidden flex flex-col max-h-96">
+                  <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                    <span className="font-bold text-slate-700 text-sm">الإشعارات والتنبيهات</span>
+                    <button 
+                      onClick={() => {
+                        setNotifications([]);
+                        localStorage.setItem("lastViewedNotif", new Date().toISOString());
+                      }}
+                      className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold"
+                    >
+                      مسح الكل
+                    </button>
+                  </div>
+                  <div className="overflow-y-auto flex-1 divide-y divide-slate-50 custom-scrollbar max-h-72">
+                    {notifications.length === 0 ? (
+                      <div className="p-8 text-center text-slate-400 text-xs font-medium">
+                        لا توجد إشعارات جديدة حالياً
+                      </div>
+                    ) : (
+                      notifications.slice(0, 10).map((n) => (
+                        <Link 
+                          key={n.id} 
+                          href={n.href || "#"} 
+                          onClick={() => setShowNotifications(false)}
+                          className="flex items-start gap-3 p-4 hover:bg-slate-50 transition-colors"
+                        >
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color || "text-slate-500 bg-slate-50"}`}>
+                            <Bell className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-xs font-bold text-slate-800 leading-snug">{n.title}</h4>
+                            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed truncate">{n.description}</p>
+                            <span className="text-[9px] text-slate-400 mt-1 block">
+                              {new Date(n.time).toLocaleDateString("ar-EG", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
+                          </div>
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                  {role === "PATIENT" && (
+                    <Link 
+                      href="/patient/notifications" 
+                      onClick={() => setShowNotifications(false)}
+                      className="px-4 py-2.5 text-center text-xs font-bold text-indigo-600 bg-slate-50 hover:bg-indigo-50/50 border-t border-slate-100 transition-colors block"
+                    >
+                      عرض جميع الإشعارات
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
             
             {/* User Avatar */}
@@ -199,9 +382,17 @@ export function DashboardLayout({
                   <span className="text-[9px] font-bold px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full border border-amber-200">عرض فقط</span>
                 )}
               </div>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-500/20">
-                {userInitials}
-              </div>
+              {userAvatar ? (
+                <img 
+                  src={userAvatar} 
+                  alt={userName || "User"} 
+                  className="w-10 h-10 rounded-full object-cover shadow-md border border-slate-100"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-500/20">
+                  {userInitials}
+                </div>
+              )}
             </div>
           </div>
         </header>

@@ -34,6 +34,59 @@ export default function TherapistDetailPage({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Coupon Code State
+  const [coupon, setCoupon] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState<number | null>(null);
+  const [couponError, setCouponError] = useState("");
+  const [couponSuccess, setCouponSuccess] = useState("");
+  const [verifyingCoupon, setVerifyingCoupon] = useState(false);
+
+  // Dynamic Arabic date preview helper
+  const getArabicDatePreview = (dtStr: string) => {
+    if (!dtStr) return "";
+    try {
+      const dateObj = new Date(dtStr);
+      if (isNaN(dateObj.getTime())) return "";
+      return dateObj.toLocaleString("ar-EG", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+    } catch {
+      return "";
+    }
+  };
+
+  async function handleVerifyCoupon() {
+    if (!coupon.trim()) return;
+    setVerifyingCoupon(true);
+    setCouponError("");
+    setCouponSuccess("");
+
+    try {
+      const res = await fetch("/api/promos/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: coupon.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setCouponError(data.error || "كود الخصم غير صالح");
+      } else {
+        setAppliedDiscount(data.discount);
+        setCouponSuccess(`تم تطبيق الخصم بنجاح! خصم بقيمة ${data.discount}%`);
+      }
+    } catch {
+      setCouponError("فشل التحقق من الكود");
+    } finally {
+      setVerifyingCoupon(false);
+    }
+  }
+
   async function handleBook(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -46,6 +99,7 @@ export default function TherapistDetailPage({
         therapistId: therapist.id,
         scheduledAt,
         type: sessionType,
+        promoCode: appliedDiscount !== null ? coupon : undefined,
       }),
     });
 
@@ -65,7 +119,6 @@ export default function TherapistDetailPage({
 
   const minDate = new Date();
   minDate.setHours(minDate.getHours() + 1);
-  // Construct datetime-local string format YYYY-MM-DDTHH:mm based on local time fields
   const year = minDate.getFullYear();
   const month = String(minDate.getMonth() + 1).padStart(2, "0");
   const day = String(minDate.getDate()).padStart(2, "0");
@@ -73,8 +126,13 @@ export default function TherapistDetailPage({
   const minutes = String(minDate.getMinutes()).padStart(2, "0");
   const minDateStr = `${year}-${month}-${day}T${hours}:${minutes}`;
 
+  // Price calculations based on discount code
+  const discountPercent = appliedDiscount || 0;
+  const originalPrice = profile.pricePerSession;
+  const finalPrice = Math.max(0, Math.round(originalPrice * (1 - discountPercent / 100)));
+
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12">
+    <div className="mx-auto max-w-6xl px-4 py-12" dir="rtl">
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <div className="rounded-2xl border border-slate-100 bg-white p-8">
@@ -133,12 +191,26 @@ export default function TherapistDetailPage({
             onSubmit={handleBook}
             className="sticky top-24 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm"
           >
-            <div className="mb-6 text-center">
-              <span className="text-3xl font-bold text-teal-700">
-                {formatPrice(profile.pricePerSession)}
-              </span>
-              <span className="text-sm text-slate-500"> / جلسة 50 دقيقة</span>
-            </div>
+            {appliedDiscount !== null ? (
+              <div className="mb-6 text-center">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-sm text-slate-400 line-through">
+                    {formatPrice(originalPrice)}
+                  </span>
+                  <span className="text-3xl font-bold text-teal-700">
+                    {formatPrice(finalPrice)}
+                  </span>
+                </div>
+                <span className="text-xs text-teal-600 font-bold block mt-1">تطبيق خصم بقيمة {discountPercent}%</span>
+              </div>
+            ) : (
+              <div className="mb-6 text-center">
+                <span className="text-3xl font-bold text-teal-700">
+                  {formatPrice(originalPrice)}
+                </span>
+                <span className="text-sm text-slate-500"> / جلسة 50 دقيقة</span>
+              </div>
+            )}
 
             <div className="mb-4">
               <label className="mb-2 block text-sm font-medium text-slate-700">
@@ -169,7 +241,7 @@ export default function TherapistDetailPage({
               </div>
             </div>
 
-            <div className="mb-6">
+            <div className="mb-4">
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 موعد الجلسة
               </label>
@@ -179,8 +251,62 @@ export default function TherapistDetailPage({
                 min={minDateStr}
                 value={scheduledAt}
                 onChange={(e) => setScheduledAt(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-400"
+                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-400 text-right"
               />
+              {scheduledAt && (
+                <div className="mt-2 p-3 bg-teal-50/50 border border-teal-100 rounded-xl text-xs font-bold text-teal-800 text-right animate-fade-in">
+                  الموعد المختار: {getArabicDatePreview(scheduledAt)}
+                </div>
+              )}
+            </div>
+
+            {/* Coupon Code Section */}
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                كود الخصم (اختياري)
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={coupon}
+                  onChange={(e) => {
+                    setCoupon(e.target.value);
+                    setCouponError("");
+                    setCouponSuccess("");
+                  }}
+                  placeholder="مثال: NAFSI15"
+                  className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-teal-400 text-left font-semibold placeholder:text-slate-300"
+                  disabled={verifyingCoupon || appliedDiscount !== null}
+                />
+                {appliedDiscount === null ? (
+                  <button
+                    type="button"
+                    onClick={handleVerifyCoupon}
+                    disabled={verifyingCoupon || !coupon.trim()}
+                    className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2.5 transition disabled:opacity-50 shrink-0"
+                  >
+                    {verifyingCoupon ? "جاري..." : "تطبيق"}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCoupon("");
+                      setAppliedDiscount(null);
+                      setCouponSuccess("");
+                    }}
+                    className="rounded-xl bg-red-50 text-red-600 border border-red-100 font-medium text-xs px-4 py-2.5 transition shrink-0"
+                  >
+                    إلغاء
+                  </button>
+                )}
+              </div>
+              {couponError && (
+                <p className="mt-1 text-xs text-red-600">{couponError}</p>
+              )}
+              {couponSuccess && (
+                <p className="mt-1 text-xs text-green-600">{couponSuccess}</p>
+              )}
             </div>
 
             {error && (
@@ -198,7 +324,7 @@ export default function TherapistDetailPage({
             </button>
 
             <p className="mt-4 text-center text-xs text-slate-400">
-              الجلسة تتم داخل المنصة — فيديو، صوت، وشات
+              الجلسة تتم داخل المنصة — فيديو، صوت، وغرفة العلاج
             </p>
           </form>
         </div>

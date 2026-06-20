@@ -55,6 +55,14 @@
       "namedRegex": "^/api/appointments/(?<nxtPid>[^/]+?)/notes(?:/)?$"
     },
     {
+      "page": "/api/appointments/[id]/notes/upload",
+      "regex": "^/api/appointments/([^/]+?)/notes/upload(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/appointments/(?<nxtPid>[^/]+?)/notes/upload(?:/)?$"
+    },
+    {
       "page": "/api/appointments/[id]/screenshot",
       "regex": "^/api/appointments/([^/]+?)/screenshot(?:/)?$",
       "routeKeys": {
@@ -267,6 +275,12 @@
       "namedRegex": "^/api/fix\\-db(?:/)?$"
     },
     {
+      "page": "/api/notifications",
+      "regex": "^/api/notifications(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/notifications(?:/)?$"
+    },
+    {
       "page": "/api/payment/checkout",
       "regex": "^/api/payment/checkout(?:/)?$",
       "routeKeys": {},
@@ -277,6 +291,12 @@
       "regex": "^/api/payment/webhook(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/payment/webhook(?:/)?$"
+    },
+    {
+      "page": "/api/promos/validate",
+      "regex": "^/api/promos/validate(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/promos/validate(?:/)?$"
     },
     {
       "page": "/api/register",

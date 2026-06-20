@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import AvatarManager from "@/components/AvatarManager";
+import { PLATFORM_PHONE } from "@/lib/constants";
 
 export default async function PatientProfilePage() {
   const session = await auth();
@@ -38,7 +39,12 @@ export default async function PatientProfilePage() {
 
       <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-8">
         <div className="mb-6 flex justify-center">
-          <AvatarManager initialAvatar={user.avatar} name={user.name} />
+          <AvatarManager 
+            initialAvatar={user.avatar} 
+            name={user.name} 
+            label="الصورة الشخصية للمريض"
+            subLabel="تظهر في لوحة التحكم وتواصلك مع الأخصائيين"
+          />
         </div>
 
         <form action={updateProfile} className="space-y-6">

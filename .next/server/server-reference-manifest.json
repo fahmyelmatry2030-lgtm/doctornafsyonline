@@ -237,7 +237,7 @@
           "filename": "src/app/admin/settings/actions.ts"
         },
         "app/therapist/profile/page": {
-          "moduleId": 156544,
+          "moduleId": 526809,
           "async": false,
           "exportedName": "getSettings",
           "filename": "src/app/admin/settings/actions.ts"
@@ -507,7 +507,7 @@
           "filename": "src/app/admin/settings/actions.ts"
         },
         "app/therapist/profile/page": {
-          "moduleId": 156544,
+          "moduleId": 526809,
           "async": false,
           "exportedName": "updateSettings",
           "filename": "src/app/admin/settings/actions.ts"
@@ -678,17 +678,17 @@
       "filename": "src/app/register/actions.ts",
       "exportedName": "authenticateAfterRegister"
     },
-    "60e8cef376f84dfbb23483dbf8fb1d2587ed6b1d86": {
+    "405c9de8e3851314d6d18117623b68ade0523883a1": {
       "workers": {
         "app/therapist/profile/page": {
-          "moduleId": 156544,
+          "moduleId": 526809,
           "async": false,
-          "exportedName": "$$RSC_SERVER_ACTION_0",
-          "filename": "src/app/therapist/profile/page.tsx"
+          "exportedName": "updateTherapistProfile",
+          "filename": "src/app/therapist/profile/actions.ts"
         }
       },
-      "filename": "src/app/therapist/profile/page.tsx",
-      "exportedName": "$$RSC_SERVER_ACTION_0"
+      "filename": "src/app/therapist/profile/actions.ts",
+      "exportedName": "updateTherapistProfile"
     },
     "403e29e2c201e2204708b02e504195c3801358008e": {
       "workers": {

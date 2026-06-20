@@ -24,6 +24,7 @@ export default function CertificatesManager() {
   const [certs, setCerts] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
@@ -47,23 +48,28 @@ export default function CertificatesManager() {
 
   async function handleAddCertificate(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim() || !selectedFile) return;
 
     setUploading(true);
     setError("");
 
     try {
-      // Mocking file upload and URL generation
-      const mockUrl = `/mock-docs/${name.replace(/\s+/g, "_").toLowerCase()}_cert.pdf`;
+      const formData = new FormData();
+      formData.append("name", name.trim());
+      formData.append("file", selectedFile);
 
       const res = await fetch("/api/therapist/certificates", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), url: mockUrl }),
+        body: formData,
       });
 
       if (res.ok) {
         setName("");
+        setSelectedFile(null);
+        // Reset file input element visually
+        const fileInput = document.getElementById("cert-file-input") as HTMLInputElement;
+        if (fileInput) fileInput.value = "";
+        
         await fetchCerts();
       } else {
         const errData = await res.json();
@@ -131,21 +137,46 @@ export default function CertificatesManager() {
       )}
 
       {/* Upload Box */}
-      <form onSubmit={handleAddCertificate} className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-1 relative">
+      <form onSubmit={handleAddCertificate} className="flex flex-col md:flex-row gap-4 items-end bg-slate-50/50 p-5 rounded-2xl border border-slate-100">
+        <div className="flex-1 w-full space-y-2">
+          <label className="text-xs font-bold text-slate-600 block">اسم الشهادة / الترخيص</label>
           <input
             type="text"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="مثال: ترخيص مزاولة المهنة، ماجستير علم النفس الإكلينيكي"
-            className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 py-3.5 pr-4 pl-4 text-slate-900 placeholder-slate-400 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm"
+            className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white py-3 pr-4 pl-4 text-slate-900 placeholder-slate-400 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm text-sm"
           />
         </div>
+        
+        <div className="flex-1 w-full space-y-2">
+          <label className="text-xs font-bold text-slate-600 block font-bold">ملف الشهادة (صورة أو PDF)</label>
+          <div className="relative flex items-center">
+            <input
+              type="file"
+              required
+              accept="image/*,application/pdf"
+              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+              className="hidden"
+              id="cert-file-input"
+            />
+            <label
+              htmlFor="cert-file-input"
+              className="w-full flex items-center justify-between cursor-pointer rounded-xl border border-dashed border-indigo-200 bg-white hover:bg-indigo-50/20 py-3 px-4 text-slate-700 transition-all shadow-sm text-sm"
+            >
+              <span className="text-slate-500 truncate max-w-[200px]">
+                {selectedFile ? selectedFile.name : "اختر ملف الشهادة..."}
+              </span>
+              <UploadCloud className="w-4 h-4 text-indigo-500 shrink-0 mr-2" />
+            </label>
+          </div>
+        </div>
+
         <button
           type="submit"
-          disabled={uploading || !name.trim()}
-          className="shrink-0 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 text-white font-bold px-6 py-3.5 shadow-md shadow-teal-700/10 hover:shadow-lg hover:shadow-teal-700/20 disabled:opacity-75 disabled:cursor-not-allowed transition-all"
+          disabled={uploading || !name.trim() || !selectedFile}
+          className="w-full md:w-auto shrink-0 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 text-white font-bold px-6 py-3 shadow-md shadow-teal-700/10 hover:shadow-lg hover:shadow-teal-700/20 disabled:opacity-75 disabled:cursor-not-allowed transition-all h-[46px] text-sm"
         >
           {uploading ? (
             <>
@@ -154,8 +185,8 @@ export default function CertificatesManager() {
             </>
           ) : (
             <>
-              <UploadCloud className="w-5 h-5" />
-              رفع الشهادة
+              <UploadCloud className="w-4 h-4" />
+              رفع وحفظ الشهادة
             </>
           )}
         </button>

@@ -109,7 +109,7 @@ export default function SettingsForm({ updatePasswordAction }: SettingsFormProps
                 <button
                   type="button"
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors z-10"
                 >
                   {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -131,7 +131,7 @@ export default function SettingsForm({ updatePasswordAction }: SettingsFormProps
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors z-10"
                 >
                   {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -189,8 +189,8 @@ export default function SettingsForm({ updatePasswordAction }: SettingsFormProps
                 className="w-5 h-5 rounded text-[#6366F1] border-slate-300 focus:ring-[#6366F1]/20"
               />
               <div className="flex-1">
-                <p className="font-semibold text-slate-800">إشعارات الرسائل</p>
-                <p className="text-xs text-slate-500">احصل على تنبيه عند تلقي رسالة جديدة من مريض.</p>
+                <p className="font-semibold text-slate-800">إشعارات غرفة العلاج</p>
+                <p className="text-xs text-slate-500">احصل على تنبيه عند تلقي رسالة جديدة في غرفة العلاج.</p>
               </div>
             </label>
           </div>

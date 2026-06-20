@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { CreditCard, FileText, CheckCircle2, Clock, Phone, Landmark, Wallet, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
-import { PLATFORM_PHONE, PLATFORM_INSTAPAY } from "@/lib/constants";
+import { getSettings } from "@/app/admin/settings/actions";
 import ScreenshotUploader from "@/components/ScreenshotUploader";
 import PayOnlineButton from "@/components/PayOnlineButton";
 
@@ -17,6 +17,8 @@ export default async function PatientBillingPage({
 
   const resolvedSearchParams = await searchParams;
   const status = resolvedSearchParams.status;
+
+  const settings = await getSettings();
 
   const appointments = await prisma.appointment.findMany({
     where: { patientId: session.user.id },
@@ -44,13 +46,23 @@ export default async function PatientBillingPage({
         </div>
       )}
 
+      {status === "mock_stripe_unavailable" && (
+        <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl animate-fade-in">
+          <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+          <div className="text-sm font-bold">
+            بوابة الدفع الإلكتروني (Stripe) غير متهيئة حالياً. يرجى إتمام عملية الدفع عبر التحويل المالي (Vodafone Cash / InstaPay) أدناه ورفع لقطة الشاشة كإثبات لتأكيد حجز جلستك.
+          </div>
+        </div>
+      )}
+
+      {/* Header */}
       <div>
         <h1 className="text-3xl font-black text-slate-900">الفواتير والمدفوعات</h1>
         <p className="text-slate-600 mt-2 text-lg">بيانات حسابات التحويل المالي وسجل الجلسات الخاص بك.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        {/* Transfer Method 1: Cash Wallets */}
+        {/* Transfer Method 1: Vodafone Cash */}
         <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-indigo-50/50 to-white">
           <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
             <Wallet className="w-5 h-5 text-indigo-500" /> المحافظ الإلكترونية كاش
@@ -58,7 +70,7 @@ export default async function PatientBillingPage({
           <div className="space-y-2">
             <p className="text-xs text-slate-500">فودافون كاش / اتصالات كاش / أورنج كاش</p>
             <p className="text-2xl font-black text-indigo-600 tracking-wide select-all" dir="ltr">
-              {PLATFORM_PHONE}
+              {settings.walletVodafone || "01010423661"}
             </p>
             <span className="inline-block text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
               تحويل فوري
@@ -73,8 +85,8 @@ export default async function PatientBillingPage({
           </h2>
           <div className="space-y-2">
             <p className="text-xs text-slate-500">التحويل المباشر عبر تطبيق إنستا باي</p>
-            <p className="text-2xl font-black text-emerald-600 tracking-all select-all" dir="ltr">
-              {PLATFORM_INSTAPAY}
+            <p className="text-2xl font-black text-emerald-600 tracking-all select-all animate-none" dir="ltr">
+              {settings.walletInstapay || "01010423661@instapay"}
             </p>
             <span className="inline-block text-[10px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full">
               معتمد
@@ -88,9 +100,10 @@ export default async function PatientBillingPage({
             <Landmark className="w-5 h-5 text-amber-500" /> التحويل البنكي
           </h2>
           <div className="space-y-1.5 text-slate-700">
-            <p className="text-xs text-slate-500">البنك الأهلي المصري</p>
-            <p className="text-sm font-bold"><span className="text-slate-400">حساب رقم:</span> <span className="font-black select-all">100020304050</span></p>
-            <p className="text-xs font-bold text-slate-600 leading-none overflow-hidden text-ellipsis whitespace-nowrap"><span className="text-slate-400">IBAN:</span> <span className="font-black select-all">EG12345678901234567890123456</span></p>
+            <p className="text-xs text-slate-500">تفاصيل الحساب للتسوية</p>
+            <p className="text-sm font-bold leading-relaxed">
+              <span className="text-slate-500 font-bold select-all whitespace-pre-line">{settings.bankAccount || "البنك الأهلي المصري - حساب رقم 1234567890123456"}</span>
+            </p>
           </div>
         </div>
       </div>

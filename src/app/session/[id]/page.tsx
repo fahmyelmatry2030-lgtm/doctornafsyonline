@@ -32,6 +32,98 @@ export default async function SessionPage({ params }: Props) {
 
   if (!isParticipant) redirect("/dashboard");
 
+  // Restrict session entry based on status
+  const isTherapist = session.user.role === "THERAPIST";
+
+  if (appointment.status === "PENDING") {
+    const hasScreenshot = !!appointment.paymentScreenshot;
+    return (
+      <div className="mx-auto max-w-xl px-4 py-16 text-center" dir="rtl">
+        <div className="glass rounded-[32px] border border-amber-200 bg-amber-50/50 p-8 space-y-6 shadow-xl">
+          <div className="w-16 h-16 mx-auto bg-amber-100 text-amber-600 rounded-full flex items-center justify-center">
+            <svg className="w-8 h-8 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-black text-amber-800">الجلسة قيد الانتظار</h2>
+          <p className="text-slate-600 leading-relaxed text-sm">
+            {hasScreenshot 
+              ? "تم رفع إثبات التحويل المالي بنجاح وهو قيد المراجعة والاعتماد حالياً من قبل إدارة المنصة. سيتم تفعيل رابط دخول الجلسة فور اعتماد الإدارة." 
+              : "يرجى إتمام عملية التحويل المالي أولاً ورفع لقطة الشاشة (Screenshot) كإثبات دفع في صفحة الفواتير لتتمكن من دخول الجلسة."}
+          </p>
+          <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md"
+            >
+              العودة للوحة التحكم
+            </Link>
+            {!hasScreenshot && (
+              <Link
+                href="/patient/billing"
+                className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md"
+              >
+                صفحة الفواتير والدفع
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (appointment.status === "CANCELLED") {
+    return (
+      <div className="mx-auto max-w-xl px-4 py-16 text-center" dir="rtl">
+        <div className="glass rounded-[32px] border border-red-200 bg-red-50/50 p-8 space-y-6 shadow-xl">
+          <div className="w-16 h-16 mx-auto bg-red-100 text-red-600 rounded-full flex items-center justify-center">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-black text-red-800">تم إلغاء الجلسة</h2>
+          <p className="text-slate-600 leading-relaxed text-sm">
+            تم إلغاء حجز هذه الجلسة مسبقاً. إذا كان لديك أي استفسار، يرجى التواصل مع الدعم الفني للمنصة.
+          </p>
+          <div className="pt-4">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md"
+            >
+              العودة للوحة التحكم
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (appointment.status === "COMPLETED") {
+    return (
+      <div className="mx-auto max-w-xl px-4 py-16 text-center" dir="rtl">
+        <div className="glass rounded-[32px] border border-green-200 bg-green-50/50 p-8 space-y-6 shadow-xl">
+          <div className="w-16 h-16 mx-auto bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-black text-green-800">اكتملت الجلسة العلاجية</h2>
+          <p className="text-slate-600 leading-relaxed text-sm">
+            تم إنهاء هذه الجلسة واكتمالها بنجاح. شكراً لكم. نتمنى لكم دوام الصحة والعافية.
+          </p>
+          <div className="pt-4">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md"
+            >
+              العودة للوحة التحكم
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const otherParticipantName =
     session.user.id === appointment.patientId
       ? appointment.therapist.name
@@ -53,8 +145,7 @@ export default async function SessionPage({ params }: Props) {
     });
   }
 
-  const isTherapist = session.user.role === "THERAPIST";
-
+  
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <Link
@@ -75,6 +166,8 @@ export default async function SessionPage({ params }: Props) {
         currentUserName={session.user.name || ""}
         otherParticipantName={otherParticipantName}
         isTherapist={isTherapist}
+        scheduledAt={appointment.scheduledAt.toISOString()}
+        duration={appointment.duration}
       />
     </div>
   );

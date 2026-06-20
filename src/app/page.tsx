@@ -314,7 +314,7 @@ export default async function HomePage() {
                       rating={t.therapistProfile.rating}
                       reviewCount={t.therapistProfile.reviewCount}
                       isVerified={t.therapistProfile.isVerified}
-                      imageUrl={t.therapistProfile.avatarUrl || undefined}
+                      imageUrl={t.avatar || undefined}
                     />
                   </div>
                 ) : null

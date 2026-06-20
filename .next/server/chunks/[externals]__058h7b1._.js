@@ -1,0 +1,3 @@
+module.exports=[524836,(r,e,t)=>{e.exports=r.x("https",()=>require("https"))},921517,(r,e,t)=>{e.exports=r.x("http",()=>require("http"))},522734,(r,e,t)=>{e.exports=r.x("fs",()=>require("fs"))},145706,(r,e,t)=>{e.exports=r.x("querystring",()=>require("querystring"))},792509,(r,e,t)=>{e.exports=r.x("url",()=>require("url"))},688947,(r,e,t)=>{e.exports=r.x("stream",()=>require("stream"))}];
+
+//# sourceMappingURL=%5Bexternals%5D__058h7b1._.js.map
