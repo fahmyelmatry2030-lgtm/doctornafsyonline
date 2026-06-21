@@ -38,8 +38,18 @@ export function DashboardLayout({
 
   // Notifications State
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [hasNew, setHasNew] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("dismissedNotifications");
+    if (saved) {
+      try {
+        setDismissedIds(JSON.parse(saved));
+      } catch (e) {}
+    }
+  }, []);
 
   useEffect(() => {
     async function loadNotifications() {
@@ -49,9 +59,17 @@ export function DashboardLayout({
           const data = await res.json();
           setNotifications(data);
           
+          const savedIds = localStorage.getItem("dismissedNotifications");
+          let currentDismissed: string[] = [];
+          if (savedIds) {
+            try { currentDismissed = JSON.parse(savedIds); } catch (e) {}
+          }
+          
+          const activeNotifs = data.filter((n: any) => !currentDismissed.includes(n.id));
+          
           const lastViewed = localStorage.getItem("lastViewedNotif");
-          if (data.length > 0) {
-            const latestNotifTime = new Date(data[0].time).getTime();
+          if (activeNotifs.length > 0) {
+            const latestNotifTime = new Date(activeNotifs[0].time).getTime();
             if (!lastViewed || latestNotifTime > new Date(lastViewed).getTime()) {
               setHasNew(true);
             }
@@ -65,6 +83,23 @@ export function DashboardLayout({
     const interval = setInterval(loadNotifications, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleClearAll = () => {
+    const allIds = notifications.map(n => n.id);
+    const updated = Array.from(new Set([...dismissedIds, ...allIds]));
+    setDismissedIds(updated);
+    localStorage.setItem("dismissedNotifications", JSON.stringify(updated));
+    setHasNew(false);
+    localStorage.setItem("lastViewedNotif", new Date().toISOString());
+  };
+
+  const handleDismiss = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const updated = [...dismissedIds, id];
+    setDismissedIds(updated);
+    localStorage.setItem("dismissedNotifications", JSON.stringify(updated));
+  };
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
@@ -154,6 +189,7 @@ export function DashboardLayout({
   }
 
   const userInitials = userName ? userName.substring(0, 2).toUpperCase() : "م";
+  const activeNotifs = notifications.filter((n) => !dismissedIds.includes(n.id));
 
   return (
     <div className="bg-[#F4F7FE] min-h-screen flex text-slate-900 font-sans" dir="rtl">
@@ -180,42 +216,47 @@ export function DashboardLayout({
                 <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
                   <span className="font-bold text-slate-700 text-xs">الإشعارات</span>
                   <button 
-                    onClick={() => {
-                      setNotifications([]);
-                      localStorage.setItem("lastViewedNotif", new Date().toISOString());
-                    }}
+                    onClick={handleClearAll}
                     className="text-[10px] text-indigo-600 hover:text-indigo-800 font-semibold"
                   >
                     مسح الكل
                   </button>
                 </div>
                 <div className="overflow-y-auto flex-1 divide-y divide-slate-50 custom-scrollbar max-h-64">
-                  {notifications.length === 0 ? (
+                  {activeNotifs.length === 0 ? (
                     <div className="p-6 text-center text-slate-400 text-[11px] font-medium">
                       لا توجد إشعارات جديدة
                     </div>
                   ) : (
-                    notifications.slice(0, 10).map((n) => (
-                      <Link 
-                        key={n.id} 
-                        href={n.href || "#"} 
-                        onClick={() => setShowNotifications(false)}
-                        className="flex items-start gap-2.5 p-3.5 hover:bg-slate-50 transition-colors"
-                      >
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${n.color || "text-slate-500 bg-slate-50"}`}>
-                          <Bell className="w-3.5 h-3.5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-[11px] font-bold text-slate-800 leading-snug">{n.title}</h4>
-                          <p className="text-[10px] text-slate-500 mt-0.5 leading-relaxed break-words">{n.description}</p>
-                          <span className="text-[8px] text-slate-400 mt-1 block">
-                            {new Date(n.time).toLocaleDateString("ar-EG", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </span>
-                        </div>
-                      </Link>
+                    activeNotifs.slice(0, 10).map((n) => (
+                      <div key={n.id} className="flex items-start gap-2 p-3.5 hover:bg-slate-50 transition-colors">
+                        <Link 
+                          href={n.href || "#"} 
+                          onClick={() => setShowNotifications(false)}
+                          className="flex items-start gap-2.5 flex-1 min-w-0"
+                        >
+                          <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${n.color || "text-slate-500 bg-slate-50"}`}>
+                            <Bell className="w-3.5 h-3.5" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-[11px] font-bold text-slate-800 leading-snug">{n.title}</h4>
+                            <p className="text-[10px] text-slate-500 mt-0.5 leading-relaxed break-words">{n.description}</p>
+                            <span className="text-[8px] text-slate-400 mt-1 block">
+                              {new Date(n.time).toLocaleDateString("ar-EG", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
+                          </div>
+                        </Link>
+                        <button
+                          onClick={(e) => handleDismiss(n.id, e)}
+                          className="text-slate-400 hover:text-red-500 p-1 rounded-full transition-colors shrink-0 self-start mt-0.5"
+                          title="حذف"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     ))
                   )}
                 </div>
@@ -359,42 +400,47 @@ export function DashboardLayout({
                   <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
                     <span className="font-bold text-slate-700 text-sm">الإشعارات والتنبيهات</span>
                     <button 
-                      onClick={() => {
-                        setNotifications([]);
-                        localStorage.setItem("lastViewedNotif", new Date().toISOString());
-                      }}
-                      className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold"
+                      onClick={handleClearAll}
+                      className="text-xs text-indigo-650 hover:text-indigo-800 font-semibold"
                     >
                       مسح الكل
                     </button>
                   </div>
                   <div className="overflow-y-auto flex-1 divide-y divide-slate-50 custom-scrollbar max-h-72">
-                    {notifications.length === 0 ? (
+                    {activeNotifs.length === 0 ? (
                       <div className="p-8 text-center text-slate-400 text-xs font-medium">
                         لا توجد إشعارات جديدة حالياً
                       </div>
                     ) : (
-                      notifications.slice(0, 10).map((n) => (
-                        <Link 
-                          key={n.id} 
-                          href={n.href || "#"} 
-                          onClick={() => setShowNotifications(false)}
-                          className="flex items-start gap-3 p-4 hover:bg-slate-50 transition-colors"
-                        >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color || "text-slate-500 bg-slate-50"}`}>
-                            <Bell className="w-4 h-4" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-xs font-bold text-slate-800 leading-snug">{n.title}</h4>
-                            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed break-words">{n.description}</p>
-                            <span className="text-[9px] text-slate-400 mt-1 block">
-                              {new Date(n.time).toLocaleDateString("ar-EG", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </span>
-                          </div>
-                        </Link>
+                      activeNotifs.slice(0, 10).map((n) => (
+                        <div key={n.id} className="flex items-start gap-3 p-4 hover:bg-slate-50 transition-colors">
+                          <Link 
+                            href={n.href || "#"} 
+                            onClick={() => setShowNotifications(false)}
+                            className="flex items-start gap-3 flex-1 min-w-0"
+                          >
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color || "text-slate-500 bg-slate-50"}`}>
+                              <Bell className="w-4 h-4" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-xs font-bold text-slate-800 leading-snug">{n.title}</h4>
+                              <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed break-words">{n.description}</p>
+                              <span className="text-[9px] text-slate-400 mt-1 block">
+                                {new Date(n.time).toLocaleDateString("ar-EG", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                            </div>
+                          </Link>
+                          <button
+                            onClick={(e) => handleDismiss(n.id, e)}
+                            className="text-slate-400 hover:text-red-500 p-1 rounded-full transition-colors shrink-0 self-start mt-0.5"
+                            title="حذف"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       ))
                     )}
                   </div>

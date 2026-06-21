@@ -61,6 +61,12 @@ export function SettingsPageClient({
   const [walletVodafone, setWalletVodafone] = useState(initialSettings.walletVodafone || "");
   const [walletInstapay, setWalletInstapay] = useState(initialSettings.walletInstapay || "");
   const [bankAccount, setBankAccount] = useState(initialSettings.bankAccount || "");
+  const [walletVodafoneName, setWalletVodafoneName] = useState(initialSettings.walletVodafoneName || "");
+  const [walletInstapayName, setWalletInstapayName] = useState(initialSettings.walletInstapayName || "");
+  const [bankName, setBankName] = useState(initialSettings.bankName || "");
+  const [bankAccountNumber, setBankAccountNumber] = useState(initialSettings.bankAccountNumber || "");
+  const [bankIban, setBankIban] = useState(initialSettings.bankIban || "");
+  const [enableAnnualContract, setEnableAnnualContract] = useState(initialSettings.enableAnnualContract ?? false);
 
   // Website Content State
   const [homeHeroBadge, setHomeHeroBadge] = useState(initialContent.homeHeroBadge || "");
@@ -129,7 +135,11 @@ export function SettingsPageClient({
           maintenanceMode, emailOnBooking, emailOnCancel,
           smsEnabled, twoFactor, sessionTimeout,
           stripeKey, livekitKey, livekitUrl,
-          walletVodafone, walletInstapay, bankAccount,
+          walletVodafone, walletVodafoneName,
+          walletInstapay, walletInstapayName,
+          bankName, bankAccountNumber, bankIban,
+          bankAccount: `${bankName} - ح/ ${bankAccountNumber} - IBAN: ${bankIban}`,
+          enableAnnualContract,
         });
       }
       setSaved(true);
@@ -231,24 +241,71 @@ export function SettingsPageClient({
               
               <div className="border-t border-slate-100 pt-6">
                 <h3 className="text-md font-black text-slate-800 mb-4">بيانات الدفع والتحويلات للمنصة</h3>
-                <div className="grid gap-5 md:grid-cols-3">
-                  <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-1.5">رقم فودافون كاش للمنصة</label>
-                    <input type="text" value={walletVodafone}
-                      onChange={e => !isReadOnly && setWalletVodafone(e.target.value)}
-                      disabled={isReadOnly} placeholder="مثال: 01010423661" className={inputCls} />
+                <div className="space-y-6">
+                  {/* Vodafone Cash & InstaPay Details */}
+                  <div className="grid gap-5 md:grid-cols-2">
+                    {/* Vodafone Cash */}
+                    <div className="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 space-y-4">
+                      <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">📱 محفظة فودافون/اتصالات كاش للمنصة</h4>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">رقم المحفظة</label>
+                          <input type="text" value={walletVodafone}
+                            onChange={e => !isReadOnly && setWalletVodafone(e.target.value)}
+                            disabled={isReadOnly} placeholder="مثال: 01010423661" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">الاسم المسجل (لتأكيد التحويل)</label>
+                          <input type="text" value={walletVodafoneName}
+                            onChange={e => !isReadOnly && setWalletVodafoneName(e.target.value)}
+                            disabled={isReadOnly} placeholder="الاسم الكامل كما يظهر في كاش" className={inputCls} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* InstaPay */}
+                    <div className="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 space-y-4">
+                      <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">💸 حساب إنستاباي للمنصة (InstaPay IPN)</h4>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">عنوان التحويل (IPA)</label>
+                          <input type="text" value={walletInstapay}
+                            onChange={e => !isReadOnly && setWalletInstapay(e.target.value)}
+                            disabled={isReadOnly} placeholder="مثال: name@instapay" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">الاسم المسجل في إنستاباي</label>
+                          <input type="text" value={walletInstapayName}
+                            onChange={e => !isReadOnly && setWalletInstapayName(e.target.value)}
+                            disabled={isReadOnly} placeholder="الاسم الكامل المسجل في التطبيق" className={inputCls} />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-1.5">حساب إنستاباي (Instapay IPN)</label>
-                    <input type="text" value={walletInstapay}
-                      onChange={e => !isReadOnly && setWalletInstapay(e.target.value)}
-                      disabled={isReadOnly} placeholder="مثال: name@instapay" className={inputCls} />
-                  </div>
-                  <div className="col-span-full md:col-span-1">
-                    <label className="block text-sm font-bold text-slate-700 mb-1.5">الحساب البنكي للتلقي</label>
-                    <input type="text" value={bankAccount}
-                      onChange={e => !isReadOnly && setBankAccount(e.target.value)}
-                      disabled={isReadOnly} placeholder="اسم البنك ورقم الحساب أو IBAN" className={inputCls} />
+
+                  {/* Bank Account Details */}
+                  <div className="bg-slate-50/50 p-5 rounded-2xl border border-slate-150 space-y-4">
+                    <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">🏦 الحساب البنكي للمنصة</h4>
+                    <div className="grid gap-4 md:grid-cols-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1">اسم البنك</label>
+                        <input type="text" value={bankName}
+                          onChange={e => !isReadOnly && setBankName(e.target.value)}
+                          disabled={isReadOnly} placeholder="مثال: البنك الأهلي المصري" className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1">رقم الحساب</label>
+                        <input type="text" value={bankAccountNumber}
+                          onChange={e => !isReadOnly && setBankAccountNumber(e.target.value)}
+                          disabled={isReadOnly} placeholder="مثال: 1234567890123456" className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1">رقم الآيبان (IBAN)</label>
+                        <input type="text" value={bankIban}
+                          onChange={e => !isReadOnly && setBankIban(e.target.value)}
+                          disabled={isReadOnly} placeholder="مثال: EG123456789012345678901234567" className={inputCls} />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -276,6 +333,7 @@ export function SettingsPageClient({
                     { label: "السماح بتسجيل أخصائيين جدد", desc: "عند الإيقاف، لن يتمكن أخصائيون جدد من إنشاء حسابات", value: allowNewTherapists, set: setAllowNewTherapists },
                     { label: "السماح بتسجيل مرضى جدد", desc: "عند الإيقاف، يصبح الموقع مغلقاً للتسجيل", value: allowNewPatients, set: setAllowNewPatients },
                     { label: "وضع الصيانة", desc: "إيقاف المنصة مؤقتاً وعرض رسالة صيانة للمستخدمين", value: maintenanceMode, set: setMaintenanceMode },
+                    { label: "تفعيل العقد السنوي للأخصائيين", desc: "عند الإيقاف، لن يظهر خيار العقد السنوي في حسابات الأخصائيين ولا يمكنهم رفعه", value: enableAnnualContract, set: setEnableAnnualContract },
                   ].map(toggle => (
                     <label key={toggle.label} className={`flex items-start gap-4 p-4 border border-slate-200 rounded-xl transition-colors ${isReadOnly ? "cursor-not-allowed opacity-75" : "cursor-pointer hover:bg-slate-50"}`}>
                       <div className="relative mt-0.5">

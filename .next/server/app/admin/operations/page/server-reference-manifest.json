@@ -71,6 +71,18 @@
       },
       "exportedName": "rejectAppointmentPayment",
       "filename": "src/app/admin/operations/actions.ts"
+    },
+    "60d2fe9f5c6585559d840f731deb805e488e83179b": {
+      "workers": {
+        "app/admin/operations/page": {
+          "moduleId": 355644,
+          "async": false,
+          "exportedName": "editAppointmentDetails",
+          "filename": "src/app/admin/operations/actions.ts"
+        }
+      },
+      "exportedName": "editAppointmentDetails",
+      "filename": "src/app/admin/operations/actions.ts"
     }
   },
   "edge": {}

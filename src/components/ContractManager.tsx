@@ -50,6 +50,7 @@ const CONTRACT_TYPES = [
 
 export default function ContractManager() {
   const [contracts, setContracts] = useState<ContractsData>({});
+  const [enableAnnualContract, setEnableAnnualContract] = useState(false);
   const [loading, setLoading] = useState(true);
   const [uploadingType, setUploadingType] = useState<string | null>(null);
   const [error, setError] = useState("");
@@ -66,6 +67,7 @@ export default function ContractManager() {
       const res = await fetch("/api/therapist/contract");
       if (res.ok) {
         const data = await res.json();
+        setEnableAnnualContract(data.enableAnnualContract ?? false);
         const rawUrl = data.contractUrl;
         if (rawUrl) {
           if (rawUrl.startsWith("{")) {
@@ -86,7 +88,7 @@ export default function ContractManager() {
         }
       }
     } catch {
-      setError("فشل تحميل عقود المنصة");
+      setError("حدث خطأ أثناء تحميل العقود");
     } finally {
       setLoading(false);
     }
@@ -220,7 +222,7 @@ export default function ContractManager() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-3">
-          {CONTRACT_TYPES.map((contract) => {
+          {CONTRACT_TYPES.filter(c => c.id !== "annual" || enableAnnualContract).map((contract) => {
             const data = contracts[contract.id];
             const isUploading = uploadingType === contract.id;
 

@@ -28,8 +28,14 @@ export type SiteSettings = {
   livekitKey: string;
   livekitUrl: string;
   walletVodafone?: string;
+  walletVodafoneName?: string;
   walletInstapay?: string;
+  walletInstapayName?: string;
   bankAccount?: string;
+  bankName?: string;
+  bankAccountNumber?: string;
+  bankIban?: string;
+  enableAnnualContract?: boolean;
 };
 
 const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitUrl"> & { stripeKey?: string; livekitKey?: string; livekitUrl?: string } = {
@@ -50,8 +56,14 @@ const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitU
   twoFactor: false,
   sessionTimeout: 30,
   walletVodafone: "01010423661",
+  walletVodafoneName: "الشركة المصرية للرعاية النفسية",
   walletInstapay: "01010423661@instapay",
-  bankAccount: "البنك الأهلي المصري - حساب رقم 1234567890123456",
+  walletInstapayName: "Nafsi Platform",
+  bankName: "البنك الأهلي المصري",
+  bankAccountNumber: "1234567890123456",
+  bankIban: "EG123456789012345678901234567",
+  bankAccount: "البنك الأهلي المصري - ح/ 1234567890123456 - IBAN: EG123456789012345678901234567",
+  enableAnnualContract: false,
 };
 
 async function verifyAdmin() {

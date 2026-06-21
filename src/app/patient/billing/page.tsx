@@ -61,49 +61,120 @@ export default async function PatientBillingPage({
         <p className="text-slate-600 mt-2 text-lg">بيانات حسابات التحويل المالي وسجل الجلسات الخاص بك.</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {/* Transfer Method 1: Vodafone Cash */}
-        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-indigo-50/50 to-white">
-          <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-indigo-500" /> المحافظ الإلكترونية كاش
-          </h2>
-          <div className="space-y-2">
-            <p className="text-xs text-slate-500">فودافون كاش / اتصالات كاش / أورنج كاش</p>
-            <p className="text-2xl font-black text-indigo-600 tracking-wide select-all" dir="ltr">
-              {settings.walletVodafone || "01010423661"}
-            </p>
-            <span className="inline-block text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
+        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-indigo-50/50 to-white flex flex-col justify-between">
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+              <Wallet className="w-5 h-5 text-indigo-500" /> المحافظ الإلكترونية كاش
+            </h2>
+            <div className="space-y-2">
+              <p className="text-xs text-slate-400">فودافون كاش / اتصالات كاش / أورنج كاش</p>
+              <div>
+                <p className="text-xs font-bold text-slate-400">الرقم:</p>
+                <p className="text-xl font-black text-indigo-650 tracking-wide select-all" dir="ltr">
+                  {settings.walletVodafone || "01010423661"}
+                </p>
+              </div>
+              {settings.walletVodafoneName && (
+                <div>
+                  <p className="text-xs font-bold text-slate-400">الاسم المسجل لتأكيد التحويل:</p>
+                  <p className="text-sm font-black text-slate-800">{settings.walletVodafoneName}</p>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span className="inline-block text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full">
               تحويل فوري
             </span>
           </div>
         </div>
 
         {/* Transfer Method 2: InstaPay */}
-        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-emerald-50/50 to-white">
-          <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-emerald-500" /> عنوان إنستا باي (InstaPay)
-          </h2>
-          <div className="space-y-2">
-            <p className="text-xs text-slate-500">التحويل المباشر عبر تطبيق إنستا باي</p>
-            <p className="text-2xl font-black text-emerald-600 tracking-all select-all animate-none" dir="ltr">
-              {settings.walletInstapay || "01010423661@instapay"}
-            </p>
-            <span className="inline-block text-[10px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full">
-              معتمد
+        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-emerald-50/50 to-white flex flex-col justify-between">
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+              <CreditCard className="w-5 h-5 text-emerald-500" /> عنوان إنستا باي (InstaPay)
+            </h2>
+            <div className="space-y-2">
+              <p className="text-xs text-slate-400">التحويل المباشر عبر تطبيق إنستا باي</p>
+              <div>
+                <p className="text-xs font-bold text-slate-400">العنوان (IPN Address):</p>
+                <p className="text-lg font-black text-emerald-650 tracking-wide select-all" dir="ltr">
+                  {settings.walletInstapay || "01010423661@instapay"}
+                </p>
+              </div>
+              {settings.walletInstapayName && (
+                <div>
+                  <p className="text-xs font-bold text-slate-400">الاسم المسجل:</p>
+                  <p className="text-sm font-black text-slate-800">{settings.walletInstapayName}</p>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span className="inline-block text-[10px] font-bold bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full">
+              معتمد وآمن
             </span>
           </div>
         </div>
 
         {/* Transfer Method 3: Bank Transfer */}
-        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-amber-50/50 to-white">
-          <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <Landmark className="w-5 h-5 text-amber-500" /> التحويل البنكي
-          </h2>
-          <div className="space-y-1.5 text-slate-700">
-            <p className="text-xs text-slate-500">تفاصيل الحساب للتسوية</p>
-            <p className="text-sm font-bold leading-relaxed">
-              <span className="text-slate-500 font-bold select-all whitespace-pre-line">{settings.bankAccount || "البنك الأهلي المصري - حساب رقم 1234567890123456"}</span>
-            </p>
+        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-amber-50/50 to-white flex flex-col justify-between">
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+              <Landmark className="w-5 h-5 text-amber-500" /> التحويل البنكي
+            </h2>
+            <div className="space-y-2 text-slate-700 text-sm">
+              <p className="text-xs text-slate-400">تفاصيل حساب المنصة</p>
+              {settings.bankName ? (
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-xs font-bold text-slate-400">البنك:</p>
+                    <p className="font-black text-slate-800">{settings.bankName}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-400">رقم الحساب:</p>
+                    <p className="font-black text-slate-850 select-all tracking-wide" dir="ltr">{settings.bankAccountNumber}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-400">الآيبان (IBAN):</p>
+                    <p className="text-xs font-black text-slate-850 select-all tracking-wider leading-relaxed" dir="ltr">{settings.bankIban}</p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm font-black leading-relaxed select-all whitespace-pre-line text-slate-800">
+                  {settings.bankAccount || "البنك الأهلي المصري - حساب رقم 1234567890123456"}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span className="inline-block text-[10px] font-bold bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full">
+              تسوية خلال 24 ساعة
+            </span>
+          </div>
+        </div>
+
+        {/* Transfer Method 4: Online Stripe Payment */}
+        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-purple-50/50 to-white flex flex-col justify-between">
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+              <CreditCard className="w-5 h-5 text-purple-500" /> الدفع الإلكتروني بالبطاقة
+            </h2>
+            <div className="space-y-2">
+              <p className="text-xs text-slate-400">دفع فوري وآمن من منزلك</p>
+              <p className="text-xs text-slate-650 leading-relaxed font-semibold">
+                يمكنك الدفع مباشرة باستخدام بطاقة الفيزا أو الماستركارد المفعلة للإنترنت ليتم تأكيد جلستك ودخول غرفة العلاج بشكل تلقائي وفوري.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1">
+            <span className="inline-block text-[10px] font-bold bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full w-fit">
+              تأكيد تلقائي وفوري
+            </span>
+            <p className="text-[10px] text-slate-400 mt-1 font-medium">* اضغط على زر "ادفع أونلاين بالفيزا" في جدول الجلسات أدناه لبدء الدفع.</p>
           </div>
         </div>
       </div>

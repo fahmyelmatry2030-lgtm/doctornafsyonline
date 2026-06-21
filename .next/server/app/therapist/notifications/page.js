@@ -1,5 +1,5 @@
 var R=require("../../../chunks/ssr/[turbopack]_runtime.js")("server/app/therapist/notifications/page.js")
-R.c("server/chunks/ssr/[root-of-the-server]__0b3z0ba._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0gx-e7i._.js")
 R.c("server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0ajq4k5.js")
 R.c("server/chunks/ssr/node_modules_date-fns_format_03du6ff.js")
 R.c("server/chunks/ssr/[root-of-the-server]__1-07chf._.js")

@@ -375,7 +375,7 @@ function ChatOnlySession({
         body: JSON.stringify({ status: "COMPLETED" }),
       });
       if (res.ok) {
-        window.location.href = "/dashboard";
+        window.location.href = "/therapist/dashboard";
       } else {
         alert("فشل إنهاء الجلسة");
       }
@@ -762,7 +762,7 @@ function LiveKitSession({
         body: JSON.stringify({ status: "COMPLETED" }),
       });
       if (res.ok) {
-        window.location.href = "/dashboard";
+        window.location.href = "/therapist/dashboard";
       } else {
         alert("فشل إنهاء الجلسة");
       }
@@ -798,6 +798,9 @@ function LiveKitSession({
       audio={sessionType !== "CHAT"}
       video={sessionType === "VIDEO"}
       className="h-[calc(100vh-8rem)]"
+      onDisconnected={() => {
+        window.location.href = isTherapist ? "/therapist/dashboard" : "/patient/reviews";
+      }}
     >
       <div className="flex h-full gap-4 flex-col lg:flex-row">
         <div className={`flex flex-col ${showChat ? "lg:w-2/3 h-[50vh] lg:h-full" : "w-full h-full"}`}>
@@ -999,8 +1002,8 @@ function DemoSessionMode({
               </button>
             ) : (
               <button 
-                onClick={() => window.location.href = "/dashboard"}
-                className="rounded-full bg-red-650 p-4 text-white hover:bg-red-700"
+                onClick={() => window.location.href = "/patient/reviews"}
+                className="rounded-full bg-red-655 p-4 text-white hover:bg-red-700"
                 title="مغادرة"
               >
                 <PhoneOff className="h-5 w-5" />
@@ -1052,6 +1055,28 @@ function DemoSessionMode({
 
 export function SessionRoom(props: SessionRoomProps) {
   const [inLobby, setInLobby] = useState(true);
+
+  useEffect(() => {
+    if (inLobby) return;
+
+    const checkStatus = async () => {
+      try {
+        const res = await fetch(`/api/appointments/${props.appointmentId}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.appointment?.status === "COMPLETED") {
+            window.location.href = props.isTherapist ? "/therapist/dashboard" : "/patient/reviews";
+          }
+        }
+      } catch (err) {
+        console.error("Error checking appointment status:", err);
+      }
+    };
+
+    checkStatus();
+    const interval = setInterval(checkStatus, 5000);
+    return () => clearInterval(interval);
+  }, [inLobby, props.appointmentId, props.isTherapist]);
 
   if (inLobby) {
     return (

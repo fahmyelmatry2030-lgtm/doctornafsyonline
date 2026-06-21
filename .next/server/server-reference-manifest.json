@@ -1236,6 +1236,18 @@
       "filename": "src/app/admin/operations/actions.ts",
       "exportedName": "rejectAppointmentPayment"
     },
+    "60d2fe9f5c6585559d840f731deb805e488e83179b": {
+      "workers": {
+        "app/admin/operations/page": {
+          "moduleId": 355644,
+          "async": false,
+          "exportedName": "editAppointmentDetails",
+          "filename": "src/app/admin/operations/actions.ts"
+        }
+      },
+      "filename": "src/app/admin/operations/actions.ts",
+      "exportedName": "editAppointmentDetails"
+    },
     "4002dae98c8e669e258f2319c104a8debfe1b80574": {
       "workers": {
         "app/admin/patients/page": {

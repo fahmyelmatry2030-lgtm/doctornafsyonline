@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import fs from "fs/promises";
 import path from "path";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { getSettings } from "@/app/admin/settings/actions";
 
 const updateContractJson = (currentVal: string | null, type: string, url: string | null) => {
   let contracts: Record<string, any> = {};
@@ -75,7 +76,12 @@ export async function GET(request: Request) {
       select: { contractUrl: true }
     });
 
-    return NextResponse.json({ contractUrl: profile?.contractUrl || null });
+    const settings = await getSettings();
+
+    return NextResponse.json({
+      contractUrl: profile?.contractUrl || null,
+      enableAnnualContract: settings.enableAnnualContract ?? false
+    });
   } catch {
     return NextResponse.json({ error: "فشل تحميل العقد" }, { status: 500 });
   }
