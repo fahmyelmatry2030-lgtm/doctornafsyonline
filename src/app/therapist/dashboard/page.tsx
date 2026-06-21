@@ -34,7 +34,7 @@ export default async function TherapistDashboardPage() {
   const [
     activePatientsCount, todaysSessions,
     pendingCount, completedCount, scheduledCount,
-    ongoingSession, upcomingAppointments, recentCompleted, therapistProfile,
+    ongoingSession, upcomingAppointments, recentCompleted, therapistProfile, user
   ] = await Promise.all([
     prisma.appointment.groupBy({ by: ["patientId"], where: { therapistId: userId, status: { in: ["COMPLETED", "CONFIRMED"] } } }).then((r) => r.length),
     prisma.appointment.count({ where: { therapistId: userId, scheduledAt: { gte: today, lte: endOfDay } } }),

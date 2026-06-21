@@ -48,7 +48,12 @@ export default async function AdminPatientsPage() {
     const s = await auth();
     if (!s?.user || (s.user.role !== "ADMIN" && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
 
-    await prisma.user.delete({ where: { id: userId } });
+    await prisma.$transaction([
+      prisma.appointment.deleteMany({ where: { patientId: userId } }),
+      prisma.review.deleteMany({ where: { patientId: userId } }),
+      prisma.message.deleteMany({ where: { senderId: userId } }),
+      prisma.user.delete({ where: { id: userId } }),
+    ]);
   }
 
   return (

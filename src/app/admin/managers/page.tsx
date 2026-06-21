@@ -204,6 +204,7 @@ export default function ManagersPage() {
                 onChange={(e) => setRole(e.target.value)}
                 className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               >
+                <option value="ADMIN_HR">مدير موارد بشرية (إدارة الأطباء والمرضى)</option>
                 <option value="ADMIN_ACCOUNTING">مدير حسابات (أرباح، فواتير)</option>
                 <option value="ADMIN_VIEWER">مراقب — عرض فقط 🔍 (لا يمكنه التعديل)</option>
                 <option value="ADMIN">مدير عام (كافة الصلاحيات)</option>

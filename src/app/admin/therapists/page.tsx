@@ -69,7 +69,13 @@ export default async function AdminTherapistsPage() {
     const s = await auth();
     if (!s?.user || (s.user.role !== "ADMIN" && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
 
-    await prisma.user.delete({ where: { id: userId } });
+    await prisma.$transaction([
+      prisma.appointment.deleteMany({ where: { therapistId: userId } }),
+      prisma.sessionNote.deleteMany({ where: { therapistId: userId } }),
+      prisma.message.deleteMany({ where: { senderId: userId } }),
+      prisma.therapistProfile.deleteMany({ where: { userId } }),
+      prisma.user.delete({ where: { id: userId } }),
+    ]);
     revalidatePath("/admin/therapists");
   }
 

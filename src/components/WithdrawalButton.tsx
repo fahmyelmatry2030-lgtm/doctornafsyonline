@@ -19,7 +19,14 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [method, setMethod] = useState<"instapay" | "vodafone" | "bank">("instapay");
   const [amount, setAmount] = useState(maxAmount.toString());
-  const [details, setDetails] = useState("");
+  
+  // Method-specific fields
+  const [accountName, setAccountName] = useState(""); // Used by all methods for verification
+  const [details, setDetails] = useState(""); // Used for InstaPay address or Vodafone number
+  const [bankName, setBankName] = useState(""); // Bank only
+  const [accountNumber, setAccountNumber] = useState(""); // Bank only
+  const [iban, setIban] = useState(""); // Bank only
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -39,9 +46,21 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
       return;
     }
 
-    if (!details.trim()) {
-      setError("يرجى إدخال تفاصيل الحساب أو رقم التحويل");
+    if (!accountName.trim()) {
+      setError("يرجى إدخال الاسم الرباعي لتأكيد التحويل");
       return;
+    }
+
+    if (method === "bank") {
+      if (!bankName.trim() || !accountNumber.trim() || !iban.trim()) {
+        setError("يرجى تعبئة جميع بيانات الحساب البنكي (اسم البنك، رقم الحساب، والآيبان)");
+        return;
+      }
+    } else {
+      if (!details.trim()) {
+        setError("يرجى إدخال تفاصيل المحفظة أو الحساب");
+        return;
+      }
     }
 
     setLoading(true);
@@ -55,7 +74,11 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
     setIsOpen(false);
     setSuccess(false);
     setAmount(maxAmount.toString());
+    setAccountName("");
     setDetails("");
+    setBankName("");
+    setAccountNumber("");
+    setIban("");
     setError("");
   }
 
@@ -160,28 +183,77 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
                   </div>
                 </div>
 
-                {/* Details input */}
+                {/* Account Name input (For all methods to verify) */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700">
-                    {method === "instapay" && "عنوان InstaPay (IPA)"}
-                    {method === "vodafone" && "رقم محفظة فودافون كاش"}
-                    {method === "bank" && "رقم الحساب البنكي أو الآيبان (IBAN)"}
-                  </label>
+                  <label className="text-xs font-bold text-slate-700">الاسم الرباعي المسجل بالحساب (للتأكيد)</label>
                   <input
                     type="text"
                     required
-                    value={details}
-                    onChange={(e) => setDetails(e.target.value)}
-                    placeholder={
-                      method === "instapay"
-                        ? "example@instapay"
-                        : method === "vodafone"
-                        ? "01xxxxxxxxx"
-                        : "EGxxxxxxxxxxxxxxxxxxxxxxx"
-                    }
+                    value={accountName}
+                    onChange={(e) => setAccountName(e.target.value)}
+                    placeholder="الاسم الثلاثي أو الرباعي"
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
                   />
                 </div>
+
+                {/* Details input (InstaPay / Vodafone only) */}
+                {method !== "bank" && (
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-700">
+                      {method === "instapay" && "عنوان InstaPay (IPA)"}
+                      {method === "vodafone" && "رقم محفظة فودافون كاش"}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={details}
+                      onChange={(e) => setDetails(e.target.value)}
+                      placeholder={
+                        method === "instapay" ? "example@instapay" : "01xxxxxxxxx"
+                      }
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
+                    />
+                  </div>
+                )}
+
+                {/* Bank inputs */}
+                {method === "bank" && (
+                  <>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700">اسم البنك</label>
+                      <input
+                        type="text"
+                        required
+                        value={bankName}
+                        onChange={(e) => setBankName(e.target.value)}
+                        placeholder="مثال: البنك الأهلي المصري، بنك مصر..."
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700">رقم الحساب</label>
+                      <input
+                        type="text"
+                        required
+                        value={accountNumber}
+                        onChange={(e) => setAccountNumber(e.target.value)}
+                        placeholder="رقم الحساب المكون من عدة أرقام"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700">رقم الحساب المصرفي الدولي (IBAN)</label>
+                      <input
+                        type="text"
+                        required
+                        value={iban}
+                        onChange={(e) => setIban(e.target.value)}
+                        placeholder="EGxxxxxxxxxxxxxxxxxxxxxxx"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
+                      />
+                    </div>
+                  </>
+                )}
 
                 <button
                   type="submit"
