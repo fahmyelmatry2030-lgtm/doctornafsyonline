@@ -197,6 +197,12 @@
       "namedRegex": "^/admin/settings(?:/)?$"
     },
     {
+      "page": "/admin/support",
+      "regex": "^/admin/support(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/support(?:/)?$"
+    },
+    {
       "page": "/admin/therapists",
       "regex": "^/admin/therapists(?:/)?$",
       "routeKeys": {},
@@ -249,6 +255,12 @@
       "regex": "^/api/admin/reviews(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/admin/reviews(?:/)?$"
+    },
+    {
+      "page": "/api/admin/role-permissions",
+      "regex": "^/api/admin/role\\-permissions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/role\\-permissions(?:/)?$"
     },
     {
       "page": "/api/admin/setup",
@@ -357,6 +369,12 @@
       "regex": "^/api/session/token(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/session/token(?:/)?$"
+    },
+    {
+      "page": "/api/support",
+      "regex": "^/api/support(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/support(?:/)?$"
     },
     {
       "page": "/api/therapist/avatar",

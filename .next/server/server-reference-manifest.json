@@ -74,6 +74,12 @@
           "exportedName": "getSettings",
           "filename": "src/app/admin/settings/actions.ts"
         },
+        "app/admin/support/page": {
+          "moduleId": 944521,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
         "app/admin/therapists/page": {
           "moduleId": 433134,
           "async": false,
@@ -364,6 +370,12 @@
         },
         "app/admin/settings/page": {
           "moduleId": 887811,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
+        "app/admin/support/page": {
+          "moduleId": 944521,
           "async": false,
           "exportedName": "getWebsiteContent",
           "filename": "src/app/admin/settings/actions.ts"
@@ -662,6 +674,12 @@
           "exportedName": "updateWebsiteContent",
           "filename": "src/app/admin/settings/actions.ts"
         },
+        "app/admin/support/page": {
+          "moduleId": 944521,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
         "app/admin/therapists/page": {
           "moduleId": 433134,
           "async": false,
@@ -956,6 +974,12 @@
           "exportedName": "updateSettings",
           "filename": "src/app/admin/settings/actions.ts"
         },
+        "app/admin/support/page": {
+          "moduleId": 944521,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/admin/settings/actions.ts"
+        },
         "app/admin/therapists/page": {
           "moduleId": 433134,
           "async": false,
@@ -1234,6 +1258,30 @@
         }
       },
       "filename": "src/app/admin/patients/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_0"
+    },
+    "40ae9ac08088dd9814c4c268d3a6badc9eda7474b5": {
+      "workers": {
+        "app/admin/support/page": {
+          "moduleId": 944521,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_1",
+          "filename": "src/app/admin/support/page.tsx"
+        }
+      },
+      "filename": "src/app/admin/support/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_1"
+    },
+    "70efa1b9c7ad9ee91f7948811cb03e14d84f0fe5d1": {
+      "workers": {
+        "app/admin/support/page": {
+          "moduleId": 944521,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "src/app/admin/support/page.tsx"
+        }
+      },
+      "filename": "src/app/admin/support/page.tsx",
       "exportedName": "$$RSC_SERVER_ACTION_0"
     },
     "40702c672e060c23ea9c794f9586b7ddc23ab0fd2d": {

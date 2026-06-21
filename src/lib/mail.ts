@@ -21,7 +21,7 @@ export async function sendEmail({
 }) {
   try {
     const info = await transporter.sendMail({
-      from: `"منصة نفسي" <${process.env.SMTP_USER}>`,
+      from: `"منصة دكتور نفسي أونلاين" <${process.env.SMTP_USER}>`,
       to,
       subject,
       html,

@@ -58,16 +58,31 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
       }
     } else {
       if (!details.trim()) {
-        setError("يرجى إدخال تفاصيل المحفظة أو الحساب");
+        setError(method === "instapay" ? "يرجى إدخال عنوان InstaPay" : "يرجى إدخال رقم محفظة فودافون كاش");
         return;
       }
     }
 
     setLoading(true);
-    // Simulate API request to process payout
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setLoading(false);
-    setSuccess(true);
+    try {
+      const res = await fetch("/api/therapist/payout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: parsedAmount,
+          method,
+          accountName,
+          details: method === "bank" ? `${bankName} | الحساب: ${accountNumber} | الآيبان: ${iban}` : details
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "فشل تقديم طلب السحب");
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.message || "حدث خطأ غير متوقع");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleClose() {
@@ -96,7 +111,7 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-fade-in">
           <div className="absolute inset-0" onClick={handleClose}></div>
           
-          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl z-10 animate-scale-in">
+          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl z-10 animate-scale-in" dir="rtl">
             {/* Close Button */}
             <button
               onClick={handleClose}
@@ -146,9 +161,9 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
                       max={maxAmount}
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all font-bold text-slate-900"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-4 pr-12 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all font-bold text-slate-900"
                     />
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center text-xs font-bold text-slate-500 pointer-events-none">
+                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center text-xs font-bold text-slate-500 pointer-events-none">
                       ج.م
                     </div>
                   </div>
@@ -185,13 +200,13 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
 
                 {/* Account Name input (For all methods to verify) */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700">الاسم الرباعي المسجل بالحساب (للتأكيد)</label>
+                  <label className="text-xs font-bold text-slate-700">الاسم الرباعي لصاحب الحساب/المحفظة (لتأكيد التحويل)</label>
                   <input
                     type="text"
                     required
                     value={accountName}
                     onChange={(e) => setAccountName(e.target.value)}
-                    placeholder="الاسم الثلاثي أو الرباعي"
+                    placeholder="اكتب الاسم الرباعي هنا بالتفصيل للتأكيد مع التحويل"
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
                   />
                 </div>
@@ -209,9 +224,10 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
                       value={details}
                       onChange={(e) => setDetails(e.target.value)}
                       placeholder={
-                        method === "instapay" ? "example@instapay" : "01xxxxxxxxx"
+                        method === "instapay" ? "username@instapay" : "01xxxxxxxxx"
                       }
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all text-left"
+                      dir="ltr"
                     />
                   </div>
                 )}
@@ -237,8 +253,9 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
                         required
                         value={accountNumber}
                         onChange={(e) => setAccountNumber(e.target.value)}
-                        placeholder="رقم الحساب المكون من عدة أرقام"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
+                        placeholder="أدخل رقم الحساب هنا"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all text-left font-mono"
+                        dir="ltr"
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -249,7 +266,8 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
                         value={iban}
                         onChange={(e) => setIban(e.target.value)}
                         placeholder="EGxxxxxxxxxxxxxxxxxxxxxxx"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all text-left font-mono"
+                        dir="ltr"
                       />
                     </div>
                   </>
@@ -258,7 +276,7 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
                 <button
                   type="submit"
                   disabled={loading || maxAmount <= 0}
-                  className="w-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:shadow-lg hover:shadow-[#6366F1]/20 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:shadow-lg hover:shadow-[#6366F1]/20 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {loading ? (
                     <>
@@ -277,3 +295,4 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
     </>
   );
 }
+

@@ -1,5 +1,5 @@
 var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/session/token/route.js")
-R.c("server/chunks/[root-of-the-server]__14zc_xv._.js")
+R.c("server/chunks/[root-of-the-server]__0o6z1ds._.js")
 R.c("server/chunks/node_modules_next_1_14bcs._.js")
 R.c("server/chunks/node_modules_bcryptjs_index_0k82xso.js")
 R.c("server/chunks/src_lib_livekit_ts_0a01p2b._.js")

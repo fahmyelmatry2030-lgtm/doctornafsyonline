@@ -41,9 +41,12 @@ export async function POST(request: Request) {
       
       const htmlContent = `
         <div dir="rtl" style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px; text-align: right;">
-          <h2 style="color: #6366F1; text-align: center;">منصة نفسي للعلاج النفسي</h2>
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img src="${baseUrl}/logo.jpeg" alt="دكتور نفسي أونلاين" style="max-height: 80px; width: auto; border-radius: 8px;" />
+          </div>
+          <h2 style="color: #6366F1; text-align: center; margin-top: 10px;">منصة دكتور نفسي أونلاين</h2>
           <p>مرحباً ${user.name}،</p>
-          <p>لقد تلقينا طلباً لإعادة تعيين كلمة المرور الخاصة بحسابك على منصة نفسي.</p>
+          <p>لقد تلقينا طلباً لإعادة تعيين كلمة المرور الخاصة بحسابك على منصة دكتور نفسي أونلاين.</p>
           <p>يرجى الضغط على الزر أدناه لإعادة تعيين كلمة المرور (هذا الرابط صالح لمدة ساعة واحدة فقط):</p>
           <div style="text-align: center; margin: 30px 0;">
             <a href="${resetLink}" style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">إعادة تعيين كلمة المرور</a>
@@ -56,7 +59,7 @@ export async function POST(request: Request) {
 
       const result = await sendEmail({
         to: user.email,
-        subject: "إعادة تعيين كلمة المرور - منصة نفسي",
+        subject: "إعادة تعيين كلمة المرور - منصة دكتور نفسي أونلاين",
         html: htmlContent,
       });
 
