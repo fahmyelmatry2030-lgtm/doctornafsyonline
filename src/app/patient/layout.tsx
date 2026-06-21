@@ -24,7 +24,7 @@ export default async function PatientLayout({
   });
 
   return (
-    <DashboardLayout role="PATIENT" userName={session.user.name || "مستخدم"} userAvatar={user?.avatar}>
+    <DashboardLayout role="PATIENT" userName={session.user.name || "مستخدم"} userAvatar={user?.avatar} userId={session.user.id}>
       {children}
     </DashboardLayout>
   );

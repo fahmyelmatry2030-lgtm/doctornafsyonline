@@ -130,6 +130,21 @@ export function TherapistsTableClient({
     }
   };
 
+  const handleUpdateContractUrl = (userId: string, contractUrl: string) => {
+    setTherapists(prev => 
+      prev.map(t => t.id === userId 
+        ? { ...t, therapistProfile: t.therapistProfile ? { ...t.therapistProfile, contractUrl } : null } 
+        : t
+      )
+    );
+    if (selectedTherapist && selectedTherapist.id === userId) {
+      setSelectedTherapist(prev => prev ? {
+        ...prev,
+        therapistProfile: prev.therapistProfile ? { ...prev.therapistProfile, contractUrl } : null
+      } : null);
+    }
+  };
+
   const verified = therapists.filter(t => t.therapistProfile?.isVerified);
   const pending = therapists.filter(t => !t.therapistProfile?.isVerified);
   const suspended = therapists.filter(t => t.isSuspended);
@@ -452,6 +467,7 @@ export function TherapistsTableClient({
           onToggleSuspend={handleToggleSuspend}
           onDelete={handleDeleteTherapist}
           onUpdateCertificate={handleUpdateCertificateStatus}
+          onUpdateContractUrl={handleUpdateContractUrl}
           isReadOnly={isReadOnly}
         />
       )}

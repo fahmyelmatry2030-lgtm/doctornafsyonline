@@ -38,6 +38,7 @@ type TherapistDetailsModalProps = {
   onToggleSuspend: (userId: string, currentStatus: boolean) => Promise<void>;
   onDelete: (userId: string) => Promise<void>;
   onUpdateCertificate: (userId: string, certId: string, status: "APPROVED" | "REJECTED") => Promise<void>;
+  onUpdateContractUrl?: (userId: string, contractUrl: string) => void;
   isReadOnly?: boolean;
 };
 
@@ -48,6 +49,7 @@ export function TherapistDetailsModal({
   onToggleSuspend, 
   onDelete,
   onUpdateCertificate,
+  onUpdateContractUrl,
   isReadOnly = false
 }: TherapistDetailsModalProps) {
   const [localTherapist, setLocalTherapist] = useState<Therapist>(therapist);
@@ -164,6 +166,7 @@ export function TherapistDetailsModal({
             contractUrl: data.contractUrl
           } : null
         }));
+        onUpdateContractUrl?.(localTherapist.id, data.contractUrl);
       } else {
         const errData = await res.json();
         setError(errData.error || "فشل تحديث حالة العقد");
@@ -203,6 +206,7 @@ export function TherapistDetailsModal({
             contractUrl: data.contractUrl
           } : null
         }));
+        onUpdateContractUrl?.(localTherapist.id, data.contractUrl);
       } else {
         const errData = await res.json();
         setError(errData.error || "فشل رفع العقد");

@@ -27,11 +27,13 @@ export function DashboardLayout({
   role,
   userName = "مستخدم",
   userAvatar = null,
+  userId = null,
 }: {
   children: React.ReactNode;
   role: Role;
   userName?: string | null;
   userAvatar?: string | null;
+  userId?: string | null;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname() || "";
@@ -42,14 +44,19 @@ export function DashboardLayout({
   const [showNotifications, setShowNotifications] = useState(false);
   const [hasNew, setHasNew] = useState(false);
 
+  const storageKey = userId ? `dismissedNotifications_${userId}` : "dismissedNotifications";
+  const lastViewedKey = userId ? `lastViewedNotif_${userId}` : "lastViewedNotif";
+
   useEffect(() => {
-    const saved = localStorage.getItem("dismissedNotifications");
+    const saved = localStorage.getItem(storageKey);
     if (saved) {
       try {
         setDismissedIds(JSON.parse(saved));
       } catch (e) {}
+    } else {
+      setDismissedIds([]);
     }
-  }, []);
+  }, [storageKey]);
 
   useEffect(() => {
     async function loadNotifications() {
@@ -59,7 +66,7 @@ export function DashboardLayout({
           const data = await res.json();
           setNotifications(data);
           
-          const savedIds = localStorage.getItem("dismissedNotifications");
+          const savedIds = localStorage.getItem(storageKey);
           let currentDismissed: string[] = [];
           if (savedIds) {
             try { currentDismissed = JSON.parse(savedIds); } catch (e) {}
@@ -67,7 +74,7 @@ export function DashboardLayout({
           
           const activeNotifs = data.filter((n: any) => !currentDismissed.includes(n.id));
           
-          const lastViewed = localStorage.getItem("lastViewedNotif");
+          const lastViewed = localStorage.getItem(lastViewedKey);
           if (activeNotifs.length > 0) {
             const latestNotifTime = new Date(activeNotifs[0].time).getTime();
             if (!lastViewed || latestNotifTime > new Date(lastViewed).getTime()) {
@@ -82,15 +89,15 @@ export function DashboardLayout({
     loadNotifications();
     const interval = setInterval(loadNotifications, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [storageKey, lastViewedKey]);
 
   const handleClearAll = () => {
     const allIds = notifications.map(n => n.id);
     const updated = Array.from(new Set([...dismissedIds, ...allIds]));
     setDismissedIds(updated);
-    localStorage.setItem("dismissedNotifications", JSON.stringify(updated));
+    localStorage.setItem(storageKey, JSON.stringify(updated));
     setHasNew(false);
-    localStorage.setItem("lastViewedNotif", new Date().toISOString());
+    localStorage.setItem(lastViewedKey, new Date().toISOString());
   };
 
   const handleDismiss = (id: string, e: React.MouseEvent) => {
@@ -98,7 +105,7 @@ export function DashboardLayout({
     e.stopPropagation();
     const updated = [...dismissedIds, id];
     setDismissedIds(updated);
-    localStorage.setItem("dismissedNotifications", JSON.stringify(updated));
+    localStorage.setItem(storageKey, JSON.stringify(updated));
   };
 
   useEffect(() => {
@@ -171,7 +178,7 @@ export function DashboardLayout({
       { name: "المقالات والتقييمات 📝", href: "/admin/content", icon: <BookOpen className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "الدعم، الإشعارات وأكواد الخصم 🎟️", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "رسائل الدعم الفني 🎧", href: "/admin/support", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
-      { name: "شهادات الكورسات والتدريب 🎓", href: "/admin/certificates", icon: <Award className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
+      { name: "شهادات الكورسات والتدريب 🎓", href: "/admin/certificates", icon: <Award className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
       { name: "إعدادات المنصة ⚙️", href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
     ];
 

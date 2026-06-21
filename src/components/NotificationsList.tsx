@@ -17,31 +17,35 @@ interface NotificationItem {
   href?: string;
 }
 
-export default function NotificationsList({ initialNotifications }: { initialNotifications: NotificationItem[] }) {
+export default function NotificationsList({ initialNotifications, userId = null }: { initialNotifications: NotificationItem[]; userId?: string | null }) {
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState(false);
 
+  const storageKey = userId ? `dismissedNotifications_${userId}` : "dismissedNotifications";
+
   useEffect(() => {
     setIsMounted(true);
-    const saved = localStorage.getItem("dismissedNotifications");
+    const saved = localStorage.getItem(storageKey);
     if (saved) {
       try {
         setDismissedIds(JSON.parse(saved));
       } catch (e) {}
+    } else {
+      setDismissedIds([]);
     }
-  }, []);
+  }, [storageKey]);
 
   const handleDismiss = (id: string) => {
     const updated = [...dismissedIds, id];
     setDismissedIds(updated);
-    localStorage.setItem("dismissedNotifications", JSON.stringify(updated));
+    localStorage.setItem(storageKey, JSON.stringify(updated));
   };
 
   const handleClearAll = () => {
     const allIds = initialNotifications.map(n => n.id);
     const updated = Array.from(new Set([...dismissedIds, ...allIds]));
     setDismissedIds(updated);
-    localStorage.setItem("dismissedNotifications", JSON.stringify(updated));
+    localStorage.setItem(storageKey, JSON.stringify(updated));
   };
 
   if (!isMounted) {

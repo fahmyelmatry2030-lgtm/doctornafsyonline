@@ -73,14 +73,24 @@ export async function GET(request: Request) {
   try {
     const profile = await prisma.therapistProfile.findUnique({
       where: { userId: targetUserId },
-      select: { contractUrl: true }
+      select: { contractUrl: true, createdAt: true }
     });
 
     const settings = await getSettings();
+    let enableAnnualContract = settings.enableAnnualContract ?? false;
+
+    // Hide annual contract for therapists in their first 14 days (trial period)
+    if (role === "THERAPIST" && profile) {
+      const profileCreatedAt = profile.createdAt;
+      const daysSinceCreation = (new Date().getTime() - new Date(profileCreatedAt).getTime()) / (1000 * 60 * 60 * 24);
+      if (daysSinceCreation < 14) {
+        enableAnnualContract = false;
+      }
+    }
 
     return NextResponse.json({
       contractUrl: profile?.contractUrl || null,
-      enableAnnualContract: settings.enableAnnualContract ?? false
+      enableAnnualContract
     });
   } catch {
     return NextResponse.json({ error: "فشل تحميل العقد" }, { status: 500 });

@@ -6,10 +6,11 @@ import {
   deleteCertificate 
 } from "@/lib/certificates";
 
-// GET: List all certificates (Admin only)
+// GET: List all certificates (Admin, HR, Viewer)
 export async function GET() {
   const session = await auth();
-  if (!session?.user || session.user.role !== "ADMIN") {
+  const role = session?.user?.role;
+  if (!role || (role !== "ADMIN" && role !== "ADMIN_HR" && role !== "ADMIN_VIEWER")) {
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 
@@ -21,10 +22,11 @@ export async function GET() {
   }
 }
 
-// POST: Add a new certificate (Admin only)
+// POST: Add a new certificate (Admin, HR only)
 export async function POST(request: Request) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "ADMIN") {
+  const role = session?.user?.role;
+  if (!role || (role !== "ADMIN" && role !== "ADMIN_HR")) {
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 
@@ -69,10 +71,11 @@ export async function POST(request: Request) {
   }
 }
 
-// DELETE: Remove a certificate (Admin only)
+// DELETE: Remove a certificate (Admin, HR only)
 export async function DELETE(request: Request) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "ADMIN") {
+  const role = session?.user?.role;
+  if (!role || (role !== "ADMIN" && role !== "ADMIN_HR")) {
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 

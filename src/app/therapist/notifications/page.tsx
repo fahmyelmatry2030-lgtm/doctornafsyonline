@@ -128,6 +128,7 @@ export default async function TherapistNotificationsPage() {
       </div>
 
       <NotificationsList
+        userId={session.user.id}
         initialNotifications={notifications.map((n) => ({
           id: n.id,
           type: n.type,

@@ -24,7 +24,7 @@ export default async function AdminLayout({
   });
 
   return (
-    <DashboardLayout role={session.user.role as any} userName={session.user.name || "مدير النظام"} userAvatar={user?.avatar}>
+    <DashboardLayout role={session.user.role as any} userName={session.user.name || "مدير النظام"} userAvatar={user?.avatar} userId={session.user.id}>
       {children}
     </DashboardLayout>
   );
