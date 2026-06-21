@@ -799,8 +799,8 @@ function LiveKitSession({
       video={sessionType === "VIDEO"}
       className="h-[calc(100vh-8rem)]"
     >
-      <div className="flex h-full gap-4">
-        <div className={`flex flex-1 flex-col ${showChat ? "lg:w-2/3" : "w-full"}`}>
+      <div className="flex h-full gap-4 flex-col lg:flex-row">
+        <div className={`flex flex-col ${showChat ? "lg:w-2/3 h-[50vh] lg:h-full" : "w-full h-full"}`}>
           <div className="mb-2 flex items-center justify-between rounded-xl bg-slate-800 px-4 py-2 text-white flex-wrap gap-2">
             <div className="flex items-center gap-3">
               <span className="text-sm font-bold">
@@ -842,7 +842,7 @@ function LiveKitSession({
         </div>
 
         {showChat && (
-          <div className="flex w-full flex-col rounded-2xl border border-slate-200 bg-white lg:w-1/3 overflow-hidden shadow-sm">
+          <div className="flex w-full flex-col rounded-2xl border border-slate-200 bg-white lg:w-1/3 flex-1 overflow-hidden shadow-sm min-h-[40vh]">
             {isTherapist && (
               <div className="flex border-b border-slate-100 p-1 bg-slate-50/50">
                 <button
@@ -942,8 +942,8 @@ function DemoSessionMode({
   }
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] gap-4">
-      <div className="flex flex-1 flex-col">
+    <div className="flex h-[calc(100vh-8rem)] gap-4 flex-col lg:flex-row">
+      <div className="flex flex-col lg:w-2/3 h-[50vh] lg:h-full">
         <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 flex justify-between items-center flex-wrap gap-2">
           <div className="flex items-center gap-3">
             <span>وضع تجريبي — أضف مفاتيح LiveKit في ملف .env لتفعيل الفيديو والصوت الحقيقي</span>
@@ -1010,7 +1010,7 @@ function DemoSessionMode({
         </div>
       </div>
 
-      <div className="flex w-full flex-col rounded-2xl border border-slate-200 bg-white lg:w-96 overflow-hidden shadow-sm">
+      <div className="flex w-full flex-col rounded-2xl border border-slate-200 bg-white lg:w-1/3 flex-1 overflow-hidden shadow-sm min-h-[40vh]">
         {isTherapist && (
           <div className="flex border-b border-slate-100 p-1 bg-slate-50/50">
             <button
