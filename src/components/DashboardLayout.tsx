@@ -90,6 +90,19 @@ export function DashboardLayout({
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
+  const [dynamicPerms, setDynamicPerms] = useState<Record<string, string[]> | null>(null);
+
+  useEffect(() => {
+    if (role?.startsWith("ADMIN") && role !== "ADMIN") {
+      fetch("/api/admin/role-permissions")
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          if (data && !data.error) setDynamicPerms(data);
+        })
+        .catch(() => {});
+    }
+  }, [role]);
+
   let navItems: { name: string; href: string; icon: React.ReactNode }[] = [];
 
   if (role === "PATIENT") {
@@ -114,7 +127,7 @@ export function DashboardLayout({
     ];
   } else if (role?.startsWith("ADMIN")) {
     const allAdminNavItems = [
-      { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" /> },
+      { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" />, roles: null },
       { name: "إدارة المديرين 👑", href: "/admin/managers", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN"] },
       { name: "إدارة الجلسات والعمليات 📅", href: "/admin/operations", icon: <Activity className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
       { name: "توثيق واعتماد الأخصائيين ✅", href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
@@ -126,7 +139,18 @@ export function DashboardLayout({
       { name: "شهادات الكورسات والتدريب 🎓", href: "/admin/certificates", icon: <Award className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "إعدادات المنصة ⚙️", href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
     ];
-    navItems = allAdminNavItems.filter(item => !item.roles || item.roles.includes(role as string));
+
+    if (role === "ADMIN") {
+      // Admin sees everything
+      navItems = allAdminNavItems.filter(item => !item.roles || item.roles.includes("ADMIN"));
+    } else if (dynamicPerms && dynamicPerms[role as string]) {
+      // Use dynamic permissions from server
+      const allowedPaths = dynamicPerms[role as string];
+      navItems = allAdminNavItems.filter(item => allowedPaths.includes(item.href));
+    } else {
+      // Fallback: use hardcoded role-based filtering while loading
+      navItems = allAdminNavItems.filter(item => !item.roles || item.roles.includes(role as string));
+    }
   }
 
   const userInitials = userName ? userName.substring(0, 2).toUpperCase() : "م";

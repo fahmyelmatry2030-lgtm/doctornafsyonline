@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2, Eye, EyeOff } from "lucide-react";
+import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2, Eye, EyeOff, Shield } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
+import { RolePermissionsManager } from "./RolePermissionsManager";
 
 type Manager = {
   id: string;
@@ -18,6 +19,7 @@ export default function ManagersPage() {
   const [managers, setManagers] = useState<Manager[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [activeTab, setActiveTab] = useState<"managers" | "permissions">("managers");
   
   // Form State
   const [name, setName] = useState("");
@@ -129,14 +131,43 @@ export default function ManagersPage() {
             قم بإضافة مديرين للنظام وتحديد الصلاحيات المخصصة لكل منهم
           </p>
         </div>
-        <button
-          onClick={() => setIsAdding(!isAdding)}
+        {activeTab === "managers" && (
+          <button
+            onClick={() => setIsAdding(!isAdding)}
           className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-indigo-200"
         >
           <Plus className="w-5 h-5" />
           {isAdding ? "إلغاء الإضافة" : "إضافة مدير جديد"}
         </button>
+        )}
       </div>
+
+      {/* Tab Switcher */}
+      <div className="bg-white rounded-2xl p-1.5 shadow-sm border border-slate-100 flex gap-1 w-fit">
+        <button
+          onClick={() => setActiveTab("managers")}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+            activeTab === "managers" ? "bg-[#2B3674] text-white shadow-sm" : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <User className="w-4 h-4" />
+          قائمة المديرين
+        </button>
+        <button
+          onClick={() => setActiveTab("permissions")}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+            activeTab === "permissions" ? "bg-[#2B3674] text-white shadow-sm" : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <Shield className="w-4 h-4" />
+          تخصيص الصلاحيات
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === "permissions" && <RolePermissionsManager />}
+
+      {activeTab === "managers" && (<>
 
       {/* Add Form Section */}
       {isAdding && (
@@ -279,6 +310,7 @@ export default function ManagersPage() {
           </div>
         )}
       </div>
+    </>)}
     </div>
   );
 }
