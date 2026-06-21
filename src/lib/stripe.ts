@@ -4,7 +4,7 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
 export const stripe = stripeSecretKey
   ? new Stripe(stripeSecretKey, {
-      apiVersion: "2025-01-27.accredited", // matches current installed types
+      apiVersion: "2024-12-18.acacia",
     } as any)
   : null;
 
