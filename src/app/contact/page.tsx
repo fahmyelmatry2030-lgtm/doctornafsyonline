@@ -9,9 +9,12 @@ export default function ContactPage() {
   const [formState, setFormState] = useState({
     name: "",
     email: "",
+    subject: "استفسار عام",
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [content, setContent] = useState({
     contactPhone: PLATFORM_PHONE,
     contactEmail: "support@doctornafsyonline.com",
@@ -29,10 +32,32 @@ export default function ContactPage() {
       .catch((err) => console.error("Failed to load contact info:", err));
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    setSubmitLoading(true);
+    setSubmitError("");
+    try {
+      const res = await fetch("/api/support", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: formState.name,
+          userEmail: formState.email,
+          subject: formState.subject,
+          message: formState.message,
+        }),
+      });
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        const data = await res.json();
+        setSubmitError(data.error || "حدث خطأ أثناء الإرسال");
+      }
+    } catch {
+      setSubmitError("حدث خطأ في الاتصال بالسيرفر");
+    } finally {
+      setSubmitLoading(false);
+    }
   };
 
   return (
@@ -169,6 +194,8 @@ export default function ContactPage() {
                 <div className="relative">
                   <select
                     id="subject"
+                    value={formState.subject}
+                    onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
                     className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 px-4 py-3.5 text-slate-900 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm hover:border-slate-300 appearance-none"
                   >
                     <option>استفسار عام</option>
@@ -200,11 +227,22 @@ export default function ContactPage() {
 
               <button
                 type="submit"
-                className="group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] px-6 py-4 font-bold text-white transition-bounce hover:shadow-lg hover:shadow-[#6366F1]/30 focus:outline-none focus:ring-4 focus:ring-[#6366F1]/20"
+                disabled={submitLoading}
+                className="group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] px-6 py-4 font-bold text-white transition-bounce hover:shadow-lg hover:shadow-[#6366F1]/30 focus:outline-none focus:ring-4 focus:ring-[#6366F1]/20 disabled:opacity-70"
               >
-                إرسال الرسالة
-                <Send className="h-5 w-5 transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1" />
+                {submitLoading ? "جاري الإرسال..." : (
+                  <>
+                    إرسال الرسالة
+                    <Send className="h-5 w-5 transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1" />
+                  </>
+                )}
               </button>
+
+              {submitError && (
+                <div className="rounded-xl bg-red-50 border border-red-100 p-4 flex items-center gap-3 text-red-600 animate-fade-in">
+                  <p className="font-semibold text-sm">{submitError}</p>
+                </div>
+              )}
 
               {submitted && (
                 <div className="rounded-xl bg-[#10B981]/10 border border-[#10B981]/20 p-4 flex items-center gap-3 text-[#059669] animate-fade-in">
