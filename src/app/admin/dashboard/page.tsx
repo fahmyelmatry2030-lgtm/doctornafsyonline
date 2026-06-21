@@ -20,7 +20,8 @@ export default async function AdminDashboardPage() {
   const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
 
 
-  let dbData;
+  let dbData: any;
+  let settings: any;
   try {
     const transactionResults = await prisma.$transaction([
       prisma.user.count({ where: { role: "PATIENT" } }),
@@ -37,9 +38,8 @@ export default async function AdminDashboardPage() {
       prisma.user.findMany({ where: { role: "THERAPIST", therapistProfile: { isVerified: false } }, include: { therapistProfile: true }, take: 4 })
     ]);
 
-    const settings = await getSettings();
-
-    dbData = [...transactionResults, settings];
+    settings = await getSettings();
+    dbData = transactionResults;
   } catch (error: any) {
     console.error("Dashboard Error:", error);
     return (
@@ -56,8 +56,7 @@ export default async function AdminDashboardPage() {
     activeNow, pendingVerifications, totalAppointments,
     completedAppointments, cancelledAppointments,
     monthlyEarningsData, lastMonthEarningsData,
-    recentAppointments, pendingTherapists,
-    settings
+    recentAppointments, pendingTherapists
   ] = dbData;
 
   const commissionFactor = settings.commission / 100;
@@ -214,7 +213,7 @@ export default async function AdminDashboardPage() {
               </div>
             ) : (
               <div className="space-y-3">
-                {pendingTherapists.map(t => (
+                {pendingTherapists.map((t: any) => (
                   <div key={t.id} className="flex items-center justify-between p-4 bg-[#F4F7FE]/50 rounded-2xl hover:bg-[#F4F7FE] transition-colors border border-transparent hover:border-[#4318FF]/10">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4318FF] to-purple-500 flex items-center justify-center text-white font-black text-sm shadow-md">
@@ -258,7 +257,7 @@ export default async function AdminDashboardPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F4F7FE]">
-                    {recentAppointments.map(app => (
+                    {recentAppointments.map((app: any) => (
                       <tr key={app.id} className="hover:bg-[#F4F7FE]/30 transition-colors">
                         <td className="px-6 py-4">
                           <p className="text-sm font-black text-[#2B3674]">{app.patient.name}</p>

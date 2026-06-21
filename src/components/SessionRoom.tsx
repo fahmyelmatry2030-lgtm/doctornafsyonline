@@ -1067,6 +1067,7 @@ export function SessionRoom(props: SessionRoomProps) {
     return (
       <ChatOnlySession
         appointmentId={props.appointmentId}
+        sessionType={props.sessionType}
         currentUserId={props.currentUserId}
         currentUserName={props.currentUserName}
         otherParticipantName={props.otherParticipantName}

@@ -12,7 +12,7 @@ export async function GET() {
   const userRole = session.user.role;
 
   try {
-    const notifications = [];
+    const notifications: any[] = [];
 
     if (userRole === "PATIENT") {
       // Fetch system notifications for Patients

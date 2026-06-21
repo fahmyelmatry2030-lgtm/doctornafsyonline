@@ -204,13 +204,13 @@ export function RolePermissionsManager() {
                             onChange={() => !isForced && togglePage(role.key, page.path)}
                           />
                           <div
-                            className={`w-9 h-5 rounded-full transition-colors ${
+                            className={`w-9 h-5 rounded-full transition-colors relative ${
                               isEnabled ? "bg-indigo-500" : "bg-slate-300"
                             }`}
                           >
                             <div
-                              className={`w-3.5 h-3.5 bg-white rounded-full shadow-sm absolute top-[3px] transition-transform ${
-                                isEnabled ? "translate-x-[18px]" : "translate-x-[3px]"
+                              className={`w-3.5 h-3.5 bg-white rounded-full shadow-sm absolute top-[3px] right-[3px] transition-transform duration-200 ${
+                                isEnabled ? "-translate-x-4" : "translate-x-0"
                               }`}
                             ></div>
                           </div>

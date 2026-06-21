@@ -255,7 +255,7 @@ export default function TherapistOnboardingPage() {
 
             {/* Avatar Upload */}
             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center">
-              <AvatarManager initialAvatar={session?.user?.avatar || null} name={session?.user?.name || "أخصائي"} />
+              <AvatarManager initialAvatar={(session?.user as any)?.avatar || null} name={session?.user?.name || "أخصائي"} />
             </div>
 
             {/* Bio */}

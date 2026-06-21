@@ -86,6 +86,40 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
     });
   };
 
+  const handleEditSubmit = async (e: any) => {
+    e.preventDefault();
+    if (!editingAppointment || isReadOnly) return;
+
+    setActionMessage(null);
+    startTransition(async () => {
+      const res = await editAppointmentDetails(editingAppointment.id, {
+        scheduledAt: editForm.scheduledAt,
+        duration: editForm.duration,
+        price: editForm.price,
+      });
+
+      if (res.success) {
+        setAppointments(prev =>
+          prev.map(app =>
+            app.id === editingAppointment.id
+              ? {
+                  ...app,
+                  scheduledAt: new Date(editForm.scheduledAt),
+                  duration: editForm.duration,
+                  price: editForm.price,
+                }
+              : app
+          )
+        );
+        setEditingAppointment(null);
+        setActionMessage({ type: "success", text: "تم تعديل بيانات الحجز بنجاح!" });
+      } else {
+        setActionMessage({ type: "error", text: res.error || "فشل تعديل البيانات" });
+      }
+      setTimeout(() => setActionMessage(null), 3000);
+    });
+  };
+
   // Status mapping
   const statusLabel: Record<Appointment["status"], string> = {
     PENDING: "قيد الانتظار",
