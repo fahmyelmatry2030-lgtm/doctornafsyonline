@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
-import { AlertCircle, Users, Calendar, Clock } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { CustomerServiceTabs } from "@/components/CustomerServiceTabs";
+import { CustomerServiceDashboard } from "@/components/CustomerServiceDashboard";
 
 export default async function CustomerServicePage() {
   const session = await auth();
@@ -39,44 +40,16 @@ export default async function CustomerServicePage() {
     <div className="animate-fade-in space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-black text-slate-900 flex items-center gap-2">
-          <Users size={32} />
+        <h1 className="text-3xl font-black text-slate-900">
           لوحة تحكم خدمة العملاء
         </h1>
         <p className="text-slate-500 mt-2">
-          إدارة الأخصائيين والجلسات والمواعيد المتاحة
+          اضغط على أي مربع لعرض البيانات التفصيلية
         </p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
-          <div className="text-sm font-medium text-slate-600 flex items-center gap-2">
-            <Users size={16} />
-            الأخصائيين
-          </div>
-          <div className="text-3xl font-bold text-slate-900 mt-2">8</div>
-          <p className="text-xs text-slate-500 mt-1">الفترة الحالية</p>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
-          <div className="text-sm font-medium text-slate-600 flex items-center gap-2">
-            <Calendar size={16} />
-            الجلسات اليوم
-          </div>
-          <div className="text-3xl font-bold text-slate-900 mt-2">12</div>
-          <p className="text-xs text-slate-500 mt-1">مجدولة وجارية</p>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
-          <div className="text-sm font-medium text-slate-600 flex items-center gap-2">
-            <Clock size={16} />
-            المتاحة
-          </div>
-          <div className="text-3xl font-bold text-slate-900 mt-2">24</div>
-          <p className="text-xs text-slate-500 mt-1">موعد فارغ هذا الأسبوع</p>
-        </div>
-      </div>
+      {/* Interactive Dashboard */}
+      <CustomerServiceDashboard startDate={startDate} endDate={endDate} />
 
       {/* Main Content */}
       <CustomerServiceTabs startDate={startDate} endDate={endDate} />
