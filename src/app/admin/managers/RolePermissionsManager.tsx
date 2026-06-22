@@ -14,6 +14,7 @@ const ALL_PAGES = [
   { path: "/admin/marketing", label: "الدعم، الإشعارات وأكواد الخصم 🎟️" },
   { path: "/admin/support", label: "رسائل الدعم الفني 🎧" },
   { path: "/admin/certificates", label: "شهادات الكورسات والتدريب 🎓" },
+  { path: "/admin/customer-service", label: "لوحة تحكم خدمة العملاء 🎯" },
   { path: "/admin/settings", label: "إعدادات المنصة ⚙️" },
 ];
 
@@ -42,12 +43,12 @@ const ROLES = [
 ];
 
 const DEFAULT_PERMISSIONS: Record<string, string[]> = {
-  ADMIN_HR: ["/admin/dashboard", "/admin/operations", "/admin/therapists", "/admin/patients"],
+  ADMIN_HR: ["/admin/dashboard", "/admin/operations", "/admin/therapists", "/admin/patients", "/admin/customer-service"],
   ADMIN_ACCOUNTING: ["/admin/dashboard", "/admin/operations", "/admin/reports"],
   ADMIN_VIEWER: [
     "/admin/dashboard", "/admin/operations", "/admin/therapists", "/admin/patients",
     "/admin/reports", "/admin/content", "/admin/marketing", "/admin/support",
-    "/admin/certificates", "/admin/settings",
+    "/admin/certificates", "/admin/customer-service", "/admin/settings",
   ],
 };
 
