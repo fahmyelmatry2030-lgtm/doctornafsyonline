@@ -13,8 +13,8 @@
 # testing
 /coverage
 
-# next.js build cache only (build output IS committed for Hostinger)
-/.next/cache/
+# next.js build output (too large for GitHub)
+/.next/
 
 # production
 /build

@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/fahmy/Music/New%20folder/nafsi-platform/.next-internal/server/app/page/actions.js%20%28server%20actions%20loader%29"],"sourcesContent":["export {getSettings as '00c0cdf1a2c28edd23f70d115308c725816f5cb5af'} from 'ACTIONS_MODULE0'\nexport {updateSettings as '404dedcd1f80bea7850aa54590a87c4684918ade69'} from 'ACTIONS_MODULE0'\n"],"names":[],"mappings":";AAAA"}}]
-}
