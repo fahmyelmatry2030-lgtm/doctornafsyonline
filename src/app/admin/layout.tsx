@@ -14,7 +14,7 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  if (!isAdminRole(session.user.role)) {
+  if (!isAdminRole(session.user.role) && session.user.role !== "SHIFT_LEADER") {
     redirect("/dashboard"); // will redirect to correct dashboard
   }
 
