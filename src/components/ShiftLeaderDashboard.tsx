@@ -34,6 +34,15 @@ interface ShiftLeaderStats {
   totalEarnings: number;
   totalCommissions: number;
   team: ShiftLeaderTeam[];
+  assignedShift?: {
+    id: string;
+    name: string;
+    dayOfWeek: string;
+    startTime: string;
+    endTime: string;
+    description?: string | null;
+    isActive: boolean;
+  } | null;
 }
 
 export function ShiftLeaderDashboard() {
@@ -81,6 +90,7 @@ export function ShiftLeaderDashboard() {
         totalEarnings: data.totalEarnings,
         totalCommissions: data.totalCommissions,
         team: data.team,
+        assignedShift: data.assignedShift || null,
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : "حدث خطأ غير متوقع";
@@ -375,6 +385,23 @@ export function ShiftLeaderDashboard() {
           تابع فريقك والعمولات اليومية والأرباح
         </p>
       </div>
+
+      {/* Assigned Shift Card */}
+      {stats.assignedShift && (
+        <div className="bg-white border border-slate-200 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-slate-900">الشيفت المعين لك</h3>
+          <p className="text-sm text-slate-700 mt-1">
+            <strong>{stats.assignedShift.name}</strong> — {stats.assignedShift.dayOfWeek}
+          </p>
+          <p className="text-sm text-slate-600">{stats.assignedShift.startTime} — {stats.assignedShift.endTime}</p>
+          {stats.assignedShift.description && (
+            <p className="text-xs text-slate-500 mt-2">{stats.assignedShift.description}</p>
+          )}
+          {!stats.assignedShift.isActive && (
+            <p className="text-xs text-red-600 mt-2">حالة الشيفت: غير مفعل</p>
+          )}
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

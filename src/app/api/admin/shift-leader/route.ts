@@ -21,7 +21,8 @@ export async function GET(req: NextRequest) {
     endOfToday.setHours(23, 59, 59, 999);
 
     let commissions = [];
-    
+    let assignedShift = null;
+
     try {
       commissions = await prisma.commission.findMany({
         where: {
@@ -61,6 +62,24 @@ export async function GET(req: NextRequest) {
       // If Commission model doesn't exist, return empty team
       console.warn("[API] Commission query failed (model may not exist):", dbError.message);
       commissions = [];
+    }
+
+    try {
+      assignedShift = await prisma.shift.findFirst({
+        where: { shiftLeaderId: leaderId },
+        select: {
+          id: true,
+          name: true,
+          dayOfWeek: true,
+          startTime: true,
+          endTime: true,
+          description: true,
+          isActive: true,
+        },
+      });
+    } catch (dbError: any) {
+      console.warn("[API] Shift query failed:", dbError.message);
+      assignedShift = null;
     }
 
     const teamMap = new Map<string, {
@@ -137,6 +156,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      assignedShift,
       totalSpecialists: team.length,
       onlineSpecialists,
       totalSessions,

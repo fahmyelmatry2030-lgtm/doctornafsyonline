@@ -33,6 +33,7 @@ model User {
   
   specialistShifts SpecialistShiftAssignment[] @relation("SpecialistShifts")
   therapistSlots   AvailableSlot[] @relation("TherapistSlots")
+  shiftLeaderShifts Shift[] @relation("ShiftLeaderShifts")
   
   shiftLeadCommissions Commission[] @relation("ShiftLeaderCommissions")
   specialistCommissions Commission[] @relation("SpecialistCommissions")
@@ -174,6 +175,8 @@ model Shift {
   dayOfWeek     String   // "SUNDAY", "MONDAY", ..., "SATURDAY"
   description   String?  @db.Text
   isActive      Boolean  @default(true)
+  shiftLeaderId String?
+  shiftLeader   User?    @relation("ShiftLeaderShifts", fields: [shiftLeaderId], references: [id], onDelete: SetNull)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
