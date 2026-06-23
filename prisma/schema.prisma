@@ -20,6 +20,7 @@ model User {
   role          String    @default("PATIENT")
   isSuspended   Boolean   @default(false)
   isOnline      Boolean   @default(false)
+  baseSalary    Int       @default(0)
   lastActivityAt DateTime  @default(now())
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -38,6 +39,7 @@ model User {
   shiftLeadCommissions Commission[] @relation("ShiftLeaderCommissions")
   specialistCommissions Commission[] @relation("SpecialistCommissions")
   onlineStatusLogs OnlineStatusLog[]
+  employeeBonuses EmployeeBonus[] @relation("EmployeeBonuses")
 }
 
 model TherapistProfile {
@@ -268,4 +270,13 @@ model OnlineStatusLog {
   
   status String
   timestamp DateTime @default(now())
+}
+
+model EmployeeBonus {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation("EmployeeBonuses", fields: [userId], references: [id], onDelete: Cascade)
+  amount    Int
+  reason    String
+  createdAt DateTime @default(now())
 }

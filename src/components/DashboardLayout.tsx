@@ -7,7 +7,7 @@ import {
   Home, Users, Calendar, Settings, 
   MessageCircle, CreditCard, Menu, X, 
   LogOut, Bell, Search, UserIcon, ShieldCheck, Activity, BookOpen,
-  Award, Headset
+  Award, Headset, DollarSign
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -180,6 +180,7 @@ export function DashboardLayout({
     navItems = [
       { name: "لوحة التحكم", href: "/shift-leader", icon: <Home className="h-5 w-5" /> },
       { name: "لوحة خدمة العملاء", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" /> },
+      { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
     ];
   } else if (role?.startsWith("ADMIN")) {
     const allAdminNavItems = [
@@ -196,6 +197,8 @@ export function DashboardLayout({
       { name: "شهادات الكورسات والتدريب", href: "/admin/certificates", icon: <Award className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
       { name: "لوحة تحكم خدمة العملاء", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_VIEWER", "SHIFT_LEADER"] },
       { name: "إعدادات المنصة", href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
+      { name: "رواتب فريق العمل", href: "/admin/employee-salaries", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
+      { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_ACCOUNTING", "SHIFT_LEADER"] },
     ];
 
     if (role === "ADMIN") {
