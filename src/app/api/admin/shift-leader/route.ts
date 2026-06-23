@@ -20,50 +20,7 @@ export async function GET(req: NextRequest) {
     const endOfToday = new Date(now);
     endOfToday.setHours(23, 59, 59, 999);
 
-    let commissions: any[] = [];
     let assignedShift = null;
-
-    try {
-      commissions = await prisma.commission.findMany({
-        where: {
-          shiftLeaderId: leaderId,
-          appointment: {
-            scheduledAt: {
-              gte: startOfToday,
-              lte: endOfToday,
-            },
-          },
-        },
-        include: {
-          specialist: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              avatar: true,
-              isOnline: true,
-              therapistProfile: {
-                select: { isAvailable: true },
-              },
-            },
-          },
-          appointment: {
-            include: {
-              patient: {
-                select: { id: true, name: true, email: true, phone: true },
-              },
-              sessionStatus: true,
-            },
-          },
-        },
-        orderBy: { createdAt: "desc" },
-      });
-    } catch (dbError: any) {
-      // If Commission model doesn't exist, return empty team
-      console.warn("[API] Commission query failed (model may not exist):", dbError.message);
-      commissions = [];
-    }
-
     try {
       assignedShift = await prisma.shift.findFirst({
         where: { shiftLeaderId: leaderId },
@@ -104,49 +61,121 @@ export async function GET(req: NextRequest) {
       }>;
     }>();
 
+    // 1. Get all specialists assigned to this shift (or all active specialists if no shift is assigned yet)
+    let specialists: any[] = [];
+    try {
+      if (assignedShift) {
+        const assignments = await prisma.specialistShiftAssignment.findMany({
+          where: { shiftId: assignedShift.id, isActive: true },
+          include: {
+            therapist: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                avatar: true,
+                isOnline: true,
+                therapistProfile: {
+                  select: { isAvailable: true, pricePerSession: true }
+                }
+              }
+            }
+          }
+        });
+        specialists = assignments.map(a => a.therapist);
+      }
+      
+      // Fallback: if no shift is assigned, or the shift has 0 active specialist assignments
+      if (specialists.length === 0) {
+        specialists = await prisma.user.findMany({
+          where: { role: "THERAPIST", isSuspended: false },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+            isOnline: true,
+            therapistProfile: {
+              select: { isAvailable: true, pricePerSession: true }
+            }
+          }
+        });
+      }
+    } catch (dbError: any) {
+      console.warn("[API] Failed to fetch specialists:", dbError.message);
+    }
+
+    // Initialize map
+    for (const spec of specialists) {
+      teamMap.set(spec.id, {
+        specialistId: spec.id,
+        specialistName: spec.name,
+        isOnline: spec.isOnline || spec.therapistProfile?.isAvailable || false,
+        appointmentsToday: 0,
+        totalEarnings: 0,
+        commissionEarnings: 0,
+        sessions: [],
+      });
+    }
+
+    // 2. Fetch today's appointments for these specialists
+    const specialistIds = Array.from(teamMap.keys());
+    let appointments: any[] = [];
+    if (specialistIds.length > 0) {
+      try {
+        appointments = await prisma.appointment.findMany({
+          where: {
+            therapistId: { in: specialistIds },
+            scheduledAt: {
+              gte: startOfToday,
+              lte: endOfToday,
+            }
+          },
+          include: {
+            patient: { select: { id: true, name: true, email: true, phone: true } },
+            sessionStatus: true,
+            commissions: {
+              where: { shiftLeaderId: leaderId }
+            }
+          }
+        });
+      } catch (dbError: any) {
+        console.warn("[API] Failed to fetch appointments:", dbError.message);
+      }
+    }
+
     let totalSessions = 0;
     let totalEarnings = 0;
     let totalCommissions = 0;
 
-    for (const commission of commissions) {
-      const specialist = commission.specialist;
-      const appointment = commission.appointment;
-      const specialistId = specialist.id;
-      const isOnline = specialist.isOnline || specialist.therapistProfile?.isAvailable || false;
+    for (const appt of appointments) {
+      const teamMember = teamMap.get(appt.therapistId);
+      if (!teamMember) continue;
 
-      if (!teamMap.has(specialistId)) {
-        teamMap.set(specialistId, {
-          specialistId,
-          specialistName: specialist.name,
-          isOnline,
-          appointmentsToday: 0,
-          totalEarnings: 0,
-          commissionEarnings: 0,
-          sessions: [],
-        });
-      }
-
-      const teamMember = teamMap.get(specialistId)!;
       teamMember.appointmentsToday += 1;
+      
+      // Calculate earnings (if commission record exists, use it; otherwise fallback)
+      const commission = appt.commissions?.[0];
+      const sessionAmount = commission?.sessionAmount ?? appt.price;
+      const shiftLeaderEarnings = commission?.shiftLeaderEarnings ?? Math.round(appt.price * 0.1); // fallback 10%
 
-      const sessionAmount = commission.sessionAmount || 0;
       totalEarnings += sessionAmount;
-      totalCommissions += commission.shiftLeaderEarnings || 0;
+      totalCommissions += shiftLeaderEarnings;
       teamMember.totalEarnings += sessionAmount;
-      teamMember.commissionEarnings += commission.shiftLeaderEarnings || 0;
+      teamMember.commissionEarnings += shiftLeaderEarnings;
       totalSessions += 1;
 
       teamMember.sessions.push({
-        id: appointment.id,
-        patientName: appointment.patient?.name || "غير معروف",
-        patientEmail: appointment.patient?.email || "",
-        patientPhone: appointment.patient?.phone || null,
-        scheduledAt: appointment.scheduledAt.toISOString(),
-        duration: appointment.duration,
-        status: appointment.status,
-        sessionStatus: appointment.sessionStatus?.status || "SCHEDULED",
-        patientJoined: Boolean(appointment.sessionStatus?.patientJoinedAt),
-        therapistJoined: Boolean(appointment.sessionStatus?.therapistJoinedAt),
+        id: appt.id,
+        patientName: appt.patient?.name || "غير معروف",
+        patientEmail: appt.patient?.email || "",
+        patientPhone: appt.patient?.phone || null,
+        scheduledAt: appt.scheduledAt.toISOString(),
+        duration: appt.duration,
+        status: appt.status,
+        sessionStatus: appt.sessionStatus?.status || "SCHEDULED",
+        patientJoined: Boolean(appt.sessionStatus?.patientJoinedAt),
+        therapistJoined: Boolean(appt.sessionStatus?.therapistJoinedAt),
         amount: sessionAmount,
       });
     }

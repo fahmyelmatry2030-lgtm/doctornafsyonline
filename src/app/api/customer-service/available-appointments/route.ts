@@ -40,9 +40,9 @@ export async function GET(req: NextRequest) {
     const duration = parseInt(searchParams.get("duration") || "50");
 
     // Validate required params
-    if (!therapistId || !startDate || !endDate) {
+    if (!startDate || !endDate) {
       return NextResponse.json(
-        { error: "Missing required params: therapistId, startDate, endDate" },
+        { error: "Missing required params: startDate, endDate" },
         { status: 400 }
       );
     }
@@ -58,51 +58,81 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Get all appointments for this therapist in the date range
-    const existingAppointments = await prisma.appointment.findMany({
-      where: {
-        therapistId,
-        scheduledAt: {
-          gte: start,
-          lte: end,
-        },
-        status: {
-          in: ["CONFIRMED", "PENDING", "IN_PROGRESS"],
-        },
-      },
-      select: {
-        scheduledAt: true,
-        duration: true,
-      },
-    });
+    // Get therapists to process
+    let therapists = [];
+    if (therapistId) {
+      const therapistUser = await prisma.user.findUnique({
+        where: { id: therapistId, role: "THERAPIST" },
+        select: { id: true, name: true, email: true },
+      });
+      if (therapistUser) {
+        therapists.push(therapistUser);
+      }
+    } else {
+      therapists = await prisma.user.findMany({
+        where: { role: "THERAPIST", isSuspended: false },
+        select: { id: true, name: true, email: true },
+      });
+    }
 
-    // Get therapist's shifts
-    const specialistShifts = await prisma.specialistShiftAssignment.findMany({
-      where: {
-        therapistId,
-        isActive: true,
-      },
-      include: {
-        shift: true,
-      },
-    });
+    let allAvailableSlots: any[] = [];
 
-    // Generate available slots
-    const availableSlots = generateAvailableSlots(
-      start,
-      end,
-      existingAppointments,
-      specialistShifts,
-      duration
-    );
+    for (const therapist of therapists) {
+      // Get all appointments for this therapist in the date range
+      const existingAppointments = await prisma.appointment.findMany({
+        where: {
+          therapistId: therapist.id,
+          scheduledAt: {
+            gte: start,
+            lte: end,
+          },
+          status: {
+            in: ["CONFIRMED", "PENDING", "IN_PROGRESS"],
+          },
+        },
+        select: {
+          scheduledAt: true,
+          duration: true,
+        },
+      });
+
+      // Get therapist's shifts
+      const specialistShifts = await prisma.specialistShiftAssignment.findMany({
+        where: {
+          therapistId: therapist.id,
+          isActive: true,
+        },
+        include: {
+          shift: true,
+        },
+      });
+
+      // Generate available slots
+      const slots = generateAvailableSlots(
+        start,
+        end,
+        existingAppointments,
+        specialistShifts,
+        duration
+      );
+
+      // Add therapist info to each slot
+      const slotsWithTherapist = slots.map(s => ({
+        ...s,
+        therapistId: therapist.id,
+        therapistName: therapist.name,
+      }));
+
+      allAvailableSlots = allAvailableSlots.concat(slotsWithTherapist);
+    }
 
     return NextResponse.json({
       success: true,
-      therapistId,
+      therapistId: therapistId || "ALL",
       dateRange: { start, end },
       duration,
-      availableSlots,
-      totalSlots: availableSlots.length,
+      availableSlots: allAvailableSlots,
+      totalSlots: allAvailableSlots.length,
     });
   } catch (error) {
     console.error("[API] available-appointments error:", error);

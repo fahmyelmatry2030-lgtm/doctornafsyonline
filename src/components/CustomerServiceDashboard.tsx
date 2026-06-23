@@ -69,24 +69,23 @@ export function CustomerServiceDashboard({
 
   const fetchCounts = async () => {
     try {
-      // جلب عدد الأخصائيين
+      // Fetch specialists and sessions
       const specialistsRes = await fetch(
         `/api/customer-service/specialists-sessions?startDate=${startDate}&endDate=${endDate}`
       );
       const specialistsData = await specialistsRes.json();
-      setCounts((prev) => ({
-        ...prev,
-        specialists: Array.isArray(specialistsData)
-          ? specialistsData.length
-          : 0,
-      }));
 
-      // يمكن إضافة جلسات ومواعيد هنا لاحقاً
-      setCounts((prev) => ({
-        ...prev,
-        sessions: 12,
-        slots: 24,
-      }));
+      // Fetch available slots
+      const slotsRes = await fetch(
+        `/api/customer-service/available-appointments?startDate=${startDate}&endDate=${endDate}`
+      );
+      const slotsData = await slotsRes.json();
+
+      setCounts({
+        specialists: specialistsData.specialistsCount || 0,
+        sessions: specialistsData.appointmentsCount || 0,
+        slots: slotsData.totalSlots || 0,
+      });
     } catch (error) {
       console.error("Error fetching counts:", error);
     }
@@ -101,19 +100,26 @@ export function CustomerServiceDashboard({
         const res = await fetch(
           `/api/customer-service/specialists-sessions?startDate=${startDate}&endDate=${endDate}`
         );
-        const specialists = await res.json();
-        setData((prev) => ({ ...prev, specialists: specialists || [] }));
+        const resJson = await res.json();
+        const specialistsList = (resJson.specialists || []).map((spec: any) => ({
+          id: spec.therapistId,
+          name: spec.therapistName,
+          email: spec.email || `${spec.therapistId}@doctornafsyonline.com`,
+          phone: spec.phone || "",
+          shiftsCount: spec.appointments?.length || 0,
+        }));
+        setData((prev) => ({ ...prev, specialists: specialistsList }));
       } else if (modalType === "sessions") {
         const res = await fetch(
           `/api/customer-service/specialists-sessions?startDate=${startDate}&endDate=${endDate}`
         );
         const allData = await res.json();
-        const sessions = allData.flatMap((spec: any) =>
+        const sessions = (allData.specialists || []).flatMap((spec: any) =>
           (spec.appointments || []).map((apt: any) => ({
             id: apt.id,
             appointmentId: apt.id,
-            patientName: apt.patient?.name || "غير معروف",
-            therapistName: spec.name,
+            patientName: apt.patientName || "غير معروف",
+            therapistName: spec.therapistName,
             status: apt.status || "SCHEDULED",
             startTime: apt.scheduledAt || new Date().toISOString(),
           }))
@@ -123,8 +129,17 @@ export function CustomerServiceDashboard({
         const res = await fetch(
           `/api/customer-service/available-appointments?startDate=${startDate}&endDate=${endDate}`
         );
-        const slots = await res.json();
-        setData((prev) => ({ ...prev, slots: slots || [] }));
+        const slotsData = await res.json();
+        const slotsList = (slotsData.availableSlots || []).map((slot: any, idx: number) => ({
+          id: `${slot.therapistId}-${idx}`,
+          therapistId: slot.therapistId,
+          therapistName: slot.therapistName || "أخصائي نفسي",
+          slotStartTime: slot.startTime,
+          slotEndTime: slot.endTime,
+          duration: slot.duration,
+          isBooked: !slot.available,
+        }));
+        setData((prev) => ({ ...prev, slots: slotsList }));
       }
     } catch (error) {
       console.error("Error fetching data:", error);
