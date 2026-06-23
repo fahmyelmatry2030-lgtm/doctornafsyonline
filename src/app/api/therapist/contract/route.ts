@@ -61,14 +61,14 @@ export async function GET(request: Request) {
   }
 
   const role = session.user.role;
-  if (role !== "THERAPIST" && role !== "ADMIN") {
+  if (role !== "THERAPIST" && role !== "ADMIN" && role !== "ADMIN_HR") {
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
   const therapistId = searchParams.get("therapistId");
 
-  const targetUserId = role === "ADMIN" && therapistId ? therapistId : session.user.id;
+  const targetUserId = (role === "ADMIN" || role === "ADMIN_HR") && therapistId ? therapistId : session.user.id;
 
   try {
     const profile = await prisma.therapistProfile.findUnique({
@@ -104,7 +104,7 @@ export async function POST(request: Request) {
   }
 
   const role = session.user.role;
-  if (role !== "THERAPIST" && role !== "ADMIN") {
+  if (role !== "THERAPIST" && role !== "ADMIN" && role !== "ADMIN_HR") {
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 
@@ -118,7 +118,7 @@ export async function POST(request: Request) {
       therapistId = (formData.get("therapistId") as string) || null;
       const contractType = (formData.get("contractType") as string) || "trial"; // trial, marketing, annual
 
-      const targetUserId = role === "ADMIN" && therapistId ? therapistId : session.user.id;
+      const targetUserId = (role === "ADMIN" || role === "ADMIN_HR") && therapistId ? therapistId : session.user.id;
 
       if (!file) {
         return NextResponse.json({ error: "يرجى رفع ملف PDF صالح" }, { status: 400 });
@@ -163,7 +163,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { contractType, status, contractUrl } = body;
     therapistId = body.therapistId;
-    const targetUserId = role === "ADMIN" && therapistId ? therapistId : session.user.id;
+    const targetUserId = (role === "ADMIN" || role === "ADMIN_HR") && therapistId ? therapistId : session.user.id;
 
     const profile = await prisma.therapistProfile.findUnique({
       where: { userId: targetUserId }

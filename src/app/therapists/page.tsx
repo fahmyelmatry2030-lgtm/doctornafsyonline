@@ -119,6 +119,7 @@ export default async function TherapistsPage({ searchParams }: Props) {
                     rating={t.therapistProfile.rating}
                     reviewCount={t.therapistProfile.reviewCount}
                     isVerified={t.therapistProfile.isVerified}
+                    isOnline={t.isOnline}
                     imageUrl={t.avatar || undefined}
                   />
                 </div>

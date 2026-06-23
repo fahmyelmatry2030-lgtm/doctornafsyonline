@@ -217,7 +217,6 @@ export function ShiftLeaderDashboard() {
           <tr>
             <th>الحالة</th>
             <th>الجلسات</th>
-            <th>الأرباح (ج.م)</th>
             <th>العمولة (ج.م)</th>
             <th>الاسم</th>
           </tr>
@@ -225,7 +224,6 @@ export function ShiftLeaderDashboard() {
             <tr>
               <td><span class="${specialist.isOnline ? 'online' : 'offline'}">${specialist.isOnline ? '🟢 أونلاين' : '🔴 أوفلاين'}</span></td>
               <td>${specialist.appointmentsToday}</td>
-              <td>${specialist.totalEarnings}</td>
               <td>${specialist.commissionEarnings}</td>
               <td><strong>${specialist.specialistName}</strong></td>
             </tr>
@@ -278,20 +276,18 @@ export function ShiftLeaderDashboard() {
             <table>
               <tr><th>البيان</th><th>القيمة</th></tr>
               <tr><td>الجلسات اليوم</td><td><strong>${specialist.appointmentsToday}</strong></td></tr>
-              <tr><td>الأرباح الكلية (ج.م)</td><td><strong>${specialist.totalEarnings}</strong></td></tr>
               <tr><td>عمولتك (ج.م)</td><td><strong>${specialist.commissionEarnings}</strong></td></tr>
             </table>
             
             ${specialist.sessions.length > 0 ? `
               <h3>جلسات اليوم (${specialist.sessions.length})</h3>
               <table>
-                <tr><th>المريض</th><th>الوقت</th><th>الحالة</th><th>المبلغ (ج.م)</th></tr>
+                <tr><th>المريض</th><th>الوقت</th><th>الحالة</th></tr>
                 ${specialist.sessions.map(s => `
                   <tr>
                     <td>${s.patientName}</td>
                     <td>${new Date(s.scheduledAt).toLocaleTimeString("ar-EG", {hour:"2-digit", minute:"2-digit"})}</td>
                     <td>${s.sessionStatus}</td>
-                    <td>${s.amount}</td>
                   </tr>
                 `).join('')}
               </table>
@@ -345,7 +341,6 @@ export function ShiftLeaderDashboard() {
             <th>الهاتف</th>
             <th>الوقت</th>
             <th>الحالة</th>
-            <th>المبلغ (ج.م)</th>
           </tr>
           ${allSessions.map(session => `
             <tr>
@@ -355,7 +350,6 @@ export function ShiftLeaderDashboard() {
               <td>${session.patientPhone || '-'}</td>
               <td>${new Date(session.scheduledAt).toLocaleString("ar-EG", {month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit"})}</td>
               <td>${session.sessionStatus}</td>
-              <td>${session.amount}</td>
             </tr>
           `).join('')}
         </table>
@@ -451,19 +445,7 @@ export function ShiftLeaderDashboard() {
           </div>
         </div>
 
-        {/* Total Earnings */}
-        <div className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow border border-slate-100 relative overflow-hidden group">
-          <div className="flex items-center justify-between">
-            <div className="w-14 h-14 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-              <DollarSign size={24} />
-            </div>
-            <div className="text-left">
-              <p className="text-sm font-bold text-[#A3AED0] mb-1">الأرباح اليومية</p>
-              <p className="text-3xl font-black text-[#2B3674]">{stats.totalEarnings}</p>
-              <p className="text-[10px] font-bold text-slate-400 mt-1">ج.م</p>
-            </div>
-          </div>
-        </div>
+
 
         {/* Commissions */}
         <div className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow border border-slate-100 relative overflow-hidden group">
@@ -572,7 +554,6 @@ export function ShiftLeaderDashboard() {
               <tr>
                 <th className="px-6 py-4 font-bold">الحالة</th>
                 <th className="px-6 py-4 font-bold">الجلسات</th>
-                <th className="px-6 py-4 font-bold">الأرباح</th>
                 <th className="px-6 py-4 font-bold">العمولة</th>
                 <th className="px-6 py-4 font-bold">الاسم</th>
                 <th className="px-6 py-4 text-center font-bold">التفاصيل</th>
@@ -596,7 +577,6 @@ export function ShiftLeaderDashboard() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-slate-700 font-semibold">{specialist.appointmentsToday}</td>
-                  <td className="px-6 py-4 text-slate-900 font-bold">{specialist.totalEarnings} ج.م</td>
                   <td className="px-6 py-4 text-[#4318FF] font-bold">{specialist.commissionEarnings} ج.م</td>
                   <td className="px-6 py-4 text-[#2B3674] font-bold">{specialist.specialistName}</td>
                   <td className="px-6 py-4 text-center">
@@ -680,10 +660,6 @@ export function ShiftLeaderDashboard() {
                             <p>${selectedSpecialist.appointmentsToday}</p>
                           </div>
                           <div class="info-box">
-                            <strong>الأرباح:</strong>
-                            <p>${selectedSpecialist.totalEarnings} ج.م</p>
-                          </div>
-                          <div class="info-box">
                             <strong>العمولة:</strong>
                             <p>${selectedSpecialist.commissionEarnings} ج.م</p>
                           </div>
@@ -695,7 +671,6 @@ export function ShiftLeaderDashboard() {
                             <th>التاريخ والوقت</th>
                             <th>المدة</th>
                             <th>الحالة</th>
-                            <th>المبلغ</th>
                           </tr>
                           ${selectedSpecialist.sessions.map(session => `
                             <tr>
@@ -703,7 +678,6 @@ export function ShiftLeaderDashboard() {
                               <td>${new Date(session.scheduledAt).toLocaleString("ar-EG")}</td>
                               <td>${session.duration} دقيقة</td>
                               <td>${session.sessionStatus}</td>
-                              <td>${session.amount} ج.م</td>
                             </tr>
                           `).join("")}
                         </table>
@@ -749,12 +723,7 @@ export function ShiftLeaderDashboard() {
                     {selectedSpecialist.appointmentsToday}
                   </p>
                 </div>
-                <div className="bg-purple-50 p-3 rounded-lg">
-                  <p className="text-xs text-slate-600">الأرباح</p>
-                  <p className="text-lg font-bold text-purple-600 mt-1">
-                    {selectedSpecialist.totalEarnings}
-                  </p>
-                </div>
+
                 <div className="bg-orange-50 p-3 rounded-lg">
                   <p className="text-xs text-slate-600">العمولة</p>
                   <p className="text-lg font-bold text-orange-600 mt-1">
@@ -775,7 +744,6 @@ export function ShiftLeaderDashboard() {
                           <th className="px-4 py-2 text-right">البريد</th>
                           <th className="px-4 py-2 text-right">الوقت</th>
                           <th className="px-4 py-2 text-right">الحالة</th>
-                          <th className="px-4 py-2 text-right">المبلغ</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y">
@@ -800,7 +768,6 @@ export function ShiftLeaderDashboard() {
                                 {session.sessionStatus}
                               </span>
                             </td>
-                            <td className="px-4 py-2 font-semibold">{session.amount} ج.م</td>
                           </tr>
                         ))}
                       </tbody>

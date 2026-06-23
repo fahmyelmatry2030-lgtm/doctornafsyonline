@@ -14,6 +14,7 @@ type TherapistCardProps = {
   rating: number;
   reviewCount: number;
   isVerified: boolean;
+  isOnline?: boolean;
   imageUrl?: string;
 };
 
@@ -27,6 +28,7 @@ export function TherapistCard({
   rating,
   reviewCount,
   isVerified,
+  isOnline,
   imageUrl,
 }: TherapistCardProps) {
   const specs = parseSpecializations(specializations).slice(0, 3);
@@ -45,6 +47,9 @@ export function TherapistCard({
               target.parentElement!.innerHTML = `<span class="flex h-full w-full items-center justify-center text-3xl font-bold text-white">${name.charAt(0)}</span>`;
             }}
           />
+          {isOnline && (
+            <div className="absolute top-1 right-1 h-4 w-4 rounded-full border-2 border-white bg-green-500 shadow-sm" title="متصل الآن" />
+          )}
         </div>
         {isVerified && (
           <span className="flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">

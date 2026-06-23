@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     const fileExtension = file.name.split(".").pop() || "png";
-    const fileName = `${userId}_avatar.${fileExtension}`;
+    const fileName = `${userId}_avatar_${Date.now()}.${fileExtension}`;
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 

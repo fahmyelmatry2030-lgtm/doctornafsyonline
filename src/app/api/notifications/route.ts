@@ -14,10 +14,13 @@ export async function GET() {
   try {
     const notifications: any[] = [];
 
+    const dbUser = await prisma.user.findUnique({ where: { id: userId }, select: { createdAt: true } });
+    const userCreatedAt = dbUser?.createdAt || new Date(0);
+
     if (userRole === "PATIENT") {
       // Fetch system notifications for Patients
       const sysNotifs = await prisma.systemNotification.findMany({
-        where: { target: { in: ["ALL", "PATIENTS"] } },
+        where: { target: { in: ["ALL", "PATIENTS"] }, createdAt: { gte: userCreatedAt } },
         orderBy: { createdAt: "desc" },
         take: 10,
       });
@@ -95,7 +98,7 @@ export async function GET() {
     } else if (userRole === "THERAPIST") {
       // Fetch system notifications for Therapists
       const sysNotifs = await prisma.systemNotification.findMany({
-        where: { target: { in: ["ALL", "THERAPISTS"] } },
+        where: { target: { in: ["ALL", "THERAPISTS"] }, createdAt: { gte: userCreatedAt } },
         orderBy: { createdAt: "desc" },
         take: 10,
       });

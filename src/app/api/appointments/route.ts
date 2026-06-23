@@ -22,6 +22,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "صيغة التاريخ غير صحيحة، يرجى التأكد من تحديد الموعد." }, { status: 400 });
     }
 
+    // Prevent booking in the past
+    if (parsedDate.getTime() < Date.now()) {
+      return NextResponse.json({ error: "عفواً، لا يمكن حجز موعد بأثر رجعي. يرجى اختيار موعد متاح في المستقبل." }, { status: 400 });
+    }
+
     const therapist = await prisma.user.findUnique({
       where: { id: therapistId, role: "THERAPIST" },
       include: { therapistProfile: true },

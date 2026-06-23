@@ -178,24 +178,24 @@ export function DashboardLayout({
     ];
   } else if (role === "SHIFT_LEADER") {
     navItems = [
-      { name: "لوحة التحكم 📊", href: "/shift-leader", icon: <Home className="h-5 w-5" /> },
-      { name: "لوحة خدمة العملاء 🎯", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" /> },
+      { name: "لوحة التحكم", href: "/shift-leader", icon: <Home className="h-5 w-5" /> },
+      { name: "لوحة خدمة العملاء", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" /> },
     ];
   } else if (role?.startsWith("ADMIN")) {
     const allAdminNavItems = [
       { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" />, roles: null },
       { name: "إدارة الشيفتات", href: "/admin/shift-leader", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "ADMIN_CUSTOMER_SERVICE"] },
       { name: "إدارة المديرين", href: "/admin/managers", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN"] },
-      { name: "توثيق واعتماد الأخصائيين ✅", href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
-      { name: "إدارة المرضى 👥", href: "/admin/patients", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
-      { name: "اعتماد التحويلات المالية 💰", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
-      { name: "إدارة المرتبات 💵", href: "/admin/salaries", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
-      { name: "المقالات والتقييمات 📝", href: "/admin/content", icon: <BookOpen className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
-      { name: "الدعم، الإشعارات وأكواد الخصم 🎟️", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
-      { name: "رسائل الدعم الفني 🎧", href: "/admin/support", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
-      { name: "شهادات الكورسات والتدريب 🎓", href: "/admin/certificates", icon: <Award className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
-      { name: "لوحة تحكم خدمة العملاء 🎯", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_VIEWER", "SHIFT_LEADER"] },
-      { name: "إعدادات المنصة ⚙️", href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
+      { name: "توثيق واعتماد الأخصائيين", href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
+      { name: "إدارة المرضى", href: "/admin/patients", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
+      { name: "اعتماد التحويلات المالية", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
+      { name: "إدارة المرتبات", href: "/admin/salaries", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
+      { name: "المقالات والتقييمات", href: "/admin/content", icon: <BookOpen className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
+      { name: "الدعم، الإشعارات وأكواد الخصم", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
+      { name: "رسائل الدعم الفني", href: "/admin/support", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
+      { name: "شهادات الكورسات والتدريب", href: "/admin/certificates", icon: <Award className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
+      { name: "لوحة تحكم خدمة العملاء", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_VIEWER", "SHIFT_LEADER"] },
+      { name: "إعدادات المنصة", href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
     ];
 
     if (role === "ADMIN") {

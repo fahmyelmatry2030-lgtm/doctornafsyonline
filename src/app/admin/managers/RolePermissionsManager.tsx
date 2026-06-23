@@ -49,6 +49,13 @@ const ROLES = [
     dotColor: "bg-rose-500",
     desc: "متخصص في متابعة الجلسات وخدمة العملاء والحجوزات",
   },
+  {
+    key: "ADMIN_SALES",
+    label: "فريق المبيعات 💼",
+    color: "bg-orange-100 text-orange-700 border-orange-200",
+    dotColor: "bg-orange-500",
+    desc: "متخصص في المبيعات واستقطاب العملاء",
+  },
 ];
 
 const DEFAULT_PERMISSIONS: Record<string, string[]> = {
@@ -59,7 +66,15 @@ const DEFAULT_PERMISSIONS: Record<string, string[]> = {
     "/admin/reports", "/admin/content", "/admin/marketing", "/admin/support",
     "/admin/certificates", "/admin/customer-service", "/admin/settings",
   ],
-  ADMIN_CUSTOMER_SERVICE: ["/admin/dashboard", "/admin/customer-service", "/admin/shift-leader"],
+  ADMIN_CUSTOMER_SERVICE: [
+    "/admin/dashboard",
+    "/admin/customer-service",
+    "/admin/shift-leader",
+  ],
+  ADMIN_SALES: [
+    "/admin/dashboard",
+    "/admin/customer-service",
+  ],
 };
 
 export function RolePermissionsManager() {
