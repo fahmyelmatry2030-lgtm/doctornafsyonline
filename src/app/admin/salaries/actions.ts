@@ -28,19 +28,31 @@ export async function updateTherapistSalary(
     });
 
     if (!profile) {
-      throw new Error("ملف الأخصائي غير موجود");
+      // Automatically create a profile if it doesn't exist
+      await prisma.therapistProfile.create({
+        data: {
+          userId: therapistId,
+          bio: "أخصائي نفسي",
+          specializations: "علاج نفسي",
+          pricePerSession: 300, // default price
+          salaryType,
+          salary,
+          paymentMethod: paymentMethod || "VODAFONE_CASH",
+          paymentDetails: paymentDetails || "",
+        },
+      });
+    } else {
+      // Update salary details
+      await prisma.therapistProfile.update({
+        where: { userId: therapistId },
+        data: {
+          salaryType,
+          salary,
+          paymentMethod: paymentMethod || "VODAFONE_CASH",
+          paymentDetails: paymentDetails || "",
+        },
+      });
     }
-
-    // Update salary details
-    await prisma.therapistProfile.update({
-      where: { userId: therapistId },
-      data: {
-        salaryType,
-        salary,
-        paymentMethod: paymentMethod || "VODAFONE_CASH",
-        paymentDetails: paymentDetails || "",
-      },
-    });
 
     revalidatePath("/admin/salaries");
     return { success: true, message: "تم تحديث بيانات الراتب بنجاح" };
