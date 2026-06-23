@@ -26,9 +26,18 @@ export default function QuickSetupPage() {
         throw new Error(data.error || "فشل الإنشاء");
       }
 
-      addMessage("✅ تم إنشاء قائد الشيفت بنجاح!");
-      addMessage(`📧 البريد: ${data.user.email}`);
-      addMessage(`🔑 كلمة المرور: TestPassword123`);
+      addMessage("✅ تم إنشاء قادة الشيفت بنجاح!");
+      if (Array.isArray(data.loginInfo) && data.loginInfo.length > 0) {
+        data.loginInfo.forEach((leader: any) => {
+          addMessage(`📧 البريد: ${leader.email}`);
+          addMessage(`🔑 كلمة المرور: ${leader.password}`);
+          addMessage(`🆔 شيفت: ${leader.shiftId}`);
+        });
+      } else {
+        addMessage(`📧 استخدم shiftleader1@test.com / TestPassword123`);
+        addMessage(`📧 استخدم shiftleader2@test.com / TestPassword123`);
+        addMessage(`📧 استخدم shiftleader3@test.com / TestPassword123`);
+      }
       addMessage("ادخل بهذه البيانات على صفحة الدخول ثم افتح /admin/shift-leader");
     } catch (err: any) {
       setError(err.message);

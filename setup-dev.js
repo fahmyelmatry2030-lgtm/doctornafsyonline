@@ -34,14 +34,14 @@ NEXT_PUBLIC_API_URL="http://localhost:3000"`;
     console.log('✅ .env.local موجود\n');
   }
 
-  // 2. تحقق من schema.sqlite.prisma
-  console.log('2️⃣  التحقق من SQLite schema...');
-  const sqliteSchemPath = path.join(__dirname, 'prisma', 'schema.sqlite.prisma');
-  if (!fs.existsSync(sqliteSchemPath)) {
-    console.log('❌ schema.sqlite.prisma غير موجود!');
-    console.log('ℹ️  يرجى تشغيل: npm run build:sqlite\n');
+  // 2. تحقق من وجود schema.prisma
+  console.log('2️⃣  التحقق من schema.prisma...');
+  const schemaPrismaPath = path.join(__dirname, 'prisma', 'schema.prisma');
+  if (!fs.existsSync(schemaPrismaPath)) {
+    console.log('❌ prisma/schema.prisma غير موجود!');
+    process.exit(1);
   } else {
-    console.log('✅ schema.sqlite.prisma موجود\n');
+    console.log('✅ prisma/schema.prisma موجود\n');
   }
 
   // 3. تثبيت المكتبات
@@ -57,25 +57,27 @@ NEXT_PUBLIC_API_URL="http://localhost:3000"`;
   // 4. إنشاء قاعدة البيانات
   console.log('4️⃣  إنشاء قاعدة البيانات SQLite...');
   const devDbPath = path.join(__dirname, 'prisma', 'dev.db');
-  
-  // نسخ schema.sqlite.prisma إلى schema.prisma مؤقتاً
-  const schemPath = path.join(__dirname, 'prisma', 'schema.prisma');
-  const origContent = fs.readFileSync(schemPath, 'utf8');
-  const sqliteContent = fs.readFileSync(sqliteSchemPath, 'utf8');
-  
-  fs.writeFileSync(schemPath, sqliteContent);
-  console.log('✅ تبديل schema إلى SQLite');
-  
-  try {
-    execSync('npx prisma migrate dev --name init', { stdio: 'inherit' });
-    console.log('✅ تم إنشاء قاعدة البيانات\n');
-  } catch (e) {
-    console.log('⚠️  قد توجد رسالة خطأ أعلاه. هذا طبيعي للمرة الأولى.\n');
+  const sqliteSchemaPath = path.join(__dirname, 'prisma', 'schema.sqlite.prisma');
+
+  if (!fs.existsSync(sqliteSchemaPath)) {
+    console.error('❌ prisma/schema.sqlite.prisma غير موجود!');
+    process.exit(1);
   }
-  
-  // استعادة schema الأصلي
-  fs.writeFileSync(schemPath, origContent);
-  console.log('✅ استعادة MySQL schema\n');
+
+  try {
+    execSync('npx prisma db push --schema=prisma/schema.sqlite.prisma --skip-generate', {
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        DATABASE_URL: 'file:./prisma/dev.db',
+      },
+    });
+    console.log('✅ تم إنشاء قاعدة البيانات SQLite باستخدام schema.sqlite.prisma\n');
+  } catch (e) {
+    console.error('❌ فشل إنشاء قاعدة البيانات SQLite:');
+    console.error(e.message);
+    process.exit(1);
+  }
 
   // 5. البناء المحلي
   console.log('5️⃣  بناء المشروع للتطوير...');

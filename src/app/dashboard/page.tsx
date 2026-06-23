@@ -20,6 +20,8 @@ export default async function DashboardRedirect() {
   }
 
   switch (role) {
+    case "SHIFT_LEADER":
+      redirect("/shift-leader");
     case "PATIENT":
       redirect("/patient/dashboard");
     case "THERAPIST":

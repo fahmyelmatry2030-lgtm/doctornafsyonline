@@ -57,7 +57,17 @@ export async function POST() {
       });
 
       const shiftLeader = existingLeader
-        ? existingLeader
+        ? await prisma.user.update({
+            where: { email: leaderData.email },
+            data: {
+              name: leaderData.name,
+              password: hashedPassword,
+              role: "SHIFT_LEADER",
+              isOnline: false,
+              isSuspended: false,
+              phone: leaderData.phone,
+            },
+          })
         : await prisma.user.create({
             data: {
               email: leaderData.email,
