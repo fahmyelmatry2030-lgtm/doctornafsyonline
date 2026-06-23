@@ -11,10 +11,10 @@ async function seed() {
         update: {},
         create: {
           id: "shift-1",
-          dayOfWeek: 3, // Wednesday
+          name: "الفترة المسائية (الأربعاء)",
+          dayOfWeek: "WEDNESDAY",
           startTime: "16:00",
           endTime: "00:00",
-          capacity: 8,
         },
       }),
       prisma.shift.upsert({
@@ -22,10 +22,10 @@ async function seed() {
         update: {},
         create: {
           id: "shift-2",
-          dayOfWeek: 4, // Thursday
+          name: "الفترة المسائية (الخميس)",
+          dayOfWeek: "THURSDAY",
           startTime: "18:00",
           endTime: "02:00",
-          capacity: 8,
         },
       }),
       prisma.shift.upsert({
@@ -33,10 +33,10 @@ async function seed() {
         update: {},
         create: {
           id: "shift-3",
-          dayOfWeek: 5, // Friday
+          name: "الفترة المسائية (الجمعة)",
+          dayOfWeek: "FRIDAY",
           startTime: "16:00",
           endTime: "23:59",
-          capacity: 8,
         },
       }),
     ]);
@@ -126,7 +126,6 @@ async function seed() {
             data: {
               therapistId: `therapist-${i}`,
               shiftId: `shift-${j + 1}`,
-              assignedDate: new Date(),
             },
           }).catch(() => {
             // تجاهل الأخطاء إذا كانت موجودة بالفعل

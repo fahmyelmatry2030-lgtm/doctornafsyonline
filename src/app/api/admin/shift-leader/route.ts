@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     const endOfToday = new Date(now);
     endOfToday.setHours(23, 59, 59, 999);
 
-    let commissions = [];
+    let commissions: any[] = [];
     let assignedShift = null;
 
     try {

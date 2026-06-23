@@ -19,6 +19,7 @@ const getRoleLabel = (role: string) => {
   if (role === "ADMIN_ACCOUNTING") return "مدير حسابات";
   if (role === "ADMIN_VIEWER") return "مراقب الإدارة 🔍";
   if (role === "THERAPIST") return "أخصائي";
+  if (role === "SHIFT_LEADER") return "قائد الشيفت";
   return "مريض";
 };
 
@@ -173,6 +174,10 @@ export function DashboardLayout({
       { name: "غرفة العلاج", href: "/therapist/messages", icon: <MessageCircle className="h-5 w-5" /> },
       { name: "الملف الشخصي", href: "/therapist/profile", icon: <UserIcon className="h-5 w-5" /> },
       { name: "الإعدادات", href: "/therapist/settings", icon: <Settings className="h-5 w-5" /> },
+    ];
+  } else if (role === "SHIFT_LEADER") {
+    navItems = [
+      { name: "لوحة التحكم 📊", href: "/shift-leader", icon: <Home className="h-5 w-5" /> },
     ];
   } else if (role?.startsWith("ADMIN")) {
     const allAdminNavItems = [

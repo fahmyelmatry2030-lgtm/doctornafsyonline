@@ -21,10 +21,10 @@ export async function POST(request: NextRequest) {
         update: {},
         create: {
           id: "shift-1",
-          dayOfWeek: 3,
+          name: "الفترة المسائية (الأربعاء)",
+          dayOfWeek: "WEDNESDAY",
           startTime: "16:00",
           endTime: "00:00",
-          capacity: 8,
         },
       }),
       prisma.shift.upsert({
@@ -32,10 +32,10 @@ export async function POST(request: NextRequest) {
         update: {},
         create: {
           id: "shift-2",
-          dayOfWeek: 4,
+          name: "الفترة المسائية (الخميس)",
+          dayOfWeek: "THURSDAY",
           startTime: "18:00",
           endTime: "02:00",
-          capacity: 8,
         },
       }),
       prisma.shift.upsert({
@@ -43,10 +43,10 @@ export async function POST(request: NextRequest) {
         update: {},
         create: {
           id: "shift-3",
-          dayOfWeek: 5,
+          name: "الفترة المسائية (الجمعة)",
+          dayOfWeek: "FRIDAY",
           startTime: "16:00",
           endTime: "23:59",
-          capacity: 8,
         },
       }),
     ]);

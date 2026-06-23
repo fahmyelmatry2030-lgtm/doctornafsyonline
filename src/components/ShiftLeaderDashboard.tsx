@@ -375,206 +375,239 @@ export function ShiftLeaderDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-black text-slate-900">
-          لوحة تحكم قيادة الشيفت
-        </h1>
-        <p className="text-slate-500 mt-2">
-          تابع فريقك والعمولات اليومية والأرباح
-        </p>
+    <div className="animate-fade-in space-y-6">
+      {/* Hero Banner */}
+      <div className="bg-white rounded-[24px] p-8 shadow-sm flex flex-col md:flex-row items-center justify-between relative overflow-hidden border border-slate-100">
+        <div className="absolute right-0 top-0 w-64 h-64 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute left-0 bottom-0 w-64 h-64 bg-gradient-to-tr from-emerald-50 to-teal-50 rounded-full blur-3xl -z-10 -translate-x-1/2 translate-y-1/2"></div>
+        
+        <div className="z-10">
+          <h1 className="text-2xl font-black text-[#2B3674] mb-2 flex items-center gap-2">
+            لوحة تحكم قائد الشيفت 📊
+          </h1>
+          <p className="text-[#A3AED0] font-medium text-sm max-w-lg">
+            تابع أداء الفريق، الحالة اليومية للأخصائيين، وتقارير الشيفت من لوحة تحكم واحدة مُنسقة مثل لوحة الأدمين.
+          </p>
+        </div>
+        <div className="hidden md:flex items-center gap-4 z-10">
+          <div className="bg-[#F4F7FE] px-5 py-3 rounded-2xl">
+            <p className="text-xs text-[#A3AED0] font-bold mb-1">تاريخ اليوم</p>
+            <p className="text-sm font-black text-[#2B3674]">
+              {new Date().toLocaleDateString("ar-EG", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Assigned Shift Card */}
       {stats.assignedShift && (
-        <div className="bg-white border border-slate-200 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-slate-900">الشيفت المعين لك</h3>
-          <p className="text-sm text-slate-700 mt-1">
-            <strong>{stats.assignedShift.name}</strong> — {stats.assignedShift.dayOfWeek}
-          </p>
-          <p className="text-sm text-slate-600">{stats.assignedShift.startTime} — {stats.assignedShift.endTime}</p>
+        <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-black text-[#2B3674]">الشيفت المعين لك</h3>
+              <p className="text-sm text-slate-500 mt-2">
+                <strong className="text-slate-700">{stats.assignedShift.name}</strong> — {stats.assignedShift.dayOfWeek}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-semibold text-slate-600">{stats.assignedShift.startTime} — {stats.assignedShift.endTime}</p>
+              {!stats.assignedShift.isActive && (
+                <p className="text-xs text-rose-600 mt-2 font-bold">حالة الشيفت: غير مفعل</p>
+              )}
+            </div>
+          </div>
           {stats.assignedShift.description && (
-            <p className="text-xs text-slate-500 mt-2">{stats.assignedShift.description}</p>
-          )}
-          {!stats.assignedShift.isActive && (
-            <p className="text-xs text-red-600 mt-2">حالة الشيفت: غير مفعل</p>
+            <p className="text-sm text-slate-400 mt-4 leading-relaxed">{stats.assignedShift.description}</p>
           )}
         </div>
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Online Specialists */}
-        <div className="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-lg p-6">
+        <div className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow border border-slate-100 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-green-700 font-medium">أونلاين الآن</p>
-              <p className="text-3xl font-bold text-green-900 mt-2">
-                {stats.onlineSpecialists}
-              </p>
-              <p className="text-xs text-green-600 mt-1">من {stats.totalSpecialists}</p>
+            <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+              <span className="w-3.5 h-3.5 rounded-full bg-emerald-600 animate-pulse"></span>
             </div>
-            <div className="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center">
-              <span className="w-4 h-4 bg-green-600 rounded-full animate-pulse"></span>
+            <div className="text-left">
+              <p className="text-sm font-bold text-[#A3AED0] mb-1">أونلاين الآن</p>
+              <p className="text-3xl font-black text-[#2B3674]">{stats.onlineSpecialists}</p>
+              <p className="text-[10px] font-bold text-[#A3AED0] mt-1">من أصل {stats.totalSpecialists}</p>
             </div>
           </div>
         </div>
 
         {/* Total Sessions */}
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-lg p-6">
+        <div className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow border border-slate-100 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-blue-700 font-medium">الجلسات اليوم</p>
-              <p className="text-3xl font-bold text-blue-900 mt-2">{stats.totalSessions}</p>
+            <div className="w-14 h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+              <Users size={24} />
             </div>
-            <Users className="text-blue-400" size={32} />
+            <div className="text-left">
+              <p className="text-sm font-bold text-[#A3AED0] mb-1">الجلسات اليوم</p>
+              <p className="text-3xl font-black text-[#2B3674]">{stats.totalSessions}</p>
+            </div>
           </div>
         </div>
 
         {/* Total Earnings */}
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-200 rounded-lg p-6">
+        <div className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow border border-slate-100 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-purple-700 font-medium">الأرباح</p>
-              <p className="text-3xl font-bold text-purple-900 mt-2">{stats.totalEarnings}</p>
-              <p className="text-xs text-purple-600 mt-1">ج.م</p>
+            <div className="w-14 h-14 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+              <DollarSign size={24} />
             </div>
-            <DollarSign className="text-purple-400" size={32} />
+            <div className="text-left">
+              <p className="text-sm font-bold text-[#A3AED0] mb-1">الأرباح اليومية</p>
+              <p className="text-3xl font-black text-[#2B3674]">{stats.totalEarnings}</p>
+              <p className="text-[10px] font-bold text-slate-400 mt-1">ج.م</p>
+            </div>
           </div>
         </div>
 
         {/* Commissions */}
-        <div className="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-200 rounded-lg p-6">
+        <div className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow border border-slate-100 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-orange-700 font-medium">عمولتك</p>
-              <p className="text-3xl font-bold text-orange-900 mt-2">{stats.totalCommissions}</p>
-              <p className="text-xs text-orange-600 mt-1">ج.م</p>
+            <div className="w-14 h-14 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
+              <TrendingUp size={24} />
             </div>
-            <TrendingUp className="text-orange-400" size={32} />
+            <div className="text-left">
+              <p className="text-sm font-bold text-[#A3AED0] mb-1">عمولتك اليومية</p>
+              <p className="text-3xl font-black text-[#2B3674]">{stats.totalCommissions}</p>
+              <p className="text-[10px] font-bold text-slate-400 mt-1">ج.م</p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-6 space-y-4">
-        <h3 className="text-xl font-bold text-slate-900">📋 التقارير والطباعة</h3>
-        
+      <div className="bg-white rounded-[24px] p-7 shadow-sm border border-slate-100">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+          <div>
+            <h3 className="text-lg font-black text-[#2B3674]">📋 التقارير والطباعة</h3>
+            <p className="text-sm text-[#A3AED0] mt-1">اختر نوع التقرير ثم قم بالطباعة أو التحميل بصيغة Excel.</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <button
+              onClick={handlePrintReport}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#4318FF] text-white rounded-2xl hover:bg-[#2B12D3] transition font-semibold w-full sm:w-auto shadow-sm text-sm"
+            >
+              <PrinterIcon size={18} />
+              طباعة التقرير
+            </button>
+            <button
+              onClick={() => {
+                const csv = generateCSV(stats);
+                downloadCSV(csv);
+              }}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#10B981] text-white rounded-2xl hover:bg-[#0F9A6E] transition font-semibold w-full sm:w-auto shadow-sm text-sm"
+            >
+              <Download size={18} />
+              تحميل Excel
+            </button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <label className="flex items-center gap-2 p-3 bg-white rounded border-2 border-gray-200 cursor-pointer hover:border-blue-500 transition min-w-0">
+          <label className="flex items-center gap-2 p-4 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:border-indigo-300 transition min-w-0">
             <input
               type="radio"
               name="reportType"
               value="summary"
               checked={reportType === "summary"}
               onChange={(e) => setReportType(e.target.value as any)}
-              className="w-4 h-4"
+              className="w-4 h-4 text-[#4318FF]"
             />
-            <span className="font-semibold text-slate-700 truncate">📊 ملخص عام</span>
+            <span className="font-bold text-slate-700 truncate text-sm">📊 ملخص عام</span>
           </label>
-          <label className="flex items-center gap-2 p-3 bg-white rounded border-2 border-gray-200 cursor-pointer hover:border-blue-500 transition min-w-0">
+          <label className="flex items-center gap-2 p-4 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:border-indigo-300 transition min-w-0">
             <input
               type="radio"
               name="reportType"
               value="specialists"
               checked={reportType === "specialists"}
               onChange={(e) => setReportType(e.target.value as any)}
-              className="w-4 h-4"
+              className="w-4 h-4 text-[#4318FF]"
             />
-            <span className="font-semibold text-slate-700 truncate">👨‍⚕️ الأخصائيين</span>
+            <span className="font-bold text-slate-700 truncate text-sm">👨‍⚕️ الأخصائيين</span>
           </label>
-          <label className="flex items-center gap-2 p-3 bg-white rounded border-2 border-gray-200 cursor-pointer hover:border-blue-500 transition min-w-0">
+          <label className="flex items-center gap-2 p-4 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:border-indigo-300 transition min-w-0">
             <input
               type="radio"
               name="reportType"
               value="patients"
               checked={reportType === "patients"}
               onChange={(e) => setReportType(e.target.value as any)}
-              className="w-4 h-4"
+              className="w-4 h-4 text-[#4318FF]"
             />
-            <span className="font-semibold text-slate-700 truncate">🤒 المرضى</span>
+            <span className="font-bold text-slate-700 truncate text-sm">🤒 المرضى</span>
           </label>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[auto_auto_1fr] gap-3 items-center">
-          <button
-            onClick={handlePrintReport}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold w-full"
-          >
-            <PrinterIcon size={18} />
-            طباعة التقرير
-          </button>
-          <button
-            onClick={() => {
-              const csv = generateCSV(stats);
-              downloadCSV(csv);
-            }}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold w-full"
-          >
-            <Download size={18} />
-            تحميل Excel
-          </button>
-          <label className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg cursor-pointer hover:bg-indigo-200 transition font-semibold w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-5 pt-4 border-t border-slate-100">
+          <label className="flex items-center gap-2 px-4 py-2.5 bg-indigo-50 text-[#4318FF] rounded-2xl cursor-pointer hover:bg-indigo-100 transition font-bold text-xs">
             <input
               type="checkbox"
               checked={showOnlineOnly}
               onChange={(e) => setShowOnlineOnly(e.target.checked)}
-              className="w-4 h-4"
+              className="w-4 h-4 rounded text-[#4318FF]"
             />
             <span>🟢 الأونلاين فقط</span>
           </label>
+          <div className="text-xs font-semibold text-slate-400">
+            {showOnlineOnly ? "يتم عرض الأخصائيين الأونلاين فقط في الجدول" : "يتم عرض جميع الأخصائيين المسجلين في الجدول"}
+          </div>
         </div>
       </div>
 
       {/* Team Table */}
-      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-slate-900 to-slate-800 px-6 py-4">
-          <h2 className="text-xl font-bold text-white">فريقك - {stats.totalSpecialists} أخصائي</h2>
+      <div className="bg-white border border-slate-100 rounded-[24px] overflow-hidden shadow-sm">
+        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+          <h2 className="text-lg font-black text-[#2B3674]">فريقك ({stats.totalSpecialists} أخصائي)</h2>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-100">
+          <table className="w-full text-sm text-right">
+            <thead className="bg-slate-50 text-[#A3AED0] uppercase tracking-wide text-xs border-b border-slate-100">
               <tr>
-                <th className="px-6 py-3 text-right text-sm font-semibold text-slate-700">الحالة</th>
-                <th className="px-6 py-3 text-right text-sm font-semibold text-slate-700">الجلسات</th>
-                <th className="px-6 py-3 text-right text-sm font-semibold text-slate-700">الأرباح (ج.م)</th>
-                <th className="px-6 py-3 text-right text-sm font-semibold text-slate-700">عمولتك (ج.م)</th>
-                <th className="px-6 py-3 text-right text-sm font-semibold text-slate-700">الاسم</th>
-                <th className="px-6 py-3 text-center text-sm font-semibold text-slate-700">التفاصيل</th>
+                <th className="px-6 py-4 font-bold">الحالة</th>
+                <th className="px-6 py-4 font-bold">الجلسات</th>
+                <th className="px-6 py-4 font-bold">الأرباح</th>
+                <th className="px-6 py-4 font-bold">العمولة</th>
+                <th className="px-6 py-4 font-bold">الاسم</th>
+                <th className="px-6 py-4 text-center font-bold">التفاصيل</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y divide-slate-50">
               {stats.team
                 .filter((specialist) => !showOnlineOnly || specialist.isOnline)
                 .map((specialist) => (
-                <tr key={specialist.specialistId} className="hover:bg-slate-50 transition">
+                <tr key={specialist.specialistId} className="hover:bg-slate-50/50 transition-colors">
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
+                    <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold ${
                       specialist.isOnline
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}>
+                        ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                        : "bg-rose-50 text-rose-600 border border-rose-100"
+                    } border`}>
                       <span className={`w-2 h-2 rounded-full ${
-                        specialist.isOnline ? "bg-green-600" : "bg-red-600"
-                      }`}></span>
-                      {specialist.isOnline ? "🟢 أونلاين" : "🔴 أوفلاين"}
+                        specialist.isOnline ? "bg-emerald-500" : "bg-rose-500"
+                      }`} />
+                      {specialist.isOnline ? "أونلاين" : "أوفلاين"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-slate-900">{specialist.appointmentsToday}</td>
-                  <td className="px-6 py-4 text-slate-900 font-semibold">{specialist.totalEarnings}</td>
-                  <td className="px-6 py-4 text-orange-600 font-bold">{specialist.commissionEarnings}</td>
-                  <td className="px-6 py-4 text-slate-900 font-medium">{specialist.specialistName}</td>
+                  <td className="px-6 py-4 text-slate-700 font-semibold">{specialist.appointmentsToday}</td>
+                  <td className="px-6 py-4 text-slate-900 font-bold">{specialist.totalEarnings} ج.م</td>
+                  <td className="px-6 py-4 text-[#4318FF] font-bold">{specialist.commissionEarnings} ج.م</td>
+                  <td className="px-6 py-4 text-[#2B3674] font-bold">{specialist.specialistName}</td>
                   <td className="px-6 py-4 text-center">
                     <button
                       onClick={() => {
                         setSelectedSpecialist(specialist);
                         setShowDetails(true);
                       }}
-                      className="text-blue-600 hover:text-blue-800 font-semibold"
+                      className="text-[#4318FF] hover:text-[#2B12D3] font-bold text-xs bg-indigo-50 hover:bg-indigo-100 px-3.5 py-1.5 rounded-xl transition"
                     >
-                      عرض
+                      عرض التفاصيل
                     </button>
                   </td>
                 </tr>
