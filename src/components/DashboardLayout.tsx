@@ -147,6 +147,13 @@ export function DashboardLayout({
 
   let navItems: { name: string; href: string; icon: React.ReactNode }[] = [];
 
+  // Ensure shift leader link is always visible for admin users
+  const adminShiftLeaderItem = {
+    name: "قائد الشيفت",
+    href: "/admin/shift-leader",
+    icon: <Users className="h-5 w-5" />,
+  };
+
   if (role === "PATIENT") {
     navItems = [
       { name: "الرئيسية", href: "/patient/dashboard", icon: <Home className="h-5 w-5" /> },
@@ -170,8 +177,7 @@ export function DashboardLayout({
   } else if (role?.startsWith("ADMIN")) {
     const allAdminNavItems = [
       { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" />, roles: null },
-      { name: "إدارة المديرين 👑", href: "/admin/managers", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN"] },
-      { name: "إدارة الجلسات والعمليات 📅", href: "/admin/operations", icon: <Activity className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
+      { name: "قائد الشيفت", href: "/admin/shift-leader", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
       { name: "توثيق واعتماد الأخصائيين ✅", href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
       { name: "إدارة المرضى 👥", href: "/admin/patients", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
       { name: "اعتماد التحويلات المالية 💰", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
