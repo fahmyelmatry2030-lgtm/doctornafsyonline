@@ -3,6 +3,7 @@ import { auth, isExactAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
+// GET Handler
 export async function GET() {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
@@ -12,9 +13,10 @@ export async function GET() {
   try {
     const managers = await prisma.user.findMany({
       where: {
-        role: {
-          startsWith: "ADMIN"
-        }
+        OR: [
+          { role: { startsWith: "ADMIN" } },
+          { role: "SHIFT_LEADER" }
+        ]
       },
       select: {
         id: true,
@@ -35,6 +37,7 @@ export async function GET() {
   }
 }
 
+// POST Handler
 export async function POST(req: Request) {
   const session = await auth();
   if (!isExactAdmin(session?.user?.role)) {
@@ -48,7 +51,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "جميع الحقول مطلوبة" }, { status: 400 });
     }
 
-    if (!role.startsWith("ADMIN")) {
+    if (!role.startsWith("ADMIN") && role !== "SHIFT_LEADER") {
       return NextResponse.json({ error: "دور غير صالح" }, { status: 400 });
     }
 
@@ -84,6 +87,7 @@ export async function POST(req: Request) {
   }
 }
 
+// DELETE Handler
 export async function DELETE(request: Request) {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
@@ -101,7 +105,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "لا يمكنك حذف حسابك الشخصي" }, { status: 400 });
     }
 
-    // Verify user exists and is actually an ADMIN
+    // Verify user exists and is actually an ADMIN or SHIFT_LEADER
     const user = await prisma.user.findUnique({
       where: { id },
     });
@@ -110,7 +114,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "الحساب غير موجود" }, { status: 404 });
     }
 
-    if (!user.role.startsWith("ADMIN")) {
+    if (!user.role.startsWith("ADMIN") && user.role !== "SHIFT_LEADER") {
       return NextResponse.json({ error: "هذا الحساب ليس مديراً" }, { status: 400 });
     }
 
