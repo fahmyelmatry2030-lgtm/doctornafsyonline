@@ -52,7 +52,7 @@ const ROLES = [
 ];
 
 const DEFAULT_PERMISSIONS: Record<string, string[]> = {
-  ADMIN_HR: ["/admin/dashboard", "/admin/shift-leader", "/admin/therapists", "/admin/patients", "/admin/salaries"],
+  ADMIN_HR: ["/admin/dashboard", "/admin/shift-leader", "/admin/therapists", "/admin/patients", "/admin/customer-service"],
   ADMIN_ACCOUNTING: ["/admin/dashboard", "/admin/reports", "/admin/salaries"],
   ADMIN_VIEWER: [
     "/admin/dashboard", "/admin/shift-leader", "/admin/therapists", "/admin/patients",

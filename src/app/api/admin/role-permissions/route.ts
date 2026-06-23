@@ -12,7 +12,7 @@ export const DEFAULT_PERMISSIONS: Record<string, string[]> = {
     "/admin/shift-leader",
     "/admin/therapists",
     "/admin/patients",
-    "/admin/salaries",
+    "/admin/customer-service",
   ],
   ADMIN_ACCOUNTING: [
     "/admin/dashboard",
