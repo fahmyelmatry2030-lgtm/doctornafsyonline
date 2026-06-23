@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { 
   ShieldCheck, ShieldAlert, Star, UserCheck, Users, Award, 
-  Check, X, ExternalLink, Ban, CheckCircle, Trash2, Search, FileText 
+  Check, X, ExternalLink, Ban, CheckCircle, Trash2, Search, FileText, QrCode 
 } from "lucide-react";
 import { TherapistDetailsModal } from "./TherapistDetailsModal";
+import Link from "next/link";
 
 type Therapist = {
   id: string;
@@ -400,6 +401,14 @@ export function TherapistsTableClient({
                       >
                         <FileText className="w-4 h-4" />
                       </button>
+                      {/* QR Badge button - always visible */}
+                      <Link
+                        href={`/admin/therapists/badge/${t.id}`}
+                        title="بطاقة الهوية ورمز QR"
+                        className="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-600 transition-colors"
+                      >
+                        <QrCode className="w-4 h-4" />
+                      </Link>
                       {/* Action buttons - hidden for ADMIN_VIEWER */}
                       {!isReadOnly && (
                         <>

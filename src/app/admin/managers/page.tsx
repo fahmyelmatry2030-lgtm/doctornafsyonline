@@ -239,6 +239,7 @@ export default function ManagersPage() {
               >
                 <option value="ADMIN_HR">مدير موارد بشرية (إدارة الأطباء والمرضى)</option>
                 <option value="ADMIN_ACCOUNTING">مدير حسابات (أرباح، فواتير)</option>
+                <option value="ADMIN_CUSTOMER_SERVICE">مسؤول خدمة العملاء 🎯 (متابعة الجلسات والحجوزات)</option>
                 <option value="ADMIN_VIEWER">مراقب — عرض فقط 🔍 (لا يمكنه التعديل)</option>
                 <option value="SHIFT_LEADER">قائد الشيفت (Shift Leader)</option>
                 <option value="ADMIN">مدير عام (كافة الصلاحيات)</option>

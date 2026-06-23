@@ -47,12 +47,12 @@ export default async function VerifyStaffPage({ searchParams }: PageProps) {
     );
   }
 
-  // Fetch the user details
+  // Fetch the user details - search across all staff roles including therapists
   const employee = await prisma.user.findFirst({
     where: {
       id: userId,
       role: {
-        in: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "SHIFT_LEADER", "ADMIN_CUSTOMER_SERVICE"]
+        in: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "SHIFT_LEADER", "ADMIN_CUSTOMER_SERVICE", "THERAPIST"]
       }
     },
     select: {
@@ -63,6 +63,13 @@ export default async function VerifyStaffPage({ searchParams }: PageProps) {
       role: true,
       isSuspended: true,
       createdAt: true,
+      therapistProfile: {
+        select: {
+          isVerified: true,
+          specializations: true,
+          bio: true,
+        }
+      }
     }
   });
 
@@ -102,7 +109,14 @@ export default async function VerifyStaffPage({ searchParams }: PageProps) {
     );
   }
 
-  const isVerified = !employee.isSuspended;
+  // For therapists: verified = not suspended AND profile is verified
+  // For admin staff: verified = not suspended
+  const isVerified = !employee.isSuspended && 
+    (employee.role !== "THERAPIST" || employee.therapistProfile?.isVerified === true);
+  
+  const displayRole = employee.role === "THERAPIST"
+    ? (employee.therapistProfile?.specializations || "أخصائي نفسي إكلينيكي")
+    : getRoleArabicLabel(employee.role);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
@@ -170,7 +184,7 @@ export default async function VerifyStaffPage({ searchParams }: PageProps) {
                   {employee.name}
                 </h4>
                 <div className="bg-indigo-50 text-indigo-700 text-xs font-black px-4 py-1.5 rounded-full inline-block mt-1.5">
-                  {getRoleArabicLabel(employee.role)}
+                  {displayRole}
                 </div>
               </div>
             </div>

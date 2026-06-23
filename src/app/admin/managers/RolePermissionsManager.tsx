@@ -6,10 +6,12 @@ import { Shield, Save, Loader2, CheckCircle, RotateCcw } from "lucide-react";
 // All available admin pages with Arabic labels
 const ALL_PAGES = [
   { path: "/admin/dashboard", label: "الرئيسية 🏠", alwaysOn: true },
+  { path: "/admin/shift-leader", label: "إدارة الشيفتات 📋" },
   { path: "/admin/operations", label: "إدارة الجلسات والعمليات 📅" },
   { path: "/admin/therapists", label: "توثيق واعتماد الأخصائيين ✅" },
   { path: "/admin/patients", label: "إدارة المرضى 👥" },
   { path: "/admin/reports", label: "اعتماد التحويلات المالية 💰" },
+  { path: "/admin/salaries", label: "إدارة المرتبات 💵" },
   { path: "/admin/content", label: "المقالات والتقييمات 📝" },
   { path: "/admin/marketing", label: "الدعم، الإشعارات وأكواد الخصم 🎟️" },
   { path: "/admin/support", label: "رسائل الدعم الفني 🎧" },
@@ -40,16 +42,24 @@ const ROLES = [
     dotColor: "bg-amber-500",
     desc: "يستطيع مشاهدة الصفحات فقط دون تعديل",
   },
+  {
+    key: "ADMIN_CUSTOMER_SERVICE",
+    label: "خدمة العملاء 🎯",
+    color: "bg-rose-100 text-rose-700 border-rose-200",
+    dotColor: "bg-rose-500",
+    desc: "متخصص في متابعة الجلسات وخدمة العملاء والحجوزات",
+  },
 ];
 
 const DEFAULT_PERMISSIONS: Record<string, string[]> = {
-  ADMIN_HR: ["/admin/dashboard", "/admin/operations", "/admin/therapists", "/admin/patients", "/admin/customer-service"],
-  ADMIN_ACCOUNTING: ["/admin/dashboard", "/admin/operations", "/admin/reports"],
+  ADMIN_HR: ["/admin/dashboard", "/admin/shift-leader", "/admin/therapists", "/admin/patients", "/admin/salaries"],
+  ADMIN_ACCOUNTING: ["/admin/dashboard", "/admin/reports", "/admin/salaries"],
   ADMIN_VIEWER: [
-    "/admin/dashboard", "/admin/operations", "/admin/therapists", "/admin/patients",
+    "/admin/dashboard", "/admin/shift-leader", "/admin/therapists", "/admin/patients",
     "/admin/reports", "/admin/content", "/admin/marketing", "/admin/support",
     "/admin/certificates", "/admin/customer-service", "/admin/settings",
   ],
+  ADMIN_CUSTOMER_SERVICE: ["/admin/dashboard", "/admin/customer-service", "/admin/shift-leader"],
 };
 
 export function RolePermissionsManager() {

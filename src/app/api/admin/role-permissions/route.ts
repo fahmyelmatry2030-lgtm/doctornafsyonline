@@ -9,20 +9,19 @@ const PERMISSIONS_FILE_PATH = path.join(process.cwd(), "src/data/role-permission
 export const DEFAULT_PERMISSIONS: Record<string, string[]> = {
   ADMIN_HR: [
     "/admin/dashboard",
-    "/admin/operations",
+    "/admin/shift-leader",
     "/admin/therapists",
     "/admin/patients",
-    "/admin/shift-leader",
+    "/admin/salaries",
   ],
   ADMIN_ACCOUNTING: [
     "/admin/dashboard",
-    "/admin/operations",
     "/admin/reports",
-    "/admin/shift-leader",
+    "/admin/salaries",
   ],
   ADMIN_VIEWER: [
     "/admin/dashboard",
-    "/admin/operations",
+    "/admin/shift-leader",
     "/admin/therapists",
     "/admin/patients",
     "/admin/reports",
@@ -30,7 +29,12 @@ export const DEFAULT_PERMISSIONS: Record<string, string[]> = {
     "/admin/marketing",
     "/admin/support",
     "/admin/certificates",
+    "/admin/customer-service",
     "/admin/settings",
+  ],
+  ADMIN_CUSTOMER_SERVICE: [
+    "/admin/dashboard",
+    "/admin/customer-service",
     "/admin/shift-leader",
   ],
 };
@@ -63,12 +67,13 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     // Validate structure
-    const validRoles = ["ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"];
+    const validRoles = ["ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "ADMIN_CUSTOMER_SERVICE"];
     const validPages = [
       "/admin/dashboard", "/admin/operations", "/admin/therapists",
-      "/admin/patients", "/admin/reports", "/admin/content",
-      "/admin/marketing", "/admin/support", "/admin/certificates",
-      "/admin/settings", "/admin/shift-leader", "/admin/managers",
+      "/admin/patients", "/admin/reports", "/admin/salaries",
+      "/admin/content", "/admin/marketing", "/admin/support",
+      "/admin/certificates", "/admin/settings", "/admin/shift-leader",
+      "/admin/managers", "/admin/customer-service",
     ];
 
     const validated: Record<string, string[]> = {};

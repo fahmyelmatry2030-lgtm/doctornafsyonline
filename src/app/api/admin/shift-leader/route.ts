@@ -110,7 +110,7 @@ export async function GET(req: NextRequest) {
       teamMap.set(spec.id, {
         specialistId: spec.id,
         specialistName: spec.name,
-        isOnline: spec.isOnline || spec.therapistProfile?.isAvailable || false,
+        isOnline: spec.isOnline === true,
         appointmentsToday: 0,
         totalEarnings: 0,
         commissionEarnings: 0,
