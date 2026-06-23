@@ -66,7 +66,7 @@ export default async function ShiftLeaderPage() {
     // Fetch shift leaders
     shiftLeaders = await prisma.user.findMany({
       where: {
-        role: { in: ["SHIFT_LEADER", "ADMIN"] },
+        role: { in: ["SHIFT_LEADER", "ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR"] },
         isSuspended: false
       },
       select: { id: true, name: true, email: true },
