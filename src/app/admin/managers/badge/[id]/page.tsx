@@ -63,15 +63,13 @@ export default async function ManagerBadgePage({ params }: PageProps) {
           <ArrowRight className="w-4 h-4" />
           <span>الرجوع للمديرين</span>
         </Link>
-        <button
-          onClick="window.print()"
-          // Since it's a Server Component, we can use a client-side button click wrapper or standard script or just a simple custom JS injection:
-          // But to avoid complex hydration mismatch in Server Components, we will use a small script or link. Let's make this page a client component if needed, or simply render standard button that calls window.print() inside a browser execution:
-          className="flex items-center gap-1.5 bg-indigo-650 hover:bg-indigo-750 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md transition-all hover:scale-102"
+        <a
+          href="javascript:window.print()"
+          className="flex items-center gap-1.5 bg-indigo-650 hover:bg-indigo-750 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md transition-all hover:scale-102 cursor-pointer"
         >
           <Printer className="w-4 h-4" />
           <span>طباعة البطاقة</span>
-        </button>
+        </a>
       </div>
 
       {/* Styled Printable Badge Container */}
