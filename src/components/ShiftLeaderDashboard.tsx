@@ -461,8 +461,8 @@ export function ShiftLeaderDashboard() {
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-6 space-y-4">
         <h3 className="text-xl font-bold text-slate-900">📋 التقارير والطباعة</h3>
         
-        <div className="grid grid-cols-3 gap-3">
-          <label className="flex items-center gap-2 p-3 bg-white rounded border-2 border-gray-200 cursor-pointer hover:border-blue-500 transition">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <label className="flex items-center gap-2 p-3 bg-white rounded border-2 border-gray-200 cursor-pointer hover:border-blue-500 transition min-w-0">
             <input
               type="radio"
               name="reportType"
@@ -471,9 +471,9 @@ export function ShiftLeaderDashboard() {
               onChange={(e) => setReportType(e.target.value as any)}
               className="w-4 h-4"
             />
-            <span className="font-semibold text-slate-700">📊 ملخص عام</span>
+            <span className="font-semibold text-slate-700 truncate">📊 ملخص عام</span>
           </label>
-          <label className="flex items-center gap-2 p-3 bg-white rounded border-2 border-gray-200 cursor-pointer hover:border-blue-500 transition">
+          <label className="flex items-center gap-2 p-3 bg-white rounded border-2 border-gray-200 cursor-pointer hover:border-blue-500 transition min-w-0">
             <input
               type="radio"
               name="reportType"
@@ -482,9 +482,9 @@ export function ShiftLeaderDashboard() {
               onChange={(e) => setReportType(e.target.value as any)}
               className="w-4 h-4"
             />
-            <span className="font-semibold text-slate-700">👨‍⚕️ الأخصائيين</span>
+            <span className="font-semibold text-slate-700 truncate">👨‍⚕️ الأخصائيين</span>
           </label>
-          <label className="flex items-center gap-2 p-3 bg-white rounded border-2 border-gray-200 cursor-pointer hover:border-blue-500 transition">
+          <label className="flex items-center gap-2 p-3 bg-white rounded border-2 border-gray-200 cursor-pointer hover:border-blue-500 transition min-w-0">
             <input
               type="radio"
               name="reportType"
@@ -493,14 +493,14 @@ export function ShiftLeaderDashboard() {
               onChange={(e) => setReportType(e.target.value as any)}
               className="w-4 h-4"
             />
-            <span className="font-semibold text-slate-700">🤒 المرضى</span>
+            <span className="font-semibold text-slate-700 truncate">🤒 المرضى</span>
           </label>
         </div>
 
-        <div className="flex gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[auto_auto_1fr] gap-3 items-center">
           <button
             onClick={handlePrintReport}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold w-full"
           >
             <PrinterIcon size={18} />
             طباعة التقرير
@@ -510,12 +510,12 @@ export function ShiftLeaderDashboard() {
               const csv = generateCSV(stats);
               downloadCSV(csv);
             }}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold w-full"
           >
             <Download size={18} />
             تحميل Excel
           </button>
-          <label className="flex items-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg cursor-pointer hover:bg-indigo-200 transition font-semibold ml-auto">
+          <label className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg cursor-pointer hover:bg-indigo-200 transition font-semibold w-full">
             <input
               type="checkbox"
               checked={showOnlineOnly}
@@ -701,7 +701,7 @@ export function ShiftLeaderDashboard() {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {/* Stats Grid */}
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
                 <div className="bg-blue-50 p-3 rounded-lg">
                   <p className="text-xs text-slate-600">الحالة</p>
                   <p className={`text-lg font-bold mt-1 ${
