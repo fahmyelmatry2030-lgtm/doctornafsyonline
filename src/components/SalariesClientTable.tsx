@@ -52,26 +52,11 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
   const calculatePayout = (t: TherapistForSalary) => {
     const profile = t.therapistProfile;
     if (!profile) return 0;
-
-    if (profile.salaryType === "FIXED") {
-      return profile.salary;
-    } else if (profile.salaryType === "COMMISSION") {
-      // commission is configured as percentage e.g. 50 (%) of the price per session
-      const commissionPercent = profile.salary > 0 ? profile.salary : 50; // default 50%
-      const totalAmount = t.completedSessionsCount * profile.pricePerSession;
-      return Math.round(totalAmount * (commissionPercent / 100));
-    } else if (profile.salaryType === "HOURLY") {
-      // hourly salary e.g. 150 EGP per session completed
-      const hourlyRate = profile.salary > 0 ? profile.salary : profile.pricePerSession;
-      return t.completedSessionsCount * hourlyRate;
-    }
-    return 0;
+    return profile.salary;
   };
 
   // Stats
   const totalPayroll = therapists.reduce((sum, t) => sum + calculatePayout(t), 0);
-  const fixedCount = therapists.filter((t) => t.therapistProfile?.salaryType === "FIXED").length;
-  const commissionCount = therapists.filter((t) => t.therapistProfile?.salaryType === "COMMISSION").length;
   const totalCompletedSessions = therapists.reduce((sum, t) => sum + t.completedSessionsCount, 0);
 
   const handleEditClick = (t: TherapistForSalary) => {
@@ -140,14 +125,14 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
   return (
     <div className="space-y-6">
       {/* Stats row */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3">
         <div className="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 relative overflow-hidden group">
           <div className="flex items-center justify-between">
             <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center">
               <DollarSign className="w-5 h-5" />
             </div>
             <div className="text-left">
-              <p className="text-xs font-bold text-[#A3AED0] mb-1">إجمالي المستحقات (هذا الشهر)</p>
+              <p className="text-xs font-bold text-[#A3AED0] mb-1">إجمالي رواتب الأخصائيين</p>
               <p className="text-2xl font-black text-[#2B3674]">
                 {totalPayroll.toLocaleString("ar-EG")} <span className="text-xs font-bold text-slate-400">ج.م</span>
               </p>
@@ -158,23 +143,11 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
         <div className="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 relative overflow-hidden group">
           <div className="flex items-center justify-between">
             <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <Briefcase className="w-5 h-5" />
-            </div>
-            <div className="text-left">
-              <p className="text-xs font-bold text-[#A3AED0] mb-1">نظام راتب ثابت</p>
-              <p className="text-2xl font-black text-[#2B3674]">{fixedCount} أخصائيين</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 relative overflow-hidden group">
-          <div className="flex items-center justify-between">
-            <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
               <Users className="w-5 h-5" />
             </div>
             <div className="text-left">
-              <p className="text-xs font-bold text-[#A3AED0] mb-1">نظام عمولات</p>
-              <p className="text-2xl font-black text-[#2B3674]">{commissionCount} أخصائيين</p>
+              <p className="text-xs font-bold text-[#A3AED0] mb-1">عدد الأخصائيين</p>
+              <p className="text-2xl font-black text-[#2B3674]">{therapists.length} أخصائيين</p>
             </div>
           </div>
         </div>
@@ -216,10 +189,9 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
             <thead className="bg-slate-50 text-[#A3AED0] uppercase tracking-wide text-xs border-b border-slate-100">
               <tr>
                 <th className="px-6 py-4 font-bold">الأخصائي</th>
-                <th className="px-6 py-4 font-bold">نظام الحساب</th>
-                <th className="px-6 py-4 font-bold">القيمة المدخلة</th>
+                <th className="px-6 py-4 font-bold">المرتب الشهري</th>
                 <th className="px-6 py-4 font-bold">جلسات هذا الشهر</th>
-                <th className="px-6 py-4 font-bold">المستحقات المقدرة</th>
+                <th className="px-6 py-4 font-bold">إجمالي المستحقات</th>
                 <th className="px-6 py-4 font-bold">طريقة الدفع</th>
                 <th className="px-6 py-4 font-bold">الحالة</th>
                 {!isReadOnly && <th className="px-6 py-4 text-center font-bold">الإجراءات</th>}
@@ -248,25 +220,8 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-slate-700">
-                      {profile?.salaryType === "FIXED" ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                          راتب ثابت
-                        </span>
-                      ) : profile?.salaryType === "COMMISSION" ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">
-                          نظام عمولة (%)
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
-                          بالجلسة (ساعة)
-                        </span>
-                      )}
-                    </td>
                     <td className="px-6 py-4 font-bold text-slate-900">
-                      {profile?.salaryType === "COMMISSION"
-                        ? `${profile.salary || 50}%`
-                        : `${profile?.salary || 0} ج.م`}
+                      {profile?.salary || 0} ج.م
                     </td>
                     <td className="px-6 py-4 font-semibold text-slate-600">
                       {t.completedSessionsCount} جلسات مكتملة
@@ -339,8 +294,8 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
           <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-6 border border-slate-100">
             <div>
-              <h3 className="text-xl font-black text-[#2B3674]">تعديل نظام الراتب</h3>
-              <p className="text-xs text-slate-400 mt-1">تحديث طريقة حساب الراتب للأخصائي: {selectedTherapist.name}</p>
+              <h3 className="text-xl font-black text-[#2B3674]">تعديل بيانات الراتب</h3>
+              <p className="text-xs text-slate-400 mt-1">تحديث قيمة الراتب للأخصائي: {selectedTherapist.name}</p>
             </div>
 
             {errorMsg && (
@@ -351,34 +306,12 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-2">نوع الراتب / نظام الاستحقاق</label>
-                <select
-                  value={salaryType}
-                  onChange={(e) => {
-                    setSalaryType(e.target.value);
-                    if (e.target.value === "COMMISSION") {
-                      setSalaryValue(50); // default 50% commission
-                    } else {
-                      setSalaryValue(0);
-                    }
-                  }}
-                  className="w-full p-3 rounded-xl border border-slate-200 outline-none text-sm focus:border-indigo-500 transition-colors"
-                >
-                  <option value="FIXED">راتب شهري ثابت (Fixed Salary)</option>
-                  <option value="COMMISSION">عمولة نسبة مئوية (Commission %)</option>
-                  <option value="HOURLY">دفع بالجلسة الواحدة (Hourly/Per-Session)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-500 mb-2">
-                  {salaryType === "COMMISSION" ? "نسبة العمولة من قيمة الجلسة (%)" : "قيمة الراتب أو قيمة الجلسة (ج.م)"}
-                </label>
+                <label className="block text-xs font-bold text-slate-500 mb-2">قيمة المرتب الشهري (ج.م)</label>
                 <input
                   type="number"
                   value={salaryValue}
                   onChange={(e) => setSalaryValue(Number(e.target.value))}
-                  placeholder={salaryType === "COMMISSION" ? "50" : "5000"}
+                  placeholder="5000"
                   className="w-full p-3 rounded-xl border border-slate-200 outline-none text-sm focus:border-indigo-500 transition-colors"
                 />
               </div>
