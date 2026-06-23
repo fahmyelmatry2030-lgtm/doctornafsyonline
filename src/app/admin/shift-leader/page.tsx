@@ -40,43 +40,75 @@ export default async function ShiftLeaderPage() {
 
   const isReadOnly = session.user.role === "ADMIN_VIEWER";
 
-  // Fetch all shifts
-  const shifts = await prisma.shift.findMany({
-    include: {
-      shiftLeader: {
-        select: { id: true, name: true, email: true }
-      },
-      specialistAssignments: {
-        where: { isActive: true },
-        include: {
-          therapist: {
-            select: { id: true, name: true, email: true }
+  let shifts = [];
+  let shiftLeaders = [];
+  let specialists = [];
+
+  try {
+    // Fetch all shifts
+    shifts = await prisma.shift.findMany({
+      include: {
+        shiftLeader: {
+          select: { id: true, name: true, email: true }
+        },
+        specialistAssignments: {
+          where: { isActive: true },
+          include: {
+            therapist: {
+              select: { id: true, name: true, email: true }
+            }
           }
         }
-      }
-    },
-    orderBy: { createdAt: "desc" }
-  });
+      },
+      orderBy: { createdAt: "desc" }
+    });
 
-  // Fetch shift leaders
-  const shiftLeaders = await prisma.user.findMany({
-    where: {
-      role: { in: ["SHIFT_LEADER", "ADMIN"] },
-      isSuspended: false
-    },
-    select: { id: true, name: true, email: true },
-    orderBy: { name: "asc" }
-  });
+    // Fetch shift leaders
+    shiftLeaders = await prisma.user.findMany({
+      where: {
+        role: { in: ["SHIFT_LEADER", "ADMIN"] },
+        isSuspended: false
+      },
+      select: { id: true, name: true, email: true },
+      orderBy: { name: "asc" }
+    });
 
-  // Fetch all specialists
-  const specialists = await prisma.user.findMany({
-    where: {
-      role: "THERAPIST",
-      isSuspended: false
-    },
-    select: { id: true, name: true, email: true },
-    orderBy: { name: "asc" }
-  });
+    // Fetch all specialists
+    specialists = await prisma.user.findMany({
+      where: {
+        role: "THERAPIST",
+        isSuspended: false
+      },
+      select: { id: true, name: true, email: true },
+      orderBy: { name: "asc" }
+    });
+  } catch (dbError: any) {
+    console.error("[Shift Page] Database query failed:", dbError);
+    return (
+      <div className="p-6 space-y-4">
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-amber-800">
+          <AlertCircle size={24} className="mb-2 text-amber-600" />
+          <h3 className="font-bold text-lg mb-2">خطأ في الاتصال بقاعدة البيانات (Schema Mismatch)</h3>
+          <p className="text-sm mb-4">
+            حدث هذا الخطأ غالباً لأنك قمت بتحديث الكود ولكن لم تقم بتحديث أعمدة قاعدة البيانات بعد.
+          </p>
+          <div className="bg-white p-4 rounded-xl border border-amber-100 text-xs font-mono text-slate-700 mb-4 break-words">
+            {dbError.message || "Unknown Database Error"}
+          </div>
+          <p className="text-sm mb-3">
+            <strong>الحل:</strong> يرجى فتح الرابط التالي لتحديث قاعدة البيانات فوراً:
+          </p>
+          <a 
+            href="/api/admin/setup-db?secret=NafsiDatabaseSetup2026" 
+            target="_blank" 
+            className="inline-block px-4 py-2 bg-amber-600 hover:bg-amber-750 text-white rounded-xl text-sm font-bold transition shadow-sm"
+          >
+            تحديث قاعدة البيانات الآن ⚙️
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
