@@ -26,6 +26,16 @@ export async function GET() {
       results.push("Added isSuspended to User");
     } catch (e: any) { results.push("isSuspended: " + e.message); }
 
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE TherapistProfile ADD COLUMN salary INT NOT NULL DEFAULT 0;`);
+      results.push("Added salary to TherapistProfile");
+    } catch (e: any) { results.push("salary: " + e.message); }
+
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE TherapistProfile ADD COLUMN salaryType VARCHAR(191) NOT NULL DEFAULT 'FIXED';`);
+      results.push("Added salaryType to TherapistProfile");
+    } catch (e: any) { results.push("salaryType: " + e.message); }
+
     return NextResponse.json({ success: true, results });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
