@@ -26,12 +26,15 @@ export default async function VerifyStaffPage({ searchParams }: PageProps) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
         <div className="max-w-xl w-full mx-auto space-y-8 my-auto text-center">
-          <div className="text-center space-y-2">
-            <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 font-black text-2xl">
-              <Award className="w-8 h-8" />
-              <span>نَفْسي</span>
+          <div className="flex flex-col items-center space-y-2">
+            <Link href="/" className="flex flex-col items-center space-y-1.5 transition-transform hover:scale-103">
+              <img src="/logo.jpeg" alt="Doctor Nafsy" className="h-14 w-auto object-contain rounded-lg shadow-sm" />
+              <div className="text-center">
+                <p className="text-lg font-black text-slate-800 tracking-wide">دكتور نفسي أونلاين</p>
+                <p className="text-[10px] text-[#A3AED0] font-extrabold font-mono tracking-wider">Doctor Nafsy Online</p>
+              </div>
             </Link>
-            <h2 className="text-xl font-bold text-slate-800">نظام توثيق واعتماد فريق العمل</h2>
+            <h2 className="text-xl font-bold text-slate-800 mt-2">نظام توثيق واعتماد فريق العمل</h2>
             <p className="text-xs text-slate-500">يرجى استخدام رمز الاستجابة السريعة (QR Code) الخاص بالموظف للتحقق</p>
           </div>
           <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center">
@@ -67,12 +70,15 @@ export default async function VerifyStaffPage({ searchParams }: PageProps) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
         <div className="max-w-xl w-full mx-auto space-y-8 my-auto text-center">
-          <div className="text-center space-y-2">
-            <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 font-black text-2xl">
-              <Award className="w-8 h-8" />
-              <span>نَفْسي</span>
+          <div className="flex flex-col items-center space-y-2">
+            <Link href="/" className="flex flex-col items-center space-y-1.5 transition-transform hover:scale-103">
+              <img src="/logo.jpeg" alt="Doctor Nafsy" className="h-14 w-auto object-contain rounded-lg shadow-sm" />
+              <div className="text-center">
+                <p className="text-lg font-black text-slate-800 tracking-wide">دكتور نفسي أونلاين</p>
+                <p className="text-[10px] text-[#A3AED0] font-extrabold font-mono tracking-wider">Doctor Nafsy Online</p>
+              </div>
             </Link>
-            <h2 className="text-xl font-bold text-slate-800">نظام توثيق واعتماد فريق العمل</h2>
+            <h2 className="text-xl font-bold text-slate-800 mt-2">نظام توثيق واعتماد فريق العمل</h2>
           </div>
           <div className="bg-white rounded-3xl border border-red-200 shadow-lg overflow-hidden">
             <div className="bg-gradient-to-r from-red-500 to-red-650 p-6 text-center text-white space-y-2">
@@ -101,13 +107,15 @@ export default async function VerifyStaffPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
       <div className="max-w-xl w-full mx-auto space-y-8 my-auto">
-        {/* Brand Header */}
-        <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 font-black text-2xl">
-            <Award className="w-8 h-8" />
-            <span>نَفْسي</span>
+        <div className="flex flex-col items-center space-y-2">
+          <Link href="/" className="flex flex-col items-center space-y-1.5 transition-transform hover:scale-103">
+            <img src="/logo.jpeg" alt="Doctor Nafsy" className="h-14 w-auto object-contain rounded-lg shadow-sm" />
+            <div className="text-center">
+              <p className="text-lg font-black text-slate-800 tracking-wide">دكتور نفسي أونلاين</p>
+              <p className="text-[10px] text-[#A3AED0] font-extrabold font-mono tracking-wider">Doctor Nafsy Online</p>
+            </div>
           </Link>
-          <h2 className="text-xl font-bold text-slate-800">نظام توثيق واعتماد فريق العمل</h2>
+          <h2 className="text-xl font-bold text-slate-800 mt-2">نظام توثيق واعتماد فريق العمل</h2>
           <p className="text-xs text-slate-500">تحقق من صحة وصلاحية بطاقات الهوية لمديري وأعضاء فريق العمل بالمنصة</p>
         </div>
 
