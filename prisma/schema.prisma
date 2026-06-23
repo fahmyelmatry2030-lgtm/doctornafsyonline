@@ -19,6 +19,8 @@ model User {
   avatar        String?
   role          String    @default("PATIENT")
   isSuspended   Boolean   @default(false)
+  isOnline      Boolean   @default(false)
+  lastActivityAt DateTime  @default(now())
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -29,9 +31,12 @@ model User {
   reviews       Review[]
   sessionNotes  SessionNote[]
   
-  // New: Customer Service related
   specialistShifts SpecialistShiftAssignment[] @relation("SpecialistShifts")
   therapistSlots   AvailableSlot[] @relation("TherapistSlots")
+  
+  shiftLeadCommissions Commission[] @relation("ShiftLeaderCommissions")
+  specialistCommissions Commission[] @relation("SpecialistCommissions")
+  onlineStatusLogs OnlineStatusLog[]
 }
 
 model TherapistProfile {
@@ -77,6 +82,7 @@ model Appointment {
   // New: Session monitoring
   sessionStatus SessionStatus?
   availableSlot AvailableSlot?
+  commissions Commission[]
 }
 
 model Message {
@@ -220,4 +226,39 @@ model SessionStatus {
   
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model Commission {
+  id String @id @default(cuid())
+  
+  shiftLeaderId String
+  shiftLeader User @relation("ShiftLeaderCommissions", fields: [shiftLeaderId], references: [id], onDelete: Cascade)
+  
+  specialistId String
+  specialist User @relation("SpecialistCommissions", fields: [specialistId], references: [id], onDelete: Cascade)
+  
+  appointmentId String
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  
+  sessionAmount Int
+  shiftLeaderCommissionPercent Float @default(10)
+  specialistCommissionPercent Float @default(50)
+  
+  shiftLeaderEarnings Int
+  specialistEarnings Int
+  
+  isPaid Boolean @default(false)
+  paidAt DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OnlineStatusLog {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  status String
+  timestamp DateTime @default(now())
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Calendar, Clock, User, Phone, AlertCircle, CheckCircle } from "lucide-react";
 import { ShiftStatsModals } from "./ShiftStatsModals";
+import { OnlineStatusIndicator } from "./OnlineStatusIndicator";
 
 interface Appointment {
   id: string;
@@ -21,6 +22,7 @@ interface Appointment {
 interface Specialist {
   therapistId: string;
   therapistName: string;
+  isOnline: boolean;
   appointments: Appointment[];
 }
 
