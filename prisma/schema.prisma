@@ -55,6 +55,8 @@ model TherapistProfile {
   isAvailable      Boolean  @default(true)
   certificates     String?  @db.Text // JSON string: [{ name: String, url: String, uploadedAt: String, status: String }]
   contractUrl      String?  @db.Text
+  salary           Int      @default(0)
+  salaryType       String   @default("FIXED") // "FIXED", "COMMISSION", "HOURLY"
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

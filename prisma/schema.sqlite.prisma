@@ -54,6 +54,8 @@ model TherapistProfile {
   isAvailable      Boolean  @default(true)
   certificates     String? 
   contractUrl      String? 
+  salary           Int      @default(0)
+  salaryType       String   @default("FIXED") // "FIXED", "COMMISSION", "HOURLY"
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
