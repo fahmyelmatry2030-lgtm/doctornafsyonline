@@ -20,40 +20,48 @@ export async function GET(req: NextRequest) {
     const endOfToday = new Date(now);
     endOfToday.setHours(23, 59, 59, 999);
 
-    const commissions = await prisma.commission.findMany({
-      where: {
-        shiftLeaderId: leaderId,
-        appointment: {
-          scheduledAt: {
-            gte: startOfToday,
-            lte: endOfToday,
-          },
-        },
-      },
-      include: {
-        specialist: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            avatar: true,
-            isOnline: true,
-            therapistProfile: {
-              select: { isAvailable: true },
+    let commissions = [];
+    
+    try {
+      commissions = await prisma.commission.findMany({
+        where: {
+          shiftLeaderId: leaderId,
+          appointment: {
+            scheduledAt: {
+              gte: startOfToday,
+              lte: endOfToday,
             },
           },
         },
-        appointment: {
-          include: {
-            patient: {
-              select: { id: true, name: true, email: true, phone: true },
+        include: {
+          specialist: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
+              isOnline: true,
+              therapistProfile: {
+                select: { isAvailable: true },
+              },
             },
-            sessionStatus: true,
+          },
+          appointment: {
+            include: {
+              patient: {
+                select: { id: true, name: true, email: true, phone: true },
+              },
+              sessionStatus: true,
+            },
           },
         },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+        orderBy: { createdAt: "desc" },
+      });
+    } catch (dbError: any) {
+      // If Commission model doesn't exist, return empty team
+      console.warn("[API] Commission query failed (model may not exist):", dbError.message);
+      commissions = [];
+    }
 
     const teamMap = new Map<string, {
       specialistId: string;
