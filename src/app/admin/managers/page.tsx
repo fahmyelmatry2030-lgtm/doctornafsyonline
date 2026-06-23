@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2, Eye, EyeOff, Shield, QrCode } from "lucide-react";
+import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2, Eye, EyeOff, Shield, QrCode, IdCard } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import { RolePermissionsManager } from "./RolePermissionsManager";
+import StaffIDsPage from "./staff-ids/page";
 
 type Manager = {
   id: string;
@@ -20,7 +21,7 @@ export default function ManagersPage() {
   const [managers, setManagers] = useState<Manager[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
-  const [activeTab, setActiveTab] = useState<"managers" | "permissions">("managers");
+  const [activeTab, setActiveTab] = useState<"managers" | "permissions" | "staff-ids">("managers");
   
   // Form State
   const [name, setName] = useState("");
@@ -164,10 +165,24 @@ export default function ManagersPage() {
           <Shield className="w-4 h-4" />
           تخصيص الصلاحيات
         </button>
+        <button
+          onClick={() => setActiveTab("staff-ids")}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+            activeTab === "staff-ids" ? "bg-[#1E56A0] text-white shadow-sm" : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <QrCode className="w-4 h-4" />
+          بطاقات الموظفين
+        </button>
       </div>
 
       {/* Tab Content */}
       {activeTab === "permissions" && <RolePermissionsManager />}
+      {activeTab === "staff-ids" && (
+        <div className="animate-fade-in">
+          <StaffIDsPage />
+        </div>
+      )}
 
       {activeTab === "managers" && (<>
 
