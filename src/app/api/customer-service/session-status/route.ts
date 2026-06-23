@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Check role
-    const allowedRoles = ["ADMIN", "ADMIN_CUSTOMER_SERVICE"];
+    const allowedRoles = ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "SHIFT_LEADER"];
     if (!allowedRoles.includes(session.user.role)) {
       return NextResponse.json(
         { error: "Access denied" },
@@ -155,7 +155,7 @@ export async function PUT(req: NextRequest) {
     }
 
     // Check role
-    const allowedRoles = ["ADMIN", "ADMIN_CUSTOMER_SERVICE"];
+    const allowedRoles = ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "SHIFT_LEADER"];
     if (!allowedRoles.includes(session.user.role)) {
       return NextResponse.json(
         { error: "Access denied" },

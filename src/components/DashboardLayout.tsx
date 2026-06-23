@@ -178,6 +178,7 @@ export function DashboardLayout({
   } else if (role === "SHIFT_LEADER") {
     navItems = [
       { name: "لوحة التحكم 📊", href: "/shift-leader", icon: <Home className="h-5 w-5" /> },
+      { name: "لوحة خدمة العملاء 🎯", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" /> },
     ];
   } else if (role?.startsWith("ADMIN")) {
     const allAdminNavItems = [
@@ -191,7 +192,7 @@ export function DashboardLayout({
       { name: "الدعم، الإشعارات وأكواد الخصم 🎟️", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "رسائل الدعم الفني 🎧", href: "/admin/support", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "شهادات الكورسات والتدريب 🎓", href: "/admin/certificates", icon: <Award className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
-      { name: "لوحة تحكم خدمة العملاء 🎯", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR"] },
+      { name: "لوحة تحكم خدمة العملاء 🎯", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "SHIFT_LEADER"] },
       { name: "إعدادات المنصة ⚙️", href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
     ];
 

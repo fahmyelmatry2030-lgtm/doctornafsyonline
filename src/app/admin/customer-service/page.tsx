@@ -19,13 +19,14 @@ export default async function CustomerServicePage() {
   const isAuthorized =
     session.user.role === "ADMIN" ||
     session.user.role === "ADMIN_CUSTOMER_SERVICE" ||
-    session.user.role === "ADMIN_HR";
+    session.user.role === "ADMIN_HR" ||
+    session.user.role === "SHIFT_LEADER";
 
   if (!isAuthorized) {
     return (
       <div className="p-6 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-700">
         <AlertCircle size={20} />
-        غير مصرح - تحتاج صلاحية خدمة العملاء (ADMIN_CUSTOMER_SERVICE)
+        غير مصرح - تحتاج صلاحية خدمة العملاء (ADMIN_CUSTOMER_SERVICE) أو قائد الشيفت (SHIFT_LEADER)
       </div>
     );
   }

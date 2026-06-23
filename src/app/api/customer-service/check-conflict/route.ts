@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Check role
-    const allowedRoles = ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "THERAPIST"];
+    const allowedRoles = ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "SHIFT_LEADER", "THERAPIST"];
     if (!allowedRoles.includes(session.user.role)) {
       return NextResponse.json(
         { error: "Access denied" },

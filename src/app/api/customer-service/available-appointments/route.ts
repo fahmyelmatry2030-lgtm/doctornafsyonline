@@ -24,10 +24,11 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Check role: only ADMIN_CUSTOMER_SERVICE can access
-    if (session.user.role !== "ADMIN_CUSTOMER_SERVICE" && session.user.role !== "ADMIN") {
+    // Check role: only ADMIN_CUSTOMER_SERVICE, ADMIN_HR, SHIFT_LEADER or ADMIN can access
+    const allowedRoles = ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "SHIFT_LEADER"];
+    if (!allowedRoles.includes(session.user.role)) {
       return NextResponse.json(
-        { error: "Access denied: ADMIN_CUSTOMER_SERVICE role required" },
+        { error: "Access denied: authorized roles required" },
         { status: 403 }
       );
     }

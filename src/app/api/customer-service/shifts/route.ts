@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const allowedRoles = ["ADMIN", "ADMIN_CUSTOMER_SERVICE"];
+    const allowedRoles = ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "SHIFT_LEADER"];
     if (!allowedRoles.includes(session.user.role)) {
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }

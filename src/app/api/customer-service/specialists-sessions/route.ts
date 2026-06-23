@@ -24,7 +24,8 @@ export async function GET(req: NextRequest) {
     }
 
     // Check role
-    if (session.user.role !== "ADMIN_CUSTOMER_SERVICE" && session.user.role !== "ADMIN") {
+    const allowedRoles = ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "SHIFT_LEADER"];
+    if (!allowedRoles.includes(session.user.role)) {
       return NextResponse.json(
         { error: "Access denied" },
         { status: 403 }
