@@ -14,6 +14,8 @@ type TherapistForSalary = {
     pricePerSession: number;
     salary: number;
     salaryType: string;
+    paymentMethod: string;
+    paymentDetails: string;
   } | null;
 };
 
@@ -33,6 +35,8 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
   // Edit Modal form states
   const [salaryType, setSalaryType] = useState("FIXED");
   const [salaryValue, setSalaryValue] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState("VODAFONE_CASH");
+  const [paymentDetails, setPaymentDetails] = useState("");
 
   // Success indicator for inline actions
   const [paidStatus, setPaidStatus] = useState<Record<string, boolean>>({});
@@ -74,6 +78,8 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
     setSelectedTherapist(t);
     setSalaryType(t.therapistProfile?.salaryType || "FIXED");
     setSalaryValue(t.therapistProfile?.salary || 0);
+    setPaymentMethod(t.therapistProfile?.paymentMethod || "VODAFONE_CASH");
+    setPaymentDetails(t.therapistProfile?.paymentDetails || "");
     setErrorMsg(null);
     setShowEditModal(true);
   };
@@ -84,7 +90,13 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
       setUpdating(true);
       setErrorMsg(null);
 
-      const res = await updateTherapistSalary(selectedTherapist.id, salaryType, Number(salaryValue));
+      const res = await updateTherapistSalary(
+        selectedTherapist.id,
+        salaryType,
+        Number(salaryValue),
+        paymentMethod,
+        paymentDetails
+      );
       if (!res.success) {
         throw new Error(res.error || "فشل تحديث الراتب");
       }
@@ -96,7 +108,13 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
             ? {
                 ...t,
                 therapistProfile: t.therapistProfile
-                  ? { ...t.therapistProfile, salaryType, salary: Number(salaryValue) }
+                  ? {
+                      ...t.therapistProfile,
+                      salaryType,
+                      salary: Number(salaryValue),
+                      paymentMethod,
+                      paymentDetails,
+                    }
                   : null,
               }
             : t
@@ -202,6 +220,7 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                 <th className="px-6 py-4 font-bold">القيمة المدخلة</th>
                 <th className="px-6 py-4 font-bold">جلسات هذا الشهر</th>
                 <th className="px-6 py-4 font-bold">المستحقات المقدرة</th>
+                <th className="px-6 py-4 font-bold">طريقة الدفع</th>
                 <th className="px-6 py-4 font-bold">الحالة</th>
                 {!isReadOnly && <th className="px-6 py-4 text-center font-bold">الإجراءات</th>}
               </tr>
@@ -254,6 +273,29 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                     </td>
                     <td className="px-6 py-4 text-emerald-600 font-black text-base">
                       {payout.toLocaleString("ar-EG")} ج.م
+                    </td>
+                    <td className="px-6 py-4">
+                      {profile?.paymentMethod ? (
+                        <div className="space-y-1">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ${
+                            profile.paymentMethod === "VODAFONE_CASH" ? "bg-rose-50 text-rose-700 border border-rose-100" :
+                            profile.paymentMethod === "INSTAPAY" ? "bg-cyan-50 text-cyan-700 border border-cyan-100" :
+                            profile.paymentMethod === "BANK_TRANSFER" ? "bg-blue-50 text-blue-700 border border-blue-100" :
+                            "bg-slate-50 text-slate-700 border border-slate-100"
+                          } border`}>
+                            {profile.paymentMethod === "VODAFONE_CASH" ? "فودافون كاش" :
+                             profile.paymentMethod === "INSTAPAY" ? "إنستاباي" :
+                             profile.paymentMethod === "BANK_TRANSFER" ? "تحويل بنكي" : "أخرى"}
+                          </span>
+                          {profile.paymentDetails && (
+                            <p className="text-xs font-mono text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 select-all block w-max">
+                              {profile.paymentDetails}
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-xs text-slate-400">—</span>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <button
@@ -337,6 +379,31 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                   value={salaryValue}
                   onChange={(e) => setSalaryValue(Number(e.target.value))}
                   placeholder={salaryType === "COMMISSION" ? "50" : "5000"}
+                  className="w-full p-3 rounded-xl border border-slate-200 outline-none text-sm focus:border-indigo-500 transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-2">طريقة الدفع المفضلة</label>
+                <select
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 outline-none text-sm focus:border-indigo-500 transition-colors"
+                >
+                  <option value="VODAFONE_CASH">فودافون كاش (Vodafone Cash)</option>
+                  <option value="INSTAPAY">إنستاباي (InstaPay)</option>
+                  <option value="BANK_TRANSFER">تحويل بنكي (Bank Transfer)</option>
+                  <option value="OTHER">أخرى (Other)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-2">تفاصيل الدفع (رقم الهاتف أو الحساب)</label>
+                <input
+                  type="text"
+                  value={paymentDetails}
+                  onChange={(e) => setPaymentDetails(e.target.value)}
+                  placeholder="مثال: 01012345678 أو حساب بنكي رقم..."
                   className="w-full p-3 rounded-xl border border-slate-200 outline-none text-sm focus:border-indigo-500 transition-colors"
                 />
               </div>

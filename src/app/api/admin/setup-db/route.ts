@@ -43,6 +43,16 @@ export async function GET(req: NextRequest) {
       results.push("Added salaryType to TherapistProfile");
     } catch (e: any) { results.push("salaryType: " + e.message); }
 
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE TherapistProfile ADD COLUMN paymentMethod VARCHAR(191) NOT NULL DEFAULT 'VODAFONE_CASH';`);
+      results.push("Added paymentMethod to TherapistProfile");
+    } catch (e: any) { results.push("paymentMethod: " + e.message); }
+
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE TherapistProfile ADD COLUMN paymentDetails VARCHAR(191) NOT NULL DEFAULT '';`);
+      results.push("Added paymentDetails to TherapistProfile");
+    } catch (e: any) { results.push("paymentDetails: " + e.message); }
+
     return NextResponse.json({ success: true, results });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

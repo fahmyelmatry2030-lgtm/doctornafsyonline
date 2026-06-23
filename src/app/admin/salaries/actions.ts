@@ -7,7 +7,9 @@ import { revalidatePath } from "next/cache";
 export async function updateTherapistSalary(
   therapistId: string,
   salaryType: "FIXED" | "COMMISSION" | "HOURLY" | string,
-  salary: number
+  salary: number,
+  paymentMethod?: string,
+  paymentDetails?: string
 ) {
   try {
     const session = await auth();
@@ -35,6 +37,8 @@ export async function updateTherapistSalary(
       data: {
         salaryType,
         salary,
+        paymentMethod: paymentMethod || "VODAFONE_CASH",
+        paymentDetails: paymentDetails || "",
       },
     });
 

@@ -56,6 +56,8 @@ model TherapistProfile {
   contractUrl      String? 
   salary           Int      @default(0)
   salaryType       String   @default("FIXED") // "FIXED", "COMMISSION", "HOURLY"
+  paymentMethod    String   @default("VODAFONE_CASH") // "VODAFONE_CASH", "INSTAPAY", "BANK_TRANSFER", "OTHER"
+  paymentDetails   String   @default("")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

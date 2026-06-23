@@ -30,6 +30,8 @@ export default async function AdminSalariesPage() {
           pricePerSession: true,
           salary: true,
           salaryType: true,
+          paymentMethod: true,
+          paymentDetails: true,
         },
       },
       therapistAppointments: {
