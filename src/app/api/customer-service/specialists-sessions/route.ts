@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
     const end = new Date(endDate);
 
     // Get specialists for this shift (or all if no shiftId)
-    let specialistIds: string[] = [];
+    let specialistsList: { id: string; name: string; isOnline: boolean }[] = [];
 
     if (shiftId) {
       const shiftAssignments = await prisma.specialistShiftAssignment.findMany({
@@ -56,17 +56,22 @@ export async function GET(req: NextRequest) {
           shiftId,
           isActive: true,
         },
-        select: { therapistId: true },
+        include: {
+          therapist: {
+            select: { id: true, name: true, isOnline: true }
+          }
+        }
       });
-      specialistIds = shiftAssignments.map((a) => a.therapistId);
+      specialistsList = shiftAssignments.map((a) => a.therapist);
     } else {
       // Get all active specialists
-      const therapists = await prisma.user.findMany({
+      specialistsList = await prisma.user.findMany({
         where: { role: "THERAPIST" },
-        select: { id: true },
+        select: { id: true, name: true, isOnline: true },
       });
-      specialistIds = therapists.map((t) => t.id);
     }
+
+    const specialistIds = specialistsList.map((s) => s.id);
 
     // Get appointments for these specialists in the date range
     const appointments = await prisma.appointment.findMany({
@@ -88,28 +93,32 @@ export async function GET(req: NextRequest) {
     // Group by therapist
     const appointmentsByTherapist = new Map();
 
+    // Pre-populate with all specialists to ensure isOnline is included and therapists with 0 appointments show up
+    for (const spec of specialistsList) {
+      appointmentsByTherapist.set(spec.id, {
+        therapistId: spec.id,
+        therapistName: spec.name,
+        isOnline: spec.isOnline,
+        appointments: [],
+      });
+    }
+
     for (const appt of appointments) {
-      if (!appointmentsByTherapist.has(appt.therapistId)) {
-        appointmentsByTherapist.set(appt.therapistId, {
-          therapistId: appt.therapistId,
-          therapistName: appt.therapist.name,
-          appointments: [],
+      if (appointmentsByTherapist.has(appt.therapistId)) {
+        appointmentsByTherapist.get(appt.therapistId).appointments.push({
+          id: appt.id,
+          patientName: appt.patient.name,
+          patientEmail: appt.patient.email,
+          scheduledAt: appt.scheduledAt,
+          duration: appt.duration,
+          status: appt.status,
+          sessionStatus: appt.sessionStatus?.status || "SCHEDULED",
+          sessionStartedAt: appt.sessionStatus?.sessionStartedAt,
+          sessionEndedAt: appt.sessionStatus?.sessionEndedAt,
+          patientJoined: !!appt.sessionStatus?.patientJoinedAt,
+          therapistJoined: !!appt.sessionStatus?.therapistJoinedAt,
         });
       }
-
-      appointmentsByTherapist.get(appt.therapistId).appointments.push({
-        id: appt.id,
-        patientName: appt.patient.name,
-        patientEmail: appt.patient.email,
-        scheduledAt: appt.scheduledAt,
-        duration: appt.duration,
-        status: appt.status,
-        sessionStatus: appt.sessionStatus?.status || "SCHEDULED",
-        sessionStartedAt: appt.sessionStatus?.sessionStartedAt,
-        sessionEndedAt: appt.sessionStatus?.sessionEndedAt,
-        patientJoined: !!appt.sessionStatus?.patientJoinedAt,
-        therapistJoined: !!appt.sessionStatus?.therapistJoinedAt,
-      });
     }
 
     const result = Array.from(appointmentsByTherapist.values());

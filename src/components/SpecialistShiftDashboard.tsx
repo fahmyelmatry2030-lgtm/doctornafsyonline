@@ -102,13 +102,18 @@ export function SpecialistShiftDashboard({
             className="bg-white border border-slate-200 rounded-lg overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <User size={24} />
-                {specialist.therapistName}
-              </h3>
-              <div className="text-blue-100 text-sm mt-1">
-                {specialist.appointments.length} جلسة
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  <User size={24} />
+                  {specialist.therapistName}
+                </h3>
+                <div className="text-blue-100 text-sm mt-1">
+                  {specialist.appointments.length} جلسة
+                </div>
+              </div>
+              <div className="bg-white px-3 py-1.5 rounded-xl shadow-sm">
+                <OnlineStatusIndicator isOnline={specialist.isOnline} showLabel={true} />
               </div>
             </div>
 
