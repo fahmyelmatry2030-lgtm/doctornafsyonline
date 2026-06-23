@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2, Eye, EyeOff, Shield } from "lucide-react";
+import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2, Eye, EyeOff, Shield, QrCode } from "lucide-react";
+import Link from "next/link";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import { RolePermissionsManager } from "./RolePermissionsManager";
@@ -298,13 +299,22 @@ export default function ManagersPage() {
                       <Calendar className="w-3.5 h-3.5" />
                       تاريخ الإضافة: {format(new Date(manager.createdAt), "dd MMM yyyy", { locale: arSA })}
                     </span>
-                    <button
-                      onClick={() => handleDeleteManager(manager.id, manager.name)}
-                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                      title="حذف الحساب"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <Link
+                        href={`/admin/managers/badge/${manager.id}`}
+                        className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                        title="عرض بطاقة الهوية ورمز QR"
+                      >
+                        <QrCode className="w-4 h-4" />
+                      </Link>
+                      <button
+                        onClick={() => handleDeleteManager(manager.id, manager.name)}
+                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                        title="حذف الحساب"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
