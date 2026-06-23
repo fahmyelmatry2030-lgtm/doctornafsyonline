@@ -5,13 +5,14 @@ import { auth } from "@/lib/auth";
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const secret = searchParams.get("secret");
-  
-  const session = await auth();
-  const isAdmin = session?.user?.role === "ADMIN";
   const isSecretValid = secret === "NafsiDatabaseSetup2026";
 
-  if (!isAdmin && !isSecretValid) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  if (!isSecretValid) {
+    const session = await auth();
+    const isAdmin = session?.user?.role === "ADMIN";
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
   }
 
   try {
