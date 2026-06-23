@@ -32,12 +32,17 @@ try {
   execSync('git add .', { stdio: 'inherit' });
   console.log('✅ تمت الإضافة\n');
 
-  // 4. عمل Commit
+  // 4. عمل Commit إذا كانت هناك تغييرات
   console.log('4️⃣  إنشاء Commit...');
-  const timestamp = new Date().toLocaleString('ar-SA');
-  const commitMsg = `🔧 Fix 503 error - Database configuration for Hostinger (${timestamp})`;
-  execSync(`git commit -m "${commitMsg}"`, { stdio: 'inherit' });
-  console.log('✅ تم الـ Commit\n');
+  const hasChanges = status.trim().length > 0;
+  if (hasChanges) {
+    const timestamp = new Date().toLocaleString('ar-SA');
+    const commitMsg = `🔧 Fix 503 error - Database configuration for Hostinger (${timestamp})`;
+    execSync(`git commit -m "${commitMsg}"`, { stdio: 'inherit' });
+    console.log('✅ تم الـ Commit\n');
+  } else {
+    console.log('ℹ️  لا توجد تغييرات جديدة للاستدعاء، تخطيت خطوة الـ Commit\n');
+  }
 
   // 5. Push
   console.log('5️⃣  رفع التغييرات (Git Push)...');
