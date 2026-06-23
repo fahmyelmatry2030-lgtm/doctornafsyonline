@@ -2,11 +2,15 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getSettings } from "@/app/admin/settings/actions";
 import { OperationsTabs } from "@/components/OperationsTabs";
+import { redirect } from "next/navigation";
 
 export default async function AdminOperationsPage() {
   const session = await auth();
   const role = session?.user?.role;
-  if (!role || (role !== "ADMIN" && role !== "ADMIN_HR" && role !== "ADMIN_ACCOUNTING" && role !== "ADMIN_VIEWER")) return null;
+  
+  if (!role || (role !== "ADMIN" && role !== "ADMIN_ACCOUNTING" && role !== "ADMIN_VIEWER")) {
+    redirect("/admin/dashboard");
+  }
   const isReadOnly = role === "ADMIN_VIEWER";
 
   const [appointments, settings] = await Promise.all([

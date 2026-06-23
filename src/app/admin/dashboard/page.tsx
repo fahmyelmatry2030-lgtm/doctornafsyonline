@@ -239,9 +239,11 @@ export default async function AdminDashboardPage() {
         <div className="bg-white rounded-[24px] shadow-sm overflow-hidden flex flex-col">
           <div className="px-7 py-6 flex items-center justify-between border-b border-[#F4F7FE]">
             <h2 className="font-black text-[#2B3674] text-lg">أحدث الحجوزات</h2>
-            <Link href="/admin/operations" className="text-sm font-bold text-[#4318FF] hover:text-[#3311DB] flex items-center gap-1 transition-colors">
-              عرض العمليات <ArrowUpRight className="w-4 h-4" />
-            </Link>
+            {session.user.role !== "ADMIN_HR" && (
+              <Link href="/admin/operations" className="text-sm font-bold text-[#4318FF] hover:text-[#3311DB] flex items-center gap-1 transition-colors">
+                عرض العمليات <ArrowUpRight className="w-4 h-4" />
+              </Link>
+            )}
           </div>
           <div className="p-0">
             <div className="w-full">
