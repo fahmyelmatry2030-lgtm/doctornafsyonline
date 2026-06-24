@@ -34,6 +34,26 @@ export async function GET(req: NextRequest) {
     } catch (e: any) { results.push("isSuspended: " + e.message); }
 
     try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE User ADD COLUMN baseSalary INT NOT NULL DEFAULT 0;`);
+      results.push("Added baseSalary to User");
+    } catch (e: any) { results.push("baseSalary: " + e.message); }
+
+    try {
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS \`EmployeeBonus\` (
+          \`id\` VARCHAR(191) NOT NULL,
+          \`userId\` VARCHAR(191) NOT NULL,
+          \`amount\` INTEGER NOT NULL,
+          \`reason\` VARCHAR(191) NOT NULL,
+          \`createdAt\` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+          PRIMARY KEY (\`id\`),
+          CONSTRAINT \`EmployeeBonus_userId_fkey\` FOREIGN KEY (\`userId\`) REFERENCES \`User\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      `);
+      results.push("Created EmployeeBonus table");
+    } catch (e: any) { results.push("EmployeeBonus table: " + e.message); }
+
+    try {
       await prisma.$executeRawUnsafe(`ALTER TABLE TherapistProfile ADD COLUMN salary INT NOT NULL DEFAULT 0;`);
       results.push("Added salary to TherapistProfile");
     } catch (e: any) { results.push("salary: " + e.message); }
