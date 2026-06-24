@@ -37,7 +37,12 @@ export async function GET() {
       const lastActivity = new Date(user.lastActivityAt);
       const diffMins = (now.getTime() - lastActivity.getTime()) / (1000 * 60);
       
-      const isActuallyOnline = user.isOnline && diffMins <= 5;
+      let isActuallyOnline = false;
+      if (user.role === "THERAPIST") {
+        isActuallyOnline = user.isOnline && diffMins <= 15; // Give therapists more leeway if they are waiting
+      } else {
+        isActuallyOnline = diffMins <= 5; // Other staff strictly based on recent activity
+      }
 
       return {
         ...user,
