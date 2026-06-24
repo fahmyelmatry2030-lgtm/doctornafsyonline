@@ -25,6 +25,8 @@ async function getFeaturedTherapists() {
 
 import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 import { getTranslations } from "next-intl/server";
+import { HomeWrapper } from "@/components/HomeWrapper";
+import { AppHome } from "@/components/AppHome";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -54,8 +56,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   }) as any);
 
   return (
-    <>
-      {/* ============ HERO SECTION ============ */}
+    <HomeWrapper 
+      appHome={<AppHome therapists={therapists} locale={locale} />}
+      websiteHome={
+        <>
+          {/* ============ HERO SECTION ============ */}
       <section className="relative overflow-hidden bg-[var(--color-surface-warm)] py-28 md:py-40">
         {/* Background Decorations */}
         <div className="absolute inset-0 opacity-40 pointer-events-none">
@@ -370,6 +375,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </Link>
         </div>
       </section>
-    </>
+        </>
+      }
+    />
   );
 }
