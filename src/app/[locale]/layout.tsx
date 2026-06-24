@@ -43,10 +43,10 @@ export default async function RootLayout({
 }>) {
   const { locale } = await params;
   
-  // Safe message loading - fallback to empty if fails
+  // Safe message loading - pass locale explicitly from URL params
   let messages: any = {};
   try {
-    messages = await getMessages();
+    messages = await getMessages({ locale });
   } catch (e) {
     console.error("getMessages failed:", e);
   }

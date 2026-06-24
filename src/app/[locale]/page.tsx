@@ -26,7 +26,8 @@ async function getFeaturedTherapists() {
 import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 import { getTranslations } from "next-intl/server";
 
-export default async function HomePage() {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   let therapists: any[] = [];
   let dbError = null;
   let content = {
@@ -42,13 +43,14 @@ export default async function HomePage() {
     dbError = err.message || String(err);
   }
 
-  const t = await getTranslations("Hero").catch(() => ({
-    badge: "رعاية نفسية مبسطة بثقة وخصوصية",
-    title1: "الدعم النفسي",
-    title2: "الذي تحتاجه الآن",
-    subtitle: "جلسات علاج نفسي عبر الفيديو والصوت والشات، ضمن منصة آمنة وسهلة الاستخدام.",
-    cta: "ابدأ رحلتك",
-    ctaSecondary: "تعرف علينا أكثر",
+  // Pass locale explicitly from URL params - fixes Arabic showing on /en
+  const t = await getTranslations({ locale, namespace: "Hero" }).catch(() => ({
+    badge: locale === 'en' ? "Your Trusted Mental Health Platform" : "رعاية نفسية مبسطة بثقة وخصوصية",
+    title1: locale === 'en' ? "Your journey to" : "الدعم النفسي",
+    title2: locale === 'en' ? "recovery starts here" : "الذي تحتاجه الآن",
+    subtitle: locale === 'en' ? "Connect with top certified therapists in complete privacy." : "جلسات علاج نفسي عبر الفيديو والصوت والشات، ضمن منصة آمنة وسهلة الاستخدام.",
+    cta: locale === 'en' ? "Start Your First Session" : "ابدأ رحلتك",
+    ctaSecondary: locale === 'en' ? "Browse Therapists" : "تعرف علينا أكثر",
   }) as any);
 
   return (
