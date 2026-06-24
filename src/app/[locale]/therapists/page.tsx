@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Users, Filter } from "lucide-react";
 import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,22 @@ export default async function TherapistsPage({ searchParams }: Props) {
   const { specialization } = await searchParams;
 
   const content = await getWebsiteContent();
+  const t = await getTranslations("Therapists");
+
+  // Lazy sweep for online status (Heartbeat check: offline if no activity in last 3 mins)
+  const threeMinutesAgo = new Date(Date.now() - 3 * 60 * 1000);
+  try {
+    await prisma.user.updateMany({
+      where: {
+        isOnline: true,
+        role: "THERAPIST",
+        lastActivityAt: { lt: threeMinutesAgo }
+      },
+      data: { isOnline: false }
+    });
+  } catch (e) {
+    console.error("Failed to sweep online status", e);
+  }
 
   const therapists = await prisma.user.findMany({
     where: {
@@ -43,13 +60,13 @@ export default async function TherapistsPage({ searchParams }: Props) {
           <div className="max-w-3xl mx-auto animate-fade-in-up stagger-1">
             <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#312E81] shadow-premium">
               <Users className="h-4 w-4 text-[#6366F1]" />
-              {content.therapistsHeroBadge || "نخبة الأخصائيين"}
+              {content.therapistsHeroBadge || t("heroBadge")}
             </span>
             <h1 className="mb-6 text-4xl font-black leading-tight text-[var(--color-foreground)] md:text-5xl animate-fade-in-up stagger-2">
-              {content.therapistsHeroTitle || "تحدث مع"} <span className="gradient-text">{content.therapistsHeroTitleGradient || "الخبراء المعتمدين"}</span>
+              {content.therapistsHeroTitle || t("heroTitle1")} <span className="gradient-text">{content.therapistsHeroTitleGradient || t("heroTitle2")}</span>
             </h1>
             <p className="text-lg leading-relaxed text-slate-700 animate-fade-in-up stagger-3">
-              {content.therapistsHeroSubtitle || "نخبة من الأخصائيين النفسيين ذوي الكفاءة العالية، جاهزون لمساعدتك في التغلب على التحديات والمضي قدماً في حياتك."}
+              {content.therapistsHeroSubtitle || t("heroSubtitle")}
             </p>
           </div>
         </div>
@@ -64,7 +81,7 @@ export default async function TherapistsPage({ searchParams }: Props) {
             <div className="bg-[#EEF2FF] p-2 rounded-xl text-[#6366F1]">
               <Filter className="h-5 w-5" />
             </div>
-            <h2 className="text-xl font-bold text-[var(--color-foreground)]">{content.therapistsFilterTitle || "تصفية حسب التخصص"}</h2>
+            <h2 className="text-xl font-bold text-[var(--color-foreground)]">{content.therapistsFilterTitle || t("filterTitle")}</h2>
           </div>
           
           <div className="flex flex-wrap gap-3">
@@ -76,7 +93,7 @@ export default async function TherapistsPage({ searchParams }: Props) {
                   : "glass text-slate-700 hover:shadow-md border border-[var(--color-border-soft)]"
               }`}
             >
-              جميع التخصصات
+              {t("allSpecialties")}
             </Link>
             {SPECIALIZATIONS.map((spec) => (
               <Link
@@ -100,10 +117,10 @@ export default async function TherapistsPage({ searchParams }: Props) {
             <div className="mb-6 mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-surface-warm)] text-[#6366F1]">
               <Users className="h-10 w-10 opacity-50" />
             </div>
-            <h3 className="text-2xl font-bold text-[var(--color-foreground)] mb-3">لا يوجد أخصائيين متاحين</h3>
-            <p className="text-slate-500 text-lg">لم نتمكن من العثور على أخصائيين في هذا التخصص حالياً. يرجى تجربة تخصص آخر.</p>
+            <h3 className="text-2xl font-bold text-[var(--color-foreground)] mb-3">{t("noTherapists")}</h3>
+            <p className="text-slate-500 text-lg">{t("noTherapistsDesc")}</p>
             <Link href="/therapists" className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#EEF2FF] px-6 py-3 font-bold text-[#6366F1] transition-colors hover:bg-[#E0E7FF]">
-              عرض كل الأخصائيين
+              {t("viewAll")}
             </Link>
           </div>
         ) : (
@@ -121,7 +138,7 @@ export default async function TherapistsPage({ searchParams }: Props) {
                     rating={t.therapistProfile.rating}
                     reviewCount={t.therapistProfile.reviewCount}
                     isVerified={t.therapistProfile.isVerified}
-                    isOnline={t.isOnline && (new Date().getTime() - new Date(t.lastActivityAt).getTime()) / 60000 <= 15}
+                    isOnline={t.isOnline && (new Date().getTime() - new Date(t.lastActivityAt).getTime()) / 60000 <= 3}
                     imageUrl={t.avatar || undefined}
                   />
                 </div>

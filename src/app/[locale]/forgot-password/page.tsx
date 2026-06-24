@@ -3,8 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Mail, ArrowRight, Loader2, KeyRound, CheckCircle2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations("ForgotPassword");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -25,10 +27,10 @@ export default function ForgotPasswordPage() {
       if (res.ok) {
         setSubmitted(true);
       } else {
-        setError(data.error || "حدث خطأ أثناء إرسال الطلب.");
+        setError(data.error || t("errorGeneric"));
       }
     } catch (err) {
-      setError("حدث خطأ في الاتصال بالسيرفر. يرجى المحاولة لاحقاً.");
+      setError(t("errorNetwork"));
     } finally {
       setLoading(false);
     }
@@ -46,7 +48,7 @@ export default function ForgotPasswordPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-block text-3xl font-black text-[var(--color-foreground)] transition-transform hover:scale-105">
-            دكتور <span className="text-[#6366F1]">نفسي</span>
+            Doctor <span className="text-[#6366F1]">Nafsy</span>
           </Link>
           
           <div className="mt-8 flex justify-center">
@@ -56,10 +58,10 @@ export default function ForgotPasswordPage() {
           </div>
           
           <h2 className="mt-4 text-2xl font-bold tracking-tight text-[var(--color-foreground)]">
-            نسيت كلمة المرور؟
+            {t("title")}
           </h2>
           <p className="mt-2 text-sm text-slate-600 px-4">
-            لا تقلق، أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور الخاصة بك.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -71,22 +73,22 @@ export default function ForgotPasswordPage() {
               <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-[#10B981]/10 text-[#10B981] mb-6">
                 <CheckCircle2 className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">تفقد بريدك الإلكتروني</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-3">{t("checkEmailTitle")}</h3>
               <p className="text-slate-600 mb-8 leading-relaxed">
-                لقد أرسلنا تعليمات استعادة كلمة المرور إلى البريد الإلكتروني <span className="font-semibold text-slate-800" dir="ltr">{email}</span>
+                {t("checkEmailDesc")} <span className="font-semibold text-slate-800" dir="ltr">{email}</span>
               </p>
               <Link
                 href="/login"
                 className="inline-flex w-full justify-center rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] px-4 py-3.5 text-sm font-bold text-white transition-bounce hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-[#6366F1]/20"
               >
-                العودة لتسجيل الدخول
+                {t("backToLogin")}
               </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  البريد الإلكتروني
+                  {t("emailLabel")}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
@@ -98,7 +100,7 @@ export default function ForgotPasswordPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="block w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm hover:border-slate-300"
-                    placeholder="example@email.com"
+                    placeholder={t("emailPlaceholder")}
                     dir="ltr"
                     style={{ textAlign: 'right' }}
                   />
@@ -121,11 +123,11 @@ export default function ForgotPasswordPage() {
                 {loading ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin" />
-                    جاري الإرسال...
+                    {t("sending")}
                   </>
                 ) : (
                   <>
-                    إرسال رابط الاستعادة
+                    {t("sendLinkBtn")}
                     <ArrowRight className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
                   </>
                 )}
@@ -140,7 +142,7 @@ export default function ForgotPasswordPage() {
                 className="inline-flex items-center gap-2 text-sm font-bold text-[#6366F1] hover:text-[#4F46E5] transition-colors"
               >
                 <ArrowRight className="h-4 w-4 rotate-180" />
-                العودة لتسجيل الدخول
+                {t("backToLogin")}
               </Link>
             </div>
           )}

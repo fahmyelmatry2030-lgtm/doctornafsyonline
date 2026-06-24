@@ -3,64 +3,66 @@ import { Scale, FileText, ArrowLeft } from "lucide-react";
 import { PLATFORM_PHONE, PLATFORM_PHONE_TEL } from "@/lib/constants";
 import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 import DynamicIcon from "@/components/DynamicIcon";
-
-const defaultSections = [
-  {
-    number: "١",
-    title: "القبول والتسجيل",
-    body: "بالتسجيل في المنصة، فإنك تقر بأنك تستخدم بيانات صحيحة وحقيقية، وأنك مسؤول عن الحفاظ على سرية بيانات الدخول الخاصة بك.",
-    iconName: "User"
-  },
-  {
-    number: "٢",
-    title: "حقوق المنصة",
-    body: "تمتلك منصة دكتور نفسي أونلاين كافة حقوق المحتوى والخدمات المقدمة. لا يجوز نسخ أو إعادة نشر أي محتوى بدون إذن خطي مسبق.",
-    iconName: "Shield"
-  },
-  {
-    number: "٣",
-    title: "استخدام الخدمة",
-    body: "يُمنع استخدام المنصة لأغراض غير قانونية أو مزعجة. يجب احترام سياسة السلوك المهني عند التواصل مع الأخصائيين.",
-    iconName: "FileText"
-  },
-  {
-    number: "٤",
-    title: "الدفع والاسترداد",
-    body: "تتم عمليات الدفع عبر قنوات الدفع المصرح بها داخل المنصة (فودافون كاش، موبينيل كاش، اتصالات كاش، انستاباي، التحويل البنكي). لا يمكن المطالبة باسترداد الأموال بعد بدء الجلسة إلا وفق سياسة الاسترداد الخاصة بالمنصة.",
-    iconName: "CreditCard"
-  },
-  {
-    number: "٥",
-    title: "مسؤولية المستخدم",
-    body: "أنت مسؤول عن المعلومات التي تقدمها أثناء التسجيل أو أثناء الجلسات. احترس من مشاركة أي بيانات حساسة خارج إطار المنصة.",
-    iconName: "User"
-  },
-  {
-    number: "٦",
-    title: "البيانات والمحتوى",
-    body: "المحتوى الطبي والنفسي المقدم في المنصة هو معلومات عامة ولا يغني عن التشخيص الطبي أو النفسي الشخصي.",
-    iconName: "Database"
-  },
-  {
-    number: "٧",
-    title: "التعديلات والإشعارات",
-    body: "نحتفظ بحق تعديل هذه الشروط في أي وقت. سيتم الإعلان عن التعديلات عبر الموقع أو البريد الإلكتروني.",
-    iconName: "Bell"
-  },
-  {
-    number: "٨",
-    title: "القانون المعمول به",
-    body: "تخضع هذه الشروط للقوانين السارية في جمهورية مصر العربية، وأي نزاع يتم حله أمام الجهات القضائية المختصة.",
-    iconName: "Gavel"
-  },
-];
+import { getTranslations } from "next-intl/server";
 
 export default async function TermsPage() {
   const content = await getWebsiteContent();
+  const t = await getTranslations("Terms");
 
-  const title = content.termsHeroTitle || "الشروط والأحكام";
-  const subtitle = content.termsHeroSubtitle || "باستخدامك لمنصة دكتور نفسي أونلاين، فأنت توافق على الشروط التالية التي تضمن تجربة آمنة وموثوقة لكافة المستخدمين.";
-  const lastUpdated = content.termsLastUpdated || "يونيو ٢٠٢٦";
+  const defaultSections = [
+    {
+      number: "١",
+      title: t("sec1Title"),
+      body: t("sec1Body"),
+      iconName: "User"
+    },
+    {
+      number: "٢",
+      title: t("sec2Title"),
+      body: t("sec2Body"),
+      iconName: "Shield"
+    },
+    {
+      number: "٣",
+      title: t("sec3Title"),
+      body: t("sec3Body"),
+      iconName: "FileText"
+    },
+    {
+      number: "٤",
+      title: t("sec4Title"),
+      body: t("sec4Body"),
+      iconName: "CreditCard"
+    },
+    {
+      number: "٥",
+      title: t("sec5Title"),
+      body: t("sec5Body"),
+      iconName: "User"
+    },
+    {
+      number: "٦",
+      title: t("sec6Title"),
+      body: t("sec6Body"),
+      iconName: "Database"
+    },
+    {
+      number: "٧",
+      title: t("sec7Title"),
+      body: t("sec7Body"),
+      iconName: "Bell"
+    },
+    {
+      number: "٨",
+      title: t("sec8Title"),
+      body: t("sec8Body"),
+      iconName: "Gavel"
+    },
+  ];
+
+  const title = content.termsHeroTitle || t("title");
+  const subtitle = content.termsHeroSubtitle || t("subtitle");
+  const lastUpdated = content.termsLastUpdated || t("lastUpdated");
   const sections = content.termsSections && content.termsSections.length > 0 ? content.termsSections : defaultSections;
 
   return (
@@ -77,7 +79,7 @@ export default async function TermsPage() {
           </div>
           <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-5 py-2.5 text-sm font-semibold backdrop-blur-sm">
             <FileText className="h-4 w-4" />
-            آخر تحديث: {lastUpdated}
+            {t("lastUpdatedPrefix")} {lastUpdated}
           </span>
           <h1 className="mt-4 mb-6 text-5xl font-black md:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-white to-[#C7D2FE]">
             {title}
@@ -93,10 +95,10 @@ export default async function TermsPage() {
         <div className="mx-auto max-w-5xl px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { icon: "🔐", label: "خصوصية مضمونة" },
-              { icon: "✅", label: "استخدام مسؤول" },
-              { icon: "💳", label: "دفع آمن" },
-              { icon: "⚖️", label: "حقوق محفوظة" },
+              { icon: "🔐", label: t("promise1") },
+              { icon: "✅", label: t("promise2") },
+              { icon: "💳", label: t("promise3") },
+              { icon: "⚖️", label: t("promise4") },
             ].map((item) => (
               <div key={item.label} className="flex flex-col items-center gap-3 p-4">
                 <span className="text-4xl">{item.icon}</span>
@@ -138,9 +140,9 @@ export default async function TermsPage() {
         <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-[#8B5CF6] rounded-full blur-3xl opacity-30"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
-            <h2 className="mb-3 text-3xl font-black">هل لديك استفسار؟</h2>
+            <h2 className="mb-3 text-3xl font-black text-white">{t("ctaTitle")}</h2>
             <p className="text-[#A5B4FC] text-lg leading-relaxed">
-              فريق الدعم جاهز لمساعدتك في أي استفسار حول الشروط والأحكام.
+              {t("ctaDesc")}
             </p>
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
               <a href="mailto:support@doctornafsyonline.com" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl px-4 py-2.5 transition-colors font-semibold">
@@ -155,7 +157,7 @@ export default async function TermsPage() {
             href="/contact"
             className="shrink-0 inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-bold text-[#312E81] transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105"
           >
-            تواصل معنا
+            {t("contactUs")}
             <ArrowLeft className="w-5 h-5" />
           </Link>
         </div>

@@ -2,96 +2,94 @@ import { Calendar, Clock, MessageCircle, Phone, UserCheck, Video, ArrowRight, Ch
 import Link from "next/link";
 import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 
-const defaultSteps = [
-  {
-    icon: UserCheck,
-    title: "إنشاء الحساب",
-    description:
-      "سجل حسابك باستخدام بريدك الإلكتروني أو الحسابات الاجتماعية، ثم أكمل ملفك الشخصي بسهولة في دقائق معدودة لتخصيص تجربتك.",
-    number: "1",
-  },
-  {
-    icon: Calendar,
-    title: "استكشاف الأخصائيين",
-    description:
-      "تصفح قائمة الأخصائيين المتاحين حسب التخصص، الخبرة، السعر، والتقييمات، واختر الأخصائي الأنسب لاحتياجاتك الخاصة.",
-    number: "2",
-  },
-  {
-    icon: Video,
-    title: "اختيار نوع الجلسة",
-    description:
-      "اختر الطريقة التي تريحك: فيديو (لتواصل بصري كامل)، صوت (لخصوصية أكبر)، أو شات نصي (لمرونة عالية).",
-    number: "3",
-  },
-  {
-    icon: Clock,
-    title: "حجز الموعد",
-    description:
-      "حدد التاريخ والوقت المناسب من الفترات المتاحة لدى الأخصائي واحصل على تأكيد فوري للحجز على بريدك الإلكتروني.",
-    number: "4",
-  },
-  {
-    icon: MessageCircle,
-    title: "دخول الجلسة",
-    description:
-      "في الموعد المحدد، ادخل من لوحة تحكمك مباشرة إلى غرفة الجلسة الآمنة والمشفرة بالكامل دون الحاجة لتطبيقات خارجية.",
-    number: "5",
-  },
-  {
-    icon: Phone,
-    title: "المتابعة والدعم",
-    description:
-      "تلقى ملاحظات من أخصائيك، تابع تطور حالتك، وتواصل معه باستمرار داخل المنصة لضمان نجاح رحلتك العلاجية.",
-    number: "6",
-  },
-];
-
-const defaultFeatures = [
-  {
-    title: "تجربة سلسة",
-    description: "من التسجيل إلى الجلسة، واجهة واحدة مصممة بعناية فائقة لراحتك",
-    icon: "⚡",
-  },
-  {
-    title: "أمان كامل",
-    description: "تشفير سري وحماية صارمة لبياناتك الشخصية وجلساتك العلاجية",
-    icon: "🔒",
-  },
-  {
-    title: "مرونة عالية",
-    description: "أنت تتحكم في كل شيء: الأخصائي، الوقت، وحتى نوع التواصل",
-    icon: "🎯",
-  },
-  {
-    title: "دعم مستمر",
-    description: "نحن معك في كل خطوة مع دعم فني مستمر ومتابعة متواصلة",
-    icon: "💬",
-  },
-];
-
-const defaultTimelineItems = [
-  {
-    title: "التسجيل والاختيار",
-    time: "5 دقائق",
-    desc: "إنشاء حساب واختيار الأخصائي المناسب",
-  },
-  {
-    title: "حجز الموعد",
-    time: "دقيقتان",
-    desc: "تحديد الوقت المناسب وإتمام الحجز",
-  },
-  {
-    title: "بدء العلاج",
-    time: "فوراً",
-    desc: "دخول الجلسة في موعدها المحدد",
-  },
-];
-
-const iconsMap = [UserCheck, Calendar, Video, Clock, MessageCircle, Phone];
+import { getTranslations } from "next-intl/server";
 
 export default async function HowItWorksPage() {
   const content = await getWebsiteContent();
+  const t = await getTranslations("HowItWorks");
+
+  const defaultSteps = [
+    {
+      icon: UserCheck,
+      title: t("step1Title"),
+      description: t("step1Desc"),
+      number: "1",
+    },
+    {
+      icon: Calendar,
+      title: t("step2Title"),
+      description: t("step2Desc"),
+      number: "2",
+    },
+    {
+      icon: Video,
+      title: t("step3Title"),
+      description: t("step3Desc"),
+      number: "3",
+    },
+    {
+      icon: Clock,
+      title: t("step4Title"),
+      description: t("step4Desc"),
+      number: "4",
+    },
+    {
+      icon: MessageCircle,
+      title: t("step5Title"),
+      description: t("step5Desc"),
+      number: "5",
+    },
+    {
+      icon: Phone,
+      title: t("step6Title"),
+      description: t("step6Desc"),
+      number: "6",
+    },
+  ];
+
+  const defaultFeatures = [
+    {
+      title: t("feat1Title"),
+      description: t("feat1Desc"),
+      icon: "⚡",
+    },
+    {
+      title: t("feat2Title"),
+      description: t("feat2Desc"),
+      icon: "🔒",
+    },
+    {
+      title: t("feat3Title"),
+      description: t("feat3Desc"),
+      icon: "🎯",
+    },
+    {
+      title: t("feat4Title"),
+      description: t("feat4Desc"),
+      icon: "💬",
+    },
+  ];
+
+  const defaultTimelineItems = [
+    {
+      title: t("time1Title"),
+      time: t("time1Time"),
+      desc: t("time1Desc"),
+    },
+    {
+      title: t("time2Title"),
+      time: t("time2Time"),
+      desc: t("time2Desc"),
+    },
+    {
+      title: t("time3Title"),
+      time: t("time3Time"),
+      desc: t("time3Desc"),
+    },
+  ];
+
+const iconsMap = [UserCheck, Calendar, Video, Clock, MessageCircle, Phone];
+
 
   const steps = content.howItWorksSteps && content.howItWorksSteps.length > 0
     ? content.howItWorksSteps
@@ -118,13 +116,13 @@ export default async function HowItWorksPage() {
           <div className="max-w-3xl mx-auto animate-fade-in-up stagger-1">
             <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#312E81] shadow-premium">
               <Zap className="h-4 w-4 text-[#6366F1]" />
-              {content.howItWorksHeroBadge || "خطة التعافي"}
+              {content.howItWorksHeroBadge || t("heroTag")}
             </span>
             <h1 className="mb-6 text-5xl font-black leading-tight text-[var(--color-foreground)] md:text-6xl animate-fade-in-up stagger-2">
-              {content.howItWorksHeroTitle || "6 خطوات بسيطة لرحلة التعافي"}
+              {content.howItWorksHeroTitle || t("heroTitle")}
             </h1>
             <p className="text-xl leading-relaxed text-slate-700 animate-fade-in-up stagger-3">
-              {content.howItWorksHeroSubtitle || "صممنا رحلتك معنا لتكون سلسلة، بديهية، ومريحة تماماً. من لحظة التسجيل وحتى الجلسة الأولى، كل شيء واضح ومبسط."}
+              {content.howItWorksHeroSubtitle || t("heroDesc")}
             </p>
           </div>
         </div>
@@ -139,10 +137,10 @@ export default async function HowItWorksPage() {
           
           <div className="mb-16 text-center relative z-10">
             <p className="mb-3 text-sm font-bold uppercase text-[#8B5CF6] tracking-widest flex items-center justify-center gap-2 animate-fade-in">
-              <span className="text-xl">🗺️</span> خريطة الرحلة
+              <span className="text-xl">🗺️</span> {t("journeyTag")}
             </p>
             <h2 className="mb-4 text-4xl font-black text-[var(--color-foreground)] animate-fade-in-up">
-              خطواتك نحو الراحة النفسية
+              {t("journeyTitle")}
             </h2>
           </div>
 
@@ -189,10 +187,10 @@ export default async function HowItWorksPage() {
         <section className="mb-24 card-glow glass-strong rounded-3xl border border-[var(--color-border-soft)] p-12 shadow-premium animate-fade-in-up">
           <div className="mb-12 text-center">
             <p className="mb-3 text-sm font-bold uppercase text-[#8B5CF6] tracking-widest flex justify-center gap-2 items-center">
-              <span className="text-xl">⏱️</span> كفاءة الوقت
+              <span className="text-xl">⏱️</span> {t("timeEfficiencyTag")}
             </p>
             <h2 className="mb-4 text-3xl font-black text-[var(--color-foreground)]">
-              {content.howItWorksTimelineTitle || "أسرع مما تتخيل"}
+              {content.howItWorksTimelineTitle || t("timeEfficiencyTitle")}
             </h2>
           </div>
 
@@ -213,10 +211,10 @@ export default async function HowItWorksPage() {
         <section className="mb-24">
           <div className="mb-16 text-center animate-fade-in">
             <p className="mb-3 text-sm font-bold uppercase text-[#8B5CF6] tracking-widest flex items-center justify-center gap-2">
-              <span className="text-xl">✨</span> القيمة
+              <span className="text-xl">✨</span> {t("valueTag")}
             </p>
             <h2 className="mb-4 text-4xl font-black text-[var(--color-foreground)]">
-              لماذا تجربتنا مختلفة؟
+              {t("valueTitle")}
             </h2>
           </div>
 
@@ -248,23 +246,23 @@ export default async function HowItWorksPage() {
             <div className="mb-6 inline-block bg-white/10 p-5 rounded-full backdrop-blur-md border border-white/20 shadow-xl animate-pulse-glow">
               <span className="text-4xl">🚀</span>
             </div>
-            <h2 className="mb-6 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#C7D2FE]">جاهز للبدء الآن؟</h2>
+            <h2 className="mb-6 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#C7D2FE]">{t("startJourneyTitle")}</h2>
             <p className="mb-10 max-w-2xl mx-auto text-xl opacity-95 text-[#A5B4FC] leading-relaxed">
-              لا تؤجل صحتك النفسية. ابدأ رحلتك اليوم بخطوات بسيطة وانضم للآلاف ممن اختاروا منصتنا للتعافي.
+              {t("startJourneyDesc")}
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-center">
               <Link
                 href="/register"
                 className="inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-bold text-[#312E81] transition-bounce hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105"
               >
-                إنشاء حساب مجاني
+                {t("startJourneyBtn")}
                 <span className="bg-[#EEF2FF] text-[#6366F1] rounded-full p-1"><CheckCircle2 className="w-4 h-4" /></span>
               </Link>
               <Link
                 href="/therapists"
                 className="inline-flex items-center gap-2 text-[#C7D2FE] font-semibold hover:text-white transition-colors py-4 px-6"
               >
-                تصفح قائمة الأخصائيين
+                {t("browseTherapists")}
                 <span>←</span>
               </Link>
             </div>

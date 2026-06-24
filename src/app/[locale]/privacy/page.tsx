@@ -3,64 +3,66 @@ import { Shield, Lock, ArrowLeft } from "lucide-react";
 import { PLATFORM_PHONE, PLATFORM_PHONE_TEL } from "@/lib/constants";
 import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 import DynamicIcon from "@/components/DynamicIcon";
-
-const defaultSections = [
-  {
-    number: "١",
-    title: "البيانات التي نجمعها",
-    body: "نجمع بيانات التسجيل الأساسية مثل الاسم والبريد الإلكتروني ورقم الهاتف، بالإضافة إلى المعلومات المتعلقة بالحجز والجلسات لتحسين تجربتك.",
-    iconName: "Database",
-  },
-  {
-    number: "٢",
-    title: "استخدام البيانات",
-    body: "نستخدم بياناتك لتقديم الخدمات، التواصل معك، وإرسال التحديثات والعروض المرتبطة بخدماتنا. لن نشارك بياناتك مع أطراف ثالثة بدون إذن واضح منك.",
-    iconName: "Eye",
-  },
-  {
-    number: "٣",
-    title: "الأمان والحماية",
-    body: "نعتمد على إجراءات أمنية تقنية وتنظيمية لحماية بياناتك من الوصول غير المصرح به أو الضياع، وتشمل التشفير وجدران الحماية وبروتوكولات HTTPS.",
-    iconName: "Lock",
-  },
-  {
-    number: "٤",
-    title: "ملفات تعريف الارتباط",
-    body: "قد نستخدم ملفات تعريف الارتباط لتحسين تجربتك داخل المنصة وتحليل أداء الموقع. يمكنك تعديل تفضيلات المتصفح للتحكم في هذه الملفات.",
-    iconName: "Cookie",
-  },
-  {
-    number: "٥",
-    title: "مشاركة المعلومات",
-    body: "نشارك البيانات فقط مع مقدمي الخدمات الضروريين لتشغيل الموقع أو عند طلب قانوني. لا نبيع بياناتك لأي جهة تحت أي ظرف.",
-    iconName: "Share2",
-  },
-  {
-    number: "٦",
-    title: "حقوقك",
-    body: "يمكنك طلب الاطلاع على بياناتك أو تعديلها أو حذفها. نعمل على احترام طلباتك ضمن الأطر القانونية المعمول بها، وسنرد خلال ٣٠ يوماً.",
-    iconName: "UserCheck",
-  },
-  {
-    number: "٧",
-    title: "تحديثات السياسة",
-    body: "قد نقوم بتحديث هذه السياسة من وقت لآخر. سنقوم بإعلامك بأي تغييرات مهمة عبر الموقع أو البريد الإلكتروني قبل تطبيقها.",
-    iconName: "RefreshCw",
-  },
-  {
-    number: "٨",
-    title: "كيفية الاتصال بنا",
-    body: "لأي سؤال حول سياسة الخصوصية، يرجى التواصل معنا عبر support@doctornafsyonline.com أو الهاتف 01010423661. فريقنا جاهز للإجابة.",
-    iconName: "Mail",
-  },
-];
+import { getTranslations } from "next-intl/server";
 
 export default async function PrivacyPage() {
   const content = await getWebsiteContent();
+  const t = await getTranslations("Privacy");
 
-  const title = content.privacyHeroTitle || "سياسة الخصوصية";
-  const subtitle = content.privacyHeroSubtitle || "نحن في منصة دكتور نفسي أونلاين نلتزم بحماية بياناتك واحترام خصوصيتك التامة. خصوصيتك أمانة في عنقنا.";
-  const lastUpdated = content.privacyLastUpdated || "يونيو ٢٠٢٦";
+  const defaultSections = [
+    {
+      number: "١",
+      title: t("sec1Title"),
+      body: t("sec1Body"),
+      iconName: "Database",
+    },
+    {
+      number: "٢",
+      title: t("sec2Title"),
+      body: t("sec2Body"),
+      iconName: "Eye",
+    },
+    {
+      number: "٣",
+      title: t("sec3Title"),
+      body: t("sec3Body"),
+      iconName: "Lock",
+    },
+    {
+      number: "٤",
+      title: t("sec4Title"),
+      body: t("sec4Body"),
+      iconName: "Cookie",
+    },
+    {
+      number: "٥",
+      title: t("sec5Title"),
+      body: t("sec5Body"),
+      iconName: "Share2",
+    },
+    {
+      number: "٦",
+      title: t("sec6Title"),
+      body: t("sec6Body"),
+      iconName: "UserCheck",
+    },
+    {
+      number: "٧",
+      title: t("sec7Title"),
+      body: t("sec7Body"),
+      iconName: "RefreshCw",
+    },
+    {
+      number: "٨",
+      title: t("sec8Title"),
+      body: t("sec8Body"),
+      iconName: "Mail",
+    },
+  ];
+
+  const title = content.privacyHeroTitle || t("title");
+  const subtitle = content.privacyHeroSubtitle || t("subtitle");
+  const lastUpdated = content.privacyLastUpdated || t("lastUpdated");
   const sections = content.privacySections && content.privacySections.length > 0 ? content.privacySections : defaultSections;
 
   return (
@@ -79,7 +81,7 @@ export default async function PrivacyPage() {
           </div>
           <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-5 py-2.5 text-sm font-semibold backdrop-blur-sm">
             <Lock className="h-4 w-4 text-emerald-300" />
-            آخر تحديث: {lastUpdated}
+            {t("lastUpdatedPrefix")} {lastUpdated}
           </span>
           <h1 className="mt-4 mb-6 text-5xl font-black md:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-200 to-white">
             {title}
@@ -95,10 +97,10 @@ export default async function PrivacyPage() {
         <div className="mx-auto max-w-5xl px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { icon: "🔒", label: "لا نبيع بياناتك" },
-              { icon: "🛡️", label: "تشفير من طرف إلى طرف" },
-              { icon: "✋", label: "لا مشاركة بدون إذن" },
-              { icon: "🗑️", label: "حق الحذف مضمون" },
+              { icon: "🔒", label: t("promise1") },
+              { icon: "🛡️", label: t("promise2") },
+              { icon: "✋", label: t("promise3") },
+              { icon: "🗑️", label: t("promise4") },
             ].map((item) => (
               <div key={item.label} className="flex flex-col items-center gap-3 p-4">
                 <span className="text-4xl">{item.icon}</span>
@@ -145,9 +147,9 @@ export default async function PrivacyPage() {
         <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-teal-400 rounded-full blur-3xl opacity-20"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
-            <h2 className="mb-3 text-3xl font-black">هل لديك استفسار حول بياناتك؟</h2>
+            <h2 className="mb-3 text-3xl font-black">{t("ctaTitle")}</h2>
             <p className="text-emerald-100/80 text-lg leading-relaxed">
-              فريق الدعم جاهز للإجابة على أي سؤال حول خصوصيتك وبياناتك.
+              {t("ctaDesc")}
             </p>
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
               <a
@@ -168,7 +170,7 @@ export default async function PrivacyPage() {
             href="/contact"
             className="shrink-0 inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-bold text-emerald-800 transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105"
           >
-            تواصل معنا
+            {t("contactUs")}
             <ArrowLeft className="w-5 h-5" />
           </Link>
         </div>

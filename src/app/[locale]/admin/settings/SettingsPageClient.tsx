@@ -67,6 +67,7 @@ export function SettingsPageClient({
   const [bankAccountNumber, setBankAccountNumber] = useState(initialSettings.bankAccountNumber || "");
   const [bankIban, setBankIban] = useState(initialSettings.bankIban || "");
   const [enableAnnualContract, setEnableAnnualContract] = useState(initialSettings.enableAnnualContract ?? false);
+  const [currency, setCurrency] = useState(initialSettings.currency || "EGP");
 
   // Website Content State
   const [homeHeroBadge, setHomeHeroBadge] = useState(initialContent.homeHeroBadge || "");
@@ -140,6 +141,7 @@ export function SettingsPageClient({
           bankName, bankAccountNumber, bankIban,
           bankAccount: `${bankName} - ح/ ${bankAccountNumber} - IBAN: ${bankIban}`,
           enableAnnualContract,
+          currency,
         });
       }
       setSaved(true);
@@ -200,6 +202,23 @@ export function SettingsPageClient({
                 <Percent className="w-5 h-5 text-indigo-500" /> الإعدادات المالية
               </h2>
               <div className="grid gap-5 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-[#2B3674]">عملة المنصة الافتراضية</label>
+                  <select
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value)}
+                    disabled={isReadOnly}
+                    className="w-full px-4 py-3 bg-[#F4F7FE] border-transparent rounded-xl focus:border-[#4318FF] focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-bold text-[#2B3674]"
+                    dir="ltr"
+                  >
+                    <option value="EGP">EGP - جنيه مصري</option>
+                    <option value="SAR">SAR - ريال سعودي</option>
+                    <option value="USD">USD - دولار أمريكي</option>
+                    <option value="AED">AED - درهم إماراتي</option>
+                    <option value="KWD">KWD - دينار كويتي</option>
+                    <option value="EUR">EUR - يورو</option>
+                  </select>
+                </div>
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-1.5">نسبة عمولة المنصة (%)</label>
                   <div className="space-y-2">
@@ -226,13 +245,13 @@ export function SettingsPageClient({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-1.5">الحد الأدنى لسعر الجلسة (ج.م)</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-1.5">الحد الأدنى لسعر الجلسة ({currency})</label>
                   <input type="number" value={minPrice}
                     onChange={e => !isReadOnly && setMinPrice(Number(e.target.value))}
                     disabled={isReadOnly} min={50} className={inputCls} />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-1.5">الحد الأقصى لسعر الجلسة (ج.م)</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-1.5">الحد الأقصى لسعر الجلسة ({currency})</label>
                   <input type="number" value={maxPrice}
                     onChange={e => !isReadOnly && setMaxPrice(Number(e.target.value))}
                     disabled={isReadOnly} min={200} className={inputCls} />

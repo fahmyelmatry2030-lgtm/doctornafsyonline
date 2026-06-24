@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { authenticate } from "./actions";
 import { Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -14,21 +15,22 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const searchParams = useSearchParams();
   const urlError = searchParams.get("error");
+  const t = useTranslations("Login");
 
   // Map NextAuth error codes to user-friendly Arabic messages
   const getErrorMessage = (code: string | null) => {
     if (!code) return "";
     switch (code) {
       case "CredentialsSignin":
-        return "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.";
+        return t("errorCredentials");
       case "SessionRequired":
-        return "يرجى تسجيل الدخول للوصول إلى هذه الصفحة.";
+        return t("errorSession");
       case "Configuration":
-        return "حدث خطأ في إعدادات الاتصال بالخادم (Configuration Error). يرجى التحقق من متغيرات البيئة.";
+        return t("errorConfig");
       case "AccessDenied":
-        return "تم رفض الدخول. قد يكون الحساب معطلاً أو غير مصرح له.";
+        return t("errorAccessDenied");
       default:
-        return "حدث خطأ أثناء تسجيل الدخول. رمز الخطأ: " + code;
+        return t("errorDefault") + code;
     }
   };
 
@@ -58,13 +60,13 @@ function LoginForm() {
         {/* Logo / Brand Placeholder */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-block transition-transform hover:scale-105">
-            <img src="/logo.png" alt="Logo" className="h-16 w-auto object-contain rounded-xl mx-auto" />
+            <img src="/logo.png?v=3" alt="Logo" className="h-16 w-auto object-contain rounded-xl mx-auto" />
           </Link>
           <h2 className="mt-6 text-3xl font-bold tracking-tight text-[var(--color-foreground)]">
-            مرحباً بعودتك
+            {t("welcomeBack")}
           </h2>
           <p className="mt-2 text-sm text-slate-600">
-            سجل دخولك للمتابعة إلى حسابك الخاص
+            {t("subtitle")}
           </p>
         </div>
 
@@ -73,7 +75,7 @@ function LoginForm() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
-                البريد الإلكتروني
+                {t("emailLabel")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
@@ -85,7 +87,7 @@ function LoginForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm hover:border-slate-300"
-                  placeholder="example@email.com"
+                  placeholder={t("emailPlaceholder")}
                   dir="ltr"
                   style={{ textAlign: 'right' }}
                 />
@@ -95,10 +97,10 @@ function LoginForm() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-sm font-semibold text-slate-700">
-                  كلمة المرور
+                  {t("passwordLabel")}
                 </label>
                 <Link href="/forgot-password" className="text-sm font-medium text-[#6366F1] hover:text-[#4F46E5] transition-colors">
-                  نسيت كلمة المرور؟
+                  {t("forgotPassword")}
                 </Link>
               </div>
               <div className="relative">
@@ -141,11 +143,11 @@ function LoginForm() {
               {isPending ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  جاري تسجيل الدخول...
+                  {t("loggingIn")}
                 </>
               ) : (
                 <>
-                  تسجيل الدخول
+                  {t("loginBtn")}
                   <ArrowRight className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
                 </>
               )}
@@ -158,7 +160,7 @@ function LoginForm() {
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="bg-white/80 backdrop-blur-sm px-4 text-slate-500 rounded-full border border-[var(--color-border-soft)] shadow-sm">
-                مستخدم جديد؟
+                {t("newUser")}
               </span>
             </div>
           </div>
@@ -168,7 +170,7 @@ function LoginForm() {
               href="/register"
               className="inline-flex w-full justify-center rounded-xl glass px-4 py-3.5 text-sm font-bold text-[#6366F1] border border-[#6366F1]/20 transition-premium hover:bg-[#EEF2FF] hover:border-[#6366F1]/40"
             >
-              إنشاء حساب جديد
+              {t("createAccount")}
             </Link>
           </div>
         </div>

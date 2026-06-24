@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown, HelpCircle, MessageCircle } from "lucide-react";
 import LinkNext from "next/link";
+import { useTranslations } from "next-intl";
 
 interface FAQItem {
   question: string;
@@ -33,6 +34,7 @@ export default function FAQClient({
 }: FAQClientProps) {
   const [expandedId, setExpandedId] = useState<number | null>(0);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const t = useTranslations("FAQ");
 
   const filteredFaqs = selectedCategory
     ? faqItems.filter((faq) => faq.category === selectedCategory)
@@ -76,7 +78,7 @@ export default function FAQClient({
                   : "glass text-slate-700 hover:shadow-md"
               }`}
             >
-              الكل
+              {t("allBtn")}
             </button>
             {faqCategories.map((cat) => (
               <button
@@ -133,7 +135,7 @@ export default function FAQClient({
             
             {filteredFaqs.length === 0 && (
               <div className="text-center py-12 glass rounded-3xl border border-[var(--color-border-soft)]">
-                <p className="text-xl text-slate-500">لا توجد أسئلة في هذا التصنيف حالياً.</p>
+                <p className="text-xl text-slate-500">{t("noQuestions")}</p>
               </div>
             )}
           </div>
@@ -148,16 +150,16 @@ export default function FAQClient({
             <div className="mb-6 inline-block bg-white/10 p-5 rounded-full backdrop-blur-md border border-white/20 shadow-xl animate-pulse-glow">
               <MessageCircle className="h-10 w-10 text-[#C7D2FE]" />
             </div>
-            <h2 className="mb-4 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#C7D2FE]">لم تجد إجابة لسؤالك؟</h2>
+            <h2 className="mb-4 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#C7D2FE]">{t("notAnsweredTitle")}</h2>
             <p className="mb-10 max-w-2xl mx-auto text-xl opacity-95 text-[#A5B4FC] leading-relaxed">
-              فريق الرعاية والدعم الخاص بنا متواجد دائماً للاستماع إليك والرد على أي استفسارات قد تخطر ببالك بكل سرية واحترام.
+              {t("notAnsweredDesc")}
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-center">
               <LinkNext
                 href="/contact"
                 className="inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-bold text-[#312E81] transition-bounce hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105"
               >
-                تواصل مع الدعم
+                {t("contactSupportBtn")}
                 <span className="bg-[#EEF2FF] text-[#6366F1] rounded-full p-1">←</span>
               </LinkNext>
             </div>
@@ -168,29 +170,29 @@ export default function FAQClient({
         <section className="mb-12">
           <div className="mb-12 text-center animate-fade-in">
             <p className="mb-3 text-sm font-bold uppercase text-[#8B5CF6] tracking-widest flex items-center justify-center gap-2">
-              <span className="text-xl">🚀</span> خطواتك القادمة
+              <span className="text-xl">🚀</span> {t("nextStepsTag")}
             </p>
-            <h2 className="mb-4 text-3xl font-black text-[var(--color-foreground)]">هل أنت مستعد للبدء؟</h2>
+            <h2 className="mb-4 text-3xl font-black text-[var(--color-foreground)]">{t("nextStepsTitle")}</h2>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
             {[
               {
                 icon: "🎯",
-                title: "اختر أخصائيك",
-                desc: "تصفح قائمة الأخصائيين المعتمدين واقرأ التقييمات",
+                title: t("step1Title"),
+                desc: t("step1Desc"),
                 href: "/therapists",
               },
               {
                 icon: "📋",
-                title: "احجز جلستك",
-                desc: "حدد موعدك وطريقة التواصل التي تريحك",
+                title: t("step2Title"),
+                desc: t("step2Desc"),
                 href: "/therapists",
               },
               {
                 icon: "✨",
-                title: "ابدأ التعافي",
-                desc: "سجل الدخول وابدأ جلستك بكل أمان وخصوصية",
+                title: t("step3Title"),
+                desc: t("step3Desc"),
                 href: "/login",
               },
             ].map((item, i) => (

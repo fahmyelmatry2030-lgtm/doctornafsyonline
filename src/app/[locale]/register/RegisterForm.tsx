@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { authenticateAfterRegister } from "./actions";
 import { User, Mail, Lock, Phone, ArrowRight, Loader2, Heart, ShieldCheck, Briefcase, Clock, DollarSign, Users, Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function RegisterForm() {
   const searchParams = useSearchParams();
+  const t = useTranslations("Register");
   const defaultRole = searchParams.get("role") === "therapist" ? "THERAPIST" : "PATIENT";
 
   const [form, setForm] = useState({
@@ -36,13 +38,13 @@ export default function RegisterForm() {
     const hasLetter = /[a-zA-Z\u0600-\u06FF]/.test(form.password);
     const hasNumber = /\d/.test(form.password);
     if (form.password.length < 8 || !hasLetter || !hasNumber) {
-      setError("يجب أن تتكون كلمة المرور من 8 أحرف على الأقل، وتحتوي على حرف واحد ورقم واحد على الأقل.");
+      setError(t("errorWeakPassword"));
       setLoading(false);
       return;
     }
 
     if (form.phone.length !== 11) {
-      setError("رقم الهاتف يجب أن يتكون من 11 رقماً بالضبط (مثال: 01012345678)");
+      setError(t("errorPhoneLength"));
       setLoading(false);
       return;
     }
@@ -56,7 +58,7 @@ export default function RegisterForm() {
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "فشل التسجيل. يرجى التأكد من البيانات والمحاولة مرة أخرى.");
+        setError(data.error || t("errorSubmit"));
         setLoading(false);
         return;
       }
@@ -72,7 +74,7 @@ export default function RegisterForm() {
         }
       });
     } catch {
-      setError("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
+      setError(t("errorUnexpected"));
       setLoading(false);
     }
   }
@@ -90,13 +92,13 @@ export default function RegisterForm() {
         {/* Header */}
         <div className="text-center mb-10">
           <Link href="/" className="inline-block transition-transform hover:scale-105">
-            <img src="/logo.png" alt="Logo" className="h-14 w-auto mx-auto object-contain mix-blend-multiply" />
+            <img src="/logo.png?v=3" alt="Logo" className="h-14 w-auto mx-auto object-contain" />
           </Link>
           <h2 className="mt-6 text-3xl font-black tracking-tight text-[var(--color-foreground)]">
-            إنشاء حساب جديد
+            {t("title")}
           </h2>
           <p className="mt-2 text-sm text-slate-600 font-medium">
-            اختر نوع الحساب وأكمل البيانات المطلوبة للبدء
+            {t("subtitle")}
           </p>
         </div>
 
@@ -115,7 +117,7 @@ export default function RegisterForm() {
               }`}
             >
               <Heart className={`h-5 w-5 ${form.role === "PATIENT" ? "text-[#4318FF]" : "text-slate-400"}`} />
-              ابحث عن علاج
+              {t("patientRole")}
             </button>
             <button
               type="button"
@@ -127,7 +129,7 @@ export default function RegisterForm() {
               }`}
             >
               <ShieldCheck className={`h-5 w-5 ${form.role === "THERAPIST" ? "text-white" : "text-slate-400"}`} />
-              أنا أخصائي نفسي
+              {t("therapistRole")}
             </button>
           </div>
 
@@ -138,7 +140,7 @@ export default function RegisterForm() {
               {/* Name */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                  الاسم الكامل
+                  {t("fullName")}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
@@ -150,7 +152,7 @@ export default function RegisterForm() {
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-[#4318FF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-medium"
-                    placeholder={form.role === "THERAPIST" ? "د. الاسم الرباعي" : "الاسم الرباعي"}
+                    placeholder={form.role === "THERAPIST" ? t("fullNameTherapistPlaceholder") : t("fullNamePatientPlaceholder")}
                   />
                 </div>
               </div>
@@ -158,7 +160,7 @@ export default function RegisterForm() {
               {/* Email */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                  البريد الإلكتروني
+                  {t("emailLabel")}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
@@ -183,7 +185,7 @@ export default function RegisterForm() {
               {/* Phone */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                  رقم الهاتف
+                  {t("phoneLabel")}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
@@ -209,7 +211,7 @@ export default function RegisterForm() {
               {/* Gender */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                  الجنس
+                  {t("genderLabel")}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
@@ -221,9 +223,9 @@ export default function RegisterForm() {
                     onChange={(e) => setForm({ ...form, gender: e.target.value })}
                     className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 focus:border-[#4318FF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-medium appearance-none"
                   >
-                    <option value="" disabled>اختر الجنس</option>
-                    <option value="MALE">رجل</option>
-                    <option value="FEMALE">أنثى</option>
+                    <option value="" disabled>{t("genderSelect")}</option>
+                    <option value="MALE">{t("genderMale")}</option>
+                    <option value="FEMALE">{t("genderFemale")}</option>
                   </select>
                 </div>
               </div>
@@ -232,7 +234,7 @@ export default function RegisterForm() {
             {/* Password */}
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
-                كلمة المرور
+                {t("passwordLabel")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
@@ -257,7 +259,7 @@ export default function RegisterForm() {
                 </button>
               </div>
               <p className="mt-1.5 text-xs text-slate-500">
-                يجب أن تكون 8 خانات على الأقل، وتحتوي على حرف ورقم واحد على الأقل.
+                {t("passwordHint")}
               </p>
             </div>
 
@@ -265,14 +267,14 @@ export default function RegisterForm() {
             {form.role === "THERAPIST" && (
               <div className="pt-4 mt-6 border-t border-slate-100 animate-fade-in">
                 <h3 className="text-sm font-black text-emerald-600 mb-4 flex items-center gap-2">
-                  <Briefcase className="w-4 h-4" /> التفاصيل المهنية (كأخصائي)
+                  <Briefcase className="w-4 h-4" /> {t("therapistDetailsTitle")}
                 </h3>
                 
                 <div className="space-y-5">
                   {/* Specializations */}
                   <div>
                     <label className="block text-sm font-bold text-slate-700 mb-2">
-                      التخصصات الأساسية
+                      {t("specializationsLabel")}
                     </label>
                     <input
                       type="text"
@@ -280,7 +282,7 @@ export default function RegisterForm() {
                       value={form.specializations}
                       onChange={(e) => setForm({ ...form, specializations: e.target.value })}
                       className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 px-4 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
-                      placeholder="مثال: القلق، الاكتئاب، العلاقات الأسرية (افصل بينها بفاصلة)"
+                      placeholder={t("specializationsPlaceholder")}
                     />
                   </div>
 
@@ -288,7 +290,7 @@ export default function RegisterForm() {
                     {/* Years of Experience */}
                     <div>
                       <label className="block text-sm font-bold text-slate-700 mb-2">
-                        سنوات الخبرة
+                        {t("yearsExperienceLabel")}
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
@@ -309,7 +311,7 @@ export default function RegisterForm() {
                     {/* Price per session */}
                     <div>
                       <label className="block text-sm font-bold text-slate-700 mb-2">
-                        سعر الجلسة المتوقع (ج.م)
+                        {t("pricePerSessionLabel")}
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
@@ -332,7 +334,7 @@ export default function RegisterForm() {
                 <div className="mt-4 p-4 bg-amber-50 rounded-2xl border border-amber-100 flex items-start gap-3">
                   <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                   <p className="text-xs font-bold text-amber-700 leading-relaxed">
-                    بعد إنهاء التسجيل، سيتم توجيهك للوحة التحكم. سيظل حسابك "غير موثق" حتى تقوم برفع المستندات المطلوبة ويقوم فريقنا بمراجعتها والموافقة عليها.
+                    {t("therapistNotice")}
                   </p>
                 </div>
               </div>
@@ -358,11 +360,11 @@ export default function RegisterForm() {
               {loading ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  جاري معالجة الطلب...
+                  {t("submitting")}
                 </>
               ) : (
                 <>
-                  {form.role === "THERAPIST" ? "تقديم طلب الانضمام كأخصائي" : "إنشاء حساب كمريض"}
+                  {form.role === "THERAPIST" ? t("submitTherapist") : t("submitPatient")}
                   <ArrowRight className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
                 </>
               )}
@@ -371,7 +373,7 @@ export default function RegisterForm() {
 
           {/* Privacy Note */}
           <p className="mt-6 text-xs text-center text-slate-500 font-medium">
-            بالتسجيل فإنك توافق على <Link href="/terms" className="text-[#4318FF] font-bold hover:underline">الشروط والأحكام</Link> و <Link href="/privacy" className="text-[#4318FF] font-bold hover:underline">سياسة الخصوصية</Link>
+            {t("agreeTermsText1")} <Link href="/terms" className="text-[#4318FF] font-bold hover:underline">{t("termsLink")}</Link> {t("agreeTermsText2")} <Link href="/privacy" className="text-[#4318FF] font-bold hover:underline">{t("privacyLink")}</Link>
           </p>
 
           <div className="mt-8 relative">
@@ -380,7 +382,7 @@ export default function RegisterForm() {
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="bg-white px-4 text-slate-400 font-bold">
-                لديك حساب بالفعل؟
+                {t("hasAccount")}
               </span>
             </div>
           </div>
@@ -390,7 +392,7 @@ export default function RegisterForm() {
               href="/login"
               className="inline-flex w-full justify-center rounded-2xl px-4 py-4 text-sm font-bold text-[#4318FF] border-2 border-slate-100 transition-all hover:bg-slate-50 hover:border-slate-200"
             >
-              تسجيل الدخول
+              {t("loginLink")}
             </Link>
           </div>
         </div>

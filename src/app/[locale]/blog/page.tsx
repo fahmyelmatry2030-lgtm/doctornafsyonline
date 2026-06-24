@@ -1,53 +1,53 @@
 import Link from "next/link";
 import { BookOpen, Clock, ArrowRight, TrendingUp, Heart, Brain, Sparkles, Star } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-const posts = [
-  {
-    title: "كيف تختار الأخصائي النفسي المناسب؟",
-    description:
-      "دليل عملي شامل يساعدك على اختيار الأخصائي الذي يناسب مشكلتك وشخصيتك العلاجية وأسلوبك المفضل.",
-    href: "/blog/choose-therapist",
-    category: "نصائح عملية",
-    readTime: "5 دقائق",
-    emoji: "🎯",
-    color: "from-[#6366F1] to-[#8B5CF6]",
-    bgLight: "bg-[#EEF2FF]",
-    textColor: "text-[#6366F1]",
-  },
-  {
-    title: "فوائد جلسات الدعم النفسي عبر الإنترنت",
-    description:
-      "اكتشف لماذا العيادات النفسية الأونلاين أصبحت الخيار الأول للكثيرين وكيف تحقق نتائج مماثلة أو أفضل.",
-    href: "/blog/online-therapy-benefits",
-    category: "معلومات صحية",
-    readTime: "7 دقائق",
-    emoji: "💻",
-    color: "from-teal-500 to-emerald-600",
-    bgLight: "bg-teal-50",
-    textColor: "text-teal-700",
-  },
-  {
-    title: "التحضير للجلسة الأولى مع الأخصائي",
-    description:
-      "كيف تجهز نفسك وبيئتك لتجربة علاجية أكثر سلاسة وفعالية من أول جلسة للحصول على أقصى استفادة.",
-    href: "/blog/first-session-guide",
-    category: "دليل المبتدئين",
-    readTime: "6 دقائق",
-    emoji: "🚀",
-    color: "from-violet-500 to-purple-600",
-    bgLight: "bg-violet-50",
-    textColor: "text-violet-700",
-  },
-];
+export default async function BlogPage() {
+  const t = await getTranslations("Blog");
 
-const tips = [
-  { icon: <Brain className="w-6 h-6" />, title: "فهم أعراضك", desc: "معرفة العلامات والأعراض والتمييز بينها" },
-  { icon: <Star className="w-6 h-6" />, title: "اختيار الأخصائي", desc: "معايير واضحة لاختيار من يناسبك" },
-  { icon: <TrendingUp className="w-6 h-6" />, title: "تحسين التجربة", desc: "نصائح للاستفادة القصوى من الجلسات" },
-  { icon: <Heart className="w-6 h-6" />, title: "الرعاية الذاتية", desc: "تقنيات للعناية بنفسك بين الجلسات" },
-];
+  const posts = [
+    {
+      title: t("post1Title"),
+      description: t("post1Desc"),
+      href: "/blog/choose-therapist",
+      category: t("post1Cat"),
+      readTime: t("post1Time"),
+      emoji: "🎯",
+      color: "from-[#6366F1] to-[#8B5CF6]",
+      bgLight: "bg-[#EEF2FF]",
+      textColor: "text-[#6366F1]",
+    },
+    {
+      title: t("post2Title"),
+      description: t("post2Desc"),
+      href: "/blog/online-therapy-benefits",
+      category: t("post2Cat"),
+      readTime: t("post2Time"),
+      emoji: "💻",
+      color: "from-teal-500 to-emerald-600",
+      bgLight: "bg-teal-50",
+      textColor: "text-teal-700",
+    },
+    {
+      title: t("post3Title"),
+      description: t("post3Desc"),
+      href: "/blog/first-session-guide",
+      category: t("post3Cat"),
+      readTime: t("post3Time"),
+      emoji: "🚀",
+      color: "from-violet-500 to-purple-600",
+      bgLight: "bg-violet-50",
+      textColor: "text-violet-700",
+    },
+  ];
 
-export default function BlogPage() {
+  const tips = [
+    { icon: <Brain className="w-6 h-6" />, title: t("tip1Title"), desc: t("tip1Desc") },
+    { icon: <Star className="w-6 h-6" />, title: t("tip2Title"), desc: t("tip2Desc") },
+    { icon: <TrendingUp className="w-6 h-6" />, title: t("tip3Title"), desc: t("tip3Desc") },
+    { icon: <Heart className="w-6 h-6" />, title: t("tip4Title"), desc: t("tip4Desc") },
+  ];
+
   return (
     <div className="bg-[var(--color-background)] min-h-screen" dir="rtl">
       {/* ============ HERO ============ */}
@@ -64,19 +64,19 @@ export default function BlogPage() {
           <div className="max-w-3xl">
             <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm">
               <BookOpen className="h-4 w-4 text-emerald-300" />
-              محتوى نفسي موثوق
+              {t("heroBadge")}
             </span>
             <h1 className="mb-6 text-5xl font-black text-white md:text-6xl lg:text-7xl leading-tight">
-              مقالات عن{" "}
+              {t("heroTitle1")}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-200">
-                الصحة النفسية
+                {t("heroTitle2")}
               </span>
             </h1>
             <p className="text-xl text-white/80 leading-relaxed max-w-2xl">
-              نصائح عملية ومعلومات صحية من متخصصين موثوقين تساعدك على فهم صحتك النفسية بشكل أعمق.
+              {t("heroDesc")}
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              {["نصائح عملية", "معلومات صحية", "دليل المبتدئين"].map((cat) => (
+              {[t("catPractical"), t("catHealth"), t("catBeginner")].map((cat) => (
                 <span
                   key={cat}
                   className="rounded-full bg-white/10 border border-white/20 px-5 py-2 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/20 transition-colors cursor-pointer"
@@ -95,12 +95,12 @@ export default function BlogPage() {
           <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <span className="text-sm font-bold text-[#6366F1] uppercase tracking-widest flex items-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4" /> أحدث المقالات
+                <Sparkles className="w-4 h-4" /> {t("latestArticles")}
               </span>
-              <h2 className="text-4xl font-black text-slate-900">اختر مقالة تهمك</h2>
+              <h2 className="text-4xl font-black text-slate-900">{t("chooseArticle")}</h2>
             </div>
             <p className="text-slate-500 max-w-sm text-right">
-              نضيف مقالات جديدة بشكل منتظم لمساعدتك في رحلتك النفسية.
+              {t("addRegularly")}
             </p>
           </div>
 
@@ -137,7 +137,7 @@ export default function BlogPage() {
                       {post.readTime}
                     </div>
                     <div className="flex items-center gap-2 font-bold text-[#6366F1] group-hover:gap-4 transition-all text-sm">
-                      اقرأ الآن
+                      {t("readNow")}
                       <ArrowRight className="h-4 w-4" />
                     </div>
                   </div>
@@ -152,10 +152,10 @@ export default function BlogPage() {
       <section className="py-20 bg-white">
         <div className="mx-auto max-w-6xl px-4">
           <div className="mb-14 text-center">
-            <span className="text-sm font-bold text-[#6366F1] uppercase tracking-widest">📚 ما ستجده في مقالاتنا</span>
-            <h2 className="mt-3 text-4xl font-black text-slate-900">استراتيجيتنا في المحتوى</h2>
+            <span className="text-sm font-bold text-[#6366F1] uppercase tracking-widest">📚 {t("whatYouFind")}</span>
+            <h2 className="mt-3 text-4xl font-black text-slate-900">{t("contentStrategy")}</h2>
             <p className="mt-4 text-slate-500 max-w-xl mx-auto">
-              نركز على تقديم محتوى نفسي موثوق وعملي يساعدك على فهم نفسك بشكل أعمق.
+              {t("contentStrategyDesc")}
             </p>
           </div>
 
@@ -187,22 +187,22 @@ export default function BlogPage() {
 
           <div className="relative z-10">
             <BookOpen className="mx-auto mb-6 w-16 h-16 text-[#C7D2FE] opacity-80" />
-            <h2 className="mb-4 text-4xl font-black">محتوى جديد بانتظارك</h2>
+            <h2 className="mb-4 text-4xl font-black">{t("newContent")}</h2>
             <p className="mb-8 text-[#A5B4FC] text-lg max-w-2xl mx-auto leading-relaxed">
-              نضيف مقالات جديدة بشكل منتظم. ابق على تواصل معنا لتصلك آخر المقالات والنصائح النفسية!
+              {t("newContentDesc")}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 font-bold text-[#312E81] transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105"
               >
-                تواصل معنا
+                {t("contactBtn")}
               </Link>
               <Link
                 href="/faq"
                 className="inline-flex items-center gap-2 text-white font-semibold hover:text-[#C7D2FE] transition-colors"
               >
-                أو تصفح الأسئلة الشائعة ←
+                {t("faqLink")}
               </Link>
             </div>
           </div>

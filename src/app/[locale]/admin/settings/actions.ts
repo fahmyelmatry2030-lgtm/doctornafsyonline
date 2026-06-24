@@ -36,6 +36,7 @@ export type SiteSettings = {
   bankAccountNumber?: string;
   bankIban?: string;
   enableAnnualContract?: boolean;
+  currency: string;
 };
 
 const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitUrl"> & { stripeKey?: string; livekitKey?: string; livekitUrl?: string } = {
@@ -64,6 +65,7 @@ const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitU
   bankIban: "EG123456789012345678901234567",
   bankAccount: "البنك الأهلي المصري - ح/ 1234567890123456 - IBAN: EG123456789012345678901234567",
   enableAnnualContract: false,
+  currency: "EGP",
 };
 
 async function verifyAdmin() {

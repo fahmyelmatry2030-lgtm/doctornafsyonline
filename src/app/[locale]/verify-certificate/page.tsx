@@ -7,6 +7,7 @@ import {
   BookOpen, Clock, Loader2, ArrowRight, CheckCircle2, AlertTriangle, Search
 } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface Certificate {
   code: string;
@@ -23,6 +24,7 @@ interface Certificate {
 function VerifyCertificateContent() {
   const searchParams = useSearchParams();
   const codeParam = searchParams.get("code");
+  const t = useTranslations("VerifyCertificate");
 
   const [code, setCode] = useState(codeParam || "");
   const [loading, setLoading] = useState(false);
@@ -51,10 +53,10 @@ function VerifyCertificateContent() {
       if (res.ok) {
         setCert(data.certificate);
       } else {
-        setError(data.error || "الشهادة غير مسجلة أو كود التحقق غير صالح.");
+        setError(data.error || t("errorGeneric"));
       }
     } catch {
-      setError("فشل الاتصال بالخادم للتحقق من الشهادة.");
+      setError(t("errorNetwork"));
     } finally {
       setLoading(false);
     }
@@ -74,10 +76,10 @@ function VerifyCertificateContent() {
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2 text-indigo-600 font-black text-2xl">
             <Award className="w-8 h-8" />
-            <span>نَفْسي</span>
+            <span>Doctor Nafsy</span>
           </Link>
-          <h2 className="text-xl font-bold text-slate-800">نظام توثيق واعتماد الشهادات الرسمي</h2>
-          <p className="text-xs text-slate-500">تحقق من صحة وصلاحية شهادات الكورسات والتدريب الصادرة عن المنصة</p>
+          <h2 className="text-xl font-bold text-slate-800">{t("title")}</h2>
+          <p className="text-xs text-slate-500">{t("subtitle")}</p>
         </div>
 
         {/* Manual Lookup Form if no code param or if searched/not found */}
@@ -85,7 +87,7 @@ function VerifyCertificateContent() {
           <form onSubmit={handleManualSearch} className="bg-white p-5 rounded-2xl border border-slate-150 shadow-sm space-y-4">
             <div className="space-y-2">
               <label htmlFor="searchCode" className="block text-xs font-bold text-slate-700">
-                إدخال كود تحقق الشهادة
+                {t("inputLabel")}
               </label>
               <div className="relative">
                 <input
@@ -93,7 +95,7 @@ function VerifyCertificateContent() {
                   type="text"
                   value={code}
                   onChange={e => setCode(e.target.value)}
-                  placeholder="مثال: NAFSI-CERT-1052"
+                  placeholder={t("inputPlaceholder")}
                   className="w-full rounded-xl border border-slate-200 pr-4 pl-10 py-3 text-slate-700 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all ltr text-right font-mono"
                 />
                 <button
@@ -112,7 +114,7 @@ function VerifyCertificateContent() {
         {loading && (
           <div className="bg-white p-12 rounded-3xl border border-slate-150 shadow-md text-center space-y-4">
             <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mx-auto" />
-            <p className="text-sm font-bold text-slate-600">جاري الاستعلام في السجلات المعتمدة للمنصة...</p>
+            <p className="text-sm font-bold text-slate-600">{t("searching")}</p>
           </div>
         )}
 
@@ -121,16 +123,16 @@ function VerifyCertificateContent() {
           <div className="bg-white rounded-3xl border border-red-200 shadow-lg overflow-hidden animate-fade-in">
             <div className="bg-gradient-to-r from-red-500 to-red-650 p-6 text-center text-white space-y-2">
               <ShieldAlert className="w-16 h-16 mx-auto stroke-1" />
-              <h3 className="text-lg font-black">الشهادة غير معتمدة أو ملغاة!</h3>
+              <h3 className="text-lg font-black">{t("notFoundTitle")}</h3>
             </div>
             <div className="p-6 text-center space-y-4">
               <p className="text-sm text-slate-600 leading-relaxed">
-                رمز التحقق المدخل (<span className="font-mono font-bold text-red-650">{code}</span>) لم يتم العثور عليه في قاعدة بيانات المتدربين الحاصلين على شهادات معتمدة من منصة نفسي.
+                {t("notFoundDesc1")}<span className="font-mono font-bold text-red-650">{code}</span>{t("notFoundDesc2")}
               </p>
               <div className="bg-red-50/50 p-4 rounded-2xl border border-red-100 flex items-start gap-2.5 text-right text-xs text-red-700 leading-relaxed">
                 <AlertTriangle className="w-5 h-5 shrink-0 text-red-500 mt-0.5" />
                 <span>
-                  <strong>تنبيه هام:</strong> نرجو الحذر من استخدام شهادات غير رسمية أو غير موثقة باسم المنصة. للتأكد، يرجى إعادة إدخال الرمز بشكل صحيح مع مراعاة الحروف الكبيرة والشرطات.
+                  <strong>{t("alertTitle")}</strong> {t("alertDesc")}
                 </span>
               </div>
             </div>
@@ -149,7 +151,7 @@ function VerifyCertificateContent() {
               </div>
 
               <ShieldCheck className="w-16 h-16 mx-auto stroke-1 text-emerald-100 drop-shadow-sm" />
-              <h3 className="text-xl font-black">شهادة موثقة ومعتمدة رسمياً</h3>
+              <h3 className="text-xl font-black">{t("verifiedTitle")}</h3>
               <p className="text-[10px] text-emerald-100/90 font-bold uppercase tracking-widest font-mono">
                 Verification Code: {cert.code}
               </p>
@@ -164,12 +166,12 @@ function VerifyCertificateContent() {
 
               {/* Verified Badge and Message */}
               <div className="text-center space-y-2">
-                <p className="text-xs text-slate-400 font-bold">تشهد منصة نفسي للتمكين النفسي والتدريب بأن:</p>
+                <p className="text-xs text-slate-400 font-bold">{t("certifies")}</p>
                 <h4 className="text-2xl font-black text-slate-900 border-b-2 border-indigo-50 pb-2 inline-block px-4">
                   {cert.traineeName}
                 </h4>
                 <p className="text-xs text-slate-650 leading-relaxed mt-2">
-                  قد أكمل بنجاح متطلبات الدورة التدريبية المعتمدة بعنوان:
+                  {t("completed")}
                 </p>
                 <div className="bg-slate-50 border border-slate-150 p-4 rounded-2xl mt-1.5">
                   <span className="font-extrabold text-slate-800 text-sm block leading-snug">
@@ -183,7 +185,7 @@ function VerifyCertificateContent() {
                 <div className="flex gap-2">
                   <Calendar className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-slate-400 font-bold block mb-0.5">تاريخ الإصدار</span>
+                    <span className="text-slate-400 font-bold block mb-0.5">{t("issueDate")}</span>
                     <span className="font-black text-slate-800">
                       {new Date(cert.issueDate).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })}
                     </span>
@@ -193,9 +195,9 @@ function VerifyCertificateContent() {
                 <div className="flex gap-2">
                   <Clock className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-slate-400 font-bold block mb-0.5">عدد الساعات التدريبية</span>
+                    <span className="text-slate-400 font-bold block mb-0.5">{t("hoursLabel")}</span>
                     <span className="font-black text-slate-800">
-                      {cert.hours ? `${cert.hours} ساعة تدريبية` : "معتمدة"}
+                      {cert.hours ? `${cert.hours} ${t("hoursText")}` : t("accredited")}
                     </span>
                   </div>
                 </div>
@@ -204,7 +206,7 @@ function VerifyCertificateContent() {
                   <div className="flex gap-2">
                     <User className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                     <div>
-                      <span className="text-slate-400 font-bold block mb-0.5">المحاضر / المشرف</span>
+                      <span className="text-slate-400 font-bold block mb-0.5">{t("instructor")}</span>
                       <span className="font-black text-slate-800">{cert.instructor}</span>
                     </div>
                   </div>
@@ -214,7 +216,7 @@ function VerifyCertificateContent() {
                   <div className="flex gap-2">
                     <BookOpen className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                     <div>
-                      <span className="text-slate-400 font-bold block mb-0.5">التقدير العام</span>
+                      <span className="text-slate-400 font-bold block mb-0.5">{t("grade")}</span>
                       <span className="font-black text-slate-800">{cert.grade}</span>
                     </div>
                   </div>
@@ -225,7 +227,7 @@ function VerifyCertificateContent() {
               <div className="flex justify-center items-center gap-4 pt-4 border-t border-slate-100">
                 <div className="flex items-center gap-2 text-emerald-700 bg-emerald-50 border border-emerald-250 px-3 py-1.5 rounded-full text-[10px] font-black shadow-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>ختم الاعتماد الرسمي سارٍ وصالح</span>
+                  <span>{t("validStamp")}</span>
                 </div>
               </div>
             </div>
@@ -238,7 +240,7 @@ function VerifyCertificateContent() {
             href="/"
             className="inline-flex items-center gap-1 text-slate-500 hover:text-indigo-600 text-xs font-bold transition-colors"
           >
-            العودة للرئيسية <ArrowRight className="w-3.5 h-3.5 rotate-180" />
+            {t("backHome")} <ArrowRight className="w-3.5 h-3.5 rotate-180 ltr:rotate-0" />
           </Link>
         </div>
       </div>

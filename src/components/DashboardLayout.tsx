@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useTranslations } from "next-intl";
 
 type Role = "PATIENT" | "THERAPIST" | "ADMIN" | "ADMIN_HR" | "ADMIN_ACCOUNTING" | "ADMIN_VIEWER" | string;
 
@@ -39,6 +40,7 @@ export function DashboardLayout({
   userAvatar?: string | null;
   userId?: string | null;
 }) {
+  const t = useTranslations("DashboardLayout");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname() || "";
   const router = useRouter();
@@ -138,6 +140,20 @@ export function DashboardLayout({
   };
 
   useEffect(() => {
+    // Heartbeat for online status
+    if (isOnline && role === "THERAPIST") {
+      const ping = async () => {
+        try {
+          await fetch("/api/therapist/heartbeat", { method: "POST" });
+        } catch (e) {}
+      };
+      ping(); // Initial ping
+      const heartbeatInterval = setInterval(ping, 60000); // Every 1 minute
+      return () => clearInterval(heartbeatInterval);
+    }
+  }, [isOnline, role]);
+
+  useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (!target.closest(".notif-container")) {
@@ -186,62 +202,55 @@ export function DashboardLayout({
 
   let navItems: { name: string; href: string; icon: React.ReactNode }[] = [];
 
-  // Ensure shift leader link is always visible for admin users
-  const adminShiftLeaderItem = {
-    name: "إدارة الشيفتات",
-    href: "/admin/shift-leader",
-    icon: <Users className="h-5 w-5" />,
-  };
-
   if (role === "PATIENT") {
     navItems = [
-      { name: "الرئيسية", href: "/patient/dashboard", icon: <Home className="h-5 w-5" /> },
-      { name: "مواعيدي", href: "/patient/appointments", icon: <Calendar className="h-5 w-5" /> },
-      { name: "التقييمات", href: "/patient/reviews", icon: <Award className="h-5 w-5" /> },
-      { name: "الإشعارات", href: "/patient/notifications", icon: <Bell className="h-5 w-5" /> },
-      { name: "غرفة العلاج", href: "/patient/messages", icon: <MessageCircle className="h-5 w-5" /> },
-      { name: "الفواتير", href: "/patient/billing", icon: <CreditCard className="h-5 w-5" /> },
-      { name: "الملف الشخصي", href: "/patient/profile", icon: <UserIcon className="h-5 w-5" /> },
+      { name: t("patientHome"), href: "/patient/dashboard", icon: <Home className="h-5 w-5" /> },
+      { name: t("myAppointments"), href: "/patient/appointments", icon: <Calendar className="h-5 w-5" /> },
+      { name: t("reviews"), href: "/patient/reviews", icon: <Award className="h-5 w-5" /> },
+      { name: t("notificationsTitle"), href: "/patient/notifications", icon: <Bell className="h-5 w-5" /> },
+      { name: t("treatmentRoom"), href: "/patient/messages", icon: <MessageCircle className="h-5 w-5" /> },
+      { name: t("billing"), href: "/patient/billing", icon: <CreditCard className="h-5 w-5" /> },
+      { name: t("profile"), href: "/patient/profile", icon: <UserIcon className="h-5 w-5" /> },
     ];
   } else if (role === "THERAPIST") {
     navItems = [
-      { name: "الرئيسية", href: "/therapist/dashboard", icon: <Home className="h-5 w-5" /> },
-      { name: "المرضى", href: "/therapist/patients", icon: <Users className="h-5 w-5" /> },
-      { name: "الجدول", href: "/therapist/schedule", icon: <Calendar className="h-5 w-5" /> },
-      { name: "الإشعارات", href: "/therapist/notifications", icon: <Bell className="h-5 w-5" /> },
-      { name: "غرفة العلاج", href: "/therapist/messages", icon: <MessageCircle className="h-5 w-5" /> },
-      { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
-      { name: "الملف الشخصي", href: "/therapist/profile", icon: <UserIcon className="h-5 w-5" /> },
-      { name: "الإعدادات", href: "/therapist/settings", icon: <Settings className="h-5 w-5" /> },
+      { name: t("therapistHome"), href: "/therapist/dashboard", icon: <Home className="h-5 w-5" /> },
+      { name: t("patients"), href: "/therapist/patients", icon: <Users className="h-5 w-5" /> },
+      { name: t("schedule"), href: "/therapist/schedule", icon: <Calendar className="h-5 w-5" /> },
+      { name: t("notificationsTitle"), href: "/therapist/notifications", icon: <Bell className="h-5 w-5" /> },
+      { name: t("treatmentRoom"), href: "/therapist/messages", icon: <MessageCircle className="h-5 w-5" /> },
+      { name: t("mySalary"), href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
+      { name: t("profile"), href: "/therapist/profile", icon: <UserIcon className="h-5 w-5" /> },
+      { name: t("settings"), href: "/therapist/settings", icon: <Settings className="h-5 w-5" /> },
     ];
   } else if (role === "SHIFT_LEADER") {
     navItems = [
-      { name: "لوحة التحكم", href: "/shift-leader", icon: <Home className="h-5 w-5" /> },
-      { name: "لوحة خدمة العملاء", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" /> },
-      { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
+      { name: t("shiftLeaderDashboard"), href: "/shift-leader", icon: <Home className="h-5 w-5" /> },
+      { name: t("customerServiceDashboard"), href: "/admin/customer-service", icon: <Headset className="h-5 w-5" /> },
+      { name: t("mySalary"), href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
     ];
   } else if (role === "ADMIN_MARKETING") {
     navItems = [
-      { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" /> },
-      { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
+      { name: t("marketingDashboard"), href: "/admin/dashboard", icon: <Home className="h-5 w-5" /> },
+      { name: t("mySalary"), href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
     ];
   } else if (role?.startsWith("ADMIN")) {
     const allAdminNavItems = [
-      { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" />, roles: null },
-      { name: "إدارة المديرين", href: "/admin/managers", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN"] },
-      { name: "إدارة الشيفتات", href: "/admin/shift-leader", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "ADMIN_CUSTOMER_SERVICE"] },
-      { name: "توثيق واعتماد الأخصائيين", href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
-      { name: "إدارة المرضى", href: "/admin/patients", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
-      { name: "إدارة مرتبات الأخصائيين", href: "/admin/salaries", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
-      { name: "إدارة رواتب فريق العمل", href: "/admin/employee-salaries", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
+      { name: t("adminHome"), href: "/admin/dashboard", icon: <Home className="h-5 w-5" />, roles: null },
+      { name: t("manageManagers"), href: "/admin/managers", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN"] },
+      { name: t("manageShifts"), href: "/admin/shift-leader", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "ADMIN_CUSTOMER_SERVICE"] },
+      { name: t("verifyTherapists"), href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
+      { name: t("managePatients"), href: "/admin/patients", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
+      { name: t("manageTherapistSalaries"), href: "/admin/salaries", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
+      { name: t("manageEmployeeSalaries"), href: "/admin/employee-salaries", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
       { name: "تحكم خدمة العملاء", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_VIEWER", "SHIFT_LEADER"] },
       { name: "اعتماد التحويلات البنكية", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
       { name: "المقالات والتقييمات", href: "/admin/content", icon: <BookOpen className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "شهادات الكورسات والتدريب", href: "/admin/certificates", icon: <Award className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
       { name: "الإشعارات وأكواد الخصم", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "رسائل الدعم الفني", href: "/admin/support", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
-      { name: "إعدادات المنصة", href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
-      { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_ACCOUNTING", "SHIFT_LEADER", "ADMIN_MARKETING"] },
+      { name: t("siteSettings"), href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
+      { name: t("mySalary"), href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_ACCOUNTING", "SHIFT_LEADER", "ADMIN_MARKETING"] },
     ];
 
     if (role === "ADMIN") {
@@ -266,7 +275,7 @@ export function DashboardLayout({
       {/* Mobile Header (Visible only on small screens) */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-[72px] bg-white border-b border-slate-200 z-30 flex items-center justify-between px-4 shadow-sm">
         <Link href="/" className="inline-block transition-transform hover:scale-105">
-          <img src="/logo.png?v=2" alt="Logo" className="h-9 w-auto object-contain rounded-lg" />
+          <img src="/logo.png?v=3" alt="Logo" className="h-9 w-auto object-contain rounded-lg" />
         </Link>
         <div className="flex items-center gap-3">
           <ThemeToggle />
@@ -369,7 +378,7 @@ export function DashboardLayout({
                 <X className="w-5 h-5" />
               </button>
               <Link href="/" className="inline-block transition-transform hover:scale-105 bg-white/10 p-2 rounded-2xl backdrop-blur-sm border border-white/10 mb-4">
-                <img src="/logo.png?v=2" alt="Logo" className="h-10 w-auto object-contain rounded-lg" />
+                <img src="/logo.png?v=3" alt="Logo" className="h-10 w-auto object-contain rounded-lg" />
               </Link>
               {userAvatar ? (
                 <img 
@@ -418,7 +427,7 @@ export function DashboardLayout({
                 className="flex items-center justify-center gap-3 w-full px-4 py-3.5 text-rose-400 font-bold rounded-2xl hover:bg-rose-500/10 hover:text-rose-300 transition-all border border-transparent hover:border-rose-500/20"
               >
                 <LogOut className="h-5 w-5" />
-                تسجيل الخروج
+                  <span>{t("logout")}</span>
               </button>
             </div>
           </aside>
@@ -450,7 +459,7 @@ export function DashboardLayout({
               </button>
               <input 
                 type="text" 
-                placeholder="ابحث في هذه الصفحة..." 
+                placeholder={t("searchPlaceholder")} 
                 value={localSearchQuery}
                 onChange={(e) => setLocalSearchQuery(e.target.value)}
                 className="bg-transparent border-none outline-none text-sm text-slate-700 w-full pr-7 placeholder:text-slate-400 font-medium"
@@ -504,18 +513,19 @@ export function DashboardLayout({
               {showNotifications && (
                 <div className="absolute left-0 mt-2 top-full w-80 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 overflow-hidden flex flex-col max-h-96">
                   <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-                    <span className="font-bold text-slate-700 text-sm">الإشعارات والتنبيهات</span>
+                    <span className="font-bold text-slate-700 text-sm">{t("notificationsTitle")}</span>
                     <button 
                       onClick={handleClearAll}
                       className="text-xs text-indigo-650 hover:text-indigo-800 font-semibold"
                     >
-                      مسح الكل
+                      {t("clearAll")}
                     </button>
                   </div>
                   <div className="overflow-y-auto flex-1 divide-y divide-slate-50 custom-scrollbar max-h-72">
                     {activeNotifs.length === 0 ? (
-                      <div className="p-8 text-center text-slate-400 text-xs font-medium">
-                        لا توجد إشعارات جديدة حالياً
+                      <div className="py-8 text-center text-slate-400 text-sm flex flex-col items-center gap-2">
+                        <Bell className="w-8 h-8 opacity-20" />
+                        <span>{t("noNewNotifications")}</span>
                       </div>
                     ) : (
                       activeNotifs.slice(0, 10).map((n) => (

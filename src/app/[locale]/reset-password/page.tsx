@@ -4,12 +4,14 @@ import { Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Lock, ArrowRight, Loader2, KeyRound, CheckCircle2, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token") || "";
   const email = searchParams.get("email") || "";
+  const t = useTranslations("ResetPassword");
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -25,13 +27,13 @@ function ResetPasswordForm() {
     setError("");
 
     if (!token || !email) {
-      setError("رابط إعادة التعيين غير مكتمل أو غير صالح. يرجى طلب رابط جديد.");
+      setError(t("errorIncompleteToken"));
       setLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("كلمتا المرور غير متطابقتين.");
+      setError(t("errorMismatch"));
       setLoading(false);
       return;
     }
@@ -40,7 +42,7 @@ function ResetPasswordForm() {
     const hasLetter = /[a-zA-Z\u0600-\u06FF]/.test(password);
     const hasNumber = /\d/.test(password);
     if (password.length < 8 || !hasLetter || !hasNumber) {
-      setError("يجب أن تتكون كلمة المرور من 8 خانات على الأقل، وتحتوي على حرف واحد ورقم واحد على الأقل.");
+      setError(t("errorWeakPassword"));
       setLoading(false);
       return;
     }
@@ -58,10 +60,10 @@ function ResetPasswordForm() {
           router.push("/login");
         }, 3000);
       } else {
-        setError(data.error || "فشل إعادة تعيين كلمة المرور.");
+        setError(data.error || t("errorGeneric"));
       }
     } catch {
-      setError("حدث خطأ في الاتصال بالسيرفر. يرجى المحاولة لاحقاً.");
+      setError(t("errorNetwork"));
     } finally {
       setLoading(false);
     }
@@ -79,7 +81,7 @@ function ResetPasswordForm() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-block text-3xl font-black text-[var(--color-foreground)] transition-transform hover:scale-105 font-bold">
-            دكتور <span className="text-[#6366F1]">نفسي</span>
+            Doctor <span className="text-[#6366F1]">Nafsy</span>
           </Link>
           
           <div className="mt-8 flex justify-center">
@@ -89,10 +91,10 @@ function ResetPasswordForm() {
           </div>
           
           <h2 className="mt-4 text-2xl font-bold tracking-tight text-[var(--color-foreground)]">
-            تعيين كلمة مرور جديدة
+            {t("title")}
           </h2>
           <p className="mt-2 text-sm text-slate-600 px-4">
-            يرجى إدخال كلمة المرور الجديدة وتأكيدها لحماية حسابك.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -104,15 +106,15 @@ function ResetPasswordForm() {
               <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-[#10B981]/10 text-[#10B981] mb-6">
                 <CheckCircle2 className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">تم تغيير كلمة المرور!</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-3">{t("successTitle")}</h3>
               <p className="text-slate-600 mb-8 leading-relaxed">
-                تم تحديث كلمة المرور الخاصة بحسابك بنجاح. سيتم تحويلك لصفحة تسجيل الدخول الآن...
+                {t("successDesc")}
               </p>
               <Link
                 href="/login"
                 className="inline-flex w-full justify-center rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] px-4 py-3.5 text-sm font-bold text-white transition-bounce hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-[#6366F1]/20"
               >
-                الذهاب لتسجيل الدخول فورا
+                {t("goToLogin")}
               </Link>
             </div>
           ) : (
@@ -121,17 +123,17 @@ function ResetPasswordForm() {
               {/* Email (Read Only representation) */}
               <div>
                 <label className="block text-sm font-semibold text-slate-500 mb-1">
-                  البريد الإلكتروني المستهدف
+                  {t("targetEmail")}
                 </label>
                 <div className="bg-slate-100/80 rounded-xl px-4 py-3 text-sm text-slate-500 font-bold text-right" dir="ltr">
-                  {email || "غير معروف"}
+                  {email || t("unknown")}
                 </div>
               </div>
 
               {/* Password */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-slate-700">
-                  كلمة المرور الجديدة
+                  {t("newPasswordLabel")}
                 </label>
                 <div className="relative">
                   <input
@@ -157,7 +159,7 @@ function ResetPasswordForm() {
               {/* Confirm Password */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-slate-700">
-                  تأكيد كلمة المرور الجديدة
+                  {t("confirmPasswordLabel")}
                 </label>
                 <div className="relative">
                   <input
@@ -181,7 +183,7 @@ function ResetPasswordForm() {
               </div>
 
               <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">
-                * يجب أن تتكون كلمة المرور من 8 خانات على الأقل وتحتوي على حرف ورقم واحد على الأقل.
+                {t("passwordHint")}
               </p>
 
               {error && (
@@ -201,11 +203,11 @@ function ResetPasswordForm() {
                 {loading ? (
                   <>
                     <Loader2 className="h-5 w-5 animate-spin" />
-                    جاري التحديث...
+                    {t("updating")}
                   </>
                 ) : (
                   <>
-                    تحديث كلمة المرور
+                    {t("updateBtn")}
                     <ArrowRight className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
                   </>
                 )}
@@ -219,11 +221,12 @@ function ResetPasswordForm() {
 }
 
 export default function ResetPasswordPage() {
+  const t = useTranslations("ResetPassword");
   return (
     <Suspense fallback={
       <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--color-background)]">
         <Loader2 className="w-10 h-10 text-[#6366F1] animate-spin" />
-        <span className="text-sm font-bold text-slate-500 mt-4">جاري تحميل الصفحة...</span>
+        <span className="text-sm font-bold text-slate-500 mt-4">{t("loading")}</span>
       </div>
     }>
       <ResetPasswordForm />

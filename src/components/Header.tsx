@@ -32,10 +32,9 @@ export function Header({ platformName = "دكتور نفسي" }: { platformName?
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0 transition-opacity hover:opacity-80">
             <img
-              src="/logo.png?v=2"
+              src="/logo.png?v=3"
               alt={platformName}
               className="h-14 w-auto object-contain"
-              style={{ mixBlendMode: "multiply" }}
             />
           </Link>
 

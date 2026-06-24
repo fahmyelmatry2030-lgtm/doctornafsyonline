@@ -1,38 +1,39 @@
 import { HeartHandshake, Shield, Users, CheckCircle2, Target, Lightbulb } from "lucide-react";
 import Link from "next/link";
 
-const values = [
-  {
-    title: "مهمة واضحة ونبيلة",
-    description:
-      "نوفر لك تجربة علاج نفسى آمنة وسهلة، تبدأ من أول حجز وتمتد لتشمل المتابعة والدعم المستمر خطوة بخطوة.",
-    icon: HeartHandshake,
-  },
-  {
-    title: "أخصائيين موثوقين",
-    description:
-      "نختار بعناية فائقة أخصائيين نفسيين حاصلين على شهادات معتمدة، يمتلكون سجل نجاح موثوق وتقييمات استثنائية.",
-    icon: Users,
-  },
-  {
-    title: "خصوصية مطلقة",
-    description:
-      "نضمن سرية تامة لبياناتك وجلساتك من خلال تشفير سري، مع منحك التحكم الكامل في معلوماتك الشخصية في كل الأوقات.",
-    icon: Shield,
-  },
-];
-
-const whyChooseUs = [
-  { title: "أخصائيين معتمدين", desc: "فريق مختار بعناية فائقة من نخبة المتخصصين المعتمدين" },
-  { title: "منصة مدمجة", desc: "جلسات فيديو وصوت وشات بدون الحاجة لأي تطبيقات خارجية" },
-  { title: "حجز مرن وسهل", desc: "اختر الموعد والأخصائي المناسب لك بكل بساطة وسلاسة" },
-  { title: "أسعار منصفة", desc: "تسعير شفاف، عادل للجميع، وبدون أي رسوم خفية" },
-];
-
+import { getTranslations } from "next-intl/server";
 import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 
 export default async function AboutPage() {
   const content = await getWebsiteContent();
+  const t = await getTranslations("About");
+
+  const values = [
+    {
+      title: t("title"),
+      description: t("desc"),
+      icon: HeartHandshake,
+    },
+    {
+      title: t("title2"),
+      description: t("desc2"),
+      icon: Users,
+    },
+    {
+      title: t("title3"),
+      description: t("desc3"),
+      icon: Shield,
+    },
+  ];
+
+  const whyChooseUs = [
+    { title: t("whyTitle1"), desc: t("whyDesc1") },
+    { title: t("whyTitle2"), desc: t("whyDesc2") },
+    { title: t("whyTitle3"), desc: t("whyDesc3") },
+    { title: t("whyTitle4"), desc: t("whyDesc4") },
+  ];
+
+
 
   return (
     <div className="bg-[var(--color-background)]">
@@ -66,19 +67,19 @@ export default async function AboutPage() {
           <div className="grid gap-12 md:grid-cols-2 md:items-center">
             <div>
               <p className="mb-4 text-sm font-bold uppercase text-[#8B5CF6] tracking-widest flex items-center gap-2">
-                <span className="text-xl">💡</span> رؤيتنا ومنهجنا
+                <span className="text-xl">💡</span> {t("vision")}
               </p>
               <h2 className="mb-6 text-4xl font-black text-[var(--color-foreground)] leading-tight">
-                رعاية صحية نفسية احترافية تتفهم احتياجاتك
+                {t("heading")}
               </h2>
               <p className="mb-4 text-lg leading-relaxed text-slate-600">
-                نحن لسنا مجرد منصة، بل شركاء في رحلتك نحو التعافي والنمو. نربطك بأخصائيين نفسيين معتمدين لتلقي الدعم العلاجي عبر جلسات فيديو، صوت، أو محادثة نصية بالكامل داخل <span className="font-bold text-[#6366F1]">بيئتنا الآمنة والمغلقة</span>. لا حاجة لتطبيقات خارجية، حفاظاً على أقصى درجات خصوصيتك.
+                {t("p1")}<span className="font-bold text-[#6366F1]">{t("p1bold")}</span>{t("p1_2")}
               </p>
               <p className="mb-8 text-lg leading-relaxed text-slate-600">
-                نسعى لتقديم خدمة مبسطة ومريحة، مع التركيز على السرية الكاملة والراحة النفسية في كل تفاصيل رحلتك معنا.
+                {t("p2")}
               </p>
               <div className="flex flex-col gap-4">
-                {["أخصائيين معتمدين حصراً ومجربين", "تشفير تام لجلساتك لضمان السرية", "دعم مستمر وموثوق متى احتجته"].map((item, idx) => (
+                {[t("bullet1"), t("bullet2"), t("bullet3")].map((item, idx) => (
                   <div key={item} className="flex items-center gap-3 animate-fade-in-up" style={{ animationDelay: `${0.3 + idx * 0.1}s` }}>
                     <div className="bg-[#EEF2FF] rounded-full p-1">
                       <CheckCircle2 className="h-5 w-5 text-[#6366F1] flex-shrink-0" />
@@ -103,13 +104,13 @@ export default async function AboutPage() {
         <section className="mb-24">
           <div className="mb-16 text-center animate-fade-in">
             <p className="mb-3 text-sm font-bold uppercase text-[#8B5CF6] tracking-widest flex items-center justify-center gap-2">
-              <span className="text-xl">✨</span> قيمنا الأساسية
+              <span className="text-xl">✨</span> {t("valuesHeading")}
             </p>
             <h2 className="mb-4 text-4xl font-black text-[var(--color-foreground)]">
-              نبني جسور <span className="gradient-text">الثقة</span> مع عملائنا
+              {t("valuesTitle1")} <span className="gradient-text">{t("valuesTitle2")}</span> {t("valuesTitle3")}
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-slate-600">
-              ثلاث قيم أساسية راسخة تحكم كل قرار نتخذه لضمان تقديم الأفضل لك دائماً.
+              {t("valuesDesc")}
             </p>
           </div>
 
@@ -147,15 +148,15 @@ export default async function AboutPage() {
             <div className="mb-6 bg-white/10 p-4 rounded-full backdrop-blur-md border border-white/20 shadow-xl animate-pulse-glow">
               <Lightbulb className="h-12 w-12 text-[#C7D2FE]" />
             </div>
-            <h2 className="mb-6 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#C7D2FE]">رؤيتنا لمستقبل الصحة النفسية</h2>
+            <h2 className="mb-6 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#C7D2FE]">{t("futureVision")}</h2>
             <p className="mb-10 max-w-3xl text-xl leading-relaxed text-[#A5B4FC]">
-              أن تكون منصتنا الخيار الأول والأكثر موثوقية للأشخاص الباحثين عن دعم نفسي عربي احترافي، يجمع بين الرقي، الخصوصية المطلقة، والتجربة المريحة التي تشعرك وكأنك في بيتك.
+              {t("futureDesc")}
             </p>
             <Link
               href="/therapists"
               className="inline-flex items-center gap-3 rounded-full bg-white px-10 py-5 text-lg font-bold text-[#312E81] transition-bounce hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:scale-105"
             >
-              ابدأ رحلتك نحو التعافي
+              {t("cta")}
               <span className="bg-[#EEF2FF] text-[#6366F1] rounded-full p-1">←</span>
             </Link>
           </div>
@@ -165,11 +166,11 @@ export default async function AboutPage() {
         <section className="pb-12">
           <div className="mb-16 text-center animate-fade-in">
             <p className="mb-3 text-sm font-bold uppercase text-[#8B5CF6] tracking-widest flex items-center justify-center gap-2">
-              <span className="text-xl">🎯</span> المميزات التنافسية
+              <span className="text-xl">🎯</span> {t("competitiveAdvantage")}
             </p>
-            <h2 className="mb-4 text-4xl font-black text-[var(--color-foreground)]">لماذا يختارنا الآلاف؟</h2>
+            <h2 className="mb-4 text-4xl font-black text-[var(--color-foreground)]">{t("whyChooseUs")}</h2>
             <p className="mx-auto max-w-2xl text-lg text-slate-600">
-              الأسباب التي تجعل منصتنا الوجهة الأولى للرعاية النفسية.
+              {t("whyChooseUsDesc")}
             </p>
           </div>
 

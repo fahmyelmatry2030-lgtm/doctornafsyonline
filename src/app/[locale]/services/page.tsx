@@ -1,62 +1,59 @@
 import { HeartHandshake, Shield, Video, Phone, MessageCircle, Clock, CheckCircle2, Zap, Award } from "lucide-react";
 import Link from "next/link";
 
-const services = [
-  {
-    icon: Video,
-    title: "جلسات فيديو شخصية",
-    description:
-      "تواصل وجهاً لوجه مع أخصائيك النفسي بصورة واضحة وتجربة تفاعلية، تمنحك شعوراً بالقرب والتفهم التام.",
-    benefits: ["تواصل بصري كامل", "قراءة لغة الجسد", "اتصال إنساني أعمق"],
-    color: "from-[#6366F1] to-[#8B5CF6]",
-  },
-  {
-    icon: Phone,
-    title: "جلسات صوتية مرنة",
-    description:
-      "تحدث بأريحية تامة من أي مكان. خيارك الأمثل لجلسة مريحة تضمن أعلى درجات الخصوصية.",
-    benefits: ["مرونة فائقة", "راحة وخصوصية", "أقل استهلاكاً للإنترنت"],
-    color: "from-[#F59E0B] to-[#F97316]",
-  },
-  {
-    icon: MessageCircle,
-    title: "جلسات شات نصي",
-    description:
-      "تواصل عبر الرسائل النصية المباشرة داخل المنصة؛ حل مثالي وسريع لتفريغ مشاعرك بدون مكالمات.",
-    benefits: ["متابعة دقيقة", "توثيق لتقدمك", "دعم هادئ ومريح"],
-    color: "from-[#14B8A6] to-[#0D9488]",
-  },
-];
+import { getTranslations } from "next-intl/server";
 
-const reasons = [
-  {
-    icon: Shield,
-    title: "أمان وخصوصية مطلقة",
-    description:
-      "نعتمد تشفيراً سرياً لكافة جلساتك، ونلتزم التزاماً كاملاً بحماية بياناتك وسريتك.",
-  },
-  {
-    icon: HeartHandshake,
-    title: "عناية مهنية حقيقية",
-    description:
-      "أخصائيون مجازون وذوو خبرة عالية في علاج القلق، الاكتئاب، العلاقات، والنمو الشخصي.",
-  },
-  {
-    icon: Clock,
-    title: "حجز فوري وميسّر",
-    description:
-      "اختر الأخصائي وحدد الموعد بسهولة تامة، وابدأ رحلة تعافيك في غضون دقائق.",
-  },
-];
+export default async function ServicesPage() {
+  const t = await getTranslations("Services");
 
-const features = [
-  { title: "منصة مدمجة بالكامل", description: "فيديو، صوت، وشات في مكان واحد مغلق وآمن" },
-  { title: "نخبة من الأخصائيين", description: "فريق مختار بدقة لضمان أعلى جودة في العلاج" },
-  { title: "أسعار عادلة للجميع", description: "تسعير شفاف ومنصف يتناسب مع القيمة المقدمة" },
-  { title: "متابعة وتقييم مستمر", description: "دعم لا يتوقف بعد انتهاء الجلسة وملاحظات داعمة" },
-];
+  const services = [
+    {
+      icon: Video,
+      title: t("title1"),
+      description: t("desc1"),
+      benefits: [t("ben1_1"), t("ben1_2"), t("ben1_3")],
+      color: "from-[#6366F1] to-[#8B5CF6]",
+    },
+    {
+      icon: Phone,
+      title: t("title2"),
+      description: t("desc2"),
+      benefits: [t("ben2_1"), t("ben2_2"), t("ben2_3")],
+      color: "from-[#F59E0B] to-[#F97316]",
+    },
+    {
+      icon: MessageCircle,
+      title: t("title3"),
+      description: t("desc3"),
+      benefits: [t("ben3_1"), t("ben3_2"), t("ben3_3")],
+      color: "from-[#14B8A6] to-[#0D9488]",
+    },
+  ];
 
-export default function ServicesPage() {
+  const reasons = [
+    {
+      icon: Shield,
+      title: t("reasonTitle1"),
+      description: t("reasonDesc1"),
+    },
+    {
+      icon: HeartHandshake,
+      title: t("reasonTitle2"),
+      description: t("reasonDesc2"),
+    },
+    {
+      icon: Clock,
+      title: t("reasonTitle3"),
+      description: t("reasonDesc3"),
+    },
+  ];
+
+  const features = [
+    { title: t("featTitle1"), description: t("featDesc1") },
+    { title: t("featTitle2"), description: t("featDesc2") },
+    { title: t("featTitle3"), description: t("featDesc3") },
+    { title: t("featTitle4"), description: t("featDesc4") },
+  ];
   return (
     <div className="bg-[var(--color-background)]">
       {/* ============ HERO SECTION ============ */}
@@ -70,13 +67,13 @@ export default function ServicesPage() {
           <div className="max-w-3xl mx-auto animate-fade-in-up stagger-1">
             <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#B45309] shadow-premium">
               <Zap className="h-4 w-4 text-[#F59E0B]" />
-              خدماتنا
+              {t("heroTag")}
             </span>
             <h1 className="mb-6 text-5xl font-black leading-tight text-[var(--color-foreground)] md:text-6xl animate-fade-in-up stagger-2">
-              طرق <span className="gradient-text-warm">متعددة</span> لتعافيك النفسي
+              {t("heroTitle1")} <span className="gradient-text-warm">{t("heroTitle2")}</span> {t("heroTitle3")}
             </h1>
             <p className="text-xl leading-relaxed text-slate-700 animate-fade-in-up stagger-3">
-              اختر الوسيلة التي تريحك للتواصل مع أخصائيك المعتمد، فنحن نوفر لك كافة أنواع الجلسات في بيئة آمنة وداعمة.
+              {t("heroDesc")}
             </p>
           </div>
         </div>
@@ -88,13 +85,13 @@ export default function ServicesPage() {
         <section className="mb-24">
           <div className="mb-16 text-center animate-fade-in">
             <p className="mb-3 text-sm font-bold uppercase text-[#8B5CF6] tracking-widest flex items-center justify-center gap-2">
-              <span className="text-xl">🎯</span> باقات العلاج
+              <span className="text-xl">🎯</span> {t("servicesTag")}
             </p>
             <h2 className="mb-4 text-4xl font-black text-[var(--color-foreground)]">
-              اختر الطريقة التي <span className="gradient-text">تناسبك</span>
+              {t("servicesTitle1")} <span className="gradient-text">{t("servicesTitle2")}</span>
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-slate-600">
-              صممنا ثلاث طرق مختلفة للتواصل، لتلائم راحتك، خصوصيتك، وتفضيلاتك الشخصية.
+              {t("servicesDesc")}
             </p>
           </div>
 
@@ -139,7 +136,7 @@ export default function ServicesPage() {
                       href="/therapists"
                       className={`inline-block w-full text-center rounded-xl bg-gradient-to-r ${service.color} px-4 py-4 font-bold text-white transition-bounce hover:shadow-lg hover:scale-105`}
                     >
-                      احجز جلستك الآن
+                      {t("bookBtn")}
                     </Link>
                   </div>
                 </div>
@@ -152,13 +149,13 @@ export default function ServicesPage() {
         <section className="mb-24 card-glow glass-strong rounded-3xl p-8 md:p-12 shadow-premium animate-fade-in">
           <div className="mb-16 text-center">
             <p className="mb-3 text-sm font-bold uppercase text-[#8B5CF6] tracking-widest flex items-center justify-center gap-2">
-              <span className="text-xl">✨</span> التفرد
+              <span className="text-xl">✨</span> {t("uniquenessTag")}
             </p>
             <h2 className="mb-4 text-4xl font-black text-[var(--color-foreground)]">
-              ما الذي يُميز منصتنا؟
+              {t("uniquenessTitle")}
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-slate-600">
-              نحن نركز على أهم تفاصيل رحلتك: جودة الأخصائي، أمان الجلسة، وسهولة التجربة.
+              {t("uniquenessDesc")}
             </p>
           </div>
 
@@ -190,10 +187,10 @@ export default function ServicesPage() {
         <section className="mb-24">
           <div className="mb-16 text-center animate-fade-in">
             <p className="mb-3 text-sm font-bold uppercase text-[#8B5CF6] tracking-widest flex items-center justify-center gap-2">
-              <span className="text-xl">🌟</span> القيمة المضافة
+              <span className="text-xl">🌟</span> {t("addedValueTag")}
             </p>
             <h2 className="mb-4 text-4xl font-black text-[var(--color-foreground)]">
-              كل ما تحتاجه للتعافي
+              {t("addedValueTitle")}
             </h2>
           </div>
 
@@ -222,30 +219,30 @@ export default function ServicesPage() {
               <div className="mb-6 inline-block bg-white/10 p-4 rounded-full backdrop-blur-md border border-white/20 shadow-xl animate-pulse-glow">
                 <Award className="h-10 w-10 text-[#C7D2FE]" />
               </div>
-              <h2 className="mb-4 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#C7D2FE]">تسعير شفاف يعكس القيمة الحقيقية</h2>
+              <h2 className="mb-4 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#C7D2FE]">{t("pricingTitle")}</h2>
               <p className="mb-8 text-xl opacity-95 leading-relaxed text-[#A5B4FC]">
-                تختلف الأسعار بحسب تخصص وخبرة الأخصائي. لا توجد رسوم اشتراك أو مفاجآت عند الدفع؛ أنت تدفع فقط مقابل الجلسة التي تحجزها.
+                {t("pricingDesc")}
               </p>
               <Link
                 href="/therapists"
                 className="inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 text-lg font-bold text-[#312E81] transition-bounce hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105"
               >
-                اطلع على الأسعار
+                {t("pricingCta")}
                 <span className="bg-[#EEF2FF] text-[#6366F1] rounded-full p-1">←</span>
               </Link>
             </div>
 
             <div className="grid gap-4 w-full md:w-auto">
               <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-lg border border-white/20 shadow-xl transform transition-premium hover:-translate-y-1 hover:bg-white/15">
-                <div className="text-lg font-medium text-[#C7D2FE] mb-1">جلسات تبدأ من</div>
-                <div className="text-4xl font-black">300 <span className="text-2xl font-bold">جنيهاً</span></div>
+                <div className="text-lg font-medium text-[#C7D2FE] mb-1">{t("sessionsStart")}</div>
+                <div className="text-4xl font-black">300 <span className="text-2xl font-bold">{t("currency")}</span></div>
               </div>
               <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-lg border border-white/20 shadow-xl transform transition-premium hover:-translate-y-1 hover:bg-white/15">
-                <div className="text-lg font-medium text-[#C7D2FE] mb-1">رسوم مخفية</div>
-                <div className="text-4xl font-black">صفر</div>
+                <div className="text-lg font-medium text-[#C7D2FE] mb-1">{t("hiddenFees")}</div>
+                <div className="text-4xl font-black">{t("zero")}</div>
               </div>
               <div className="rounded-2xl bg-[#6366F1] p-6 shadow-[0_0_30px_rgba(99,102,241,0.5)] transform transition-premium hover:-translate-y-1">
-                <div className="text-lg font-medium text-[#C7D2FE] mb-1">شفافية الدفع</div>
+                <div className="text-lg font-medium text-[#C7D2FE] mb-1">{t("paymentTransparency")}</div>
                 <div className="text-4xl font-black">100%</div>
               </div>
             </div>

@@ -7,6 +7,7 @@ import {
   Clock, CheckCircle2, XCircle, AlertCircle
 } from "lucide-react";
 import TransferVerificationTable from "@/components/TransferVerificationTable";
+import PrintReportButton from "@/components/PrintReportButton";
 
 export default async function AdminReportsPage() {
   const session = await auth();
@@ -110,16 +111,17 @@ export default async function AdminReportsPage() {
   );
 
   return (
-    <div className="animate-fade-in space-y-8">
+    <div className="space-y-6 print:bg-white print:p-0">
+      
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900">التقارير والتحليلات</h1>
-          <p className="text-slate-500 mt-1">نظرة تحليلية شاملة على أداء المنصة</p>
+          <h1 className="text-3xl font-black text-[#2B3674]">التقارير وحسابات المنصة</h1>
+          <p className="text-[#A3AED0] mt-2">
+            نظرة شاملة على أداء المنصة، الإيرادات، نمو المستخدمين، وأحدث النشاطات.
+          </p>
         </div>
-        <div className="text-xs text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full">
-          {now.toLocaleDateString("ar-EG", { month: "long", year: "numeric" })}
-        </div>
+        <PrintReportButton />
       </div>
 
       {/* KPI Cards */}

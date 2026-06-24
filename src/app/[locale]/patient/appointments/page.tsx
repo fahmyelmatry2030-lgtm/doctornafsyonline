@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Clock, Video, CheckCircle2, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
+import RescheduleButton from "@/components/RescheduleButton";
 
 export default async function PatientAppointmentsPage() {
   const session = await auth();
@@ -84,9 +85,12 @@ export default async function PatientAppointmentsPage() {
                       </td>
                       <td className="px-6 py-4">
                         {isUpcoming ? (
-                          <Link href={`/session/${app.id}`} className="font-semibold text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors">
-                            دخول الغرفة
-                          </Link>
+                          <div className="flex items-center gap-2">
+                            <Link href={`/session/${app.id}`} className="font-semibold text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors">
+                              دخول الغرفة
+                            </Link>
+                            <RescheduleButton appointmentId={app.id} />
+                          </div>
                         ) : (
                           <span className="text-slate-400">-</span>
                         )}

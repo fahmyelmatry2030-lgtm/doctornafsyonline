@@ -4,12 +4,15 @@ import Link from "next/link";
 import { Calendar, Video, Clock, MessageCircle, ArrowUpRight, PlayCircle } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
+import { getTranslations } from "next-intl/server";
 
 export default async function PatientDashboardPage() {
   const session = await auth();
   const userId = session?.user?.id;
 
   if (!userId) return null;
+
+  const t = await getTranslations("PatientDashboard");
 
   // Fetch upcoming appointments
   const upcomingAppointments = await prisma.appointment.findMany({
@@ -54,15 +57,15 @@ export default async function PatientDashboardPage() {
         
         <div className="z-10">
           <h1 className="text-2xl font-black text-[#2B3674] mb-2 flex items-center gap-2">
-            مرحباً بك، {session?.user?.name} 🌟
+            {t("welcome", { name: session?.user?.name || "" })}
           </h1>
           <p className="text-[#A3AED0] font-medium text-sm max-w-lg">
-            أهلاً بك في مساحتك الآمنة. كيف تشعر اليوم؟ نحن هنا لدعمك في رحلتك نحو صحة نفسية أفضل.
+            {t("welcomeDesc")}
           </p>
         </div>
         <div className="hidden md:flex items-center gap-4 z-10">
           <Link href="/therapists" className="bg-[#4318FF] hover:bg-[#3311DB] text-white px-6 py-3.5 rounded-2xl font-bold shadow-lg shadow-[#4318FF]/20 transition-all flex items-center gap-2">
-            <Calendar className="w-5 h-5" /> حجز جلسة جديدة
+            <Calendar className="w-5 h-5" /> {t("bookNewSession")}
           </Link>
         </div>
       </div>
@@ -75,9 +78,9 @@ export default async function PatientDashboardPage() {
               <span className="text-xl">⭐</span>
             </div>
             <div>
-              <h3 className="font-black text-[#2B3674] text-base mb-1">تقييم جلستك السابقة</h3>
+              <h3 className="font-black text-[#2B3674] text-base mb-1">{t("reviewPreviousSession")}</h3>
               <p className="text-sm font-medium text-amber-800">
-                لديك جلسة مكتملة مع د. {unratedAppointment.therapist.name}. رأيك يهمنا ويساعدنا في تحسين جودة الخدمة.
+                {t("reviewDesc", { name: unratedAppointment.therapist.name })}
               </p>
             </div>
           </div>
@@ -85,7 +88,7 @@ export default async function PatientDashboardPage() {
             href="/patient/reviews"
             className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-bold transition-all text-sm flex items-center gap-2 shadow-md shadow-amber-500/20"
           >
-            تقييم الجلسة الآن
+            {t("reviewNow")}
           </Link>
         </div>
       )}
@@ -98,7 +101,7 @@ export default async function PatientDashboardPage() {
               <Calendar className="w-6 h-6" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-bold text-[#A3AED0] mb-1">الجلسات القادمة</p>
+              <p className="text-sm font-bold text-[#A3AED0] mb-1">{t("upcomingSessions")}</p>
               <p className="text-3xl font-black text-[#2B3674]">{upcomingCount}</p>
             </div>
           </div>
@@ -110,7 +113,7 @@ export default async function PatientDashboardPage() {
               <Video className="w-6 h-6" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-bold text-[#A3AED0] mb-1">الجلسات المكتملة</p>
+              <p className="text-sm font-bold text-[#A3AED0] mb-1">{t("completedSessions")}</p>
               <p className="text-3xl font-black text-[#2B3674]">{totalCompleted}</p>
             </div>
           </div>
@@ -122,8 +125,8 @@ export default async function PatientDashboardPage() {
               <MessageCircle className="w-6 h-6" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-bold text-[#A3AED0] mb-1">رسائل غرفة العلاج الجديدة</p>
-              <p className="text-3xl font-black text-[#2B3674]">0</p>
+              <p className="text-sm font-bold text-[#A3AED0] mb-1">{t("totalSessions")}</p>
+              <p className="text-3xl font-black text-[#2B3674]">{totalCompleted + upcomingCount}</p>
             </div>
           </div>
         </div>
@@ -132,9 +135,9 @@ export default async function PatientDashboardPage() {
       {/* Upcoming Appointments List */}
       <div className="bg-white rounded-[24px] shadow-sm overflow-hidden flex flex-col">
         <div className="px-7 py-6 flex items-center justify-between border-b border-[#F4F7FE]">
-          <h2 className="font-black text-[#2B3674] text-lg">مواعيدك القادمة</h2>
+          <h2 className="font-black text-[#2B3674] text-lg">{t("nextAppointments")}</h2>
           <Link href="/patient/appointments" className="text-sm font-bold text-[#4318FF] hover:text-[#3311DB] flex items-center gap-1 transition-colors">
-            عرض كل المواعيد <ArrowUpRight className="w-4 h-4" />
+            {t("viewAll")} <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>
         <div className="p-4">
@@ -143,9 +146,9 @@ export default async function PatientDashboardPage() {
               <div className="w-16 h-16 bg-[#F4F7FE] rounded-full flex items-center justify-center mb-4">
                 <Calendar className="w-8 h-8 text-[#A3AED0]" />
               </div>
-              <p className="text-[#A3AED0] font-bold text-sm mb-4">لا توجد جلسات مجدولة قريباً.</p>
+              <p className="text-[#A3AED0] font-bold text-sm mb-4">{t("noUpcoming")}</p>
               <Link href="/therapists" className="text-sm font-bold bg-white text-[#4318FF] border border-[#F4F7FE] px-5 py-2.5 rounded-xl hover:bg-[#F4F7FE] transition-colors">
-                استكشف الأخصائيين
+                {t("browseTherapists")}
               </Link>
             </div>
           ) : (
@@ -173,7 +176,7 @@ export default async function PatientDashboardPage() {
                     </div>
                   </div>
                   <Link href={`/session/${app.id}`} className="shrink-0 flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white bg-[#4318FF] hover:bg-[#3311DB] rounded-xl shadow-lg shadow-[#4318FF]/20 transition-all">
-                    <PlayCircle className="w-4 h-4" /> دخول الجلسة
+                    <PlayCircle className="w-4 h-4" /> {t("joinSession")}
                   </Link>
                 </div>
               ))}

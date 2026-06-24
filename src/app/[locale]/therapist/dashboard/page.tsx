@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
+import { getTranslations } from "next-intl/server";
 
 const typeIcon: Record<string, React.ReactNode> = {
   VIDEO: <Video className="w-3.5 h-3.5 text-indigo-500" />,
@@ -24,6 +25,8 @@ export default async function TherapistDashboardPage() {
   const session = await auth();
   const userId = session?.user?.id;
   if (!userId) return null;
+
+  const t = await getTranslations("TherapistDashboard");
 
   const now = new Date();
   const today = new Date();
@@ -59,14 +62,14 @@ export default async function TherapistDashboardPage() {
               <span className="text-amber-600 text-2xl font-black">!</span>
             </div>
             <div>
-              <h3 className="text-amber-900 font-bold text-sm md:text-base">تنبيه: صورتك الشخصية مفقودة</h3>
+              <h3 className="text-amber-900 font-bold text-sm md:text-base">{t("avatarReminderTitle")}</h3>
               <p className="text-amber-700/90 text-xs md:text-sm mt-0.5 font-medium">
-                أكمل ملفك الشخصي وارفع صورتك الآن. الأخصائيون الذين يمتلكون صوراً شخصية واضحة يحصلون على حجوزات أكثر بـ 3 أضعاف!
+                {t("avatarReminderDesc")}
               </p>
             </div>
           </div>
           <Link href="/therapist/profile" className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-500/30 transition-all">
-            رفع الصورة الآن
+            {t("uploadAvatarNow")}
           </Link>
         </div>
       )}
@@ -79,7 +82,7 @@ export default async function TherapistDashboardPage() {
         <div className="z-10 w-full flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h1 className="text-2xl font-black text-[#2B3674] mb-2 flex items-center gap-2">
-              مرحباً بك، د. {session?.user?.name} 🩺
+              {t("welcome", { name: session?.user?.name || "" })}
             </h1>
             <p className="text-[#A3AED0] font-medium text-sm">
               {format(now, "EEEE، d MMMM yyyy", { locale: arSA })}
@@ -93,12 +96,12 @@ export default async function TherapistDashboardPage() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                 </span>
-                متاح للحجوزات
+                {t("availableForBookings")}
               </span>
             ) : (
               <span className="inline-flex items-center gap-2 bg-slate-50 text-slate-500 px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-200">
                 <span className="h-2.5 w-2.5 rounded-full bg-slate-400 inline-block"></span>
-                غير متاح
+                {t("notAvailableForBookings")}
               </span>
             )}
             <Link href="/therapist/profile" className="bg-[#4318FF] hover:bg-[#3311DB] text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-[#4318FF]/20 transition-all">
@@ -122,15 +125,15 @@ export default async function TherapistDashboardPage() {
               </span>
             </div>
             <div>
-              <p className="text-xs font-black text-emerald-600 uppercase tracking-wide mb-1">جلسة جارية الآن</p>
+              <p className="text-xs font-black text-emerald-600 uppercase tracking-wide mb-1">{t("ongoingSessionTitle")}</p>
               <p className="font-black text-[#2B3674] text-lg">{ongoingSession.patient.name}</p>
               <p className="text-sm font-bold text-[#A3AED0] flex items-center gap-1.5 mt-1">
-                {typeIcon[ongoingSession.type]} جلسة {typeLabel[ongoingSession.type]}
+                {typeIcon[ongoingSession.type]} {typeLabel[ongoingSession.type]}
               </p>
             </div>
           </div>
           <Link href={`/session/${ongoingSession.id}`} className="shrink-0 inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-black px-6 py-3.5 rounded-2xl transition-all shadow-lg shadow-emerald-500/30">
-            <PlayCircle className="w-5 h-5" /> ادخل الجلسة الآن
+            <PlayCircle className="w-5 h-5" /> {t("joinSession")}
           </Link>
         </div>
       )}
@@ -138,10 +141,10 @@ export default async function TherapistDashboardPage() {
       {/* Stats Grid */}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "مرضى نشطين", value: activePatientsCount, sub: `${completedCount} جلسة مكتملة إجمالاً`, icon: <Users className="w-6 h-6" />, color: "text-[#4318FF]", bg: "bg-[#4318FF]/10" },
-          { label: "جلسات اليوم", value: todaysSessions, sub: pendingCount > 0 ? <span className="text-amber-500">{pendingCount} طلب بالانتظار</span> : "لا توجد طلبات معلقة", icon: <CalendarCheck className="w-6 h-6" />, color: "text-teal-600", bg: "bg-teal-100" },
-          { label: "جلسات مكتملة", value: completedCount, sub: "منذ انضمامك للمنصة", icon: <CheckCircle2 className="w-6 h-6" />, color: "text-emerald-500", bg: "bg-emerald-100" },
-          { label: "جلسات مجدولة", value: scheduledCount, sub: "جلسات قادمة بانتظارك", icon: <BarChart2 className="w-6 h-6" />, color: "text-violet-500", bg: "bg-violet-100" },
+          { label: t("activePatients"), value: activePatientsCount, sub: "", icon: <Users className="w-6 h-6" />, color: "text-[#4318FF]", bg: "bg-[#4318FF]/10" },
+          { label: t("todaySessions"), value: todaysSessions, sub: pendingCount > 0 ? <span className="text-amber-500">{pendingCount} {t("pendingRequests")}</span> : "", icon: <CalendarCheck className="w-6 h-6" />, color: "text-teal-600", bg: "bg-teal-100" },
+          { label: t("completedSessions"), value: completedCount, sub: "", icon: <CheckCircle2 className="w-6 h-6" />, color: "text-emerald-500", bg: "bg-emerald-100" },
+          { label: t("todayAppointments"), value: scheduledCount, sub: "", icon: <BarChart2 className="w-6 h-6" />, color: "text-violet-500", bg: "bg-violet-100" },
         ].map((stat, i) => (
           <div key={i} className="bg-white rounded-[24px] p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
@@ -162,9 +165,9 @@ export default async function TherapistDashboardPage() {
         {/* Upcoming Appointments */}
         <div className="bg-white rounded-[24px] shadow-sm overflow-hidden flex flex-col">
           <div className="px-7 py-6 flex items-center justify-between border-b border-[#F4F7FE]">
-            <h2 className="font-black text-[#2B3674] text-lg">الجلسات القادمة</h2>
+            <h2 className="font-black text-[#2B3674] text-lg">{t("todayAppointments")}</h2>
             <Link href="/therapist/schedule" className="text-sm font-bold text-[#4318FF] hover:text-[#3311DB] flex items-center gap-1 transition-colors">
-              الجدول <ArrowUpRight className="w-4 h-4" />
+              {t("viewSchedule")} <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
           <div className="p-4 flex-1">
@@ -173,7 +176,7 @@ export default async function TherapistDashboardPage() {
                 <div className="w-16 h-16 bg-[#F4F7FE] rounded-full flex items-center justify-center mb-3">
                   <CalendarCheck className="w-8 h-8 text-[#A3AED0]" />
                 </div>
-                <p className="text-[#A3AED0] font-bold text-sm">لا توجد جلسات مجدولة قريباً</p>
+                <p className="text-[#A3AED0] font-bold text-sm">{t("noAppointmentsToday")}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -194,7 +197,7 @@ export default async function TherapistDashboardPage() {
                       </div>
                     </div>
                     <Link href={`/session/${app.id}`} className="shrink-0 text-xs font-bold bg-white text-[#4318FF] px-5 py-2.5 rounded-xl shadow-sm border border-[#F4F7FE] hover:bg-[#4318FF] hover:text-white transition-all text-center">
-                      دخول
+                      {t("joinSession")}
                     </Link>
                   </div>
                 ))}
@@ -206,9 +209,9 @@ export default async function TherapistDashboardPage() {
         {/* Recent Completed */}
         <div className="bg-white rounded-[24px] shadow-sm overflow-hidden flex flex-col">
           <div className="px-7 py-6 flex items-center justify-between border-b border-[#F4F7FE]">
-            <h2 className="font-black text-[#2B3674] text-lg">آخر الجلسات المكتملة</h2>
+            <h2 className="font-black text-[#2B3674] text-lg">{t("recentCompletedSessions")}</h2>
             <Link href="/therapist/schedule" className="text-sm font-bold text-[#4318FF] hover:text-[#3311DB] flex items-center gap-1 transition-colors">
-              الجدول <ArrowUpRight className="w-4 h-4" />
+              {t("allHistory")} <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
           <div className="p-4 flex-1">
@@ -217,7 +220,7 @@ export default async function TherapistDashboardPage() {
                 <div className="w-16 h-16 bg-[#F4F7FE] rounded-full flex items-center justify-center mb-3">
                   <CheckCircle2 className="w-8 h-8 text-[#A3AED0]" />
                 </div>
-                <p className="text-[#A3AED0] font-bold text-sm">لم تكتمل أي جلسات بعد</p>
+                <p className="text-[#A3AED0] font-bold text-sm">{t("noRecentSessions")}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -236,7 +239,7 @@ export default async function TherapistDashboardPage() {
                       </div>
                     </div>
                     <span className="shrink-0 text-xs font-black text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl">
-                      جلسة مكتملة ✓
+                      {t("writeNotes")}
                     </span>
                   </div>
                 ))}

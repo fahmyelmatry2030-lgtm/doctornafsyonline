@@ -67,7 +67,7 @@ export async function PATCH(
   }
 
   const { id } = await params;
-  const { status } = await request.json();
+  const { status, scheduledAt } = await request.json();
 
   const appointment = await prisma.appointment.findUnique({ where: { id } });
   if (!appointment) {
@@ -82,9 +82,13 @@ export async function PATCH(
     return NextResponse.json({ error: "غير مصرح" }, { status: 403 });
   }
 
+  const updateData: any = {};
+  if (status) updateData.status = status;
+  if (scheduledAt) updateData.scheduledAt = new Date(scheduledAt);
+
   const updated = await prisma.appointment.update({
     where: { id },
-    data: { status },
+    data: updateData,
   });
 
   return NextResponse.json(updated);

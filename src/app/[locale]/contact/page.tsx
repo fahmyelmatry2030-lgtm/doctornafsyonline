@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Mail, MapPin, Phone, Send, MessageCircle, Clock, CheckCircle2, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { PLATFORM_PHONE } from "@/lib/constants";
+import { useTranslations } from "next-intl";
 
 export default function ContactPage() {
   const [formState, setFormState] = useState({
@@ -20,6 +21,8 @@ export default function ContactPage() {
     contactEmail: "support@doctornafsyonline.com",
     contactAddress: "القاهرة، مصر",
   });
+  
+  const t = useTranslations("Contact");
 
   useEffect(() => {
     fetch("/api/content")
@@ -73,13 +76,13 @@ export default function ContactPage() {
           <div className="max-w-3xl mx-auto animate-fade-in-up stagger-1">
             <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#312E81] shadow-premium">
               <MessageCircle className="h-4 w-4 text-[#6366F1]" />
-              تواصل معنا
+              {t("heroBadge")}
             </span>
             <h1 className="mb-6 text-5xl font-black leading-tight text-[var(--color-foreground)] md:text-6xl animate-fade-in-up stagger-2">
-              نحن هنا <span className="gradient-text">لأجلك</span>
+              {t("heroTitle1")} <span className="gradient-text">{t("heroTitle2")}</span>
             </h1>
             <p className="text-xl leading-relaxed text-slate-700 animate-fade-in-up stagger-3">
-              يسعدنا الاستماع إليك. سواء كان لديك استفسار، ملاحظة، أو تحتاج إلى مساعدة، فريقنا جاهز للرد عليك في أسرع وقت.
+              {t("heroSubtitle")}
             </p>
           </div>
         </div>
@@ -90,32 +93,32 @@ export default function ContactPage() {
         <div className="grid gap-12 lg:grid-cols-2">
           {/* Contact Information */}
           <div className="animate-fade-in-up">
-            <h2 className="mb-8 text-3xl font-black text-[var(--color-foreground)]">معلومات التواصل</h2>
+            <h2 className="mb-8 text-3xl font-black text-[var(--color-foreground)]">{t("infoTitle")}</h2>
             <p className="mb-10 text-lg text-slate-600 leading-relaxed">
-              يمكنك التواصل معنا عبر أي من القنوات التالية، وسنحرص على الرد عليك خلال أقل من 24 ساعة.
+              {t("infoDesc")}
             </p>
 
             <div className="space-y-6">
               {[
                 {
                   icon: <Mail className="h-6 w-6 text-[#6366F1]" />,
-                  title: "البريد الإلكتروني",
+                  title: t("emailTitle"),
                   info: content.contactEmail,
-                  desc: "للاستفسارات العامة والدعم التقني",
+                  desc: t("emailDesc"),
                   bg: "from-[#6366F1] to-[#8B5CF6]",
                 },
                 {
                   icon: <Phone className="h-6 w-6 text-[#10B981]" />,
-                  title: "رقم الهاتف",
+                  title: t("phoneTitle"),
                   info: content.contactPhone,
-                  desc: "متاح من 9 صباحاً حتى 9 مساءً بتوقيت مكة",
+                  desc: t("phoneDesc"),
                   bg: "from-[#10B981] to-[#059669]",
                 },
                 {
                   icon: <MapPin className="h-6 w-6 text-[#F59E0B]" />,
-                  title: "المقر الرئيسي",
+                  title: t("addressTitle"),
                   info: content.contactAddress,
-                  desc: "نخدم جميع أنحاء الوطن العربي رقمياً",
+                  desc: t("addressDesc"),
                   bg: "from-[#F59E0B] to-[#D97706]",
                 },
               ].map((item, idx) => (
@@ -142,24 +145,24 @@ export default function ContactPage() {
               <div className="absolute right-0 top-0 w-32 h-32 bg-[#6366F1] rounded-full blur-[50px] opacity-20 pointer-events-none"></div>
               <div className="flex items-center gap-4 mb-3 relative z-10">
                 <Clock className="h-8 w-8 text-[#C7D2FE] animate-pulse-soft" />
-                <h3 className="font-bold text-xl text-white">متوسط وقت الرد</h3>
+                <h3 className="font-bold text-xl text-white">{t("responseTimeTitle")}</h3>
               </div>
               <p className="opacity-95 text-[#A5B4FC] relative z-10 leading-relaxed">
-                نحن ندرك أهمية وقتك، لذلك نلتزم بالرد على كافة رسائلك خلال مدة أقصاها ساعة واحدة في أوقات العمل الرسمية.
+                {t("responseTimeDesc")}
               </p>
             </div>
           </div>
 
           {/* Contact Form */}
           <div className="card-glow glass-strong rounded-3xl border border-[var(--color-border-soft)] p-8 shadow-premium animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <h2 className="mb-2 text-2xl font-bold text-[var(--color-foreground)]">أرسل لنا رسالة</h2>
-            <p className="mb-8 text-slate-600">الرجاء تعبئة النموذج وسنتواصل معك قريباً.</p>
+            <h2 className="mb-2 text-2xl font-bold text-[var(--color-foreground)]">{t("formTitle")}</h2>
+            <p className="mb-8 text-slate-600">{t("formDesc")}</p>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
                   <label htmlFor="name" className="block text-sm font-semibold text-slate-700">
-                    الاسم الكريم
+                    {t("nameLabel")}
                   </label>
                   <input
                     type="text"
@@ -167,13 +170,13 @@ export default function ContactPage() {
                     value={formState.name}
                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                     className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm hover:border-slate-300"
-                    placeholder="أدخل اسمك"
+                    placeholder={t("namePlaceholder")}
                     required
                   />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="email" className="block text-sm font-semibold text-slate-700">
-                    البريد الإلكتروني
+                    {t("emailLabel")}
                   </label>
                   <input
                     type="email"
@@ -181,7 +184,7 @@ export default function ContactPage() {
                     value={formState.email}
                     onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                     className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm hover:border-slate-300"
-                    placeholder="example@domain.com"
+                    placeholder={t("emailPlaceholder")}
                     required
                   />
                 </div>
@@ -189,7 +192,7 @@ export default function ContactPage() {
 
               <div className="space-y-2">
                 <label htmlFor="subject" className="block text-sm font-semibold text-slate-700">
-                  الموضوع
+                  {t("subjectLabel")}
                 </label>
                 <div className="relative">
                   <select
@@ -198,11 +201,11 @@ export default function ContactPage() {
                     onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
                     className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 px-4 py-3.5 text-slate-900 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm hover:border-slate-300 appearance-none"
                   >
-                    <option>استفسار عام</option>
-                    <option>مشكلة في الحجز أو الدفع</option>
-                    <option>اقتراح تحسين</option>
-                    <option>طلب انضمام كأخصائي</option>
-                    <option>أخرى</option>
+                    <option>{t("subjectOpt1")}</option>
+                    <option>{t("subjectOpt2")}</option>
+                    <option>{t("subjectOpt3")}</option>
+                    <option>{t("subjectOpt4")}</option>
+                    <option>{t("subjectOpt5")}</option>
                   </select>
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                     <ChevronDown className="h-5 w-5 text-slate-400" />
@@ -212,7 +215,7 @@ export default function ContactPage() {
 
               <div className="space-y-2">
                 <label htmlFor="message" className="block text-sm font-semibold text-slate-700">
-                  الرسالة
+                  {t("messageLabel")}
                 </label>
                 <textarea
                   id="message"
@@ -220,7 +223,7 @@ export default function ContactPage() {
                   value={formState.message}
                   onChange={(e) => setFormState({ ...formState, message: e.target.value })}
                   className="w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:border-[#6366F1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20 transition-all resize-none shadow-sm hover:border-slate-300"
-                  placeholder="كيف يمكننا مساعدتك؟"
+                  placeholder={t("messagePlaceholder")}
                   required
                 ></textarea>
               </div>
@@ -230,9 +233,9 @@ export default function ContactPage() {
                 disabled={submitLoading}
                 className="group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] px-6 py-4 font-bold text-white transition-bounce hover:shadow-lg hover:shadow-[#6366F1]/30 focus:outline-none focus:ring-4 focus:ring-[#6366F1]/20 disabled:opacity-70"
               >
-                {submitLoading ? "جاري الإرسال..." : (
+                {submitLoading ? t("sending") : (
                   <>
-                    إرسال الرسالة
+                    {t("sendBtn")}
                     <Send className="h-5 w-5 transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1" />
                   </>
                 )}
@@ -248,7 +251,7 @@ export default function ContactPage() {
                 <div className="rounded-xl bg-[#10B981]/10 border border-[#10B981]/20 p-4 flex items-center gap-3 text-[#059669] animate-fade-in">
                   <CheckCircle2 className="h-6 w-6 flex-shrink-0" />
                   <p className="font-semibold text-sm">
-                    شكراً لك! تم استلام رسالتك بنجاح. سنرد عليك في أقرب وقت.
+                    {t("successMsg")}
                   </p>
                 </div>
               )}
@@ -259,16 +262,16 @@ export default function ContactPage() {
         {/* FAQ Link */}
         <section className="mt-24 card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-12 text-center animate-fade-in-up">
           <h2 className="mb-4 text-3xl font-black text-[var(--color-foreground)]">
-            تبحث عن إجابة سريعة؟
+            {t("faqSectionTitle")}
           </h2>
           <p className="mb-8 text-lg text-slate-600 max-w-2xl mx-auto">
-            قمنا بتجميع إجابات وافية لأكثر الأسئلة شيوعاً. تفضل بزيارة صفحة الأسئلة الشائعة، فقد تجد ضالتك هناك فوراً.
+            {t("faqSectionDesc")}
           </p>
           <Link
             href="/faq"
             className="inline-flex items-center gap-3 rounded-full bg-[#EEF2FF] px-8 py-4 font-bold text-[#6366F1] transition-premium hover:bg-[#E0E7FF] hover:-translate-y-1"
           >
-            تصفح الأسئلة الشائعة
+            {t("faqLink")}
             <span className="text-xl">←</span>
           </Link>
         </section>
