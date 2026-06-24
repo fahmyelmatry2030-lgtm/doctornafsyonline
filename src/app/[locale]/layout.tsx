@@ -24,6 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `${name} — منصة العلاج النفسي أونلاين`,
     description: "تواصل مع أخصائيين نفسيين معتمدين. جلسات فيديو وصوت ومحادثة نصية آمنة داخل المنصة.",
+    manifest: "/manifest.json",
     icons: {
       icon: "/logo.png?v=3",
       shortcut: "/logo.png?v=3",
