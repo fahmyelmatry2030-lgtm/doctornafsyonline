@@ -202,15 +202,15 @@ export default async function AdminDashboardPage() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {pendingTherapists.map((t: any) => (
-                    <div key={t.id} className="flex items-center justify-between p-4 bg-[#F4F7FE]/50 rounded-2xl hover:bg-[#F4F7FE] transition-colors border border-transparent hover:border-[#4318FF]/10">
+                  {pendingTherapists.map((req: any) => (
+                    <div key={req.id} className="flex items-center justify-between p-4 bg-[#F4F7FE]/50 rounded-2xl hover:bg-[#F4F7FE] transition-colors border border-transparent hover:border-[#4318FF]/10">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4318FF] to-purple-500 flex items-center justify-center text-white font-black text-sm shadow-md">
-                          {t.name.charAt(0)}
+                          {req.name.charAt(0)}
                         </div>
                         <div>
-                          <p className="text-sm font-black text-[#2B3674]">{t.name}</p>
-                          <p className="text-xs font-bold text-[#A3AED0]">{t.email}</p>
+                          <p className="text-sm font-black text-[#2B3674]">{req.name}</p>
+                          <p className="text-xs font-bold text-[#A3AED0]">{req.email}</p>
                         </div>
                       </div>
                       <Link href="/admin/therapists"
