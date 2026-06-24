@@ -1,252 +1,225 @@
-import { prisma } from "@/lib/prisma";
-import { ShieldCheck, ShieldAlert, Award, Calendar, User, ArrowRight, CheckCircle2, AlertTriangle } from "lucide-react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+"use client";
 
-export const dynamic = "force-dynamic";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { ShieldCheck, ShieldAlert, Award, Calendar, User as UserIcon, ArrowRight, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
+import Link from "next/link";
 
 // Translate role keys to reader-friendly Arabic titles
 function getRoleArabicLabel(role: string) {
   if (role === "ADMIN") return "مدير عام النظام";
-  if (role === "ADMIN_HR") return "إدارة الموارد البشرية (HR)";
-  if (role === "ADMIN_ACCOUNTING") return "الإدارة المالية والحسابات";
-  if (role === "ADMIN_VIEWER") return "مراقب لوحة التحكم";
-  if (role === "SHIFT_LEADER") return "قائد الشيفت (Shift Leader)";
-  if (role === "ADMIN_CUSTOMER_SERVICE") return "إدارة خدمة العملاء";
-  return "عضو فريق العمل";
+  if (role === "ADMIN_HR") return "مدير الموارد البشرية (HR)";
+  if (role === "ADMIN_ACCOUNTING") return "مدير الحسابات";
+  if (role === "ADMIN_VIEWER") return "مدير مراقب";
+  if (role === "SHIFT_LEADER") return "مسؤول فترة (Shift Leader)";
+  if (role === "ADMIN_CUSTOMER_SERVICE") return "مدير خدمة العملاء";
+  if (role === "THERAPIST") return "أخصائي نفسي إكلينيكي";
+  return "موظف معتمد";
 }
 
-interface PageProps {
-  searchParams: Promise<{ code?: string }>;
-}
+function VerifyStaffContent() {
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("code");
 
-export default async function VerifyStaffPage({ searchParams }: PageProps) {
-  const resolvedSearchParams = await searchParams;
-  const userId = resolvedSearchParams?.code;
+  const [employee, setEmployee] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!userId) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
-        <div className="max-w-xl w-full mx-auto space-y-8 my-auto text-center">
-          <div className="flex flex-col items-center space-y-2">
-            <Link href="/" className="flex flex-col items-center space-y-1.5 transition-transform hover:scale-103">
-              <img src="/logo.jpeg" alt="Doctor Nafsy" className="h-14 w-auto object-contain rounded-lg shadow-sm" />
-              <div className="text-center">
-                <p className="text-lg font-black text-slate-800 tracking-wide">دكتور نفسي أونلاين</p>
-                <p className="text-[10px] text-[#A3AED0] font-extrabold font-mono tracking-wider">Doctor Nafsy Online</p>
-              </div>
-            </Link>
-            <h2 className="text-xl font-bold text-slate-800 mt-2">نظام توثيق واعتماد فريق العمل</h2>
-            <p className="text-xs text-slate-500">يرجى استخدام رمز الاستجابة السريعة (QR Code) الخاص بالموظف للتحقق</p>
-          </div>
-          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center">
-            <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
-            <p className="text-sm font-bold text-slate-700">كود التحقق غير متوفر</p>
-            <p className="text-xs text-slate-500 mt-2">يرجى مسح كود الـ QR الموجود على بطاقة تعريف الموظف للتحقق من هويته وصلاحية عمله بالمنصة.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
 
-  let employee = null;
-  try {
-    employee = await prisma.user.findFirst({
-      where: {
-        id: userId,
-        role: {
-          in: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "SHIFT_LEADER", "ADMIN_CUSTOMER_SERVICE", "THERAPIST"]
+    async function fetchEmployee() {
+      try {
+        const res = await fetch(`/api/public/verify-staff/${userId}`);
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Not found");
         }
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        avatar: true,
-        role: true,
-        isSuspended: true,
-        createdAt: true,
-        therapistProfile: {
-          select: {
-            isVerified: true,
-            specializations: true,
-            bio: true,
-          }
-        }
+        const data = await res.json();
+        setEmployee(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-    });
-  } catch (error: any) {
+    }
+
+    fetchEmployee();
+  }, [userId]);
+
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="bg-red-50 p-6 rounded-xl border border-red-200 text-red-800 w-full max-w-lg">
-          <h2 className="font-bold mb-2">خطأ في النظام (Database Error):</h2>
-          <pre className="text-xs whitespace-pre-wrap">{error.message}</pre>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4" dir="rtl">
+        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4" dir="rtl">
+        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
+          <div className="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertTriangle className="w-10 h-10" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">خطأ في النظام</h2>
+          <p className="text-gray-500 mb-8">{error}</p>
         </div>
       </div>
     );
   }
 
-  if (!employee) {
+  if (!userId || !employee) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
-        <div className="max-w-xl w-full mx-auto space-y-8 my-auto text-center">
-          <div className="flex flex-col items-center space-y-2">
-            <Link href="/" className="flex flex-col items-center space-y-1.5 transition-transform hover:scale-103">
-              <img src="/logo.jpeg" alt="Doctor Nafsy" className="h-14 w-auto object-contain rounded-lg shadow-sm" />
-              <div className="text-center">
-                <p className="text-lg font-black text-slate-800 tracking-wide">دكتور نفسي أونلاين</p>
-                <p className="text-[10px] text-[#A3AED0] font-extrabold font-mono tracking-wider">Doctor Nafsy Online</p>
-              </div>
-            </Link>
-            <h2 className="text-xl font-bold text-slate-800 mt-2">نظام توثيق واعتماد فريق العمل</h2>
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans" dir="rtl">
+        <div className="mb-8 text-center">
+          <div className="bg-white p-4 rounded-2xl shadow-sm inline-block mb-4">
+            <img src="/logo.png" alt="Doctor Nafsy Online" className="h-16 w-auto" />
           </div>
-          <div className="bg-white rounded-3xl border border-red-200 shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-red-500 to-red-650 p-6 text-center text-white space-y-2">
-              <ShieldAlert className="w-16 h-16 mx-auto stroke-1" />
-              <h3 className="text-lg font-black">الموظف غير مسجل أو غير معتمد!</h3>
-            </div>
-            <div className="p-6 text-center space-y-4">
-              <p className="text-sm text-slate-650 leading-relaxed">
-                لم يتم العثور على أي موظف مسجل في منصة نفسي بالرمز المرفق.
-              </p>
-              <div className="bg-red-50/50 p-4 rounded-2xl border border-red-100 flex items-start gap-2.5 text-right text-xs text-red-700 leading-relaxed">
-                <AlertTriangle className="w-5 h-5 shrink-0 text-red-500 mt-0.5" />
-                <span>
-                  <strong>تنبيه هام:</strong> يرجى التحقق من البطاقة التعريفية والتأكد من أنها صادرة من الإدارة الرسمية لمنصة نَفْسي أونلاين.
-                </span>
-              </div>
-            </div>
+          <h1 className="text-2xl font-bold text-gray-900">نظام توثيق واعتماد فريق العمل</h1>
+          <p className="text-gray-500 mt-2">يرجى استخدام رمز الاستجابة السريعة (QR Code) الخاص بالموظف للتحقق</p>
+        </div>
+        
+        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl text-center border border-gray-100">
+          <div className="w-20 h-20 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertTriangle className="w-10 h-10" />
           </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">كود التحقق غير متوفر</h2>
+          <p className="text-gray-500 mb-8">يرجى مسح كود الـ QR الموجود على بطاقة تعريف الموظف للتحقق من هويته وصلاحية عمله بالمنصة.</p>
         </div>
       </div>
     );
   }
 
-  // For therapists: verified = not suspended AND profile is verified
-  // For admin staff: verified = not suspended
   const isVerified = !employee.isSuspended && 
     (employee.role !== "THERAPIST" || employee.therapistProfile?.isVerified === true);
-  
+
   const displayRole = employee.role === "THERAPIST"
     ? (employee.therapistProfile?.specializations || "أخصائي نفسي إكلينيكي")
     : getRoleArabicLabel(employee.role);
 
+  const joinDate = employee.createdAt ? new Date(employee.createdAt).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" }) : "غير متوفر";
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8" dir="rtl">
-      <div className="max-w-xl w-full mx-auto space-y-8 my-auto">
-        <div className="flex flex-col items-center space-y-2">
-          <Link href="/" className="flex flex-col items-center space-y-1.5 transition-transform hover:scale-103">
-            <img src="/logo.jpeg" alt="Doctor Nafsy" className="h-14 w-auto object-contain rounded-lg shadow-sm" />
-            <div className="text-center">
-              <p className="text-lg font-black text-slate-800 tracking-wide">دكتور نفسي أونلاين</p>
-              <p className="text-[10px] text-[#A3AED0] font-extrabold font-mono tracking-wider">Doctor Nafsy Online</p>
-            </div>
-          </Link>
-          <h2 className="text-xl font-bold text-slate-800 mt-2">نظام توثيق واعتماد فريق العمل</h2>
-          <p className="text-xs text-slate-500">تحقق من صحة وصلاحية بطاقات الهوية لمديري وأعضاء فريق العمل بالمنصة</p>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4 font-sans" dir="rtl">
+      {/* Header */}
+      <div className="mb-8 text-center">
+        <div className="bg-white p-4 rounded-2xl shadow-sm inline-block mb-4">
+          <img src="/logo.png" alt="Doctor Nafsy Online" className="h-16 w-auto" />
         </div>
+        <h1 className="text-2xl font-bold text-gray-900">نظام توثيق واعتماد فريق العمل</h1>
+        <p className="text-gray-500 mt-2">منصة دكتور نفسي أونلاين</p>
+      </div>
 
-        {/* Verification Result */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden animate-fade-in relative">
-          {/* Header depending on state */}
-          {isVerified ? (
-            <div className="bg-gradient-to-r from-emerald-600 to-teal-700 p-6 text-center text-white space-y-2 relative">
-              <div className="absolute top-2 left-4 w-20 h-20 border border-white/10 rounded-full flex items-center justify-center rotate-12 select-none pointer-events-none">
-                <span className="text-[7px] text-white/20 font-black tracking-widest text-center leading-none">NAFSI<br/>OFFICIAL<br/>STAFF</span>
-              </div>
-              <ShieldCheck className="w-16 h-16 mx-auto stroke-1 text-emerald-100 drop-shadow-sm" />
-              <h3 className="text-xl font-black">عضو معتمد وفروع في فريق العمل</h3>
-              <p className="text-[10px] text-emerald-100/90 font-bold uppercase tracking-widest font-mono">
-                STAFF ID: {employee.id}
-              </p>
-            </div>
-          ) : (
-            <div className="bg-gradient-to-r from-red-500 to-red-650 p-6 text-center text-white space-y-2 relative">
-              <ShieldAlert className="w-16 h-16 mx-auto stroke-1 text-red-100 drop-shadow-sm" />
-              <h3 className="text-xl font-black">حساب موظف موقوف / غير نشط</h3>
-              <p className="text-[10px] text-red-100/90 font-bold uppercase tracking-widest font-mono">
-                STAFF ID: {employee.id}
-              </p>
-            </div>
-          )}
-
-          {/* Visual card content */}
-          <div className="p-8 space-y-8 relative">
-            <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none">
-              <User className="w-64 h-64" />
-            </div>
-
-            <div className="flex flex-col items-center text-center space-y-4">
-              {/* Profile Photo */}
-              <div className="relative h-28 w-28 rounded-full overflow-hidden bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex-shrink-0 shadow-[0_0_20px_rgba(99,102,241,0.3)] ring-4 ring-indigo-50 border-4 border-white">
-                <img
-                  src={employee.avatar || "/therapist-placeholder.png"}
-                  alt={employee.name}
-                  className="h-full w-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    target.parentElement!.innerHTML = `<span class="flex h-full w-full items-center justify-center text-3xl font-bold text-white">${employee.name.charAt(0)}</span>`;
-                  }}
-                />
-              </div>
-
-              {/* Name and Title */}
-              <div>
-                <h4 className="text-2xl font-black text-slate-900 pb-1">
-                  {employee.name}
-                </h4>
-                <div className="bg-indigo-50 text-indigo-700 text-xs font-black px-4 py-1.5 rounded-full inline-block mt-1.5">
-                  {displayRole}
-                </div>
-              </div>
-            </div>
-
-            {/* Metadata Grid */}
-            <div className="grid grid-cols-2 gap-4 text-xs border-t border-slate-100 pt-6">
-              <div className="flex gap-2">
-                <Calendar className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
-                <div>
-                  <span className="text-slate-400 font-bold block mb-0.5">تاريخ الانضمام</span>
-                  <span className="font-black text-slate-800">
-                    {new Date(employee.createdAt).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <User className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
-                <div>
-                  <span className="text-slate-400 font-bold block mb-0.5">حالة الاعتماد</span>
-                  <span className={`font-black ${isVerified ? "text-emerald-600" : "text-rose-600"}`}>
-                    {isVerified ? "نشط ومعتمد حالياً" : "غير نشط / معلق"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Seal / Footer */}
-            {isVerified && (
-              <div className="flex justify-center items-center gap-4 pt-4 border-t border-slate-100">
-                <div className="flex items-center gap-2 text-emerald-700 bg-emerald-50 border border-emerald-250 px-3 py-1.5 rounded-full text-[10px] font-black shadow-sm">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>معتمد رسمياً للعمل بالمنصة في {new Date().getFullYear()}</span>
-                </div>
-              </div>
-            )}
+      {/* Main Card */}
+      <div className="bg-white rounded-3xl shadow-xl w-full max-w-lg overflow-hidden border border-gray-100">
+        
+        {/* Status Banner */}
+        {isVerified ? (
+          <div className="bg-green-500 text-white p-4 flex items-center justify-center gap-2">
+            <ShieldCheck className="w-6 h-6" />
+            <span className="font-bold text-lg">موظف معتمد وموثق</span>
           </div>
-        </div>
+        ) : (
+          <div className="bg-red-500 text-white p-4 flex items-center justify-center gap-2">
+            <ShieldAlert className="w-6 h-6" />
+            <span className="font-bold text-lg">حساب غير نشط أو موقوف</span>
+          </div>
+        )}
 
-        {/* Back Link */}
-        <div className="text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1 text-slate-500 hover:text-indigo-600 text-xs font-bold transition-colors"
-          >
-            العودة للرئيسية <ArrowRight className="w-3.5 h-3.5 rotate-180" />
-          </Link>
+        <div className="p-8">
+          {/* Avatar & Name */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="relative mb-4">
+              {employee.avatar ? (
+                <img 
+                  src={employee.avatar} 
+                  alt={employee.name} 
+                  className={`w-32 h-32 rounded-full object-cover border-4 ${isVerified ? 'border-green-100' : 'border-red-100'} shadow-lg`}
+                />
+              ) : (
+                <div className={`w-32 h-32 rounded-full flex items-center justify-center ${isVerified ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'} shadow-lg border-4 ${isVerified ? 'border-green-100' : 'border-red-100'}`}>
+                  <UserIcon className="w-16 h-16" />
+                </div>
+              )}
+              {isVerified && (
+                <div className="absolute bottom-1 right-1 bg-green-500 text-white p-1.5 rounded-full border-4 border-white">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+              )}
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900">{employee.name}</h2>
+            <p className="text-primary font-medium mt-1 text-lg">{displayRole}</p>
+          </div>
+
+          <hr className="border-gray-100 my-6" />
+
+          {/* Details */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                <Award className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">المنصب التعريفي</p>
+                <p className="font-semibold text-gray-900">{getRoleArabicLabel(employee.role)}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                <Calendar className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">تاريخ الانضمام</p>
+                <p className="font-semibold text-gray-900">{joinDate}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gray-50 text-gray-600 flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">الرقم التعريفي (ID)</p>
+                <p className="font-mono font-semibold text-gray-900 bg-gray-100 px-2 py-0.5 rounded text-sm tracking-wider">
+                  {employee.id.slice(0, 8).toUpperCase()}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Call to action */}
+          <div className="mt-10 bg-gray-50 rounded-2xl p-5 text-center">
+            <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+              هذه البطاقة تثبت هوية الموظف وصلاحية عمله كجزء من فريق منصة دكتور نفسي أونلاين.
+            </p>
+            <Link 
+              href="/"
+              className="inline-flex items-center justify-center w-full gap-2 bg-white border border-gray-200 text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+            >
+              الذهاب للموقع الرئيسي
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
         </div>
       </div>
+      
+      <p className="mt-8 text-sm text-gray-400">
+        © {new Date().getFullYear()} جميع الحقوق محفوظة - دكتور نفسي أونلاين
+      </p>
     </div>
+  );
+}
+
+export default function VerifyStaffPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-12 h-12 animate-spin text-primary" /></div>}>
+      <VerifyStaffContent />
+    </Suspense>
   );
 }
