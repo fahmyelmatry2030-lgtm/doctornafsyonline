@@ -2,18 +2,33 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { LayoutDashboard, LogOut, User, Menu, X } from "lucide-react";
+import { LayoutDashboard, LogOut, User, Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-
 import { useTranslations } from "next-intl";
-
-// Note: NAV_LINKS are moved inside the component to use translations
+import { useLocale } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
 
 export function Header({ platformName = "دكتور نفسي" }: { platformName?: string }) {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const t = useTranslations("Navigation");
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Switch language: if on /en/..., go to /...; if on /..., go to /en/...
+  const switchLanguage = () => {
+    if (locale === "ar") {
+      // Switch to English: add /en prefix
+      const enPath = "/en" + (pathname === "/" ? "" : pathname);
+      router.push(enPath);
+    } else {
+      // Switch to Arabic: remove /en prefix
+      const arPath = pathname.replace(/^\/en/, "") || "/";
+      router.push(arPath);
+    }
+  };
 
   const NAV_LINKS = [
     { href: "/how-it-works",label: t("howItWorks") },
@@ -55,6 +70,17 @@ export function Header({ platformName = "دكتور نفسي" }: { platformName?
           {/* Right side: auth buttons + hamburger */}
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle />
+
+            {/* Language Switcher */}
+            <button
+              onClick={switchLanguage}
+              title={locale === "ar" ? "Switch to English" : "التبديل للعربية"}
+              className="flex items-center gap-1.5 rounded-xl border-2 border-slate-100 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition-all hover:border-[#4318FF] hover:text-[#4318FF] hover:bg-[#F4F7FE]"
+            >
+              <Globe className="h-4 w-4" />
+              <span>{locale === "ar" ? "EN" : "ع"}</span>
+            </button>
+
             
             {/* Auth buttons (desktop) */}
             {session?.user ? (
