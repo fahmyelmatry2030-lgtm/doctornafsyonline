@@ -62,7 +62,7 @@ export default async function AdminDashboardPage() {
     recentAppointments, pendingTherapists
   ] = dbData;
 
-  const commissionFactor = settings.commission / 100;
+  const commissionFactor = (settings?.commission || 20) / 100;
   const monthlyRevenue = (monthlyEarningsData._sum.price || 0) * commissionFactor;
   const lastMonthRevenue = (lastMonthEarningsData._sum.price || 0) * commissionFactor;
   const revenueGrowth = lastMonthRevenue > 0 ? Math.round(((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue) * 100) : 0;
