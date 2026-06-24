@@ -17,11 +17,12 @@ function getRoleArabicLabel(role: string) {
 }
 
 interface PageProps {
-  searchParams: { code?: string };
+  searchParams: Promise<{ code?: string }>;
 }
 
 export default async function VerifyStaffPage({ searchParams }: PageProps) {
-  const userId = searchParams?.code;
+  const resolvedSearchParams = await searchParams;
+  const userId = resolvedSearchParams?.code;
 
   if (!userId) {
     return (
