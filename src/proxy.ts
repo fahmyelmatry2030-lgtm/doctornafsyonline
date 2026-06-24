@@ -8,7 +8,10 @@ export default createMiddleware({
   defaultLocale: 'ar',
   
   // localePrefix 'as-needed' = Arabic uses /, English uses /en
-  localePrefix: 'as-needed'
+  localePrefix: 'as-needed',
+
+  // Disable auto-detection from browser language - user controls language manually
+  localeDetection: false
 });
 
 export const config = {
