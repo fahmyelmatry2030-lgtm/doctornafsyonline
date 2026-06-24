@@ -145,16 +145,20 @@ export function ActivityLog() {
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
                           {u.avatar ? (
-                            <img 
-                              src={encodeURI(decodeURI(u.avatar))} 
-                              alt={u.name} 
-                              className="w-10 h-10 rounded-full object-cover shrink-0" 
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                target.parentElement!.innerHTML = `<div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm shrink-0">${u.name.charAt(0)}</div>`;
-                              }}
-                            />
+                            <div className="relative w-10 h-10 shrink-0">
+                              <img 
+                                src={encodeURI(decodeURI(u.avatar))} 
+                                alt={u.name} 
+                                className="w-10 h-10 rounded-full object-cover" 
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  if (target.parentElement) {
+                                    target.parentElement.innerHTML = `<div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm">${u.name.charAt(0)}</div>`;
+                                  }
+                                }}
+                              />
+                            </div>
                           ) : (
                             <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm shrink-0">
                               {u.name.charAt(0)}
