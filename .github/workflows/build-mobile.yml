@@ -38,6 +38,8 @@ jobs:
       - name: Sync Capacitor
         working-directory: ./nafsi-mobile
         run: |
+          mkdir -p dist
+          echo "<html></html>" > dist/index.html
           npx cap add android || true
           npx cap sync android
 
