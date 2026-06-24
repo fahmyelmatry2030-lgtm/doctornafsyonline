@@ -15,9 +15,6 @@
 
 # next.js build output (too large for GitHub)
 /.next/
-!/.next/standalone/
-!/.next/static/
-!/.next/server/
 
 # production
 /build

@@ -1,48 +1,15 @@
-name: Auto-Build for Hostinger
+name: Disabled - Manual Deploy Only
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual deploy'
+        required: false
 
 jobs:
-  build:
+  placeholder:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[Auto-Build]')"
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci || npm install
-        
-      - name: Generate Prisma Client
-        run: npx prisma generate
-        
-      - name: Build Next.js
-        env:
-          DATABASE_URL: "mysql://u465666297_fake:fakePassword@127.0.0.1:3306/u465666297_fake"
-        run: npm run build
-        
-      - name: Commit and Push Standalone Build
-        run: |
-          git config --global user.name "GitHub Actions Auto-Builder"
-          git config --global user.email "actions@github.com"
-          
-          # Force add the built standalone files
-          git add -f .next/standalone
-          git add -f .next/static
-          git add -f .next/server
-          
-          # Commit the changes if there are any
-          git commit -m "[Auto-Build] Hostinger standalone files" || echo "No changes to commit"
-          
-          # Push back to main
-          git push origin main
+      - name: Info
+        run: echo "Manual deployment only. Please deploy via Hostinger hPanel."
