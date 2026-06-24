@@ -6,29 +6,27 @@ import { LayoutDashboard, LogOut, User, Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTranslations } from "next-intl";
-import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
 
-export function Header({ platformName = "دكتور نفسي" }: { platformName?: string }) {
+export function Header({ platformName = "دكتور نفسي", locale = "ar" }: { platformName?: string; locale?: string }) {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const t = useTranslations("Navigation");
-  const locale = useLocale();
-  const pathname = usePathname();
-  const router = useRouter();
 
-  // Switch language: if on /en/..., go to /...; if on /..., go to /en/...
+  // Switch language using actual URL - avoids /en/en double prefix bug
   const switchLanguage = () => {
-    if (locale === "ar") {
-      // Switch to English: add /en prefix
-      const enPath = "/en" + (pathname === "/" ? "" : pathname);
-      router.push(enPath);
+    const currentPath = window.location.pathname;
+    if (currentPath.startsWith("/en")) {
+      // Currently English → go to Arabic (remove /en prefix)
+      const arPath = currentPath.replace(/^\/en/, "") || "/";
+      window.location.href = arPath;
     } else {
-      // Switch to Arabic: remove /en prefix
-      const arPath = pathname.replace(/^\/en/, "") || "/";
-      router.push(arPath);
+      // Currently Arabic → go to English (add /en prefix)
+      window.location.href = "/en" + (currentPath === "/" ? "" : currentPath);
     }
   };
+
+  const isEnglish = typeof window !== "undefined" && window.location.pathname.startsWith("/en");
+
 
   const NAV_LINKS = [
     { href: "/how-it-works",label: t("howItWorks") },
@@ -74,11 +72,11 @@ export function Header({ platformName = "دكتور نفسي" }: { platformName?
             {/* Language Switcher */}
             <button
               onClick={switchLanguage}
-              title={locale === "ar" ? "Switch to English" : "التبديل للعربية"}
+              title={isEnglish ? "التبديل للعربية" : "Switch to English"}
               className="flex items-center gap-1.5 rounded-xl border-2 border-slate-100 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition-all hover:border-[#4318FF] hover:text-[#4318FF] hover:bg-[#F4F7FE]"
             >
               <Globe className="h-4 w-4" />
-              <span>{locale === "ar" ? "EN" : "ع"}</span>
+              <span>{isEnglish ? "ع" : "EN"}</span>
             </button>
 
             
