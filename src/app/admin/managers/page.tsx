@@ -118,6 +118,7 @@ export default function ManagersPage() {
     if (roleStr === "ADMIN_ACCOUNTING") return { label: "مدير حسابات", color: "bg-emerald-100 text-emerald-700" };
     if (roleStr === "ADMIN_VIEWER") return { label: "مراقب — عرض فقط 🔍", color: "bg-amber-100 text-amber-700" };
     if (roleStr === "SHIFT_LEADER") return { label: "قائد الشيفت", color: "bg-blue-100 text-blue-700" };
+    if (roleStr === "ADMIN_MARKETING") return { label: "المبيعات والتسويق 📈", color: "bg-rose-100 text-rose-700" };
     return { label: roleStr, color: "bg-slate-100 text-slate-700" };
   };
 
@@ -255,6 +256,7 @@ export default function ManagersPage() {
                 <option value="ADMIN_HR">مدير موارد بشرية (إدارة الأطباء والمرضى)</option>
                 <option value="ADMIN_ACCOUNTING">مدير حسابات (أرباح، فواتير)</option>
                 <option value="ADMIN_CUSTOMER_SERVICE">مسؤول خدمة العملاء 🎯 (متابعة الجلسات والحجوزات)</option>
+                <option value="ADMIN_MARKETING">المبيعات والتسويق 📈 (أكواد الخصم والإشعارات)</option>
                 <option value="ADMIN_VIEWER">مراقب — عرض فقط 🔍 (لا يمكنه التعديل)</option>
                 <option value="SHIFT_LEADER">قائد الشيفت (Shift Leader)</option>
                 <option value="ADMIN">مدير عام (كافة الصلاحيات)</option>
