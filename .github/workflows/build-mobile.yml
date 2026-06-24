@@ -33,19 +33,25 @@ jobs:
 
       - name: Install Dependencies
         working-directory: ./nafsi-mobile
-        run: npm ci || npm install
+        run: |
+          npm ci || npm install
+          ls -la
+          npx cap --version
 
       - name: Sync Capacitor
         working-directory: ./nafsi-mobile
         run: |
           mkdir -p dist
           echo "<html></html>" > dist/index.html
-          npx cap add android || true
+          npx cap add android
           npx cap sync android
+          ls -la android || echo "No android folder"
 
       - name: Build Android Release APK
         working-directory: ./nafsi-mobile/android
-        run: chmod +x ./gradlew && ./gradlew assembleDebug
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
