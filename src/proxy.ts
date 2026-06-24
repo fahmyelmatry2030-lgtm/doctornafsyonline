@@ -7,12 +7,16 @@ export default createMiddleware({
   // Used when no locale matches
   defaultLocale: 'ar',
   
-  // Set to false to avoid prefixing the default locale
-  // which keeps the Arabic URLs clean as they are now
+  // localePrefix 'as-needed' = Arabic uses /, English uses /en
   localePrefix: 'as-needed'
 });
 
 export const config = {
-  // Match only internationalized pathnames
-  matcher: ['/', '/(ar|en)/:path*', '/((?!api|_next|_vercel|.*\\..*).*)']
+  // Match all routes including /en and /ar without subpath
+  matcher: [
+    '/',
+    '/(ar|en)',
+    '/(ar|en)/:path*',
+    '/((?!api|_next|_vercel|.*\\..*).*)'
+  ]
 };

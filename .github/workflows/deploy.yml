@@ -39,6 +39,7 @@ jobs:
           # Force add the built standalone files
           git add -f .next/standalone
           git add -f .next/static
+          git add -f .next/server
           
           # Commit the changes if there are any
           git commit -m "[Auto-Build] Hostinger standalone files" || echo "No changes to commit"
