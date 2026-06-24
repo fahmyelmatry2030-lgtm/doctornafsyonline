@@ -77,7 +77,7 @@ function VerifyStaffContent() {
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans" dir="rtl">
         <div className="mb-8 text-center">
           <div className="bg-white p-4 rounded-2xl shadow-sm inline-block mb-4">
-            <img src="/logo.png" alt="Doctor Nafsy Online" className="h-16 w-auto" />
+            <img src="/logo.jpeg" alt="Doctor Nafsy Online" className="h-16 w-auto" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">نظام توثيق واعتماد فريق العمل</h1>
           <p className="text-gray-500 mt-2">يرجى استخدام رمز الاستجابة السريعة (QR Code) الخاص بالموظف للتحقق</p>
@@ -97,8 +97,23 @@ function VerifyStaffContent() {
   const isVerified = !employee.isSuspended && 
     (employee.role !== "THERAPIST" || employee.therapistProfile?.isVerified === true);
 
+  let parsedSpecializations = "أخصائي نفسي إكلينيكي";
+  if (employee.role === "THERAPIST" && employee.therapistProfile?.specializations) {
+    try {
+      const parsed = JSON.parse(employee.therapistProfile.specializations);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        parsedSpecializations = parsed.join("، ");
+      } else {
+        parsedSpecializations = employee.therapistProfile.specializations;
+      }
+    } catch (e) {
+      // If it's not JSON, use it directly but strip brackets just in case
+      parsedSpecializations = employee.therapistProfile.specializations.replace(/[\[\]"']/g, "");
+    }
+  }
+
   const displayRole = employee.role === "THERAPIST"
-    ? (employee.therapistProfile?.specializations || "أخصائي نفسي إكلينيكي")
+    ? parsedSpecializations
     : getRoleArabicLabel(employee.role);
 
   const joinDate = employee.createdAt ? new Date(employee.createdAt).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" }) : "غير متوفر";
@@ -106,9 +121,9 @@ function VerifyStaffContent() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4 font-sans" dir="rtl">
       {/* Header */}
-      <div className="mb-8 text-center">
+      <div className="mb-8 text-center mt-4">
         <div className="bg-white p-4 rounded-2xl shadow-sm inline-block mb-4">
-          <img src="/logo.png" alt="Doctor Nafsy Online" className="h-16 w-auto" />
+          <img src="/logo.jpeg" alt="Doctor Nafsy Online" className="h-16 w-auto rounded-lg" />
         </div>
         <h1 className="text-2xl font-bold text-gray-900">نظام توثيق واعتماد فريق العمل</h1>
         <p className="text-gray-500 mt-2">منصة دكتور نفسي أونلاين</p>
@@ -139,6 +154,16 @@ function VerifyStaffContent() {
                   src={employee.avatar} 
                   alt={employee.name} 
                   className={`w-32 h-32 rounded-full object-cover border-4 ${isVerified ? 'border-green-100' : 'border-red-100'} shadow-lg`}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                    const parent = (e.target as HTMLImageElement).parentElement;
+                    if (parent) {
+                      const fallback = document.createElement('div');
+                      fallback.className = `w-32 h-32 rounded-full flex items-center justify-center ${isVerified ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'} shadow-lg border-4 ${isVerified ? 'border-green-100' : 'border-red-100'}`;
+                      fallback.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+                      parent.appendChild(fallback);
+                    }
+                  }}
                 />
               ) : (
                 <div className={`w-32 h-32 rounded-full flex items-center justify-center ${isVerified ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'} shadow-lg border-4 ${isVerified ? 'border-green-100' : 'border-red-100'}`}>
