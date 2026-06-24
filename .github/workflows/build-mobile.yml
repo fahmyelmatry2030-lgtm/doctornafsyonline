@@ -22,8 +22,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: 'nafsi-mobile/package-lock.json'
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4
@@ -33,10 +31,7 @@ jobs:
 
       - name: Install Dependencies
         working-directory: ./nafsi-mobile
-        run: |
-          npm ci || npm install
-          ls -la
-          npx cap --version
+        run: npm install
 
       - name: Sync Capacitor
         working-directory: ./nafsi-mobile
