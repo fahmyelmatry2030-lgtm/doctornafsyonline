@@ -58,7 +58,7 @@ function LoginForm() {
         {/* Logo / Brand Placeholder */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-block transition-transform hover:scale-105">
-            <img src="/logo.jpeg" alt="Logo" className="h-16 w-auto object-contain rounded-xl mx-auto" />
+            <img src="/logo.png" alt="Logo" className="h-16 w-auto object-contain rounded-xl mx-auto" />
           </Link>
           <h2 className="mt-6 text-3xl font-bold tracking-tight text-[var(--color-foreground)]">
             مرحباً بعودتك

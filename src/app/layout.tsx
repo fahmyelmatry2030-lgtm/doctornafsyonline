@@ -22,9 +22,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: `${name} — منصة العلاج النفسي أونلاين`,
     description: "تواصل مع أخصائيين نفسيين معتمدين. جلسات فيديو وصوت ومحادثة نصية آمنة داخل المنصة.",
     icons: {
-      icon: "/logo.jpeg",
-      shortcut: "/logo.jpeg",
-      apple: "/logo.jpeg",
+      icon: "/logo.png",
+      shortcut: "/logo.png",
+      apple: "/logo.png",
     },
   };
 }

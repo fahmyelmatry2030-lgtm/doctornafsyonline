@@ -78,7 +78,7 @@ function VerifyStaffContent() {
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans" dir="rtl">
         <div className="mb-8 text-center">
           <div className="bg-white p-4 rounded-2xl shadow-sm inline-block mb-4">
-            <img src="/logo.jpeg?v=2" alt="Doctor Nafsy Online" className="h-16 w-auto" />
+            <img src="/logo.png?v=2" alt="Doctor Nafsy Online" className="h-16 w-auto" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">نظام توثيق واعتماد فريق العمل</h1>
           <p className="text-gray-500 mt-2">يرجى استخدام رمز الاستجابة السريعة (QR Code) الخاص بالموظف للتحقق</p>
@@ -124,7 +124,7 @@ function VerifyStaffContent() {
       {/* Header */}
       <div className="mb-8 text-center mt-4">
         <div className="bg-white p-4 rounded-2xl shadow-sm inline-block mb-4">
-          <img src="/logo.jpeg?v=2" alt="Doctor Nafsy Online" className="h-16 w-auto rounded-lg" />
+          <img src="/logo.png?v=2" alt="Doctor Nafsy Online" className="h-16 w-auto rounded-lg" />
         </div>
         <h1 className="text-2xl font-bold text-gray-900">نظام توثيق واعتماد فريق العمل</h1>
         <p className="text-gray-500 mt-2">منصة دكتور نفسي أونلاين</p>

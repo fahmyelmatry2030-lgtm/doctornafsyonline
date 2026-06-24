@@ -91,7 +91,7 @@ export default function TherapistBadgePage({ params }: PageProps) {
         {/* Doctor Nafsy Logo Header */}
         <div className="flex flex-col items-center space-y-1.5 text-center mt-2">
           <div className="h-14 w-auto flex items-center justify-center">
-            <img src="/logo.jpeg" alt="Doctor Nafsy" className="h-12 w-auto object-contain rounded-lg" />
+            <img src="/logo.png" alt="Doctor Nafsy" className="h-12 w-auto object-contain rounded-lg" />
           </div>
           <div className="leading-tight">
             <p className="text-[15px] font-black text-slate-800 tracking-wide">دكتور نفسي أونلاين</p>

@@ -90,7 +90,7 @@ export default function RegisterForm() {
         {/* Header */}
         <div className="text-center mb-10">
           <Link href="/" className="inline-block transition-transform hover:scale-105">
-            <img src="/logo.jpeg" alt="Logo" className="h-14 w-auto mx-auto object-contain mix-blend-multiply" />
+            <img src="/logo.png" alt="Logo" className="h-14 w-auto mx-auto object-contain mix-blend-multiply" />
           </Link>
           <h2 className="mt-6 text-3xl font-black tracking-tight text-[var(--color-foreground)]">
             إنشاء حساب جديد

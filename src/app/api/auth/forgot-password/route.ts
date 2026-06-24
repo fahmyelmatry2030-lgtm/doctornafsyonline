@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       const htmlContent = `
         <div dir="rtl" style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px; text-align: right;">
           <div style="text-align: center; margin-bottom: 20px;">
-            <img src="${baseUrl}/logo.jpeg" alt="دكتور نفسي أونلاين" style="max-height: 80px; width: auto; border-radius: 8px;" />
+            <img src="${baseUrl}/logo.png" alt="دكتور نفسي أونلاين" style="max-height: 80px; width: auto; border-radius: 8px;" />
           </div>
           <h2 style="color: #6366F1; text-align: center; margin-top: 10px;">منصة دكتور نفسي أونلاين</h2>
           <p>مرحباً ${user.name}،</p>

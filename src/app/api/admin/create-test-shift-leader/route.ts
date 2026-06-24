@@ -1,4 +1,4 @@
-﻿import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
@@ -18,30 +18,30 @@ export async function POST() {
     const shiftLeadersToCreate = [
       {
         email: "shiftleader1@test.com",
-        name: "قائد الشيفت 1",
+        name: "???? ?????? 1",
         phone: "+966501234561",
         shiftId: "shift-1",
-        shiftName: "شيفت الصباح",
+        shiftName: "???? ??????",
         dayOfWeek: "WEDNESDAY",
         startTime: "08:00",
         endTime: "16:00",
       },
       {
         email: "shiftleader2@test.com",
-        name: "قائد الشيفت 2",
+        name: "???? ?????? 2",
         phone: "+966501234562",
         shiftId: "shift-2",
-        shiftName: "شيفت المساء",
+        shiftName: "???? ??????",
         dayOfWeek: "THURSDAY",
         startTime: "16:00",
         endTime: "00:00",
       },
       {
         email: "shiftleader3@test.com",
-        name: "قائد الشيفت 3",
+        name: "???? ?????? 3",
         phone: "+966501234563",
         shiftId: "shift-3",
-        shiftName: "شيفت الليل",
+        shiftName: "???? ?????",
         dayOfWeek: "FRIDAY",
         startTime: "18:00",
         endTime: "02:00",
@@ -88,7 +88,7 @@ export async function POST() {
           dayOfWeek: leaderData.dayOfWeek,
           startTime: leaderData.startTime,
           endTime: leaderData.endTime,
-          description: `تم تعيين ${shiftLeader.name} لقائد الشيفت.`,
+          description: `?? ????? ${shiftLeader.name} ????? ??????.`,
         },
         create: {
           id: leaderData.shiftId,
@@ -97,7 +97,7 @@ export async function POST() {
           startTime: leaderData.startTime,
           endTime: leaderData.endTime,
           shiftLeaderId: shiftLeader.id,
-          description: `تم تعيين ${shiftLeader.name} لقائد الشيفت.`,
+          description: `?? ????? ${shiftLeader.name} ????? ??????.`,
         },
       });
 
@@ -120,7 +120,7 @@ export async function POST() {
         password: TEST_PASSWORD,
         shiftId: leader.shiftId,
       })),
-      note: "كل قائد شيفت يستخدم بياناته الخاصة للدخول ويشاهد بيانات شفته فقط.",
+      note: "?? ???? ???? ?????? ??????? ?????? ?????? ?????? ?????? ???? ???.",
     });
   } catch (error: any) {
     return NextResponse.json(
