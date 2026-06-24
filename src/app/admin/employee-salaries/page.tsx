@@ -21,7 +21,7 @@ export default async function AdminEmployeeSalariesPage() {
     employees = await prisma.user.findMany({
       where: {
         role: {
-          in: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "SHIFT_LEADER", "ADMIN_CUSTOMER_SERVICE"]
+          in: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "SHIFT_LEADER", "ADMIN_CUSTOMER_SERVICE", "ADMIN_MARKETING"]
         }
       },
       select: {
