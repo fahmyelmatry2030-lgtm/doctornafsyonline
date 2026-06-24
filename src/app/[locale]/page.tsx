@@ -82,7 +82,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center animate-fade-in-up stagger-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:flex-wrap animate-fade-in-up stagger-4">
               <Link
                 href="/therapists"
                 className="group relative inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] px-8 py-4 text-lg font-bold text-white overflow-hidden transition-premium hover:shadow-premium-hover hover:scale-105"
@@ -96,6 +96,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               >
                 {t("ctaSecondary")} →
               </Link>
+              <a
+                href="/apk/nafsi-app.apk"
+                download
+                className="group relative inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#10B981] to-[#059669] px-8 py-4 text-lg font-bold text-white overflow-hidden transition-premium hover:shadow-premium-hover hover:scale-105"
+              >
+                <span className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100"></span>
+                <span className="relative z-10">حمل التطبيق 📱</span>
+              </a>
             </div>
           </div>
 
