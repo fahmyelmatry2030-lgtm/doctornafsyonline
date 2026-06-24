@@ -335,9 +335,9 @@ export function DashboardLayout({
               </Link>
               {userAvatar ? (
                 <img 
-                  src={userAvatar} 
-                  alt={userName || "User"} 
-                  className="w-16 h-16 rounded-full object-cover mb-3 shadow-lg border-2 border-white/20"
+                  src={encodeURI(userAvatar)} 
+                  alt="Profile" 
+                  className="w-11 h-11 rounded-xl object-cover shadow-sm ring-2 ring-white"
                 />
               ) : (
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-xl mb-3 shadow-lg shadow-indigo-500/30">
@@ -508,11 +508,11 @@ export function DashboardLayout({
                 )}
               </div>
               {userAvatar ? (
-                <img 
-                  src={userAvatar} 
-                  alt={userName || "User"} 
-                  className="w-10 h-10 rounded-full object-cover shadow-md border border-slate-100"
-                />
+                  <img 
+                    src={encodeURI(userAvatar)} 
+                    alt="Profile" 
+                    className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm"
+                  />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-500/20">
                   {userInitials}

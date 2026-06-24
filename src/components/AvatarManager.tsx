@@ -82,7 +82,7 @@ export default function AvatarManager({
       <div className="relative group cursor-pointer" onClick={triggerFileSelect}>
         <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white ring-4 ring-indigo-50 bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center shadow-lg relative">
           {avatar ? (
-            <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
+            <img src={encodeURI(avatar)} alt="Avatar" className="w-full h-full object-cover" />
           ) : (
             <span className="text-3xl font-black text-indigo-700">{name.charAt(0)}</span>
           )}
