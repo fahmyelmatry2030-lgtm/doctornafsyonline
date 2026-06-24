@@ -226,7 +226,7 @@ export function TherapistDetailsModal({
         <div className="bg-slate-50 px-8 py-6 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-4">
             {localTherapist.avatar ? (
-              <img src={localTherapist.avatar} alt={localTherapist.name} className="w-14 h-14 rounded-2xl object-cover shadow-md shrink-0" />
+              <img src={encodeURI(localTherapist.avatar)} alt={localTherapist.name} className="w-14 h-14 rounded-2xl object-cover shadow-md shrink-0" />
             ) : (
               <div className="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-2xl shadow-md shadow-indigo-600/10 shrink-0">
                 {localTherapist.name.charAt(0)}
