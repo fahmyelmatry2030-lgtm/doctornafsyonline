@@ -41,14 +41,14 @@ export function Header({ platformName = "دكتور نفسي", locale = "ar" }: 
   return (
     <>
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-100 shadow-sm">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-20 sm:h-24 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0 transition-opacity hover:opacity-80 py-1">
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0 transition-opacity hover:opacity-80">
             <img
               src="/logo.png?v=3"
               alt={platformName}
-              className="h-16 w-auto object-contain"
+              className="h-[65px] sm:h-[80px] w-auto object-contain drop-shadow-sm pb-1"
             />
           </Link>
 

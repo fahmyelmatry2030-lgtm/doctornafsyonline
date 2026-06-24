@@ -262,7 +262,10 @@ export function DashboardLayout({
     } else if (dynamicPerms && dynamicPerms[role as string]) {
       // Use dynamic permissions from server
       const allowedPaths = dynamicPerms[role as string];
-      navItems = allAdminNavItems.filter(item => allowedPaths.includes(item.href));
+      navItems = allAdminNavItems.filter(item => 
+        allowedPaths.includes(item.href) || 
+        ["/admin/dashboard", "/admin/profile", "/admin/my-salary"].includes(item.href)
+      );
     } else {
       // Fallback: use hardcoded role-based filtering while loading
       navItems = allAdminNavItems.filter(item => !item.roles || item.roles.includes(role as string));
@@ -276,11 +279,11 @@ export function DashboardLayout({
     <div className="bg-[#F4F7FE] min-h-screen flex text-slate-900 font-sans" dir="rtl">
       
       {/* Mobile Header (Visible only on small screens) */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-[72px] bg-white border-b border-slate-200 z-30 flex items-center justify-between px-4 shadow-sm">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-[80px] bg-white border-b border-slate-200 z-30 flex items-center justify-between px-4 shadow-sm">
         <Link href="/" className="inline-block transition-transform hover:scale-105">
-          <img src="/logo.png?v=3" alt="Logo" className="h-9 w-auto object-contain rounded-lg" />
+          <img src="/logo.png?v=3" alt="دكتور نفسي اونلاين" className="h-[65px] w-auto object-contain drop-shadow-sm pb-1" />
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <ThemeToggle />
           <div className="relative notif-container">
             <button 
