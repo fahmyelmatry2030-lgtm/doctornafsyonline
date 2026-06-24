@@ -88,7 +88,7 @@ export default function ReviewsClient({
                     <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
                       {app.therapist.avatar ? (
                         <img
-                          src={encodeURI(app.therapist.avatar)}
+                          src={encodeURI(decodeURI())}
                           alt={app.therapist.name}
                           className="w-full h-full object-cover"
                         />
@@ -172,7 +172,7 @@ export default function ReviewsClient({
                     <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
                       {review.appointment.therapist.avatar ? (
                         <img
-                          src={encodeURI(review.appointment.therapist.avatar)}
+                          src={encodeURI(decodeURI())}
                           alt={review.appointment.therapist.name}
                           className="w-full h-full object-cover"
                         />

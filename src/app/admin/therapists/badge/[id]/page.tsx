@@ -103,7 +103,7 @@ export default function TherapistBadgePage({ params }: PageProps) {
         <div className="relative my-6">
           <div className="h-40 w-40 rounded-full overflow-hidden border-[6px] border-white ring-4 ring-[#1E56A0] shadow-[0_10px_25px_rgba(30,86,160,0.15)] flex items-center justify-center bg-slate-50">
             {therapist.avatar ? (
-              <img src={encodeURI(therapist.avatar)} alt={therapist.name} className="h-full w-full object-cover" />
+              <img src={encodeURI(decodeURI())} alt={therapist.name} className="h-full w-full object-cover" />
             ) : (
               <span className="flex h-full w-full items-center justify-center text-4xl font-black text-[#1E56A0]">
                 {therapist.name.charAt(0)}

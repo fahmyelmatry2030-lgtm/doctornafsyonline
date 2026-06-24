@@ -156,7 +156,7 @@ export default async function PatientDashboardPage() {
                     <div className="w-14 h-14 rounded-full overflow-hidden shrink-0 bg-gradient-to-br from-[#4318FF] to-purple-600 p-[2px] shadow-md shadow-[#4318FF]/20">
                       <div className="w-full h-full bg-white rounded-full overflow-hidden border-2 border-white">
                         {app.therapist.avatar ? (
-                          <img src={encodeURI(app.therapist.avatar)} alt={app.therapist.name} className="w-full h-full object-cover" />
+                          <img src={encodeURI(decodeURI())} alt={app.therapist.name} className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-[#4318FF] font-black text-lg">
                             {app.therapist.name.charAt(0)}
