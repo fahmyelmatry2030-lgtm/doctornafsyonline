@@ -9,6 +9,7 @@ type Therapist = {
   id: string;
   name: string;
   avatar: string | null;
+  isOnline?: boolean;
   therapistProfile: {
     bio: string;
     specializations: string;
@@ -211,6 +212,12 @@ export default function TherapistDetailPage({
                     <span className="flex items-center gap-1 rounded-full bg-teal-50 px-2 py-1 text-xs text-teal-700">
                       <BadgeCheck className="h-3.5 w-3.5" />
                       معتمد
+                    </span>
+                  )}
+                  {therapist.isOnline && (
+                    <span className="flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-600">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      متاح الآن
                     </span>
                   )}
                 </div>
