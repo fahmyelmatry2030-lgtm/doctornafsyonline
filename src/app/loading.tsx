@@ -20,7 +20,7 @@ export default function GlobalLoading() {
       </div>
       
       <p className="mt-6 text-indigo-900 font-bold text-xl animate-pulse">
-        نَفسي
+        دكتور نَفسي
       </p>
       <p className="mt-1 text-slate-500 text-sm font-medium">
         جاري التحميل...
