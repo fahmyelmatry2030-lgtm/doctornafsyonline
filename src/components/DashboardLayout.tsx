@@ -43,6 +43,16 @@ export function DashboardLayout({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [localSearchQuery, setLocalSearchQuery] = useState(searchParams?.get("search") || "");
+  const [isOnline, setIsOnline] = useState(false);
+
+  useEffect(() => {
+    if (role === "THERAPIST") {
+      fetch("/api/therapist/online-status")
+        .then(res => res.json())
+        .then(data => setIsOnline(data.isOnline))
+        .catch(() => {});
+    }
+  }, [role]);
 
   // Notifications State
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -63,6 +73,18 @@ export function DashboardLayout({
       setDismissedIds([]);
     }
   }, [storageKey]);
+
+  // Automatic Ping for Last Activity
+  useEffect(() => {
+    const ping = async () => {
+      try {
+        await fetch("/api/user/ping", { method: "POST" });
+      } catch (e) {}
+    };
+    ping(); // initial ping
+    const interval = setInterval(ping, 2 * 60 * 1000); // Every 2 minutes
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     async function loadNotifications() {
@@ -433,6 +455,35 @@ export function DashboardLayout({
               />
             </form>
             
+            {/* Online Toggle for Therapist */}
+            {role === "THERAPIST" && (
+              <label className="flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-100 mr-2">
+                <span className="text-xs font-bold text-slate-600 hidden sm:inline-block">متاح للعمل</span>
+                <div className="relative inline-block w-10 h-5 transition duration-200 ease-in-out">
+                  <input
+                    type="checkbox"
+                    className="peer absolute w-10 h-5 opacity-0 cursor-pointer z-10"
+                    checked={isOnline}
+                    onChange={async (e) => {
+                      const newStatus = e.target.checked;
+                      setIsOnline(newStatus);
+                      try {
+                        await fetch("/api/therapist/online-status", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ isOnline: newStatus })
+                        });
+                      } catch (error) {
+                        setIsOnline(!newStatus);
+                      }
+                    }}
+                  />
+                  <div className={`w-10 h-5 rounded-full shadow-inner transition-colors ${isOnline ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
+                  <div className={`absolute top-0.5 left-0.5 bg-white w-4 h-4 rounded-full shadow transition-transform duration-200 ${isOnline ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                </div>
+              </label>
+            )}
+
             {/* Action Buttons */}
             <div className="flex items-center gap-2 relative notif-container">
               <button 
