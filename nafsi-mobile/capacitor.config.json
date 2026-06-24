@@ -1,0 +1,9 @@
+{
+  "appId": "com.doctornafsyonline.app",
+  "appName": "دكتور نفسي اونلاين",
+  "webDir": "dist",
+  "server": {
+    "url": "https://doctornafsyonline.com",
+    "cleartext": true
+  }
+}
