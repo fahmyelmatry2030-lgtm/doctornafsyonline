@@ -1,0 +1,23 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "howItWorks": "Recovery Plan",
+    "services": "Services",
+    "therapists": "Therapists",
+    "blog": "Blog",
+    "about": "About Us",
+    "faq": "FAQ",
+    "dashboard": "Dashboard",
+    "login": "Log in",
+    "register": "Get Started",
+    "logout": "Log out"
+  },
+  "Hero": {
+    "badge": "Your Trusted Mental Health Platform",
+    "title1": "Your journey to",
+    "title2": "recovery starts here",
+    "subtitle": "Connect with top certified consultants and therapists in complete privacy, and take your first steps towards a brighter, more balanced life.",
+    "cta": "Start Your First Session",
+    "ctaSecondary": "Browse Therapists"
+  }
+}
