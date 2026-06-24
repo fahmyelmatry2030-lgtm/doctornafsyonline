@@ -3,6 +3,8 @@ import { ShieldCheck, ShieldAlert, Award, Calendar, User, ArrowRight, CheckCircl
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 // Translate role keys to reader-friendly Arabic titles
 function getRoleArabicLabel(role: string) {
   if (role === "ADMIN") return "مدير عام النظام";
@@ -15,12 +17,11 @@ function getRoleArabicLabel(role: string) {
 }
 
 interface PageProps {
-  searchParams: Promise<{ code?: string }>;
+  searchParams: { code?: string };
 }
 
 export default async function VerifyStaffPage({ searchParams }: PageProps) {
-  const resolvedSearchParams = await searchParams;
-  const userId = resolvedSearchParams.code;
+  const userId = searchParams?.code;
 
   if (!userId) {
     return (
