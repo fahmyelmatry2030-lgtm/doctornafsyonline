@@ -37,7 +37,9 @@ jobs:
 
       - name: Sync Capacitor
         working-directory: ./nafsi-mobile
-        run: npx cap sync android
+        run: |
+          npx cap add android || true
+          npx cap sync android
 
       - name: Build Android Release APK
         working-directory: ./nafsi-mobile/android
