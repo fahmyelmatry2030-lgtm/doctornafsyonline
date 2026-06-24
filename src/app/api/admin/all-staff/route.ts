@@ -25,6 +25,7 @@ export async function GET() {
           "ADMIN_VIEWER",
           "SHIFT_LEADER",
           "ADMIN_CUSTOMER_SERVICE",
+          "ADMIN_MARKETING",
         ],
       },
       isSuspended: false,
@@ -93,5 +94,6 @@ function getRoleLabel(role: string) {
   if (role === "ADMIN_VIEWER") return "مراقب لوحة التحكم";
   if (role === "SHIFT_LEADER") return "قائد الشيفت";
   if (role === "ADMIN_CUSTOMER_SERVICE") return "خدمة العملاء";
+  if (role === "ADMIN_MARKETING") return "المبيعات والتسويق";
   return "عضو فريق العمل";
 }

@@ -187,6 +187,7 @@ export function DashboardLayout({
       { name: "الجدول", href: "/therapist/schedule", icon: <Calendar className="h-5 w-5" /> },
       { name: "الإشعارات", href: "/therapist/notifications", icon: <Bell className="h-5 w-5" /> },
       { name: "غرفة العلاج", href: "/therapist/messages", icon: <MessageCircle className="h-5 w-5" /> },
+      { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
       { name: "الملف الشخصي", href: "/therapist/profile", icon: <UserIcon className="h-5 w-5" /> },
       { name: "الإعدادات", href: "/therapist/settings", icon: <Settings className="h-5 w-5" /> },
     ];

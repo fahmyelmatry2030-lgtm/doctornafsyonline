@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   ShieldCheck, ShieldAlert, Star, UserCheck, Users, Award, 
   Check, X, ExternalLink, Ban, CheckCircle, Trash2, Search, FileText, QrCode 
@@ -53,6 +53,15 @@ export function TherapistsTableClient({
   const searchParams = useSearchParams();
   const [therapists, setTherapists] = useState<Therapist[]>(initialTherapists);
   const [searchQuery, setSearchQuery] = useState(searchParams?.get("search") || "");
+  
+  // Sync with URL search params
+  useEffect(() => {
+    const q = searchParams?.get("search");
+    if (q !== null) {
+      setSearchQuery(q);
+    }
+  }, [searchParams]);
+
   const [selectedTherapist, setSelectedTherapist] = useState<Therapist | null>(null);
 
   // Filter therapists by name, email, or specialization

@@ -18,7 +18,13 @@ export async function GET(req: NextRequest) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
+        role: true,
         baseSalary: true,
+        therapistProfile: {
+          select: {
+            salary: true
+          }
+        },
         employeeBonuses: {
           where: {
             createdAt: {
@@ -33,6 +39,11 @@ export async function GET(req: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    
+    // If user is a therapist, use therapistProfile.salary as baseSalary
+    if (user.role === "THERAPIST" && user.therapistProfile) {
+      user.baseSalary = user.therapistProfile.salary || 0;
     }
 
     return NextResponse.json({ success: true, data: user });

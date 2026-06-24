@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Users, Mail, Phone, Calendar, Activity, Ban, CheckCircle, ShieldOff, Search, FileText } from "lucide-react";
 import { DeletePatientButton } from "./DeletePatientButton";
 import { PatientDetailsModal } from "./PatientDetailsModal";
@@ -43,6 +43,14 @@ export function PatientsTableClient({ initialPatients, toggleSuspend, deletePati
   const [patients, setPatients] = useState<Patient[]>(initialPatients);
   const [searchQuery, setSearchQuery] = useState(searchParams?.get("search") || "");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+
+  // Sync with URL search params
+  useEffect(() => {
+    const q = searchParams?.get("search");
+    if (q !== null) {
+      setSearchQuery(q);
+    }
+  }, [searchParams]);
 
   // Filter patients by name, email, phone or unique code
   const filteredPatients = patients.filter(p => {

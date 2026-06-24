@@ -27,6 +27,7 @@ function getRoleBadgeColor(role: string) {
   if (role === "ADMIN_HR") return "bg-indigo-100 text-indigo-700 border-indigo-200";
   if (role === "ADMIN_ACCOUNTING") return "bg-emerald-100 text-emerald-700 border-emerald-200";
   if (role === "ADMIN_CUSTOMER_SERVICE") return "bg-rose-100 text-rose-700 border-rose-200";
+  if (role === "ADMIN_MARKETING") return "bg-pink-100 text-pink-700 border-pink-200";
   if (role === "SHIFT_LEADER") return "bg-blue-100 text-blue-700 border-blue-200";
   if (role === "THERAPIST") return "bg-teal-100 text-teal-700 border-teal-200";
   return "bg-slate-100 text-slate-600 border-slate-200";

@@ -322,6 +322,7 @@ export default async function HomePage() {
                       reviewCount={t.therapistProfile.reviewCount}
                       isVerified={t.therapistProfile.isVerified}
                       imageUrl={t.avatar || undefined}
+                      isOnline={t.isOnline}
                     />
                   </div>
                 ) : null
