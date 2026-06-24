@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     const employees = await prisma.user.findMany({
       where: {
         role: {
-          in: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "SHIFT_LEADER", "ADMIN_CUSTOMER_SERVICE"]
+          in: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "SHIFT_LEADER", "ADMIN_CUSTOMER_SERVICE", "ADMIN_MARKETING"]
         }
       },
       select: {

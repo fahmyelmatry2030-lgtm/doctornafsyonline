@@ -19,6 +19,7 @@ const getRoleLabel = (role: string) => {
   if (role === "ADMIN_ACCOUNTING") return "مدير حسابات";
   if (role === "ADMIN_VIEWER") return "مراقب الإدارة 🔍";
   if (role === "ADMIN_CUSTOMER_SERVICE") return "خدمة العملاء 🎯";
+  if (role === "ADMIN_MARKETING") return "المبيعات والتسويق";
   if (role === "THERAPIST") return "أخصائي";
   if (role === "SHIFT_LEADER") return "قائد الشيفت";
   return "مريض";
@@ -182,6 +183,11 @@ export function DashboardLayout({
       { name: "لوحة خدمة العملاء", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" /> },
       { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
     ];
+  } else if (role === "ADMIN_MARKETING") {
+    navItems = [
+      { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" /> },
+      { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
+    ];
   } else if (role?.startsWith("ADMIN")) {
     const allAdminNavItems = [
       { name: "الرئيسية", href: "/admin/dashboard", icon: <Home className="h-5 w-5" />, roles: null },
@@ -198,7 +204,7 @@ export function DashboardLayout({
       { name: "لوحة تحكم خدمة العملاء", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_VIEWER", "SHIFT_LEADER"] },
       { name: "إعدادات المنصة", href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "رواتب فريق العمل", href: "/admin/employee-salaries", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
-      { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_ACCOUNTING", "SHIFT_LEADER"] },
+      { name: "مرتبي", href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_ACCOUNTING", "SHIFT_LEADER", "ADMIN_MARKETING"] },
     ];
 
     if (role === "ADMIN") {
