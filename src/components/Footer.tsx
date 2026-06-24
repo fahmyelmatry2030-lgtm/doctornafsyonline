@@ -17,7 +17,7 @@ export async function Footer() {
   const nav = await getTranslations("Navigation");
 
   return (
-    <footer className="relative bg-[#1E1B3A] text-gray-300">
+    <footer className="hidden md:block relative bg-[#1E1B3A] text-gray-300">
       {/* Gradient top line */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-600 via-violet-500 to-purple-600" />
 

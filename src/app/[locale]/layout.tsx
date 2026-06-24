@@ -34,6 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 import { LayoutWrapper } from "@/components/LayoutWrapper";
+import { BottomNav } from "@/components/BottomNav";
 
 export default async function RootLayout({
   children,
@@ -92,13 +93,14 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={locale === 'en' ? 'ltr' : 'rtl'} className={`h-full ${tajawal.variable}`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground transition-colors duration-300">
+      <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground transition-colors duration-300 md:pb-0 pb-16">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <Providers>
               <LayoutWrapper header={<Header platformName={settings?.platformName || "دكتور نفسي"} locale={locale} />} footer={<Footer />}>
                 {children}
               </LayoutWrapper>
+              <BottomNav locale={locale} />
             </Providers>
           </ThemeProvider>
         </NextIntlClientProvider>
