@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Users, Filter } from "lucide-react";
 import { getWebsiteContent } from "@/app/admin/settings/actions";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   searchParams: Promise<{ specialization?: string }>;
 };
@@ -119,7 +121,7 @@ export default async function TherapistsPage({ searchParams }: Props) {
                     rating={t.therapistProfile.rating}
                     reviewCount={t.therapistProfile.reviewCount}
                     isVerified={t.therapistProfile.isVerified}
-                    isOnline={t.isOnline}
+                    isOnline={t.isOnline && (new Date().getTime() - new Date(t.lastActivityAt).getTime()) / 60000 <= 15}
                     imageUrl={t.avatar || undefined}
                   />
                 </div>

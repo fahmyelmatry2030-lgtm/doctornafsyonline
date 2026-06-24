@@ -19,5 +19,11 @@ export async function GET(request: Request) {
     orderBy: { therapistProfile: { rating: "desc" } },
   });
 
-  return NextResponse.json(therapists);
+  const now = new Date();
+  const processedTherapists = therapists.map(t => ({
+    ...t,
+    isOnline: t.isOnline && (now.getTime() - new Date(t.lastActivityAt).getTime()) / 60000 <= 15
+  }));
+
+  return NextResponse.json(processedTherapists);
 }

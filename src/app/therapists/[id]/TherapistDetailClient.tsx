@@ -184,25 +184,29 @@ export default function TherapistDetailPage({
         <div className="lg:col-span-2">
           <div className="rounded-2xl border border-slate-100 bg-white p-8">
             <div className="mb-6 flex items-start gap-6">
-              {therapist.avatar ? (
-                <img
-                  src={encodeURI(decodeURI(therapist.avatar))}
-                  alt={therapist.name}
-                  className="h-20 w-20 shrink-0 rounded-full object-cover shadow-md"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    const parent = target.parentElement;
-                    if (parent) {
-                      parent.innerHTML = `<div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-100 to-teal-200 text-3xl font-bold text-teal-700">${therapist.name.charAt(0)}</div>`;
-                    }
-                  }}
-                />
-              ) : (
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-100 to-teal-200 text-3xl font-bold text-teal-700">
-                  {therapist.name.charAt(0)}
-                </div>
-              )}
+              <div className="relative shrink-0">
+                {therapist.avatar ? (
+                  <img
+                    src={encodeURI(decodeURI(therapist.avatar))}
+                    alt={therapist.name}
+                    className="h-24 w-24 rounded-full object-cover shadow-sm"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      if (target.parentElement) {
+                        target.parentElement.innerHTML = `<div class="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-teal-100 to-teal-200 text-4xl font-bold text-teal-700">${therapist.name.charAt(0)}</div>`;
+                      }
+                    }}
+                  />
+                ) : (
+                  <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-teal-100 to-teal-200 text-4xl font-bold text-teal-700">
+                    {therapist.name.charAt(0)}
+                  </div>
+                )}
+                {therapist.isOnline && (
+                  <div className="absolute top-1 right-1 h-5 w-5 rounded-full border-4 border-white bg-emerald-500 shadow-sm z-10" title="متاح الآن" />
+                )}
+              </div>
               <div>
                 <div className="flex items-center gap-3">
                   <h1 className="text-2xl font-bold text-slate-900">

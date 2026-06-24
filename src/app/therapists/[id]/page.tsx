@@ -31,7 +31,7 @@ export default async function TherapistPage({ params }: Props) {
         id: therapist.id,
         name: therapist.name,
         avatar: therapist.avatar,
-        isOnline: therapist.isOnline,
+        isOnline: therapist.isOnline && (new Date().getTime() - new Date(therapist.lastActivityAt).getTime()) / 60000 <= 15,
         therapistProfile: therapist.therapistProfile,
       }}
       reviews={JSON.parse(JSON.stringify(reviews))}
