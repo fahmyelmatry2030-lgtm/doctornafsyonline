@@ -7,6 +7,8 @@ import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import { RolePermissionsManager } from "./RolePermissionsManager";
 import StaffIDsPage from "./staff-ids/page";
+import { ActivityLog } from "./ActivityLog";
+import { Activity } from "lucide-react";
 
 type Manager = {
   id: string;
@@ -21,7 +23,7 @@ export default function ManagersPage() {
   const [managers, setManagers] = useState<Manager[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
-  const [activeTab, setActiveTab] = useState<"managers" | "permissions" | "staff-ids">("managers");
+  const [activeTab, setActiveTab] = useState<"managers" | "permissions" | "staff-ids" | "activity">("managers");
   
   // Form State
   const [name, setName] = useState("");
@@ -175,9 +177,19 @@ export default function ManagersPage() {
           <QrCode className="w-4 h-4" />
           بطاقات الموظفين
         </button>
+        <button
+          onClick={() => setActiveTab("activity")}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+            activeTab === "activity" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <Activity className="w-4 h-4" />
+          مراقبة النشاط
+        </button>
       </div>
 
       {/* Tab Content */}
+      {activeTab === "activity" && <ActivityLog />}
       {activeTab === "permissions" && <RolePermissionsManager />}
       {activeTab === "staff-ids" && (
         <div className="animate-fade-in">
