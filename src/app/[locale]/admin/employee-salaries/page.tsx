@@ -17,8 +17,9 @@ export default async function AdminEmployeeSalariesPage() {
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
   let employees = [];
+  let serializedEmployees: any[] = [];
   try {
-    employees = await prisma.user.findMany({
+    const employees = await prisma.user.findMany({
       where: {
         role: {
           in: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "SHIFT_LEADER", "ADMIN_CUSTOMER_SERVICE", "ADMIN_MARKETING"]
@@ -41,6 +42,14 @@ export default async function AdminEmployeeSalariesPage() {
       },
       orderBy: { createdAt: "desc" }
     });
+    
+    serializedEmployees = employees.map(emp => ({
+      ...emp,
+      employeeBonuses: emp.employeeBonuses.map(b => ({
+        ...b,
+        createdAt: b.createdAt.toISOString()
+      }))
+    }));
   } catch (dbError: any) {
     console.error("[Employee Salaries Page] Database query failed:", dbError);
     return (
@@ -78,7 +87,7 @@ export default async function AdminEmployeeSalariesPage() {
         </p>
       </div>
 
-      <EmployeeSalariesClientTable initialEmployees={employees} />
+      <EmployeeSalariesClientTable initialEmployees={serializedEmployees as any} />
     </div>
   );
 }
