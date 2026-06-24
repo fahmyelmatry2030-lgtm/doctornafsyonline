@@ -47,31 +47,42 @@ export default async function VerifyStaffPage({ searchParams }: PageProps) {
     );
   }
 
-  // Fetch the user details - search across all staff roles including therapists
-  const employee = await prisma.user.findFirst({
-    where: {
-      id: userId,
-      role: {
-        in: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "SHIFT_LEADER", "ADMIN_CUSTOMER_SERVICE", "THERAPIST"]
-      }
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      avatar: true,
-      role: true,
-      isSuspended: true,
-      createdAt: true,
-      therapistProfile: {
-        select: {
-          isVerified: true,
-          specializations: true,
-          bio: true,
+  let employee = null;
+  try {
+    employee = await prisma.user.findFirst({
+      where: {
+        id: userId,
+        role: {
+          in: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "SHIFT_LEADER", "ADMIN_CUSTOMER_SERVICE", "THERAPIST"]
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+        role: true,
+        isSuspended: true,
+        createdAt: true,
+        therapistProfile: {
+          select: {
+            isVerified: true,
+            specializations: true,
+            bio: true,
+          }
         }
       }
-    }
-  });
+    });
+  } catch (error: any) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="bg-red-50 p-6 rounded-xl border border-red-200 text-red-800 w-full max-w-lg">
+          <h2 className="font-bold mb-2">خطأ في النظام (Database Error):</h2>
+          <pre className="text-xs whitespace-pre-wrap">{error.message}</pre>
+        </div>
+      </div>
+    );
+  }
 
   if (!employee) {
     return (
