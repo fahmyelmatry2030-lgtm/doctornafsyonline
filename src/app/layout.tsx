@@ -5,6 +5,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Providers } from "@/components/Providers";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { getSettings } from "@/app/admin/settings/actions";
 
 
@@ -76,13 +77,15 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="ar" dir="rtl" className={`h-full ${tajawal.variable}`}>
-      <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground">
-        <Providers>
-          <LayoutWrapper header={<Header platformName={settings?.platformName || "دكتور نفسي"} />} footer={<Footer />}>
-            {children}
-          </LayoutWrapper>
-        </Providers>
+    <html lang="ar" dir="rtl" className={`h-full ${tajawal.variable}`} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground transition-colors duration-300">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <Providers>
+            <LayoutWrapper header={<Header platformName={settings?.platformName || "دكتور نفسي"} />} footer={<Footer />}>
+              {children}
+            </LayoutWrapper>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -10,6 +10,7 @@ import {
   Award, Headset, DollarSign
 } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type Role = "PATIENT" | "THERAPIST" | "ADMIN" | "ADMIN_HR" | "ADMIN_ACCOUNTING" | "ADMIN_VIEWER" | string;
 
@@ -268,6 +269,7 @@ export function DashboardLayout({
           <img src="/logo.png?v=2" alt="Logo" className="h-9 w-auto object-contain rounded-lg" />
         </Link>
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <div className="relative notif-container">
             <button 
               onClick={handleBellClick}
@@ -486,6 +488,9 @@ export function DashboardLayout({
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2 relative notif-container">
+              <div className="hidden sm:block">
+                <ThemeToggle />
+              </div>
               <button 
                 onClick={handleBellClick}
                 className="p-2.5 rounded-full hover:bg-[#F4F7FE] text-slate-500 transition-colors relative"

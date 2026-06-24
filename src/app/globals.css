@@ -19,6 +19,15 @@
   --font-sans: var(--font-tajawal), "Segoe UI", system-ui, sans-serif;
 }
 
+.dark {
+  --color-background: #0B0F19; /* Very dark slate */
+  --color-foreground: #F8FAFC; /* Slate 50 */
+  --color-surface: #111827; /* Gray 900 */
+  --color-surface-warm: #0B0F19;
+  --color-surface-cool: #111827;
+  --color-border-soft: #1F2937; /* Gray 800 */
+}
+
 /* ── Base ──────────────────────────────────────────── */
 
 html {
@@ -27,8 +36,8 @@ html {
 
 body {
   min-height: 100vh;
-  background: #FEFCF9;
-  color: #1E1B3A;
+  background: var(--color-background);
+  color: var(--color-foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

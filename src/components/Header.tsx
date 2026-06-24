@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { LayoutDashboard, LogOut, User, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/how-it-works",label: "خطة التعافي" },
@@ -49,6 +50,8 @@ export function Header({ platformName = "دكتور نفسي" }: { platformName?
 
           {/* Right side: auth buttons + hamburger */}
           <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle />
+            
             {/* Auth buttons (desktop) */}
             {session?.user ? (
               <>
