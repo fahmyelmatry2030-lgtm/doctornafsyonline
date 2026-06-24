@@ -12,29 +12,30 @@ export function Header({ platformName = "دكتور نفسي", locale = "ar" }: 
   const [menuOpen, setMenuOpen] = useState(false);
   const t = useTranslations("Navigation");
 
-  // Switch language using actual URL - avoids /en/en double prefix bug
+  // Use locale prop (from server) - reliable, works during SSR
+  const isEnglish = locale === "en";
+  const prefix = isEnglish ? "/en" : "";
+
+  // Switch language using actual URL
   const switchLanguage = () => {
-    const currentPath = window.location.pathname;
-    if (currentPath.startsWith("/en")) {
-      // Currently English → go to Arabic (remove /en prefix)
-      const arPath = currentPath.replace(/^\/en/, "") || "/";
+    if (isEnglish) {
+      // English → Arabic: remove /en prefix
+      const arPath = window.location.pathname.replace(/^\/en/, "") || "/";
       window.location.href = arPath;
     } else {
-      // Currently Arabic → go to English (add /en prefix)
-      window.location.href = "/en" + (currentPath === "/" ? "" : currentPath);
+      // Arabic → English: add /en prefix
+      const enPath = "/en" + (window.location.pathname === "/" ? "" : window.location.pathname);
+      window.location.href = enPath;
     }
   };
 
-  const isEnglish = typeof window !== "undefined" && window.location.pathname.startsWith("/en");
-
-
   const NAV_LINKS = [
-    { href: "/how-it-works",label: t("howItWorks") },
-    { href: "/services",    label: t("services") },
-    { href: "/therapists",  label: t("therapists") },
-    { href: "/blog",        label: t("blog") },
-    { href: "/about",       label: t("about") },
-    { href: "/faq",         label: t("faq") },
+    { href: `${prefix}/how-it-works`, label: t("howItWorks") },
+    { href: `${prefix}/services`,     label: t("services") },
+    { href: `${prefix}/therapists`,   label: t("therapists") },
+    { href: `${prefix}/blog`,         label: t("blog") },
+    { href: `${prefix}/about`,        label: t("about") },
+    { href: `${prefix}/faq`,          label: t("faq") },
   ];
 
   return (
