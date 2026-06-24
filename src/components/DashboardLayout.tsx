@@ -228,11 +228,13 @@ export function DashboardLayout({
       { name: t("shiftLeaderDashboard"), href: "/shift-leader", icon: <Home className="h-5 w-5" /> },
       { name: t("customerServiceDashboard"), href: "/admin/customer-service", icon: <Headset className="h-5 w-5" /> },
       { name: t("mySalary"), href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
+      { name: t("profile"), href: "/admin/profile", icon: <UserIcon className="h-5 w-5" /> },
     ];
   } else if (role === "ADMIN_MARKETING") {
     navItems = [
       { name: t("marketingDashboard"), href: "/admin/dashboard", icon: <Home className="h-5 w-5" /> },
       { name: t("mySalary"), href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
+      { name: t("profile"), href: "/admin/profile", icon: <UserIcon className="h-5 w-5" /> },
     ];
   } else if (role?.startsWith("ADMIN")) {
     const allAdminNavItems = [
@@ -251,6 +253,7 @@ export function DashboardLayout({
       { name: "رسائل الدعم الفني", href: "/admin/support", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: t("siteSettings"), href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: t("mySalary"), href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_ACCOUNTING", "SHIFT_LEADER", "ADMIN_MARKETING"] },
+      { name: t("profile"), href: "/admin/profile", icon: <UserIcon className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_ACCOUNTING", "SHIFT_LEADER", "ADMIN_MARKETING"] },
     ];
 
     if (role === "ADMIN") {
