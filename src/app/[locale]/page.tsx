@@ -23,7 +23,8 @@ async function getFeaturedTherapists() {
   });
 }
 
-import { getWebsiteContent } from "@/app/admin/settings/actions";
+import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
+import { getTranslations } from "next-intl/server";
 
 export default async function HomePage() {
   let therapists: any[] = [];
@@ -40,6 +41,8 @@ export default async function HomePage() {
   } catch (err: any) {
     dbError = err.message || String(err);
   }
+
+  const t = await getTranslations("Hero");
 
   if (dbError) {
     return (
@@ -65,17 +68,17 @@ export default async function HomePage() {
             {/* Badge */}
             <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[#312E81] animate-fade-in-up stagger-1 shadow-premium">
               <Sparkles className="h-4 w-4 text-[#8B5CF6]" />
-              {content.homeHeroBadge}
+              {t("badge")}
             </span>
 
             {/* Main Headline */}
             <h1 className="mb-6 text-5xl font-black leading-tight text-[var(--color-foreground)] md:text-6xl lg:text-7xl animate-fade-in-up stagger-2">
-              {content.homeHeroTitle}
+              {t("title1")} <span className="gradient-text">{t("title2")}</span>
             </h1>
 
             {/* Subheadline */}
             <p className="mb-10 text-xl leading-relaxed text-slate-700 animate-fade-in-up stagger-3">
-              {content.homeHeroSubtitle}
+              {t("subtitle")}
             </p>
 
             {/* CTA Buttons */}
@@ -85,13 +88,13 @@ export default async function HomePage() {
                 className="group relative inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] px-8 py-4 text-lg font-bold text-white overflow-hidden transition-premium hover:shadow-premium-hover hover:scale-105"
               >
                 <span className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100"></span>
-                <span className="relative z-10">احجز جلسة الآن ✓</span>
+                <span className="relative z-10">{t("cta")} ✓</span>
               </Link>
               <Link
                 href="/about"
                 className="glass-strong rounded-full px-8 py-4 text-lg font-bold text-[var(--color-foreground)] transition-premium hover:shadow-premium-hover hover:scale-105"
               >
-                اكتشف كيف نعمل →
+                {t("ctaSecondary")} →
               </Link>
             </div>
           </div>

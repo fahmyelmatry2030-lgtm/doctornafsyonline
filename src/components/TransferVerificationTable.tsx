@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Check, X, FileImage, Loader2, AlertCircle, Calendar, User } from "lucide-react";
-import { updateAppointmentStatus, rejectAppointmentPayment } from "@/app/admin/operations/actions";
+import { updateAppointmentStatus, rejectAppointmentPayment } from "@/app/[locale]/admin/operations/actions";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 

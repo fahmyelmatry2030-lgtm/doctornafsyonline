@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSettings } from "@/app/admin/settings/actions";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
 import { prisma } from "@/lib/prisma";
 import { PLATFORM_PHONE } from "@/lib/constants";
 import bcrypt from "bcryptjs";

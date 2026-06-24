@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
-import { getSettings } from "@/app/admin/settings/actions";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
 
 export async function POST(request: Request) {
   try {

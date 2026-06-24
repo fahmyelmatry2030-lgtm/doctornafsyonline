@@ -6,18 +6,23 @@ import { LayoutDashboard, LogOut, User, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-const NAV_LINKS = [
-  { href: "/how-it-works",label: "خطة التعافي" },
-  { href: "/services",    label: "الخدمات" },
-  { href: "/therapists",  label: "الأخصائيين" },
-  { href: "/blog",        label: "المقالات" },
-  { href: "/about",       label: "من نحن" },
-  { href: "/faq",         label: "الأسئلة" },
-];
+import { useTranslations } from "next-intl";
+
+// Note: NAV_LINKS are moved inside the component to use translations
 
 export function Header({ platformName = "دكتور نفسي" }: { platformName?: string }) {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
+  const t = useTranslations("Navigation");
+
+  const NAV_LINKS = [
+    { href: "/how-it-works",label: t("howItWorks") },
+    { href: "/services",    label: t("services") },
+    { href: "/therapists",  label: t("therapists") },
+    { href: "/blog",        label: t("blog") },
+    { href: "/about",       label: t("about") },
+    { href: "/faq",         label: t("faq") },
+  ];
 
   return (
     <>
@@ -60,14 +65,14 @@ export function Header({ platformName = "دكتور نفسي" }: { platformName?
                   className="hidden sm:flex items-center gap-2 rounded-xl bg-[#F4F7FE] px-5 py-2.5 text-sm font-bold text-[#4318FF] transition-all hover:bg-[#E0E7FF] hover:shadow-sm"
                 >
                   <LayoutDashboard className="h-4 w-4" />
-                  لوحة التحكم
+                  {t("dashboard")}
                 </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
                   className="hidden sm:flex items-center gap-2 rounded-xl border-2 border-slate-100 hover:border-slate-200 px-5 py-2.5 text-sm font-bold text-slate-600 transition-all hover:bg-slate-50"
                 >
                   <LogOut className="h-4 w-4" />
-                  خروج
+                  {t("logout")}
                 </button>
               </>
             ) : (
@@ -77,13 +82,13 @@ export function Header({ platformName = "دكتور نفسي" }: { platformName?
                   className="hidden sm:flex items-center gap-2 rounded-xl px-4 py-2.5 text-[15px] font-bold text-slate-700 transition-colors hover:text-[#4318FF] hover:bg-[#F4F7FE]"
                 >
                   <User className="h-4 w-4" />
-                  دخول
+                  {t("login")}
                 </Link>
                 <Link
                   href="/register"
                   className="hidden sm:flex items-center gap-2 rounded-xl bg-[#4318FF] px-6 py-2.5 text-[15px] font-black text-white shadow-lg shadow-[#4318FF]/20 transition-all hover:bg-[#3311DB] hover:-translate-y-0.5"
                 >
-                  ابدأ الآن
+                  {t("register")}
                 </Link>
               </>
             )}

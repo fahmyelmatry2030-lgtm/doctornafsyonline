@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Search, Edit2, DollarSign, Calendar, Users, Briefcase, Check } from "lucide-react";
-import { updateTherapistSalary } from "@/app/admin/salaries/actions";
+import { updateTherapistSalary } from "@/app/[locale]/admin/salaries/actions";
 
 type TherapistForSalary = {
   id: string;

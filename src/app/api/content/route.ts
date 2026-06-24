@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getWebsiteContent } from "@/app/admin/settings/actions";
+import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 
 export async function GET() {
   try {

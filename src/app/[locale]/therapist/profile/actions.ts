@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { getSettings } from "@/app/admin/settings/actions";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
 
 export async function updateTherapistProfile(formData: FormData) {
   const session = await auth();

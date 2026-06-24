@@ -6,7 +6,7 @@ import {
   Video, Headphones, MessageSquare, Check, X, Search, 
   AlertCircle, ChevronDown, Award, ExternalLink, Edit3
 } from "lucide-react";
-import { updateAppointmentStatus, rejectAppointmentPayment, editAppointmentDetails } from "@/app/admin/operations/actions";
+import { updateAppointmentStatus, rejectAppointmentPayment, editAppointmentDetails } from "@/app/[locale]/admin/operations/actions";
 
 type Appointment = {
   id: string;

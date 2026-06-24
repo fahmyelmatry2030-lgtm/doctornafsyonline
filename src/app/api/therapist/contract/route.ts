@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import fs from "fs/promises";
 import path from "path";
 import { uploadToCloudinary } from "@/lib/cloudinary";
-import { getSettings } from "@/app/admin/settings/actions";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
 
 const updateContractJson = (currentVal: string | null, type: string, url: string | null) => {
   let contracts: Record<string, any> = {};

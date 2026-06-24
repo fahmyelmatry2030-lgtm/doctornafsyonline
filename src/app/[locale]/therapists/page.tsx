@@ -3,7 +3,7 @@ import { SPECIALIZATIONS } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Users, Filter } from "lucide-react";
-import { getWebsiteContent } from "@/app/admin/settings/actions";
+import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 
 export const dynamic = "force-dynamic";
 

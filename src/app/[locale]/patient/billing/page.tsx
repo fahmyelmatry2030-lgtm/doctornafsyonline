@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { CreditCard, FileText, CheckCircle2, Clock, Phone, Landmark, Wallet, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
-import { getSettings } from "@/app/admin/settings/actions";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
 import ScreenshotUploader from "@/components/ScreenshotUploader";
 import PayOnlineButton from "@/components/PayOnlineButton";
 

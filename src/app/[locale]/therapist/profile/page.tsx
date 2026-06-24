@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import CertificatesManager from "@/components/CertificatesManager";
 import ContractManager from "@/components/ContractManager";
-import { getSettings } from "@/app/admin/settings/actions";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
 import AvatarManager from "@/components/AvatarManager";
 import TherapistProfileForm from "./TherapistProfileForm";
 

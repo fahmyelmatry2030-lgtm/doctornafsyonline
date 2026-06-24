@@ -29,7 +29,7 @@ const whyChooseUs = [
   { title: "أسعار منصفة", desc: "تسعير شفاف، عادل للجميع، وبدون أي رسوم خفية" },
 ];
 
-import { getWebsiteContent } from "@/app/admin/settings/actions";
+import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 
 export default async function AboutPage() {
   const content = await getWebsiteContent();

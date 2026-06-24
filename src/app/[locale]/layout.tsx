@@ -1,12 +1,14 @@
 export const dynamic = 'force-dynamic';
 import type { Metadata } from "next";
 import { Tajawal } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Providers } from "@/components/Providers";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { getSettings } from "@/app/admin/settings/actions";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 
 const tajawal = Tajawal({
@@ -34,9 +36,14 @@ import { LayoutWrapper } from "@/components/LayoutWrapper";
 
 export default async function RootLayout({
   children,
+  params
 }: Readonly<{
   children: React.ReactNode;
+  params: { locale: string };
 }>) {
+  const { locale } = await params;
+  const messages = await getMessages();
+  
   let settings = null;
   let session = null;
   try {
@@ -77,15 +84,17 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="ar" dir="rtl" className={`h-full ${tajawal.variable}`} suppressHydrationWarning>
+    <html lang={locale} dir={locale === 'en' ? 'ltr' : 'rtl'} className={`h-full ${tajawal.variable}`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground transition-colors duration-300">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Providers>
-            <LayoutWrapper header={<Header platformName={settings?.platformName || "دكتور نفسي"} />} footer={<Footer />}>
-              {children}
-            </LayoutWrapper>
-          </Providers>
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <Providers>
+              <LayoutWrapper header={<Header platformName={settings?.platformName || "دكتور نفسي"} />} footer={<Footer />}>
+                {children}
+              </LayoutWrapper>
+            </Providers>
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

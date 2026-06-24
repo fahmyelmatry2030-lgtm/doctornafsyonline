@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Scale, FileText, ArrowLeft } from "lucide-react";
 import { PLATFORM_PHONE, PLATFORM_PHONE_TEL } from "@/lib/constants";
-import { getWebsiteContent } from "@/app/admin/settings/actions";
+import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 import DynamicIcon from "@/components/DynamicIcon";
 
 const defaultSections = [

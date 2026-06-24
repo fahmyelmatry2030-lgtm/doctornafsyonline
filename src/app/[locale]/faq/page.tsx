@@ -1,4 +1,4 @@
-import { getWebsiteContent } from "@/app/admin/settings/actions";
+import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 import FAQClient from "./FAQClient";
 
 export default async function FAQPage() {

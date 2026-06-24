@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getSettings } from "@/app/admin/settings/actions";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
 import {
   TrendingUp, TrendingDown, Users, UserCheck, DollarSign,
   Calendar, Star, BarChart2, PieChart, Activity, ArrowUpRight,

@@ -1,6 +1,6 @@
 import { Calendar, Clock, MessageCircle, Phone, UserCheck, Video, ArrowRight, CheckCircle2, Zap } from "lucide-react";
 import Link from "next/link";
-import { getWebsiteContent } from "@/app/admin/settings/actions";
+import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 
 const defaultSteps = [
   {

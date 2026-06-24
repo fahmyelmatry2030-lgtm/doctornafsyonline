@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Heart, Mail, Phone, MapPin, ArrowLeft } from "lucide-react";
-import { getSettings } from "@/app/admin/settings/actions";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
 import { PLATFORM_PHONE, PLATFORM_PHONE_TEL } from "@/lib/constants";
+import { getTranslations } from "next-intl/server";
 
 export async function Footer() {
   let settings = null;
@@ -11,6 +12,9 @@ export async function Footer() {
     console.error("Failed to load footer settings:", error);
   }
   const platformName = settings?.platformName || "دكتور نفسي";
+
+  const t = await getTranslations("Footer");
+  const nav = await getTranslations("Navigation");
 
   return (
     <footer className="relative bg-[#1E1B3A] text-gray-300">
@@ -25,24 +29,24 @@ export async function Footer() {
               <img src="/logo.png?v=2" alt={platformName} className="h-12 w-auto object-contain drop-shadow-md transition-transform group-hover:scale-105 rounded-xl" />
             </Link>
             <p className="text-sm leading-relaxed text-gray-400">
-              منصة علاج نفسى عربية آمنة وسهلة الاستخدام. جلسات صوت وفيديو وشات داخل المنصة بخصوصية تامة.
+              {t("description")}
             </p>
             <p className="text-sm font-medium text-indigo-300">
-              صحتك النفسية أولوية، ونحن هنا لمساعدتك ✦
+              {t("motto")}
             </p>
           </div>
 
           {/* Column 2: Quick Links */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-white tracking-wide">
-              روابط سريعة
+              {t("quickLinks")}
             </h3>
             <ul className="space-y-2.5">
               {[
-                { href: "/about", label: "من نحن" },
-                { href: "/services", label: "الخدمات" },
-                { href: "/how-it-works", label: "خطة التعافي" },
-                { href: "/therapists", label: "الأخصائيين" },
+                { href: "/about", label: nav("about") },
+                { href: "/services", label: nav("services") },
+                { href: "/how-it-works", label: nav("howItWorks") },
+                { href: "/therapists", label: nav("therapists") },
               ].map((item) => (
                 <li key={item.href}>
                   <Link
@@ -59,13 +63,13 @@ export async function Footer() {
           {/* Column 3: Support */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-white tracking-wide">
-              الدعم والمساعدة
+              {t("support")}
             </h3>
             <ul className="space-y-2.5">
               {[
-                { href: "/faq", label: "الأسئلة الشائعة" },
-                { href: "/contact", label: "تواصل معنا" },
-                { href: "/blog", label: "المقالات" },
+                { href: "/faq", label: nav("faq") },
+                { href: "/contact", label: t("contact") },
+                { href: "/blog", label: nav("blog") },
               ].map((item) => (
                 <li key={item.href}>
                   <Link
@@ -82,7 +86,7 @@ export async function Footer() {
           {/* Column 4: Contact & CTA */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-white tracking-wide">
-              تواصل معنا
+              {t("contact")}
             </h3>
             <ul className="space-y-3">
               <li className="flex items-center gap-2.5 text-sm">
@@ -106,7 +110,7 @@ export async function Footer() {
               href="/register"
               className="mt-2 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-600 to-violet-500 px-5 py-2.5 text-sm font-bold text-white transition-premium hover:shadow-premium-lg hover:scale-105"
             >
-              ابدأ رحلتك الآن
+              {nav("register")}
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </div>
@@ -115,12 +119,12 @@ export async function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-sm text-gray-500">
-            © 2026 {platformName}. جميع الحقوق محفوظة.
+            © 2026 {platformName}. {t("copyright")}.
           </p>
           <div className="flex gap-4 text-xs text-gray-400">
-            <Link href="/terms" className="hover:text-white transition-colors">الشروط والأحكام</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">{t("terms")}</Link>
             <span>·</span>
-            <Link href="/privacy" className="hover:text-white transition-colors">سياسة الخصوصية</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">{t("privacy")}</Link>
           </div>
           <p className="text-sm text-indigo-400/70">
             صُنع بعناية لصحتك النفسية

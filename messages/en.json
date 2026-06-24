@@ -19,5 +19,15 @@
     "subtitle": "Connect with top certified consultants and therapists in complete privacy, and take your first steps towards a brighter, more balanced life.",
     "cta": "Start Your First Session",
     "ctaSecondary": "Browse Therapists"
+  },
+  "Footer": {
+    "description": "A secure and easy-to-use Arabic mental health platform. Voice, video, and chat sessions inside the platform with complete privacy.",
+    "motto": "Your mental health is a priority, and we are here to help you ✦",
+    "quickLinks": "Quick Links",
+    "support": "Support & Help",
+    "contact": "Contact Us",
+    "copyright": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions"
   }
 }

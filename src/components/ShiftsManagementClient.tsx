@@ -8,7 +8,7 @@ import {
 import { 
   createShift, updateShift, deleteShift, 
   assignSpecialistToShift, removeSpecialistFromShift 
-} from "@/app/admin/shift-leader/actions";
+} from "@/app/[locale]/admin/shift-leader/actions";
 
 interface ShiftData {
   id: string;
