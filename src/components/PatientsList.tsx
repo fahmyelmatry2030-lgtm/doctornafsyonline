@@ -77,6 +77,8 @@ export default function PatientsList({ initialPatients }: PatientsListProps) {
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [editedNoteContent, setEditedNoteContent] = useState("");
+  const [editedNoteAttachments, setEditedNoteAttachments] = useState<{name: string, url: string}[]>([]);
+  const [uploadingFileId, setUploadingFileId] = useState<string | null>(null);
   const [savingNote, setSavingNote] = useState(false);
   const [error, setError] = useState("");
 
@@ -104,16 +106,33 @@ export default function PatientsList({ initialPatients }: PatientsListProps) {
 
   function handleStartEditNote(appointmentId: string, currentNotes: string) {
     setEditingNoteId(appointmentId);
-    setEditedNoteContent(currentNotes);
+    let parsedText = currentNotes;
+    let parsedAttachments = [];
+    try {
+      const parsed = JSON.parse(currentNotes);
+      if (parsed && typeof parsed === "object" && "text" in parsed) {
+        parsedText = parsed.text || "";
+        parsedAttachments = parsed.attachments || [];
+      }
+    } catch {
+      // It's just plain text
+    }
+    setEditedNoteContent(parsedText);
+    setEditedNoteAttachments(parsedAttachments);
   }
 
   async function handleSaveNote(appointmentId: string) {
     setSavingNote(true);
     try {
+      const serialized = JSON.stringify({
+        text: editedNoteContent,
+        attachments: editedNoteAttachments,
+      });
+
       const res = await fetch(`/api/appointments/${appointmentId}/notes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ notes: editedNoteContent }),
+        body: JSON.stringify({ notes: serialized }),
       });
 
       if (res.ok) {
@@ -140,6 +159,76 @@ export default function PatientsList({ initialPatients }: PatientsListProps) {
     } finally {
       setSavingNote(false);
     }
+  }
+
+  async function handleAttachFile(appointmentId: string, e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingFileId(appointmentId);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch(`/api/appointments/${appointmentId}/notes/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setEditedNoteAttachments((prev) => [...prev, { name: result.name, url: result.url }]);
+      } else {
+        alert(result.error || "فشل رفع الملف المرفق");
+      }
+    } catch {
+      alert("حدث خطأ أثناء رفع الملف");
+    } finally {
+      setUploadingFileId(null);
+      e.target.value = "";
+    }
+  }
+
+  function handleRemoveAttachment(indexToRemove: number) {
+    setEditedNoteAttachments((prev) => prev.filter((_, i) => i !== indexToRemove));
+  }
+
+  function renderNoteContent(notesRaw: string) {
+    let text = notesRaw;
+    let attachments: {name: string, url: string}[] = [];
+    try {
+      const parsed = JSON.parse(notesRaw);
+      if (parsed && typeof parsed === "object" && "text" in parsed) {
+        text = parsed.text || "";
+        attachments = parsed.attachments || [];
+      }
+    } catch {
+      // Plain text
+    }
+
+    return (
+      <div className="space-y-4">
+        <p className="text-slate-700 text-sm whitespace-pre-wrap leading-relaxed">{text}</p>
+        {attachments.length > 0 && (
+          <div className="border-t border-slate-100 pt-3">
+            <h4 className="text-xs font-bold text-slate-500 mb-2">الملفات المرفقة:</h4>
+            <div className="flex flex-wrap gap-2">
+              {attachments.map((att, i) => (
+                <a
+                  key={i}
+                  href={att.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50 transition"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  {att.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -308,17 +397,58 @@ export default function PatientsList({ initialPatients }: PatientsListProps) {
                                 </div>
 
                                 {editingNoteId === app.id ? (
-                                  <textarea
-                                    value={editedNoteContent}
-                                    onChange={(e) => setEditedNoteContent(e.target.value)}
-                                    placeholder="اكتب التقرير الطبي، الملاحظات والتشخيص العلاجي..."
-                                    rows={4}
-                                    className="w-full text-sm rounded-lg border border-slate-200 bg-white p-3 text-slate-800 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 transition-all outline-none resize-none"
-                                  ></textarea>
+                                  <div className="space-y-3">
+                                    <textarea
+                                      value={editedNoteContent}
+                                      onChange={(e) => setEditedNoteContent(e.target.value)}
+                                      placeholder="اكتب التقرير الطبي، الملاحظات والتشخيص العلاجي..."
+                                      rows={4}
+                                      className="w-full text-sm rounded-lg border border-slate-200 bg-white p-3 text-slate-800 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 transition-all outline-none resize-none"
+                                    ></textarea>
+                                    
+                                    {/* Attachments Editor */}
+                                    <div className="border border-slate-200 rounded-lg p-3 bg-white">
+                                      <div className="flex items-center justify-between mb-3">
+                                        <span className="text-xs font-bold text-slate-700">الملفات المرفقة بالتقرير</span>
+                                        <label className="cursor-pointer">
+                                          <input
+                                            type="file"
+                                            className="hidden"
+                                            accept="image/*,application/pdf"
+                                            onChange={(e) => handleAttachFile(app.id, e)}
+                                          />
+                                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition">
+                                            {uploadingFileId === app.id ? "جاري الرفع..." : "+ إرفاق ملف"}
+                                          </span>
+                                        </label>
+                                      </div>
+                                      
+                                      {editedNoteAttachments.length === 0 ? (
+                                        <p className="text-[10px] text-slate-400">لا توجد ملفات مرفقة.</p>
+                                      ) : (
+                                        <div className="space-y-2">
+                                          {editedNoteAttachments.map((att, i) => (
+                                            <div key={i} className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-md p-2">
+                                              <a href={att.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-indigo-600 truncate max-w-[200px] flex items-center gap-1">
+                                                <FileText className="w-3.5 h-3.5 flex-shrink-0" />
+                                                <span className="truncate">{att.name}</span>
+                                              </a>
+                                              <button
+                                                type="button"
+                                                onClick={() => handleRemoveAttachment(i)}
+                                                className="text-slate-400 hover:text-red-500 transition p-1"
+                                                title="إزالة الملف"
+                                              >
+                                                <X className="w-3.5 h-3.5" />
+                                              </button>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
                                 ) : app.sessionNote?.notes ? (
-                                  <p className="text-slate-700 text-sm whitespace-pre-wrap leading-relaxed">
-                                    {app.sessionNote.notes}
-                                  </p>
+                                  renderNoteContent(app.sessionNote.notes)
                                 ) : (
                                   <p className="text-slate-400 text-sm italic">
                                     لم يتم كتابة تقرير طبي لهذه الجلسة بعد.

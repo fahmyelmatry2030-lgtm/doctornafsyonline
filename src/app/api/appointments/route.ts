@@ -22,8 +22,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "صيغة التاريخ غير صحيحة، يرجى التأكد من تحديد الموعد." }, { status: 400 });
     }
 
-    // Prevent booking in the past
-    if (parsedDate.getTime() < Date.now()) {
+    // Prevent booking in the past (allow a 5-minute buffer for form submission delays)
+    if (parsedDate.getTime() < Date.now() - 5 * 60 * 1000) {
       return NextResponse.json({ error: "عفواً، لا يمكن حجز موعد بأثر رجعي. يرجى اختيار موعد متاح في المستقبل." }, { status: 400 });
     }
 

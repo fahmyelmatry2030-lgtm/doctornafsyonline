@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Users, Mail, Phone, Calendar, Activity, Ban, CheckCircle, ShieldOff, Search, FileText } from "lucide-react";
 import { DeletePatientButton } from "./DeletePatientButton";
 import { PatientDetailsModal } from "./PatientDetailsModal";
+import { useSearchParams } from "next/navigation";
 
 type Appointment = {
   id: string;
@@ -38,8 +39,9 @@ type PatientsTableClientProps = {
 };
 
 export function PatientsTableClient({ initialPatients, toggleSuspend, deletePatient, isReadOnly = false }: PatientsTableClientProps) {
+  const searchParams = useSearchParams();
   const [patients, setPatients] = useState<Patient[]>(initialPatients);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchParams?.get("search") || "");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
   // Filter patients by name, email, phone or unique code

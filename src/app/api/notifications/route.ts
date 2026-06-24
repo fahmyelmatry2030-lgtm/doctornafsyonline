@@ -176,6 +176,7 @@ export async function GET() {
     } else {
       // Admin notifications
       const sysNotifs = await prisma.systemNotification.findMany({
+        where: { createdAt: { gte: userCreatedAt } },
         orderBy: { createdAt: "desc" },
         take: 15,
       });

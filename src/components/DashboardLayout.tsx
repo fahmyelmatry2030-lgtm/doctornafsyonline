@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { 
   Home, Users, Calendar, Settings, 
   MessageCircle, CreditCard, Menu, X, 
@@ -40,6 +40,9 @@ export function DashboardLayout({
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname() || "";
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchParams?.get("search") || "");
 
   // Notifications State
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -133,7 +136,17 @@ export function DashboardLayout({
   // اغلق القائمة عند تغيير المسار
   useEffect(() => {
     setIsMobileMenuOpen(false);
-  }, [pathname]);
+    setLocalSearchQuery(searchParams?.get("search") || "");
+  }, [pathname, searchParams]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (localSearchQuery.trim()) {
+      router.push(`${pathname}?search=${encodeURIComponent(localSearchQuery)}`);
+    } else {
+      router.push(pathname);
+    }
+  };
 
   const [dynamicPerms, setDynamicPerms] = useState<Record<string, string[]> | null>(null);
 
@@ -406,14 +419,18 @@ export function DashboardLayout({
           
           <div className="flex items-center gap-6 bg-white p-2 rounded-[30px] shadow-sm border border-slate-100">
             {/* Search Input */}
-            <div className="relative flex items-center bg-[#F4F7FE] rounded-full px-4 py-2 w-64">
-              <Search className="w-4 h-4 text-slate-400 absolute right-4" />
+            <form onSubmit={handleSearchSubmit} className="relative flex items-center bg-[#F4F7FE] rounded-full px-4 py-2 w-64">
+              <button type="submit" className="absolute right-4 text-slate-400 hover:text-indigo-600 transition-colors">
+                <Search className="w-4 h-4" />
+              </button>
               <input 
                 type="text" 
-                placeholder="ابحث هنا..." 
+                placeholder="ابحث في هذه الصفحة..." 
+                value={localSearchQuery}
+                onChange={(e) => setLocalSearchQuery(e.target.value)}
                 className="bg-transparent border-none outline-none text-sm text-slate-700 w-full pr-7 placeholder:text-slate-400 font-medium"
               />
-            </div>
+            </form>
             
             {/* Action Buttons */}
             <div className="flex items-center gap-2 relative notif-container">

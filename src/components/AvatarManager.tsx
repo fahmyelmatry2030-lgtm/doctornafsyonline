@@ -15,7 +15,7 @@ export default function AvatarManager({
   label?: string;
   subLabel?: string;
 }) {
-  const [avatar, setAvatar] = useState<string | null>(initialAvatar);
+  const [avatar, setAvatar] = useState<string | null>(initialAvatar ? (initialAvatar.includes('?') ? `${initialAvatar}&t=${Date.now()}` : `${initialAvatar}?t=${Date.now()}`) : null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -58,7 +58,7 @@ export default function AvatarManager({
       const data = await res.json();
 
       if (res.ok) {
-        setAvatar(data.avatar);
+        setAvatar(data.avatar + "?v=" + new Date().getTime());
         setSuccess(true);
         router.refresh();
       } else {

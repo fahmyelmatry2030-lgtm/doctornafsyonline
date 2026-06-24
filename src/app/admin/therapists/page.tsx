@@ -23,7 +23,7 @@ export default async function AdminTherapistsPage() {
   async function toggleVerification(userId: string, currentStatus: boolean) {
     "use server";
     const s = await auth();
-    if (!s?.user || (s.user.role !== "ADMIN" && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
+    if (!s?.user || (!s.user.role?.startsWith("ADMIN") && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
 
     await prisma.therapistProfile.update({
       where: { userId },
@@ -35,7 +35,7 @@ export default async function AdminTherapistsPage() {
   async function updateCertificateStatus(userId: string, certId: string, status: "APPROVED" | "REJECTED") {
     "use server";
     const s = await auth();
-    if (!s?.user || (s.user.role !== "ADMIN" && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
+    if (!s?.user || (!s.user.role?.startsWith("ADMIN") && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
 
     const profile = await prisma.therapistProfile.findUnique({
       where: { userId },
@@ -55,7 +55,7 @@ export default async function AdminTherapistsPage() {
   async function toggleSuspend(userId: string, currentStatus: boolean) {
     "use server";
     const s = await auth();
-    if (!s?.user || (s.user.role !== "ADMIN" && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
+    if (!s?.user || (!s.user.role?.startsWith("ADMIN") && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
 
     await prisma.user.update({
       where: { id: userId },
@@ -67,7 +67,7 @@ export default async function AdminTherapistsPage() {
   async function deleteTherapist(userId: string) {
     "use server";
     const s = await auth();
-    if (!s?.user || (s.user.role !== "ADMIN" && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
+    if (!s?.user || (!s.user.role?.startsWith("ADMIN") && s.user.role !== "ADMIN_HR")) throw new Error("غير مصرح لك");
 
     await prisma.$transaction([
       prisma.appointment.deleteMany({ where: { therapistId: userId } }),

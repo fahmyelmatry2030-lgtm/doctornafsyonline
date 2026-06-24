@@ -5,6 +5,7 @@ import {
   ShieldCheck, ShieldAlert, Star, UserCheck, Users, Award, 
   Check, X, ExternalLink, Ban, CheckCircle, Trash2, Search, FileText, QrCode 
 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { TherapistDetailsModal } from "./TherapistDetailsModal";
 import Link from "next/link";
 
@@ -49,8 +50,9 @@ export function TherapistsTableClient({
   deleteTherapist,
   isReadOnly = false,
 }: TherapistsTableClientProps) {
+  const searchParams = useSearchParams();
   const [therapists, setTherapists] = useState<Therapist[]>(initialTherapists);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchParams?.get("search") || "");
   const [selectedTherapist, setSelectedTherapist] = useState<Therapist | null>(null);
 
   // Filter therapists by name, email, or specialization
