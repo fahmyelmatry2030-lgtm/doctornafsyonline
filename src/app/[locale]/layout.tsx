@@ -42,10 +42,16 @@ export default async function RootLayout({
   params: { locale: string };
 }>) {
   const { locale } = await params;
-  const messages = await getMessages();
+  
+  // Safe message loading - fallback to empty if fails
+  let messages: any = {};
+  try {
+    messages = await getMessages();
+  } catch (e) {
+    console.error("getMessages failed:", e);
+  }
   
   let settings = null;
-  let session = null;
   try {
     settings = await getSettings().catch((e) => {
       console.error("Layout getSettings error:", e);

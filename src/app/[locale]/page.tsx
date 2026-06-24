@@ -42,16 +42,14 @@ export default async function HomePage() {
     dbError = err.message || String(err);
   }
 
-  const t = await getTranslations("Hero");
-
-  if (dbError) {
-    return (
-      <div style={{ padding: '50px', color: 'red', direction: 'ltr' }}>
-        <h1>Fatal Database Error</h1>
-        <pre style={{ whiteSpace: 'pre-wrap', background: '#f5f5f5', padding: '20px' }}>{dbError}</pre>
-      </div>
-    );
-  }
+  const t = await getTranslations("Hero").catch(() => ({
+    badge: "رعاية نفسية مبسطة بثقة وخصوصية",
+    title1: "الدعم النفسي",
+    title2: "الذي تحتاجه الآن",
+    subtitle: "جلسات علاج نفسي عبر الفيديو والصوت والشات، ضمن منصة آمنة وسهلة الاستخدام.",
+    cta: "ابدأ رحلتك",
+    ctaSecondary: "تعرف علينا أكثر",
+  }) as any);
 
   return (
     <>
