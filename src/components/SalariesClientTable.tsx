@@ -208,7 +208,7 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         {t.avatar ? (
-                          <img src={encodeURI(decodeURI())} alt={t.name} className="w-10 h-10 rounded-full object-cover shadow-sm border border-slate-200" />
+                          <img src={encodeURI(decodeURI(t.avatar))} alt={t.name} className="w-10 h-10 rounded-full object-cover shadow-sm border border-slate-200" />
                         ) : (
                           <div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-sm border border-indigo-100">
                             {t.name.charAt(0)}

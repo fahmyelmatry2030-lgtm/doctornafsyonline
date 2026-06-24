@@ -64,7 +64,7 @@ function StaffIDCard({ member }: { member: StaffMember }) {
         <div className="w-20 h-20 rounded-full overflow-hidden ring-4 ring-[#1E56A0]/20 border-2 border-[#1E56A0] shadow-lg flex items-center justify-center bg-slate-50">
           {member.avatar ? (
             <img
-              src={encodeURI(decodeURI())}
+              src={encodeURI(decodeURI(member.avatar))}
               alt={member.name}
               className="w-full h-full object-cover"
             />

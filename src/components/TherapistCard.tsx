@@ -38,7 +38,7 @@ export function TherapistCard({
       <div className="mb-6 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 w-full">
         <div className="relative h-28 w-28 rounded-full overflow-hidden bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex-shrink-0 shadow-[0_0_20px_rgba(99,102,241,0.3)] ring-4 ring-indigo-50 border-4 border-white">
           <img
-            src={imageUrl ? encodeURI(decodeURI()) : "/therapist-placeholder.png"}
+            src={imageUrl ? encodeURI(decodeURI(imageUrl)) : "/therapist-placeholder.png"}
             alt={name}
             className="h-full w-full object-cover"
             onError={(e) => {

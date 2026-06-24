@@ -152,7 +152,7 @@ function VerifyStaffContent() {
             <div className="relative mb-4">
               {employee.avatar && !avatarError ? (
                 <img 
-                  src={encodeURI(decodeURI())} 
+                  src={encodeURI(decodeURI(employee.avatar))} 
                   alt={employee.name} 
                   className={`w-32 h-32 rounded-full object-cover border-4 ${isVerified ? 'border-green-100' : 'border-red-100'} shadow-lg`}
                   onError={() => setAvatarError(true)}

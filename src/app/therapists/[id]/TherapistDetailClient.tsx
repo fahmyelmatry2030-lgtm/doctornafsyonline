@@ -185,7 +185,7 @@ export default function TherapistDetailPage({
             <div className="mb-6 flex items-start gap-6">
               {therapist.avatar ? (
                 <img
-                  src={encodeURI(decodeURI())}
+                  src={encodeURI(decodeURI(therapist.avatar))}
                   alt={therapist.name}
                   className="h-20 w-20 shrink-0 rounded-full object-cover shadow-md"
                   onError={(e) => {
@@ -259,7 +259,7 @@ export default function TherapistDetailPage({
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
                           {review.patient.avatar ? (
-                            <img src={encodeURI(decodeURI())} alt="Patient" className="w-12 h-12 rounded-full object-cover shadow-sm" />
+                            <img src={encodeURI(decodeURI(review.patient.avatar))} alt="Patient" className="w-12 h-12 rounded-full object-cover shadow-sm" />
                           ) : (
                             <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-lg shadow-sm">
                               {review.patient.name.charAt(0)}

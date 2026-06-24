@@ -335,7 +335,7 @@ export function DashboardLayout({
               </Link>
               {userAvatar ? (
                 <img 
-                  src={encodeURI(decodeURI())} 
+                  src={encodeURI(decodeURI(userAvatar))} 
                   alt="Profile" 
                   className="w-11 h-11 rounded-xl object-cover shadow-sm ring-2 ring-white"
                 />
@@ -509,7 +509,7 @@ export function DashboardLayout({
               </div>
               {userAvatar ? (
                   <img 
-                    src={encodeURI(decodeURI())} 
+                    src={encodeURI(decodeURI(userAvatar))} 
                     alt="Profile" 
                     className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm"
                   />
