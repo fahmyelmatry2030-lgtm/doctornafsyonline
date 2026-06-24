@@ -229,7 +229,7 @@ export function DashboardLayout({
       {/* Mobile Header (Visible only on small screens) */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-[72px] bg-white border-b border-slate-200 z-30 flex items-center justify-between px-4 shadow-sm">
         <Link href="/" className="inline-block transition-transform hover:scale-105">
-          <img src="/logo.jpeg" alt="Logo" className="h-9 w-auto object-contain rounded-lg" />
+          <img src="/logo.jpeg?v=2" alt="Logo" className="h-9 w-auto object-contain rounded-lg" />
         </Link>
         <div className="flex items-center gap-3">
           <div className="relative notif-container">
@@ -331,7 +331,7 @@ export function DashboardLayout({
                 <X className="w-5 h-5" />
               </button>
               <Link href="/" className="inline-block transition-transform hover:scale-105 bg-white/10 p-2 rounded-2xl backdrop-blur-sm border border-white/10 mb-4">
-                <img src="/logo.jpeg" alt="Logo" className="h-10 w-auto object-contain rounded-lg" />
+                <img src="/logo.jpeg?v=2" alt="Logo" className="h-10 w-auto object-contain rounded-lg" />
               </Link>
               {userAvatar ? (
                 <img 
