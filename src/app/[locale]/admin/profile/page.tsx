@@ -2,6 +2,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import AvatarManager from "@/components/AvatarManager";
+import bcrypt from "bcryptjs";
+import SettingsForm from "@/components/SettingsForm";
 
 export default async function AdminProfilePage() {
   const session = await auth();
@@ -31,6 +33,38 @@ export default async function AdminProfilePage() {
     });
     
     revalidatePath("/admin/profile");
+  }
+
+  async function updatePassword(formData: FormData) {
+    "use server";
+    const currentPassword = formData.get("currentPassword") as string;
+    const newPassword = formData.get("newPassword") as string;
+
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: "غير مصرح" };
+    }
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: session.user.id }
+    });
+
+    if (!dbUser) {
+      return { success: false, error: "المستخدم غير موجود" };
+    }
+
+    const passwordsMatch = await bcrypt.compare(currentPassword, dbUser.password);
+    if (!passwordsMatch) {
+      return { success: false, error: "كلمة المرور الحالية غير صحيحة" };
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { password: hashedPassword }
+    });
+
+    return { success: true };
   }
 
   return (
@@ -89,6 +123,10 @@ export default async function AdminProfilePage() {
             </button>
           </form>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <SettingsForm updatePasswordAction={updatePassword} />
       </div>
     </div>
   );
