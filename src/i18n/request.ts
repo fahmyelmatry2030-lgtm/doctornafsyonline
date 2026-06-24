@@ -1,30 +1,38 @@
 import {getRequestConfig} from 'next-intl/server';
-import {notFound} from 'next/navigation';
 
-// Can be imported from a shared config
+// Static imports - guaranteed to work in production builds
+const messageLoaders: Record<string, () => Promise<any>> = {
+  ar: () => import('../../messages/ar.json').then(m => m.default),
+  en: () => import('../../messages/en.json').then(m => m.default),
+};
+
 const locales = ['ar', 'en'];
 
 export default getRequestConfig(async ({locale}) => {
-  // Validate that the incoming `locale` parameter is valid
-  const validLocale = locales.includes(locale as any) ? locale : 'ar';
-  
-  // If locale is completely invalid (not ar or en), show 404
-  if (!locale || (locale !== 'ar' && locale !== 'en' && locale.length < 10)) {
-    // Only 404 for clearly invalid locales, default to ar for unknown
-  }
+  // Validate locale - fallback to 'ar' if invalid
+  const validLocale = locale && locales.includes(locale) ? locale : 'ar';
 
   try {
-    const messages = (await import(`../../messages/${validLocale}.json`)).default;
+    const loader = messageLoaders[validLocale];
+    if (!loader) {
+      console.error(`No message loader for locale: ${validLocale}`);
+      const arMessages = await messageLoaders['ar']();
+      return { locale: 'ar', messages: arMessages };
+    }
+
+    const messages = await loader();
+    console.log(`[i18n] Loaded messages for locale: ${validLocale}`);
     return {
-      locale: validLocale as string,
+      locale: validLocale,
       messages
     };
   } catch (e) {
-    console.error(`Failed to load messages for locale: ${validLocale}`, e);
-    // Fallback to empty messages rather than crashing
-    return {
-      locale: 'ar',
-      messages: {}
-    };
+    console.error(`[i18n] Failed to load messages for: ${validLocale}`, e);
+    try {
+      const arMessages = await messageLoaders['ar']();
+      return { locale: 'ar', messages: arMessages };
+    } catch {
+      return { locale: 'ar', messages: {} };
+    }
   }
 });
