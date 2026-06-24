@@ -92,10 +92,10 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={locale === 'en' ? 'ltr' : 'rtl'} className={`h-full ${tajawal.variable}`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col font-sans antialiased bg-background text-foreground transition-colors duration-300">
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <Providers>
-              <LayoutWrapper header={<Header platformName={settings?.platformName || "دكتور نفسي"} />} footer={<Footer />}>
+              <LayoutWrapper header={<Header platformName={settings?.platformName || "دكتور نفسي"} locale={locale} />} footer={<Footer />}>
                 {children}
               </LayoutWrapper>
             </Providers>
