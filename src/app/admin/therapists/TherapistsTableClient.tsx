@@ -210,7 +210,16 @@ export function TherapistsTableClient({
               <div key={t.id} className="px-6 py-5 flex items-start justify-between gap-6 flex-wrap md:flex-nowrap">
                 <div className="flex items-start gap-4">
                   {t.avatar ? (
-                    <img src={encodeURI(decodeURI(t.avatar))} alt={t.name} className="w-12 h-12 rounded-full object-cover shrink-0 mt-1" />
+                    <img 
+                      src={encodeURI(decodeURI(t.avatar))} 
+                      alt={t.name} 
+                      className="w-12 h-12 rounded-full object-cover shrink-0 mt-1" 
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.parentElement!.innerHTML = `<div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xl shrink-0 mt-1">${t.name.charAt(0)}</div>`;
+                      }}
+                    />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-black text-lg shrink-0 mt-1">
                       {t.name.charAt(0)}
@@ -339,7 +348,16 @@ export function TherapistsTableClient({
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
                       {t.avatar ? (
-                        <img src={encodeURI(decodeURI(t.avatar))} alt={t.name} className="w-9 h-9 rounded-full object-cover shrink-0" />
+                        <img 
+                          src={encodeURI(decodeURI(t.avatar))} 
+                          alt={t.name} 
+                          className="w-9 h-9 rounded-full object-cover shrink-0" 
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            target.parentElement!.innerHTML = `<div class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm shrink-0">${t.name.charAt(0)}</div>`;
+                          }}
+                        />
                       ) : (
                         <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm shrink-0">
                           {t.name.charAt(0)}

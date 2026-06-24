@@ -13,11 +13,14 @@ export const DEFAULT_PERMISSIONS: Record<string, string[]> = {
     "/admin/therapists",
     "/admin/patients",
     "/admin/customer-service",
+    "/admin/my-salary",
   ],
   ADMIN_ACCOUNTING: [
     "/admin/dashboard",
     "/admin/reports",
     "/admin/salaries",
+    "/admin/employee-salaries",
+    "/admin/my-salary",
   ],
   ADMIN_VIEWER: [
     "/admin/dashboard",
@@ -31,11 +34,13 @@ export const DEFAULT_PERMISSIONS: Record<string, string[]> = {
     "/admin/certificates",
     "/admin/customer-service",
     "/admin/settings",
+    "/admin/my-salary",
   ],
   ADMIN_CUSTOMER_SERVICE: [
     "/admin/dashboard",
     "/admin/customer-service",
     "/admin/shift-leader",
+    "/admin/my-salary",
   ],
 };
 
@@ -73,7 +78,7 @@ export async function POST(req: Request) {
       "/admin/patients", "/admin/reports", "/admin/salaries",
       "/admin/content", "/admin/marketing", "/admin/support",
       "/admin/certificates", "/admin/settings", "/admin/shift-leader",
-      "/admin/managers", "/admin/customer-service",
+      "/admin/managers", "/admin/customer-service", "/admin/my-salary",
     ];
 
     const validated: Record<string, string[]> = {};
