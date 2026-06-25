@@ -38,8 +38,10 @@ jobs:
         run: |
           mkdir -p dist
           echo "<html></html>" > dist/index.html
+          npm i -D @capacitor/assets
           npx cap add android
           npx cap sync android
+          npx @capacitor/assets generate --android
           ls -la android || echo "No android folder"
 
       - name: Build Android Release APK
