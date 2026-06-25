@@ -33,9 +33,11 @@ type Review = {
 export default function TherapistDetailPage({
   therapist,
   reviews = [],
+  sessionDuration = 50,
 }: {
   therapist: Therapist;
   reviews?: Review[];
+  sessionDuration?: number;
 }) {
   const router = useRouter();
   const profile = therapist.therapistProfile;
@@ -146,6 +148,7 @@ export default function TherapistDetailPage({
         therapistId: therapist.id,
         scheduledAt: new Date(scheduledAt).toISOString(),
         type: sessionType,
+        duration: sessionDuration,
         promoCode: appliedDiscount !== null ? coupon : undefined,
       }),
     });
@@ -318,7 +321,7 @@ export default function TherapistDetailPage({
                 <span className="text-3xl font-bold text-teal-700">
                   {formatPrice(originalPrice)}
                 </span>
-                <span className="text-sm text-slate-500"> / جلسة 50 دقيقة</span>
+                <span className="text-sm text-slate-500"> / جلسة {sessionDuration} دقيقة</span>
               </div>
             )}
 

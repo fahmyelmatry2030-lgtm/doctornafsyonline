@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createLiveKitToken } from "@/lib/livekit";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
 
 
 export async function POST(request: Request) {
@@ -65,13 +66,15 @@ export async function POST(request: Request) {
       select: { name: true, phone: true }
     });
 
+    const settings = await getSettings();
+
     const appointment = await prisma.appointment.create({
       data: {
         patientId: session.user.id,
         therapistId,
         scheduledAt: parsedDate,
         type: type || "VIDEO",
-        duration: duration || 50,
+        duration: duration || settings.sessionDuration || 50,
         price: finalPrice,
         roomName,
         status: "PENDING",

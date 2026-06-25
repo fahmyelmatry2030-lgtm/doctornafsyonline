@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import TherapistDetailClient from "./TherapistDetailClient";
+import { getSettings } from "@/app/[locale]/admin/settings/actions";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -25,6 +26,8 @@ export default async function TherapistPage({ params }: Props) {
     }
   });
 
+  const settings = await getSettings();
+
   return (
     <TherapistDetailClient
       therapist={{
@@ -35,6 +38,7 @@ export default async function TherapistPage({ params }: Props) {
         therapistProfile: therapist.therapistProfile,
       }}
       reviews={JSON.parse(JSON.stringify(reviews))}
+      sessionDuration={settings.sessionDuration}
     />
   );
 }
