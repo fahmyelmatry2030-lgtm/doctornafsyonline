@@ -1,17 +1,22 @@
 import Link from "next/link";
 import { Heart, Mail, Phone, MapPin, ArrowLeft } from "lucide-react";
-import { getSettings } from "@/app/[locale]/admin/settings/actions";
+import { getSettings, getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
 import { PLATFORM_PHONE, PLATFORM_PHONE_TEL } from "@/lib/constants";
 import { getTranslations } from "next-intl/server";
 
 export async function Footer() {
   let settings = null;
+  let content = null;
   try {
     settings = await getSettings();
+    content = await getWebsiteContent();
   } catch (error) {
     console.error("Failed to load footer settings:", error);
   }
   const platformName = settings?.platformName || "دكتور نفسي";
+  const contactEmail = content?.contactEmail || "support@doctornafsyonline.com";
+  const contactPhone = content?.contactPhone || PLATFORM_PHONE;
+  const contactAddress = content?.contactAddress || "القاهرة، مصر";
 
   const t = await getTranslations("Footer");
   const nav = await getTranslations("Navigation");
@@ -91,19 +96,19 @@ export async function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2.5 text-sm">
                 <Mail className="h-4 w-4 text-indigo-400 flex-shrink-0" />
-                <a href="mailto:support@doctornafsyonline.com" className="text-white font-semibold hover:text-indigo-300 transition-colors">
-                  support@doctornafsyonline.com
+                <a href={`mailto:${contactEmail}`} className="text-white font-semibold hover:text-indigo-300 transition-colors">
+                  {contactEmail}
                 </a>
               </li>
               <li className="flex items-center gap-2.5 text-sm">
                 <Phone className="h-4 w-4 text-indigo-400 flex-shrink-0" />
-                <a href={PLATFORM_PHONE_TEL} className="text-white font-semibold hover:text-indigo-300 transition-colors">
-                  {PLATFORM_PHONE}
+                <a href={`tel:${contactPhone.replace(/\s+/g, '')}`} className="text-white font-semibold hover:text-indigo-300 transition-colors">
+                  {contactPhone}
                 </a>
               </li>
               <li className="flex items-center gap-2.5 text-sm text-gray-400">
                 <MapPin className="h-4 w-4 text-indigo-400 flex-shrink-0" />
-                القاهرة، مصر
+                {contactAddress}
               </li>
             </ul>
             <Link
