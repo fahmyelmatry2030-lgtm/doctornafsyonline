@@ -179,12 +179,8 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
         </div>
         <div className="text-xs font-bold text-slate-400">
           يظهر {filtered.length} من أصل {therapists.length} أخصائيين
-        </div>
-      </div>
-
-      {/* Main Table */}
-      <div className="bg-white border border-slate-100 rounded-[24px] overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
+              {/* Desktop View */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-sm text-right">
             <thead className="bg-slate-50 text-[#A3AED0] uppercase tracking-wide text-xs border-b border-slate-100">
               <tr>
@@ -275,9 +271,9 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                       <td className="px-6 py-4 text-center">
                         <button
                           onClick={() => handleEditClick(t)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-[#4318FF] font-bold rounded-xl transition text-xs mx-auto"
+                          className="flex items-center justify-center w-full gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-[#4318FF] font-bold rounded-xl transition text-xs"
                         >
-                          <Edit2 className="w-3.5 h-3.5" /> تعديل الراتب
+                          <Edit2 className="w-3.5 h-3.5" /> تعديل
                         </button>
                       </td>
                     )}
@@ -286,6 +282,86 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile View */}
+        <div className="block lg:hidden divide-y divide-slate-50">
+          {filtered.map((t) => {
+            const payout = calculatePayout(t);
+            const isPaid = paidStatus[t.id] || false;
+            const profile = t.therapistProfile;
+
+            return (
+              <div key={t.id} className="p-4 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {t.avatar ? (
+                      <img src={encodeURI(decodeURI(t.avatar))} alt={t.name} className="w-10 h-10 rounded-full object-cover shadow-sm border border-slate-200" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-sm border border-indigo-100">
+                        {t.name.charAt(0)}
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-bold text-[#2B3674] text-sm">{t.name}</p>
+                      <p className="text-[11px] text-slate-400 font-medium">{t.email}</p>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => !isReadOnly && handleMarkAsPaid(t.id)}
+                    disabled={isReadOnly}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                      isPaid
+                        ? "bg-emerald-500 text-white shadow-sm"
+                        : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                    } transition`}
+                  >
+                    {isPaid ? <><Check className="w-3 h-3" /> تم الدفع</> : "قيد الانتظار"}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                  <div>
+                    <p className="text-[10px] text-slate-500 font-bold mb-0.5">المرتب الشهري</p>
+                    <p className="font-bold text-slate-900 text-sm">{profile?.salary || 0} ج.م</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-500 font-bold mb-0.5">إجمالي المستحقات</p>
+                    <p className="font-black text-emerald-600 text-sm">{payout.toLocaleString("ar-EG")} ج.م</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-500 font-bold mb-0.5">جلسات الشهر</p>
+                    <p className="font-semibold text-slate-600 text-xs">{t.completedSessionsCount} جلسات</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-500 font-bold mb-0.5">الدفع</p>
+                    {profile?.paymentMethod ? (
+                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                        profile.paymentMethod === "VODAFONE_CASH" ? "bg-rose-50 text-rose-700" :
+                        profile.paymentMethod === "INSTAPAY" ? "bg-cyan-50 text-cyan-700" :
+                        profile.paymentMethod === "BANK_TRANSFER" ? "bg-blue-50 text-blue-700" :
+                        "bg-slate-200 text-slate-700"
+                      }`}>
+                        {profile.paymentMethod === "VODAFONE_CASH" ? "فودافون كاش" :
+                         profile.paymentMethod === "INSTAPAY" ? "إنستاباي" :
+                         profile.paymentMethod === "BANK_TRANSFER" ? "بنكي" : "أخرى"}
+                      </span>
+                    ) : <span className="text-[10px] text-slate-400">—</span>}
+                  </div>
+                </div>
+
+                {!isReadOnly && (
+                  <button
+                    onClick={() => handleEditClick(t)}
+                    className="flex items-center justify-center w-full gap-1.5 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-[#4318FF] font-bold rounded-xl transition text-xs border border-indigo-100"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" /> تعديل تفاصيل الراتب
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 

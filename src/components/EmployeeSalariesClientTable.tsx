@@ -163,7 +163,8 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
       </div>
 
       <div className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
+        {/* Desktop View */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-sm text-right">
             <thead className="bg-slate-50 text-slate-500 font-bold uppercase tracking-wide text-xs">
               <tr>
@@ -185,7 +186,7 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                       <p className="text-xs text-slate-500">{employee.email}</p>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold border border-indigo-100">
+                      <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold border border-indigo-100 inline-block">
                         {getRoleLabel(employee.role)}
                       </span>
                     </td>
@@ -237,7 +238,7 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                           setSelectedEmployee(employee);
                           setShowBonusModal(true);
                         }}
-                        className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition inline-flex items-center gap-1"
+                        className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition inline-flex items-center gap-1 whitespace-nowrap"
                       >
                         <Plus size={14} /> إضافة عمولة
                       </button>
@@ -247,6 +248,76 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile View */}
+        <div className="block lg:hidden divide-y divide-slate-100">
+          {employees.map((employee) => {
+            const empBonusesTotal = employee.employeeBonuses.reduce((acc, b) => acc + b.amount, 0);
+            return (
+              <div key={employee.id} className="p-4 space-y-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-bold text-slate-900 text-base">{employee.name}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{employee.email}</p>
+                  </div>
+                  <span className="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md text-xs font-bold border border-indigo-100 text-center">
+                    {getRoleLabel(employee.role)}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                  <div>
+                    <p className="text-[10px] text-slate-500 font-bold mb-1">الراتب الأساسي</p>
+                    {editingBaseSalary === employee.id ? (
+                        <div className="flex flex-col gap-2">
+                          <input
+                            type="number"
+                            value={baseSalaryInput}
+                            onChange={(e) => setBaseSalaryInput(e.target.value)}
+                            className="w-full border border-slate-300 rounded p-1.5 text-sm"
+                          />
+                          <div className="flex gap-2">
+                            <button onClick={() => updateBaseSalary(employee.id)} disabled={loading} className="flex-1 bg-emerald-600 text-white px-2 py-1.5 rounded-md text-xs font-bold">حفظ</button>
+                            <button onClick={() => setEditingBaseSalary(null)} className="flex-1 bg-slate-200 text-slate-700 px-2 py-1.5 rounded-md text-xs font-bold">إلغاء</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-slate-900 text-sm">{employee.baseSalary} ج.م</span>
+                          <button
+                            onClick={() => {
+                              setEditingBaseSalary(employee.id);
+                              setBaseSalaryInput(employee.baseSalary.toString());
+                            }}
+                            className="text-indigo-600 hover:text-indigo-800 text-[11px] underline font-medium"
+                          >
+                            تعديل
+                          </button>
+                        </div>
+                      )}
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-500 font-bold mb-1">عمولات الشهر</p>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-orange-600 text-sm">{empBonusesTotal} ج.م</span>
+                      <span className="text-[10px] text-slate-400">({employee.employeeBonuses.length} عمليات)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setSelectedEmployee(employee);
+                    setShowBonusModal(true);
+                  }}
+                  className="w-full bg-indigo-50 text-indigo-600 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-100 transition flex items-center justify-center gap-2 border border-indigo-100"
+                >
+                  <Plus size={16} /> إضافة عمولة أو خصم
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 
