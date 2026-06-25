@@ -589,29 +589,46 @@ export function DashboardLayout({
             </div>
             
             {/* User Avatar */}
-            <Link 
-              href={role === "PATIENT" ? "/patient/profile" : role === "THERAPIST" ? "/therapist/profile" : "/admin/profile"}
-              className="flex items-center gap-3 pl-2 border-r border-slate-100 mr-2 pr-4 cursor-pointer hover:opacity-80 transition-opacity"
-            >
-              <div className="flex flex-col items-end">
-                <span className="text-sm font-bold text-[#2B3674]">{userName}</span>
-                <span className="text-xs font-semibold text-slate-400">{getRoleLabel(role)}</span>
-                {role === "ADMIN_VIEWER" && (
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full border border-amber-200">عرض فقط</span>
+            <div className="relative group">
+              <div className="flex items-center gap-3 pl-2 border-r border-slate-100 mr-2 pr-4 cursor-pointer hover:opacity-80 transition-opacity">
+                <div className="flex flex-col items-end">
+                  <span className="text-sm font-bold text-[#2B3674]">{userName}</span>
+                  <span className="text-xs font-semibold text-slate-400">{getRoleLabel(role)}</span>
+                  {role === "ADMIN_VIEWER" && (
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full border border-amber-200">عرض فقط</span>
+                  )}
+                </div>
+                {userAvatar ? (
+                    <img 
+                      src={encodeURI(decodeURI(userAvatar))} 
+                      alt="Profile" 
+                      className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm"
+                    />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-500/20">
+                    {userInitials}
+                  </div>
                 )}
               </div>
-              {userAvatar ? (
-                  <img 
-                    src={encodeURI(decodeURI(userAvatar))} 
-                    alt="Profile" 
-                    className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm"
-                  />
-              ) : (
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-500/20">
-                  {userInitials}
-                </div>
-              )}
-            </Link>
+
+              {/* Dropdown Menu */}
+              <div className="absolute left-0 mt-2 top-full w-48 bg-white border border-slate-100 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
+                <Link 
+                  href={role === "PATIENT" ? "/patient/profile" : role === "THERAPIST" ? "/therapist/profile" : "/admin/profile"}
+                  className="flex items-center gap-2 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors border-b border-slate-50"
+                >
+                  <UserIcon className="w-4 h-4" />
+                  الملف الشخصي
+                </Link>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  className="w-full flex items-center gap-2 px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 hover:text-rose-600 transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                  تسجيل خروج
+                </button>
+              </div>
+            </div>
           </div>
         </header>
 
