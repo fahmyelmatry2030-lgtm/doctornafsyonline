@@ -171,7 +171,8 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                 <th className="px-6 py-4">اسم الموظف</th>
                 <th className="px-6 py-4">الوظيفة</th>
                 <th className="px-6 py-4">الراتب الأساسي</th>
-                <th className="px-6 py-4">عمولات الشهر</th>
+                <th className="px-6 py-4">العمولات/الخصومات</th>
+                <th className="px-6 py-4">الإجمالي النهائي</th>
                 <th className="px-6 py-4 text-center">الإجراءات</th>
               </tr>
             </thead>
@@ -229,8 +230,13 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="font-bold text-orange-600">{empBonusesTotal} ج.م</span>
+                      <span className={`font-bold ${empBonusesTotal >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                        {empBonusesTotal >= 0 ? '+' : ''}{empBonusesTotal} ج.م
+                      </span>
                       <p className="text-xs text-slate-500 mt-1">({employee.employeeBonuses.length} عمليات)</p>
+                    </td>
+                    <td className="px-6 py-4 font-black text-indigo-700 text-base">
+                      {employee.baseSalary + empBonusesTotal} ج.م
                     </td>
                     <td className="px-6 py-4 text-center">
                       <button
@@ -238,9 +244,9 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                           setSelectedEmployee(employee);
                           setShowBonusModal(true);
                         }}
-                        className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition inline-flex items-center gap-1 whitespace-nowrap"
+                        className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition inline-flex items-center gap-1 whitespace-nowrap border border-indigo-100"
                       >
-                        <Plus size={14} /> إضافة عمولة
+                        <Plus size={14} /> مكافأة / خصم
                       </button>
                     </td>
                   </tr>
@@ -267,6 +273,10 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                  <div className="col-span-2 flex justify-between items-center bg-indigo-50/50 p-2 rounded-lg border border-indigo-50">
+                    <p className="text-xs text-indigo-900 font-bold">الإجمالي النهائي للقبض</p>
+                    <p className="font-black text-indigo-700 text-base">{employee.baseSalary + empBonusesTotal} ج.م</p>
+                  </div>
                   <div>
                     <p className="text-[10px] text-slate-500 font-bold mb-1">الراتب الأساسي</p>
                     {editingBaseSalary === employee.id ? (
@@ -298,9 +308,11 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                       )}
                   </div>
                   <div>
-                    <p className="text-[10px] text-slate-500 font-bold mb-1">عمولات الشهر</p>
+                    <p className="text-[10px] text-slate-500 font-bold mb-1">المكافآت والخصومات</p>
                     <div className="flex flex-col">
-                      <span className="font-bold text-orange-600 text-sm">{empBonusesTotal} ج.م</span>
+                      <span className={`font-bold text-sm ${empBonusesTotal >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                        {empBonusesTotal >= 0 ? '+' : ''}{empBonusesTotal} ج.م
+                      </span>
                       <span className="text-[10px] text-slate-400">({employee.employeeBonuses.length} عمليات)</span>
                     </div>
                   </div>
