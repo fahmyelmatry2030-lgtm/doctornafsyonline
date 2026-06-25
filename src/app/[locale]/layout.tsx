@@ -20,10 +20,48 @@ const tajawal = Tajawal({
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
-  const name = settings?.platformName || "نَفسي";
+  const name = settings?.platformName || "دكتور نفسي اونلاين";
+  const description = "تواصل مع أخصائيين نفسيين معتمدين. أفضل دكتور نفسي اونلاين للحصول على جلسات فيديو وصوت ومحادثة نصية آمنة وبسرية تامة.";
+  
   return {
-    title: `${name} — منصة العلاج النفسي أونلاين`,
-    description: "تواصل مع أخصائيين نفسيين معتمدين. جلسات فيديو وصوت ومحادثة نصية آمنة داخل المنصة.",
+    title: {
+      default: `${name} — منصة العلاج النفسي أونلاين`,
+      template: `%s | ${name}`
+    },
+    description,
+    keywords: ["دكتور نفسي اونلاين", "طبيب نفسي اونلاين", "استشارة نفسية", "علاج نفسي", "أفضل دكتور نفسي", "دكتور نفسي ممتاز", "علاج الاكتئاب اونلاين", name],
+    authors: [{ name }],
+    creator: name,
+    publisher: name,
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    openGraph: {
+      title: `${name} — العلاج النفسي صار أسهل`,
+      description,
+      url: 'https://doctornafsyonline.com',
+      siteName: name,
+      locale: 'ar_EG',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: name,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
     manifest: "/manifest.json",
     icons: {
       icon: "/logo.png?v=3",
