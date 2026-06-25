@@ -49,6 +49,14 @@ export default async function AdminSalariesPage() {
             id: true,
           },
         },
+        employeeBonuses: {
+          where: {
+            createdAt: {
+              gte: startOfMonth,
+              lte: endOfMonth,
+            },
+          },
+        },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -87,6 +95,7 @@ export default async function AdminSalariesPage() {
     avatar: t.avatar,
     completedSessionsCount: t.therapistAppointments.length,
     therapistProfile: t.therapistProfile,
+    employeeBonuses: t.employeeBonuses || [],
   }));
 
   return (

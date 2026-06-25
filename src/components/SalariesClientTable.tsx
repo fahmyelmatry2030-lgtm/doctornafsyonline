@@ -17,6 +17,12 @@ type TherapistForSalary = {
     paymentMethod: string;
     paymentDetails: string;
   } | null;
+  employeeBonuses: {
+    id: string;
+    amount: number;
+    reason: string;
+    createdAt: string;
+  }[];
 };
 
 type Props = {
@@ -41,6 +47,65 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
   // Success indicator for inline actions
   const [paidStatus, setPaidStatus] = useState<Record<string, boolean>>({});
 
+  // Bonus Modal State
+  const [showBonusModal, setShowBonusModal] = useState(false);
+  const [bonusAmount, setBonusAmount] = useState("");
+  const [bonusReason, setBonusReason] = useState("");
+
+  const addBonus = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedTherapist || !bonusAmount) return;
+    
+    try {
+      setUpdating(true);
+      const res = await fetch("/api/admin/employee-salaries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "ADD_BONUS",
+          userId: selectedTherapist.id,
+          amount: parseInt(bonusAmount, 10),
+          reason: bonusReason,
+        }),
+      });
+      
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        alert("فشل إضافة الساعة الإضافية / المالية");
+      }
+    } catch (err) {
+      alert("حدث خطأ");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const deleteBonus = async (bonusId: string) => {
+    if (!confirm("هل أنت متأكد من حذف هذه العملية؟")) return;
+    try {
+      setUpdating(true);
+      const res = await fetch("/api/admin/employee-salaries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "DELETE_BONUS",
+          bonusId,
+        }),
+      });
+      
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        alert("فشل الحذف");
+      }
+    } catch (err) {
+      alert("حدث خطأ");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   // Filter therapists
   const filtered = therapists.filter(
     (t) =>
@@ -51,8 +116,9 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
   // Calculate calculated payout for a therapist
   const calculatePayout = (t: TherapistForSalary) => {
     const profile = t.therapistProfile;
-    if (!profile) return 0;
-    return profile.salary;
+    const base = profile ? profile.salary : 0;
+    const bonuses = t.employeeBonuses?.reduce((sum, b) => sum + b.amount, 0) || 0;
+    return base + bonuses;
   };
 
   // Stats
@@ -192,6 +258,7 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                 <th className="px-6 py-4 font-bold">الأخصائي</th>
                 <th className="px-6 py-4 font-bold">المرتب الشهري</th>
                 <th className="px-6 py-4 font-bold">جلسات هذا الشهر</th>
+                <th className="px-6 py-4 font-bold">إضافي/خصم</th>
                 <th className="px-6 py-4 font-bold">إجمالي المستحقات</th>
                 <th className="px-6 py-4 font-bold">طريقة الدفع</th>
                 <th className="px-6 py-4 font-bold">الحالة</th>
@@ -226,6 +293,11 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                     </td>
                     <td className="px-6 py-4 font-semibold text-slate-600">
                       {t.completedSessionsCount} جلسات مكتملة
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`font-bold ${t.employeeBonuses.reduce((acc, b) => acc + b.amount, 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                        {t.employeeBonuses.reduce((acc, b) => acc + b.amount, 0) >= 0 ? '+' : ''}{t.employeeBonuses.reduce((acc, b) => acc + b.amount, 0)} ج.م
+                      </span>
                     </td>
                     <td className="px-6 py-4 text-emerald-600 font-black text-base">
                       {payout.toLocaleString("ar-EG")} ج.م
@@ -274,12 +346,24 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                     </td>
                     {!isReadOnly && (
                       <td className="px-6 py-4 text-center">
-                        <button
-                          onClick={() => handleEditClick(t)}
-                          className="flex items-center justify-center w-full gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-[#4318FF] font-bold rounded-xl transition text-xs"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" /> تعديل
-                        </button>
+                        <div className="flex flex-col gap-2 w-max mx-auto">
+                          <button
+                            onClick={() => handleEditClick(t)}
+                            className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-[#4318FF] font-bold rounded-xl transition text-xs"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" /> تعديل الراتب
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedTherapist(t);
+                              setBonusReason("ساعة إضافية");
+                              setShowBonusModal(true);
+                            }}
+                            className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-bold rounded-xl transition text-xs"
+                          >
+                            <DollarSign className="w-3.5 h-3.5" /> مالية/إضافي
+                          </button>
+                        </div>
                       </td>
                     )}
                   </tr>
@@ -357,12 +441,24 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                 </div>
 
                 {!isReadOnly && (
-                  <button
-                    onClick={() => handleEditClick(t)}
-                    className="flex items-center justify-center w-full gap-1.5 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-[#4318FF] font-bold rounded-xl transition text-xs border border-indigo-100"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" /> تعديل تفاصيل الراتب
-                  </button>
+                  <div className="flex flex-col gap-2 mt-2">
+                    <button
+                      onClick={() => handleEditClick(t)}
+                      className="flex items-center justify-center w-full gap-1.5 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-[#4318FF] font-bold rounded-xl transition text-xs border border-indigo-100"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" /> تعديل الراتب
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedTherapist(t);
+                        setBonusReason("ساعة إضافية");
+                        setShowBonusModal(true);
+                      }}
+                      className="flex items-center justify-center w-full gap-1.5 px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-bold rounded-xl transition text-xs border border-emerald-100"
+                    >
+                      <DollarSign className="w-3.5 h-3.5" /> إضافة ساعة/مالية
+                    </button>
+                  </div>
                 )}
               </div>
             );
@@ -423,23 +519,110 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
               </div>
             </div>
 
-            <div className="flex gap-3 justify-end pt-2">
+              <div className="flex gap-3 justify-end pt-2">
+                <button
+                  onClick={() => {
+                    setShowEditModal(false);
+                    setSelectedTherapist(null);
+                  }}
+                  disabled={updating}
+                  className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl transition text-sm font-bold disabled:opacity-50"
+                >
+                  إلغاء
+                </button>
+                <button
+                  onClick={handleSaveSalary}
+                  disabled={updating}
+                  className="px-5 py-2.5 bg-[#4318FF] hover:bg-[#2B12D3] text-white rounded-2xl transition text-sm font-bold disabled:opacity-50 shadow-md shadow-indigo-500/10 flex items-center gap-1.5"
+                >
+                  {updating ? "جاري الحفظ..." : "حفظ التغييرات"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bonus Modal */}
+      {showBonusModal && selectedTherapist && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+            <div className="p-6 border-b">
+              <h3 className="text-xl font-bold">إضافة ساعة إضافية / خصم</h3>
+              <p className="text-sm text-slate-500 mt-1">للأخصائي: {selectedTherapist.name}</p>
+            </div>
+            <div className="p-6 overflow-y-auto flex-1 space-y-6">
+              
+              <form onSubmit={addBonus} className="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <div>
+                  <label className="block text-sm font-bold mb-1">المبلغ (ج.م)</label>
+                  <input
+                    type="number"
+                    required
+                    value={bonusAmount}
+                    onChange={(e) => setBonusAmount(e.target.value)}
+                    className="w-full border p-2 rounded-lg"
+                    placeholder="مثال: 50"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">يمكنك إدخال قيمة سالبة (-) للخصومات</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1">السبب</label>
+                  <input
+                    type="text"
+                    required
+                    value={bonusReason}
+                    onChange={(e) => setBonusReason(e.target.value)}
+                    className="w-full border p-2 rounded-lg"
+                    placeholder="مثال: ساعة إضافية"
+                  />
+                </div>
+                <button
+                  disabled={updating}
+                  type="submit"
+                  className="w-full bg-emerald-600 text-white font-bold py-2 rounded-lg hover:bg-emerald-700"
+                >
+                  إضافة
+                </button>
+              </form>
+
+              <div>
+                <h4 className="font-bold mb-3 border-b pb-2">سجل الساعات الإضافية هذا الشهر</h4>
+                {selectedTherapist.employeeBonuses.length === 0 ? (
+                  <p className="text-slate-500 text-sm">لا توجد عمليات مالية مسجلة</p>
+                ) : (
+                  <div className="space-y-2">
+                    {selectedTherapist.employeeBonuses.map(bonus => (
+                      <div key={bonus.id} className="flex items-center justify-between p-3 bg-white border rounded-lg">
+                        <div>
+                          <p className="font-bold text-sm">{bonus.reason}</p>
+                          <p className="text-xs text-slate-400">{new Date(bonus.createdAt).toLocaleString("ar-EG")}</p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className={`font-bold ${bonus.amount >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                            {bonus.amount >= 0 ? "+" : ""}{bonus.amount} ج.م
+                          </span>
+                          <button
+                            onClick={() => deleteBonus(bonus.id)}
+                            disabled={updating}
+                            className="text-red-500 hover:text-red-700 p-1 font-bold text-xs bg-red-50 rounded px-2"
+                          >
+                            حذف
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+            </div>
+            <div className="p-4 border-t bg-slate-50 text-left">
               <button
-                onClick={() => {
-                  setShowEditModal(false);
-                  setSelectedTherapist(null);
-                }}
-                disabled={updating}
-                className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl transition text-sm font-bold disabled:opacity-50"
+                onClick={() => setShowBonusModal(false)}
+                className="px-4 py-2 bg-white border border-slate-300 rounded-xl text-slate-700 font-bold hover:bg-slate-100"
               >
-                إلغاء
-              </button>
-              <button
-                onClick={handleSaveSalary}
-                disabled={updating}
-                className="px-5 py-2.5 bg-[#4318FF] hover:bg-[#2B12D3] text-white rounded-2xl transition text-sm font-bold disabled:opacity-50 shadow-md shadow-indigo-500/10 flex items-center gap-1.5"
-              >
-                {updating ? "جاري الحفظ..." : "حفظ التغييرات"}
+                إغلاق
               </button>
             </div>
           </div>
