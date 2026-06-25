@@ -1,3 +1,0 @@
-module.exports=[709570,a=>{"use strict";var b=a.i(585275);a.s([],816099),a.i(816099),a.s(["000caf2239025dd341d8146d41b79ba9aa337f080b",()=>b.getSettings,"00efe5034d1fb5ae45593b71fd0e87565ccbf08a86",()=>b.getWebsiteContent,"40820686278d7b84bccc56e314d408ce943e55dc49",()=>b.updateSettings,"40a9bc409e2201b8f1a87c1e7d142d3683492a337e",()=>b.updateWebsiteContent],709570)}];
-
-//# sourceMappingURL=_next-internal_server_app_%5Blocale%5D_patient_appointments_page_actions_1sz5e4k.js.map
