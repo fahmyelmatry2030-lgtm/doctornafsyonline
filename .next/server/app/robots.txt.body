@@ -1,0 +1,8 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /therapist/
+Disallow: /patient/
+
+Sitemap: https://doctornafsyonline.com/sitemap.xml
