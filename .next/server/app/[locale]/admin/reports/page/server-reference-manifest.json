@@ -1,0 +1,77 @@
+{
+  "node": {
+    "0020b8c8526c50ae8848b4c7414e1c5fe12eb6c280": {
+      "workers": {
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getSettings",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "00e8f8d499616c05cdcb382c37b344e481bc72f143": {
+      "workers": {
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getWebsiteContent",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "40f641790f2dfb8406f3b584b3a2ad3ef8aaf494d0": {
+      "workers": {
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateWebsiteContent",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "40f67d8801e7eee62b97df7b4239d17050ceaca019": {
+      "workers": {
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateSettings",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "60a2f77a0308756f3d6099b5fe3e7b8cb57c47a39f": {
+      "workers": {
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "updateAppointmentStatus",
+          "filename": "src/app/[locale]/admin/operations/actions.ts"
+        }
+      },
+      "exportedName": "updateAppointmentStatus",
+      "filename": "src/app/[locale]/admin/operations/actions.ts"
+    },
+    "40ed87f9570906780458661b270c25b8ac6a723345": {
+      "workers": {
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "rejectAppointmentPayment",
+          "filename": "src/app/[locale]/admin/operations/actions.ts"
+        }
+      },
+      "exportedName": "rejectAppointmentPayment",
+      "filename": "src/app/[locale]/admin/operations/actions.ts"
+    }
+  },
+  "edge": {}
+}

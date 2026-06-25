@@ -1,0 +1,1794 @@
+{
+  "node": {
+    "0020b8c8526c50ae8848b4c7414e1c5fe12eb6c280": {
+      "workers": {
+        "app/[locale]/about/page": {
+          "moduleId": 622880,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/certificates/page": {
+          "moduleId": 839128,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/content/page": {
+          "moduleId": 239317,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/customer-service/page": {
+          "moduleId": 143320,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/dashboard/page": {
+          "moduleId": 752425,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/employee-salaries/page": {
+          "moduleId": 654419,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/badge/[id]/page": {
+          "moduleId": 580229,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/page": {
+          "moduleId": 701405,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/staff-ids/page": {
+          "moduleId": 790405,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/marketing/page": {
+          "moduleId": 30369,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/my-salary/page": {
+          "moduleId": 671148,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/operations/page": {
+          "moduleId": 434166,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/page": {
+          "moduleId": 14732,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/patients/page": {
+          "moduleId": 918649,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/profile/page": {
+          "moduleId": 159093,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/salaries/page": {
+          "moduleId": 985100,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/settings/page": {
+          "moduleId": 31063,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/diagnose/page": {
+          "moduleId": 652660,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/setup/page": {
+          "moduleId": 317668,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/therapists/badge/[id]/page": {
+          "moduleId": 477750,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/therapists/page": {
+          "moduleId": 519861,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/blog/[slug]/page": {
+          "moduleId": 764471,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/blog/page": {
+          "moduleId": 652243,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/contact/page": {
+          "moduleId": 468397,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/dashboard/page": {
+          "moduleId": 112075,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/faq/page": {
+          "moduleId": 743708,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/forgot-password/page": {
+          "moduleId": 813150,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/how-it-works/page": {
+          "moduleId": 661232,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/login/page": {
+          "moduleId": 771803,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/maintenance/page": {
+          "moduleId": 692426,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/page": {
+          "moduleId": 485641,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/appointments/page": {
+          "moduleId": 709570,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/billing/page": {
+          "moduleId": 957570,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/dashboard/page": {
+          "moduleId": 702210,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/messages/page": {
+          "moduleId": 533377,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/notifications/page": {
+          "moduleId": 914477,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/profile/page": {
+          "moduleId": 771003,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/reviews/page": {
+          "moduleId": 303386,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/privacy/page": {
+          "moduleId": 492936,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/register/page": {
+          "moduleId": 290578,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/reset-password/page": {
+          "moduleId": 253484,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/services/page": {
+          "moduleId": 722958,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/session/[id]/page": {
+          "moduleId": 362652,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/shift-leader/page": {
+          "moduleId": 779964,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/terms/page": {
+          "moduleId": 134327,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/dashboard/page": {
+          "moduleId": 376714,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/earnings/page": {
+          "moduleId": 256371,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/messages/page": {
+          "moduleId": 110423,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/notifications/page": {
+          "moduleId": 575775,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/onboarding/page": {
+          "moduleId": 944710,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/patients/page": {
+          "moduleId": 316754,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/profile/page": {
+          "moduleId": 60841,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/schedule/page": {
+          "moduleId": 668958,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/settings/page": {
+          "moduleId": 141012,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapists/[id]/page": {
+          "moduleId": 931089,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapists/page": {
+          "moduleId": 955515,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/verify-certificate/page": {
+          "moduleId": 395747,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/verify-staff/page": {
+          "moduleId": 892258,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/settings/actions.ts",
+      "exportedName": "getSettings"
+    },
+    "00e8f8d499616c05cdcb382c37b344e481bc72f143": {
+      "workers": {
+        "app/[locale]/about/page": {
+          "moduleId": 622880,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/certificates/page": {
+          "moduleId": 839128,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/content/page": {
+          "moduleId": 239317,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/customer-service/page": {
+          "moduleId": 143320,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/dashboard/page": {
+          "moduleId": 752425,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/employee-salaries/page": {
+          "moduleId": 654419,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/badge/[id]/page": {
+          "moduleId": 580229,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/page": {
+          "moduleId": 701405,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/staff-ids/page": {
+          "moduleId": 790405,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/marketing/page": {
+          "moduleId": 30369,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/my-salary/page": {
+          "moduleId": 671148,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/operations/page": {
+          "moduleId": 434166,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/page": {
+          "moduleId": 14732,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/patients/page": {
+          "moduleId": 918649,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/profile/page": {
+          "moduleId": 159093,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/salaries/page": {
+          "moduleId": 985100,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/settings/page": {
+          "moduleId": 31063,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/diagnose/page": {
+          "moduleId": 652660,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/setup/page": {
+          "moduleId": 317668,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/therapists/badge/[id]/page": {
+          "moduleId": 477750,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/therapists/page": {
+          "moduleId": 519861,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/blog/[slug]/page": {
+          "moduleId": 764471,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/blog/page": {
+          "moduleId": 652243,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/contact/page": {
+          "moduleId": 468397,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/dashboard/page": {
+          "moduleId": 112075,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/faq/page": {
+          "moduleId": 743708,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/forgot-password/page": {
+          "moduleId": 813150,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/how-it-works/page": {
+          "moduleId": 661232,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/login/page": {
+          "moduleId": 771803,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/maintenance/page": {
+          "moduleId": 692426,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/page": {
+          "moduleId": 485641,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/appointments/page": {
+          "moduleId": 709570,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/billing/page": {
+          "moduleId": 957570,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/dashboard/page": {
+          "moduleId": 702210,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/messages/page": {
+          "moduleId": 533377,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/notifications/page": {
+          "moduleId": 914477,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/profile/page": {
+          "moduleId": 771003,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/reviews/page": {
+          "moduleId": 303386,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/privacy/page": {
+          "moduleId": 492936,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/register/page": {
+          "moduleId": 290578,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/reset-password/page": {
+          "moduleId": 253484,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/services/page": {
+          "moduleId": 722958,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/session/[id]/page": {
+          "moduleId": 362652,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/shift-leader/page": {
+          "moduleId": 779964,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/terms/page": {
+          "moduleId": 134327,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/dashboard/page": {
+          "moduleId": 376714,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/earnings/page": {
+          "moduleId": 256371,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/messages/page": {
+          "moduleId": 110423,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/notifications/page": {
+          "moduleId": 575775,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/onboarding/page": {
+          "moduleId": 944710,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/patients/page": {
+          "moduleId": 316754,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/profile/page": {
+          "moduleId": 60841,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/schedule/page": {
+          "moduleId": 668958,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/settings/page": {
+          "moduleId": 141012,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapists/[id]/page": {
+          "moduleId": 931089,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapists/page": {
+          "moduleId": 955515,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/verify-certificate/page": {
+          "moduleId": 395747,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/verify-staff/page": {
+          "moduleId": 892258,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/settings/actions.ts",
+      "exportedName": "getWebsiteContent"
+    },
+    "40f641790f2dfb8406f3b584b3a2ad3ef8aaf494d0": {
+      "workers": {
+        "app/[locale]/about/page": {
+          "moduleId": 622880,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/certificates/page": {
+          "moduleId": 839128,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/content/page": {
+          "moduleId": 239317,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/customer-service/page": {
+          "moduleId": 143320,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/dashboard/page": {
+          "moduleId": 752425,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/employee-salaries/page": {
+          "moduleId": 654419,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/badge/[id]/page": {
+          "moduleId": 580229,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/page": {
+          "moduleId": 701405,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/staff-ids/page": {
+          "moduleId": 790405,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/marketing/page": {
+          "moduleId": 30369,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/my-salary/page": {
+          "moduleId": 671148,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/operations/page": {
+          "moduleId": 434166,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/page": {
+          "moduleId": 14732,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/patients/page": {
+          "moduleId": 918649,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/profile/page": {
+          "moduleId": 159093,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/salaries/page": {
+          "moduleId": 985100,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/settings/page": {
+          "moduleId": 31063,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/diagnose/page": {
+          "moduleId": 652660,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/setup/page": {
+          "moduleId": 317668,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/therapists/badge/[id]/page": {
+          "moduleId": 477750,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/therapists/page": {
+          "moduleId": 519861,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/blog/[slug]/page": {
+          "moduleId": 764471,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/blog/page": {
+          "moduleId": 652243,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/contact/page": {
+          "moduleId": 468397,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/dashboard/page": {
+          "moduleId": 112075,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/faq/page": {
+          "moduleId": 743708,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/forgot-password/page": {
+          "moduleId": 813150,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/how-it-works/page": {
+          "moduleId": 661232,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/login/page": {
+          "moduleId": 771803,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/maintenance/page": {
+          "moduleId": 692426,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/page": {
+          "moduleId": 485641,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/appointments/page": {
+          "moduleId": 709570,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/billing/page": {
+          "moduleId": 957570,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/dashboard/page": {
+          "moduleId": 702210,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/messages/page": {
+          "moduleId": 533377,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/notifications/page": {
+          "moduleId": 914477,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/profile/page": {
+          "moduleId": 771003,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/reviews/page": {
+          "moduleId": 303386,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/privacy/page": {
+          "moduleId": 492936,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/register/page": {
+          "moduleId": 290578,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/reset-password/page": {
+          "moduleId": 253484,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/services/page": {
+          "moduleId": 722958,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/session/[id]/page": {
+          "moduleId": 362652,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/shift-leader/page": {
+          "moduleId": 779964,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/terms/page": {
+          "moduleId": 134327,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/dashboard/page": {
+          "moduleId": 376714,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/earnings/page": {
+          "moduleId": 256371,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/messages/page": {
+          "moduleId": 110423,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/notifications/page": {
+          "moduleId": 575775,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/onboarding/page": {
+          "moduleId": 944710,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/patients/page": {
+          "moduleId": 316754,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/profile/page": {
+          "moduleId": 60841,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/schedule/page": {
+          "moduleId": 668958,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/settings/page": {
+          "moduleId": 141012,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapists/[id]/page": {
+          "moduleId": 931089,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapists/page": {
+          "moduleId": 955515,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/verify-certificate/page": {
+          "moduleId": 395747,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/verify-staff/page": {
+          "moduleId": 892258,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/settings/actions.ts",
+      "exportedName": "updateWebsiteContent"
+    },
+    "40f67d8801e7eee62b97df7b4239d17050ceaca019": {
+      "workers": {
+        "app/[locale]/about/page": {
+          "moduleId": 622880,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/certificates/page": {
+          "moduleId": 839128,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/content/page": {
+          "moduleId": 239317,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/customer-service/page": {
+          "moduleId": 143320,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/dashboard/page": {
+          "moduleId": 752425,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/employee-salaries/page": {
+          "moduleId": 654419,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/badge/[id]/page": {
+          "moduleId": 580229,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/page": {
+          "moduleId": 701405,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/managers/staff-ids/page": {
+          "moduleId": 790405,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/marketing/page": {
+          "moduleId": 30369,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/my-salary/page": {
+          "moduleId": 671148,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/operations/page": {
+          "moduleId": 434166,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/page": {
+          "moduleId": 14732,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/patients/page": {
+          "moduleId": 918649,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/profile/page": {
+          "moduleId": 159093,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/salaries/page": {
+          "moduleId": 985100,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/settings/page": {
+          "moduleId": 31063,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/diagnose/page": {
+          "moduleId": 652660,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/shift-leader/setup/page": {
+          "moduleId": 317668,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/therapists/badge/[id]/page": {
+          "moduleId": 477750,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/admin/therapists/page": {
+          "moduleId": 519861,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/blog/[slug]/page": {
+          "moduleId": 764471,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/blog/page": {
+          "moduleId": 652243,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/contact/page": {
+          "moduleId": 468397,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/dashboard/page": {
+          "moduleId": 112075,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/faq/page": {
+          "moduleId": 743708,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/forgot-password/page": {
+          "moduleId": 813150,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/how-it-works/page": {
+          "moduleId": 661232,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/login/page": {
+          "moduleId": 771803,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/maintenance/page": {
+          "moduleId": 692426,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/page": {
+          "moduleId": 485641,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/appointments/page": {
+          "moduleId": 709570,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/billing/page": {
+          "moduleId": 957570,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/dashboard/page": {
+          "moduleId": 702210,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/messages/page": {
+          "moduleId": 533377,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/notifications/page": {
+          "moduleId": 914477,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/profile/page": {
+          "moduleId": 771003,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/patient/reviews/page": {
+          "moduleId": 303386,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/privacy/page": {
+          "moduleId": 492936,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/register/page": {
+          "moduleId": 290578,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/reset-password/page": {
+          "moduleId": 253484,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/services/page": {
+          "moduleId": 722958,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/session/[id]/page": {
+          "moduleId": 362652,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/shift-leader/page": {
+          "moduleId": 779964,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/terms/page": {
+          "moduleId": 134327,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/dashboard/page": {
+          "moduleId": 376714,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/earnings/page": {
+          "moduleId": 256371,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/messages/page": {
+          "moduleId": 110423,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/notifications/page": {
+          "moduleId": 575775,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/onboarding/page": {
+          "moduleId": 944710,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/patients/page": {
+          "moduleId": 316754,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/profile/page": {
+          "moduleId": 60841,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/schedule/page": {
+          "moduleId": 668958,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapist/settings/page": {
+          "moduleId": 141012,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapists/[id]/page": {
+          "moduleId": 931089,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/therapists/page": {
+          "moduleId": 955515,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/verify-certificate/page": {
+          "moduleId": 395747,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/verify-staff/page": {
+          "moduleId": 892258,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/settings/actions.ts",
+      "exportedName": "updateSettings"
+    },
+    "60a2f77a0308756f3d6099b5fe3e7b8cb57c47a39f": {
+      "workers": {
+        "app/[locale]/admin/operations/page": {
+          "moduleId": 434166,
+          "async": false,
+          "exportedName": "updateAppointmentStatus",
+          "filename": "src/app/[locale]/admin/operations/actions.ts"
+        },
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "updateAppointmentStatus",
+          "filename": "src/app/[locale]/admin/operations/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/operations/actions.ts",
+      "exportedName": "updateAppointmentStatus"
+    },
+    "40ed87f9570906780458661b270c25b8ac6a723345": {
+      "workers": {
+        "app/[locale]/admin/operations/page": {
+          "moduleId": 434166,
+          "async": false,
+          "exportedName": "rejectAppointmentPayment",
+          "filename": "src/app/[locale]/admin/operations/actions.ts"
+        },
+        "app/[locale]/admin/reports/page": {
+          "moduleId": 717279,
+          "async": false,
+          "exportedName": "rejectAppointmentPayment",
+          "filename": "src/app/[locale]/admin/operations/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/operations/actions.ts",
+      "exportedName": "rejectAppointmentPayment"
+    },
+    "60bbe0afa2ed02a902b49a2529b1e49eb1bd810a04": {
+      "workers": {
+        "app/[locale]/admin/operations/page": {
+          "moduleId": 434166,
+          "async": false,
+          "exportedName": "editAppointmentDetails",
+          "filename": "src/app/[locale]/admin/operations/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/operations/actions.ts",
+      "exportedName": "editAppointmentDetails"
+    },
+    "409bbb169859eec2c1eea0ab9f3ee75434f9f4b6b1": {
+      "workers": {
+        "app/[locale]/admin/patients/page": {
+          "moduleId": 918649,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_1",
+          "filename": "src/app/[locale]/admin/patients/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/admin/patients/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_1"
+    },
+    "604f72ce222afbe4ae4fe38877194d794e922914fa": {
+      "workers": {
+        "app/[locale]/admin/patients/page": {
+          "moduleId": 918649,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "src/app/[locale]/admin/patients/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/admin/patients/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_0"
+    },
+    "4073716d94b696d25b3c88057d9bf51b181f62b564": {
+      "workers": {
+        "app/[locale]/admin/profile/page": {
+          "moduleId": 159093,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_1",
+          "filename": "src/app/[locale]/admin/profile/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/admin/profile/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_1"
+    },
+    "607e2f673e38e961775fc2576c2d7b855c29d2d6f1": {
+      "workers": {
+        "app/[locale]/admin/profile/page": {
+          "moduleId": 159093,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "src/app/[locale]/admin/profile/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/admin/profile/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_0"
+    },
+    "7cb576f8e9d6a0744be6345800ea002f35c5da27c5": {
+      "workers": {
+        "app/[locale]/admin/salaries/page": {
+          "moduleId": 985100,
+          "async": false,
+          "exportedName": "updateTherapistSalary",
+          "filename": "src/app/[locale]/admin/salaries/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/salaries/actions.ts",
+      "exportedName": "updateTherapistSalary"
+    },
+    "40f8a8e9d7825a515f7dd64d97cb44a199160a4d19": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "createShift",
+          "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/shift-leader/actions.ts",
+      "exportedName": "createShift"
+    },
+    "600d5e27a432739d43b4976d954d4651d2c861f147": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "updateShift",
+          "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/shift-leader/actions.ts",
+      "exportedName": "updateShift"
+    },
+    "40afb39f5053f510c2b3cc02a56e3adad97c3a6717": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "deleteShift",
+          "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/shift-leader/actions.ts",
+      "exportedName": "deleteShift"
+    },
+    "603fa900cb142391f7b308a96525a9dfa0d38e2e5f": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "assignSpecialistToShift",
+          "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/shift-leader/actions.ts",
+      "exportedName": "assignSpecialistToShift"
+    },
+    "60eede40eb6d4178e7523b7edacfc7f2a9c0b619fb": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "removeSpecialistFromShift",
+          "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/admin/shift-leader/actions.ts",
+      "exportedName": "removeSpecialistFromShift"
+    },
+    "402cbe007007bcb118f8446760defe9b1b975f95c3": {
+      "workers": {
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_1",
+          "filename": "src/app/[locale]/admin/support/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/admin/support/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_1"
+    },
+    "70c9c0aaba43bf1360a0f43fa43ab53674243aaddd": {
+      "workers": {
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "src/app/[locale]/admin/support/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/admin/support/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_0"
+    },
+    "4051ec65a5e960be7e996c20a0b54752a4433e639a": {
+      "workers": {
+        "app/[locale]/admin/therapists/page": {
+          "moduleId": 519861,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_3",
+          "filename": "src/app/[locale]/admin/therapists/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/admin/therapists/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_3"
+    },
+    "60269882701578a06153da45608806fbda6c6311d6": {
+      "workers": {
+        "app/[locale]/admin/therapists/page": {
+          "moduleId": 519861,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "src/app/[locale]/admin/therapists/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/admin/therapists/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_0"
+    },
+    "60beed902cace81926f8ac4fe77d7860e51b73688a": {
+      "workers": {
+        "app/[locale]/admin/therapists/page": {
+          "moduleId": 519861,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_2",
+          "filename": "src/app/[locale]/admin/therapists/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/admin/therapists/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_2"
+    },
+    "709c3271c50ba42276e1da0e6a7c2906c1ea7e1544": {
+      "workers": {
+        "app/[locale]/admin/therapists/page": {
+          "moduleId": 519861,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_1",
+          "filename": "src/app/[locale]/admin/therapists/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/admin/therapists/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_1"
+    },
+    "6016d9ade74f0e1534de2b6b32bb7a537ce6ae0606": {
+      "workers": {
+        "app/[locale]/login/page": {
+          "moduleId": 771803,
+          "async": false,
+          "exportedName": "authenticate",
+          "filename": "src/app/[locale]/login/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/login/actions.ts",
+      "exportedName": "authenticate"
+    },
+    "6012e059783a55b0b12ea3914852864004f6ee63a3": {
+      "workers": {
+        "app/[locale]/patient/profile/page": {
+          "moduleId": 771003,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "src/app/[locale]/patient/profile/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/patient/profile/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_0"
+    },
+    "60a29802b3b8892ea431916100868423f5ae855871": {
+      "workers": {
+        "app/[locale]/register/page": {
+          "moduleId": 290578,
+          "async": false,
+          "exportedName": "authenticateAfterRegister",
+          "filename": "src/app/[locale]/register/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/register/actions.ts",
+      "exportedName": "authenticateAfterRegister"
+    },
+    "404b9f445da0ae27a69bdfca34caea1d1a4bb6ca7c": {
+      "workers": {
+        "app/[locale]/therapist/profile/page": {
+          "moduleId": 60841,
+          "async": false,
+          "exportedName": "updateTherapistProfile",
+          "filename": "src/app/[locale]/therapist/profile/actions.ts"
+        }
+      },
+      "filename": "src/app/[locale]/therapist/profile/actions.ts",
+      "exportedName": "updateTherapistProfile"
+    },
+    "403e97d784aa5f0a196ce1b275364a4f770bf0bc36": {
+      "workers": {
+        "app/[locale]/therapist/settings/page": {
+          "moduleId": 141012,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "src/app/[locale]/therapist/settings/page.tsx"
+        }
+      },
+      "filename": "src/app/[locale]/therapist/settings/page.tsx",
+      "exportedName": "$$RSC_SERVER_ACTION_0"
+    }
+  },
+  "edge": {},
+  "encryptionKey": "A1tOo/ghJZwE3O8qAW3AfA+7jw5iCRwshd/V6hbduR8="
+}
