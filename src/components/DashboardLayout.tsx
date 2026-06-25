@@ -374,8 +374,8 @@ export function DashboardLayout({
 
       {/* Universal Sidebar Overlay (Drawer for all screens) */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}>
-          <aside className="w-[280px] bg-[#0B1437] h-full shadow-2xl flex flex-col transform transition-transform" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}>
+          <aside className="fixed right-0 top-0 bottom-0 w-[280px] bg-[#0B1437] h-full shadow-2xl flex flex-col transform transition-transform" onClick={e => e.stopPropagation()}>
             <div className="p-6 border-b border-white/10 mt-2 flex flex-col items-center relative">
               <button 
                 onClick={() => setIsMobileMenuOpen(false)} 
