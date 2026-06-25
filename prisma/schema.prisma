@@ -40,6 +40,7 @@ model User {
   specialistCommissions Commission[] @relation("SpecialistCommissions")
   onlineStatusLogs OnlineStatusLog[]
   employeeBonuses EmployeeBonus[] @relation("EmployeeBonuses")
+  monthlySalaryRecords MonthlySalaryRecord[] @relation("MonthlySalaries")
 }
 
 model TherapistProfile {
@@ -279,4 +280,24 @@ model EmployeeBonus {
   amount    Int
   reason    String
   createdAt DateTime @default(now())
+}
+
+model MonthlySalaryRecord {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation("MonthlySalaries", fields: [userId], references: [id], onDelete: Cascade)
+  month           Int
+  year            Int
+  baseSalary      Int      @default(0)
+  totalBonuses    Int      @default(0)
+  totalDeductions Int      @default(0)
+  netSalary       Int      @default(0)
+  status          String   @default("PENDING") // PENDING, PAID, ACKNOWLEDGED
+  transferScreenshot String? @db.Text
+  receiptDocument    String? @db.Text
+  paidAt          DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([userId, month, year])
 }

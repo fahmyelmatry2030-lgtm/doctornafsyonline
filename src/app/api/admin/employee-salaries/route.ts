@@ -35,6 +35,12 @@ export async function GET(req: NextRequest) {
             }
           }
         },
+        monthlySalaryRecords: {
+          where: {
+            month: now.getMonth() + 1,
+            year: now.getFullYear()
+          }
+        }
       },
       orderBy: { createdAt: "desc" }
     });

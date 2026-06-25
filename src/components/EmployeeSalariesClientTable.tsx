@@ -10,6 +10,15 @@ interface EmployeeBonus {
   createdAt: string;
 }
 
+interface MonthlySalaryRecord {
+  id: string;
+  month: number;
+  year: number;
+  status: "PENDING" | "PAID" | "ACKNOWLEDGED";
+  transferScreenshot?: string | null;
+  receiptDocument?: string | null;
+}
+
 interface Employee {
   id: string;
   name: string;
@@ -17,6 +26,7 @@ interface Employee {
   role: string;
   baseSalary: number;
   employeeBonuses: EmployeeBonus[];
+  monthlySalaryRecords: MonthlySalaryRecord[];
 }
 
 interface Props {
@@ -46,6 +56,10 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [bonusAmount, setBonusAmount] = useState("");
   const [bonusReason, setBonusReason] = useState("");
+
+  // Payment Modal State
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
 
   const updateBaseSalary = async (employeeId: string) => {
     try {
@@ -127,12 +141,61 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
     }
   };
 
+  const finalizeSalary = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedEmployee) return;
+
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("userId", selectedEmployee.id);
+      
+      const now = new Date();
+      formData.append("month", (now.getMonth() + 1).toString());
+      formData.append("year", now.getFullYear().toString());
+      
+      const empBonusesTotal = selectedEmployee.employeeBonuses.reduce((acc, b) => acc + b.amount, 0);
+      let totalBonuses = 0;
+      let totalDeductions = 0;
+      selectedEmployee.employeeBonuses.forEach(b => {
+        if (b.amount >= 0) totalBonuses += b.amount;
+        else totalDeductions += Math.abs(b.amount);
+      });
+
+      formData.append("baseSalary", selectedEmployee.baseSalary.toString());
+      formData.append("totalBonuses", totalBonuses.toString());
+      formData.append("totalDeductions", totalDeductions.toString());
+      formData.append("netSalary", (selectedEmployee.baseSalary + empBonusesTotal).toString());
+
+      if (paymentScreenshot) {
+        formData.append("screenshot", paymentScreenshot);
+      }
+
+      const res = await fetch("/api/admin/employee-salaries/finalize", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        const data = await res.json();
+        alert(data.error || "فشل الدفع");
+      }
+    } catch (err) {
+      alert("حدث خطأ");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const totalSalaries = employees.reduce((acc, e) => acc + e.baseSalary, 0);
   const totalBonuses = employees.reduce((acc, e) => acc + e.employeeBonuses.reduce((sum, b) => sum + b.amount, 0), 0);
+  const grandTotal = totalSalaries + totalBonuses;
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-[24px] p-6 border border-slate-100 shadow-sm flex items-center gap-4">
           <div className="w-14 h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
             <User size={24} />
@@ -160,6 +223,15 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
             <p className="text-2xl font-black text-slate-900">{totalBonuses} ج.م</p>
           </div>
         </div>
+        <div className="bg-indigo-600 rounded-[24px] p-6 border border-indigo-500 shadow-md flex items-center gap-4 text-white">
+          <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center">
+            <DollarSign size={24} />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-indigo-100 mb-1">الإجمالي العام المستحق</p>
+            <p className="text-2xl font-black">{grandTotal} ج.م</p>
+          </div>
+        </div>
       </div>
 
       <div className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm">
@@ -173,12 +245,15 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                 <th className="px-6 py-4">الراتب الأساسي</th>
                 <th className="px-6 py-4">العمولات/الخصومات</th>
                 <th className="px-6 py-4">الإجمالي النهائي</th>
+                <th className="px-6 py-4">حالة الدفع</th>
                 <th className="px-6 py-4 text-center">الإجراءات</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {employees.map((employee) => {
                 const empBonusesTotal = employee.employeeBonuses.reduce((acc, b) => acc + b.amount, 0);
+                const currentMonthRecord = employee.monthlySalaryRecords?.[0];
+                const isPaid = currentMonthRecord?.status === "PAID" || currentMonthRecord?.status === "ACKNOWLEDGED";
                 
                 return (
                   <tr key={employee.id} className="hover:bg-slate-50/50 transition">
@@ -238,16 +313,40 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                     <td className="px-6 py-4 font-black text-indigo-700 text-base">
                       {employee.baseSalary + empBonusesTotal} ج.م
                     </td>
+                    <td className="px-6 py-4">
+                      {isPaid ? (
+                        <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded">تم الدفع</span>
+                      ) : (
+                        <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded">معلق</span>
+                      )}
+                    </td>
                     <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => {
-                          setSelectedEmployee(employee);
-                          setShowBonusModal(true);
-                        }}
-                        className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition inline-flex items-center gap-1 whitespace-nowrap border border-indigo-100"
-                      >
-                        <Plus size={14} /> مكافأة / خصم
-                      </button>
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => {
+                            setSelectedEmployee(employee);
+                            setShowBonusModal(true);
+                          }}
+                          className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition inline-flex items-center gap-1 border border-indigo-100"
+                        >
+                          <Plus size={14} /> إضافة مالية
+                        </button>
+                        
+                        <button
+                          onClick={() => {
+                            setSelectedEmployee(employee);
+                            setShowPaymentModal(true);
+                          }}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition inline-flex items-center gap-1 border ${
+                            isPaid 
+                              ? "bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed" 
+                              : "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100"
+                          }`}
+                          disabled={isPaid}
+                        >
+                          تسليم الراتب
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -260,6 +359,9 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
         <div className="block lg:hidden divide-y divide-slate-100">
           {employees.map((employee) => {
             const empBonusesTotal = employee.employeeBonuses.reduce((acc, b) => acc + b.amount, 0);
+            const currentMonthRecord = employee.monthlySalaryRecords?.[0];
+            const isPaid = currentMonthRecord?.status === "PAID" || currentMonthRecord?.status === "ACKNOWLEDGED";
+
             return (
               <div key={employee.id} className="p-4 space-y-4">
                 <div className="flex justify-between items-start">
@@ -318,15 +420,32 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => {
-                    setSelectedEmployee(employee);
-                    setShowBonusModal(true);
-                  }}
-                  className="w-full bg-indigo-50 text-indigo-600 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-100 transition flex items-center justify-center gap-2 border border-indigo-100"
-                >
-                  <Plus size={16} /> إضافة عمولة أو خصم
-                </button>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <button
+                    onClick={() => {
+                      setSelectedEmployee(employee);
+                      setShowBonusModal(true);
+                    }}
+                    className="w-full bg-indigo-50 text-indigo-600 px-3 py-2 rounded-xl text-sm font-bold hover:bg-indigo-100 transition flex items-center justify-center gap-1 border border-indigo-100"
+                  >
+                    <Plus size={14} /> مالية
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setSelectedEmployee(employee);
+                      setShowPaymentModal(true);
+                    }}
+                    disabled={isPaid}
+                    className={`w-full px-3 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1 border ${
+                      isPaid 
+                        ? "bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed" 
+                        : "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100"
+                    }`}
+                  >
+                    {isPaid ? "مدفوع" : "تسليم الراتب"}
+                  </button>
+                </div>
               </div>
             );
           })}
@@ -412,6 +531,71 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                 className="px-4 py-2 bg-white border border-slate-300 rounded-xl text-slate-700 font-bold hover:bg-slate-100"
               >
                 إغلاق
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Modal */}
+      {showPaymentModal && selectedEmployee && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full overflow-hidden flex flex-col shadow-2xl">
+            <div className="p-6 border-b">
+              <h3 className="text-xl font-bold">تسليم الراتب</h3>
+              <p className="text-sm text-slate-500 mt-1">للموظف: {selectedEmployee.name}</p>
+            </div>
+            <div className="p-6 overflow-y-auto">
+              <form onSubmit={finalizeSalary} className="space-y-4">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-sm font-bold text-slate-700 flex justify-between mb-2">
+                    <span>الراتب الأساسي:</span>
+                    <span>{selectedEmployee.baseSalary} ج.م</span>
+                  </p>
+                  <p className="text-sm font-bold text-slate-700 flex justify-between mb-2">
+                    <span>المكافآت والخصومات:</span>
+                    <span>{selectedEmployee.employeeBonuses.reduce((acc, b) => acc + b.amount, 0)} ج.م</span>
+                  </p>
+                  <div className="h-px bg-slate-200 my-2"></div>
+                  <p className="text-lg font-black text-indigo-700 flex justify-between">
+                    <span>الإجمالي المستحق:</span>
+                    <span>{selectedEmployee.baseSalary + selectedEmployee.employeeBonuses.reduce((acc, b) => acc + b.amount, 0)} ج.م</span>
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold mb-1">صورة إيصال التحويل (اختياري)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setPaymentScreenshot(e.target.files[0]);
+                      }
+                    }}
+                    className="w-full border p-2 rounded-lg text-sm"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">سيتمكن الموظف من رؤية الإيصال في صفحته الشخصية.</p>
+                </div>
+
+                <button
+                  disabled={loading}
+                  type="submit"
+                  className="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl hover:bg-emerald-700 transition"
+                >
+                  تأكيد الدفع
+                </button>
+              </form>
+            </div>
+            <div className="p-4 border-t bg-slate-50 text-left">
+              <button
+                onClick={() => {
+                  setShowPaymentModal(false);
+                  setPaymentScreenshot(null);
+                }}
+                className="px-4 py-2 bg-white border border-slate-300 rounded-xl text-slate-700 font-bold hover:bg-slate-100"
+              >
+                إلغاء
               </button>
             </div>
           </div>

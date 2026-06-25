@@ -1,54 +1,105 @@
+import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(request: Request) {
   try {
     const session = await auth();
-    const userId = session?.user?.id;
-    
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!session?.user) {
+      return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
     }
 
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+    const userId = session.user.id;
 
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentYear = now.getFullYear();
+
+    // Fetch user basic info
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
-        role: true,
         baseSalary: true,
+        role: true,
         therapistProfile: {
-          select: {
-            salary: true
-          }
-        },
-        employeeBonuses: {
-          where: {
-            createdAt: {
-              gte: startOfMonth,
-              lte: endOfMonth
-            }
-          },
-          orderBy: { createdAt: "desc" }
+          select: { salary: true }
         }
       }
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-    
-    // If user is a therapist, use therapistProfile.salary as baseSalary
-    if (user.role === "THERAPIST" && user.therapistProfile) {
-      user.baseSalary = user.therapistProfile.salary || 0;
+      return NextResponse.json({ error: "المستخدم غير موجود" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, data: user });
+    const baseSalary = user.role === "THERAPIST" || user.role === "SPECIALIST" 
+      ? (user.therapistProfile?.salary || 0)
+      : user.baseSalary;
+
+    // Fetch current month's bonuses/deductions
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+    const bonuses = await prisma.employeeBonus.findMany({
+      where: {
+        userId,
+        createdAt: { gte: startOfMonth, lte: endOfMonth }
+      }
+    });
+
+    // Also get therapists commissions if applicable
+    let therapistCommissions = 0;
+    if (user.role === "THERAPIST" || user.role === "SPECIALIST" || user.role === "SHIFT_LEADER") {
+      const commissions = await prisma.commission.findMany({
+        where: {
+          OR: [
+            { specialistId: userId },
+            { shiftLeaderId: userId }
+          ],
+          createdAt: { gte: startOfMonth, lte: endOfMonth }
+        }
+      });
+      
+      commissions.forEach(c => {
+        if (c.specialistId === userId) {
+          therapistCommissions += c.specialistEarnings;
+        } else if (c.shiftLeaderId === userId) {
+          therapistCommissions += c.shiftLeaderEarnings;
+        }
+      });
+    }
+
+    let totalBonuses = therapistCommissions;
+    let totalDeductions = 0;
+
+    bonuses.forEach(b => {
+      if (b.amount >= 0) totalBonuses += b.amount;
+      else totalDeductions += Math.abs(b.amount);
+    });
+
+    // Fetch finalized records
+    const history = await prisma.monthlySalaryRecord.findMany({
+      where: { userId },
+      orderBy: [
+        { year: 'desc' },
+        { month: 'desc' }
+      ]
+    });
+
+    return NextResponse.json({
+      success: true,
+      current: {
+        month: currentMonth,
+        year: currentYear,
+        baseSalary,
+        totalBonuses,
+        totalDeductions,
+        netSalary: baseSalary + totalBonuses - totalDeductions,
+      },
+      history
+    });
+
   } catch (error: any) {
-    console.error("[My Salary API Error]:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("My Salary API error:", error);
+    return NextResponse.json({ error: "حدث خطأ أثناء جلب البيانات" }, { status: 500 });
   }
 }
