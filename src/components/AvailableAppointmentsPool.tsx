@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, Clock, AlertCircle, CheckCircle, Search } from "lucide-react";
 
 interface AvailableSlot {
@@ -27,9 +27,29 @@ export function AvailableAppointmentsPool({
   const [duration, setDuration] = useState(50);
 
   const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
+  const [therapistsList, setTherapistsList] = useState<{id: string, name: string}[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch all specialists to populate the dropdown
+    const fetchSpecialists = async () => {
+      try {
+        const res = await fetch(`/api/customer-service/specialists-sessions?startDate=${startDate}&endDate=${endDate}`);
+        const data = await res.json();
+        if (data.specialists) {
+          setTherapistsList(data.specialists.map((s: any) => ({
+            id: s.therapistId,
+            name: s.therapistName
+          })));
+        }
+      } catch (err) {
+        console.error("Failed to load specialists list:", err);
+      }
+    };
+    fetchSpecialists();
+  }, [startDate, endDate]);
 
   async function handleSearch() {
     if (!therapistId) {
@@ -83,13 +103,16 @@ export function AvailableAppointmentsPool({
             <label className="block text-sm font-medium text-slate-700 mb-2">
               الأخصائي
             </label>
-            <input
-              type="text"
+            <select
               value={therapistId}
               onChange={(e) => setTherapistId(e.target.value)}
-              placeholder="معرف الأخصائي"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            >
+              <option value="">اختر الأخصائي (إجباري)</option>
+              {therapistsList.map(t => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
           </div>
 
           {/* Start Date */}

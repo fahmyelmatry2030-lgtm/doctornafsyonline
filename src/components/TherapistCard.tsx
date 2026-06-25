@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { Star, BadgeCheck, Clock } from "lucide-react";
 import { formatPrice, parseSpecializations } from "@/lib/constants";
 
@@ -31,10 +32,14 @@ export function TherapistCard({
   isOnline,
   imageUrl,
 }: TherapistCardProps) {
+  const params = useParams();
+  const locale = params?.locale || "ar";
   const specs = parseSpecializations(specializations).slice(0, 3);
+  const profileUrl = `/${locale}/therapists/${id}`;
 
   return (
-    <article className="group flex flex-col rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+    <Link href={profileUrl} className="block group">
+      <article className="flex flex-col h-full rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg cursor-pointer">
       <div className="mb-6 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 w-full">
         <div className="relative">
           <div className="relative h-28 w-28 rounded-full overflow-hidden bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex-shrink-0 shadow-[0_0_20px_rgba(99,102,241,0.3)] ring-4 ring-indigo-50 border-4 border-white">
@@ -94,13 +99,11 @@ export function TherapistCard({
           {formatPrice(pricePerSession)}
           <span className="text-xs font-normal text-slate-500"> / جلسة</span>
         </span>
-        <Link
-          href={`/therapists/${id}`}
-          className="rounded-full bg-gradient-to-r from-emerald-700 to-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-95"
-        >
+        <span className="rounded-full bg-gradient-to-r from-emerald-700 to-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-95">
           احجز جلسة
-        </Link>
+        </span>
       </div>
     </article>
+    </Link>
   );
 }
