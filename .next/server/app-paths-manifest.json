@@ -122,5 +122,7 @@
   "/api/therapist/patients/[id]/route": "app/api/therapist/patients/[id]/route.js",
   "/api/therapists/route": "app/api/therapists/route.js",
   "/api/user/ping/route": "app/api/user/ping/route.js",
-  "/icon.png/route": "app/icon.png/route.js"
+  "/icon.png/route": "app/icon.png/route.js",
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js"
 }

@@ -122,5 +122,7 @@
   "/api/therapist/patients/[id]/route": "/api/therapist/patients/[id]",
   "/api/therapists/route": "/api/therapists",
   "/api/user/ping/route": "/api/user/ping",
-  "/icon.png/route": "/icon.png"
+  "/icon.png/route": "/icon.png",
+  "/robots.txt/route": "/robots.txt",
+  "/sitemap.xml/route": "/sitemap.xml"
 }
