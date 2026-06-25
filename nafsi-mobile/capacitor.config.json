@@ -3,7 +3,6 @@
   "appName": "دكتور نفسي اونلاين",
   "webDir": "dist",
   "server": {
-    "url": "https://doctornafsyonline.com",
-    "cleartext": true
+    "url": "https://www.doctornafsyonline.com"
   }
 }
