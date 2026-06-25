@@ -43,7 +43,6 @@ export default function MySalaryPage() {
   useEffect(() => {
     fetch("/api/my-salary")
       .then(res => res.json())
-      .then(res => res.json())
       .then(result => {
         if (result.success) {
           setData(result);
