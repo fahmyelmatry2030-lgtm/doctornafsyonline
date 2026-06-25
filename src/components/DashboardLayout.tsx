@@ -589,7 +589,10 @@ export function DashboardLayout({
             </div>
             
             {/* User Avatar */}
-            <div className="flex items-center gap-3 pl-2 border-r border-slate-100 mr-2 pr-4 cursor-pointer hover:opacity-80 transition-opacity">
+            <Link 
+              href={role === "PATIENT" ? "/patient/profile" : role === "THERAPIST" ? "/therapist/profile" : "/admin/profile"}
+              className="flex items-center gap-3 pl-2 border-r border-slate-100 mr-2 pr-4 cursor-pointer hover:opacity-80 transition-opacity"
+            >
               <div className="flex flex-col items-end">
                 <span className="text-sm font-bold text-[#2B3674]">{userName}</span>
                 <span className="text-xs font-semibold text-slate-400">{getRoleLabel(role)}</span>
@@ -608,7 +611,7 @@ export function DashboardLayout({
                   {userInitials}
                 </div>
               )}
-            </div>
+            </Link>
           </div>
         </header>
 
