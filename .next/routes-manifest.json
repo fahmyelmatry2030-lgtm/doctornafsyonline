@@ -652,6 +652,12 @@
       "namedRegex": "^/api/admin/employee\\-salaries(?:/)?$"
     },
     {
+      "page": "/api/admin/employee-salaries/finalize",
+      "regex": "^/api/admin/employee\\-salaries/finalize(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/employee\\-salaries/finalize(?:/)?$"
+    },
+    {
       "page": "/api/admin/managers",
       "regex": "^/api/admin/managers(?:/)?$",
       "routeKeys": {},
@@ -818,6 +824,12 @@
       "regex": "^/api/my\\-salary(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/my\\-salary(?:/)?$"
+    },
+    {
+      "page": "/api/my-salary/upload-receipt",
+      "regex": "^/api/my\\-salary/upload\\-receipt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/my\\-salary/upload\\-receipt(?:/)?$"
     },
     {
       "page": "/api/notifications",
