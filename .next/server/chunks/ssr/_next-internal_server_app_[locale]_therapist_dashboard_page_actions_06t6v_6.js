@@ -1,0 +1,3 @@
+module.exports=[376714,a=>{"use strict";var b=a.i(585275);a.s([],414823),a.i(414823),a.s(["0034315abaac90be36bb179042f8620577624509e2",()=>b.getWebsiteContent,"00c775b538a73cf67ba818820da118c4886f6d492b",()=>b.getSettings,"400d1f5dc97492f3f0836f827f6a4aa5391aac7605",()=>b.updateWebsiteContent,"40d2a2c9373ef599029734adeb80e65f3d65a3635c",()=>b.updateSettings],376714)}];
+
+//# sourceMappingURL=_next-internal_server_app_%5Blocale%5D_therapist_dashboard_page_actions_06t6v_6.js.map
