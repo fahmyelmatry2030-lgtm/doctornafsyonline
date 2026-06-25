@@ -41,11 +41,19 @@ export async function POST(request: Request) {
       try {
         screenshotUrl = await uploadToCloudinary(buffer, "salaries", fileName);
       } catch (cloudinaryError) {
-        const uploadDir = path.join(process.cwd(), "public", "uploads", "salaries");
-        await fs.mkdir(uploadDir, { recursive: true });
-        const filePath = path.join(uploadDir, fileName);
-        await fs.writeFile(filePath, buffer);
-        screenshotUrl = `/uploads/salaries/${fileName}`;
+        try {
+          const uploadDir = path.join(process.cwd(), "public", "uploads", "salaries");
+          await fs.mkdir(uploadDir, { recursive: true });
+          const filePath = path.join(uploadDir, fileName);
+          await fs.writeFile(filePath, buffer);
+          screenshotUrl = `/uploads/salaries/${fileName}`;
+        } catch (localError) {
+          console.error("Local file upload failed (likely Vercel Read-Only FS):", localError);
+          return NextResponse.json(
+            { error: "لا يمكن حفظ الصورة على السيرفر الحالي. يرجى تفعيل Cloudinary لرفع الصور." },
+            { status: 500 }
+          );
+        }
       }
     }
 

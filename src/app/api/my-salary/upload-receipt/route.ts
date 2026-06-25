@@ -47,11 +47,19 @@ export async function POST(request: Request) {
     try {
       receiptUrl = await uploadToCloudinary(buffer, "receipts", fileName);
     } catch (cloudinaryError) {
-      const uploadDir = path.join(process.cwd(), "public", "uploads", "receipts");
-      await fs.mkdir(uploadDir, { recursive: true });
-      const filePath = path.join(uploadDir, fileName);
-      await fs.writeFile(filePath, buffer);
-      receiptUrl = `/uploads/receipts/${fileName}`;
+      try {
+        const uploadDir = path.join(process.cwd(), "public", "uploads", "receipts");
+        await fs.mkdir(uploadDir, { recursive: true });
+        const filePath = path.join(uploadDir, fileName);
+        await fs.writeFile(filePath, buffer);
+        receiptUrl = `/uploads/receipts/${fileName}`;
+      } catch (localError) {
+        console.error("Local file upload failed (likely Vercel Read-Only FS):", localError);
+        return NextResponse.json(
+          { error: "لا يمكن حفظ الصورة على السيرفر الحالي. يرجى تفعيل Cloudinary لرفع الصور." },
+          { status: 500 }
+        );
+      }
     }
 
     await prisma.monthlySalaryRecord.update({
