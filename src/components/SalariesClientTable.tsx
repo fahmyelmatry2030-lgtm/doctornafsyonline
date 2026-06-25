@@ -179,7 +179,12 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
         </div>
         <div className="text-xs font-bold text-slate-400">
           يظهر {filtered.length} من أصل {therapists.length} أخصائيين
-              {/* Desktop View */}
+        </div>
+      </div>
+
+      {/* Main Table */}
+      <div className="bg-white border border-slate-100 rounded-[24px] overflow-hidden shadow-sm">
+        {/* Desktop View */}
         <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-sm text-right">
             <thead className="bg-slate-50 text-[#A3AED0] uppercase tracking-wide text-xs border-b border-slate-100">
