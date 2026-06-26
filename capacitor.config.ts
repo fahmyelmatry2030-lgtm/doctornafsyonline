@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.doctornafsy.app',
-  appName: 'دكتور نفسي',
+  appName: 'دكتور نفسي اونلاين',
   webDir: 'out',
   server: {
     url: 'https://doctornafsyonline.com',

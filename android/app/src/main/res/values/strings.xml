@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">دكتور نفسي</string>
-    <string name="title_activity_main">دكتور نفسي</string>
+    <string name="app_name">دكتور نفسي اونلاين</string>
+    <string name="title_activity_main">دكتور نفسي اونلاين</string>
     <string name="package_name">com.doctornafsy.app</string>
     <string name="custom_url_scheme">com.doctornafsy.app</string>
 </resources>
