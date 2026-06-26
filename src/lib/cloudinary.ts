@@ -56,3 +56,42 @@ export async function uploadToCloudinary(
     uploadStream.end(fileBuffer);
   });
 }
+
+/**
+ * Uploads a PDF file to Cloudinary using resource_type "raw"
+ * so it gets a /raw/upload/ URL that is publicly accessible without auth.
+ */
+export async function uploadPdfToCloudinary(
+  fileBuffer: Buffer,
+  folder: string,
+  fileName: string
+): Promise<string> {
+  if (!isConfigured) {
+    throw new Error("Cloudinary configuration missing.");
+  }
+
+  return new Promise((resolve, reject) => {
+    const publicId = fileName.substring(0, fileName.lastIndexOf(".")) || fileName;
+
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: `nafsi/${folder}`,
+        public_id: publicId,
+        overwrite: true,
+        resource_type: "raw", // <-- PDFs must use "raw" for public access
+      },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary PDF upload error:", error);
+          return reject(error);
+        }
+        if (result && result.secure_url) {
+          return resolve(result.secure_url);
+        }
+        reject(new Error("Upload result was empty"));
+      }
+    );
+
+    uploadStream.end(fileBuffer);
+  });
+}

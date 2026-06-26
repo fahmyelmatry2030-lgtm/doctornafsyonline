@@ -41,9 +41,9 @@ export async function POST(request: Request) {
     const uniqueFileName = `${templateType}_contract_${Date.now()}.${fileExtension}`;
 
     try {
-      // Try Cloudinary upload
-      const { uploadToCloudinary } = await import("@/lib/cloudinary");
-      fileUrl = await uploadToCloudinary(buffer, "contracts", uniqueFileName);
+      // Use PDF-specific upload (resource_type: "raw") for public access without auth
+      const { uploadPdfToCloudinary } = await import("@/lib/cloudinary");
+      fileUrl = await uploadPdfToCloudinary(buffer, "contracts", uniqueFileName);
     } catch (cloudinaryError) {
       console.warn("[Contract Upload] Cloudinary upload failed, falling back to local file system:", cloudinaryError);
       
