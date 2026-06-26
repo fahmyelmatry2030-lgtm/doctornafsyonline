@@ -37,6 +37,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "الأخصائي غير موجود" }, { status: 404 });
     }
 
+    // Double-booking check: See if therapist already has an active appointment within 30 mins of this time
+    const settings = await getSettings();
+    const sessionDurationMs = (settings.sessionDuration || 50) * 60 * 1000;
+    
+    const existingAppointment = await prisma.appointment.findFirst({
+      where: {
+        therapistId: therapistId,
+        status: { notIn: ["CANCELLED_BY_PATIENT", "CANCELLED_BY_THERAPIST", "REJECTED"] },
+        scheduledAt: {
+           // Basic overlapping check (assuming appointments don't overlap)
+           gte: new Date(parsedDate.getTime() - sessionDurationMs + 60000), // 1 min buffer
+           lte: new Date(parsedDate.getTime() + sessionDurationMs - 60000)
+        }
+      }
+    });
+
+    if (existingAppointment) {
+       return NextResponse.json({ error: "عذراً، هذا الموعد تم حجزه مسبقاً. يرجى اختيار موعد آخر." }, { status: 400 });
+    }
+
     // Validate and apply promo code if provided
     let discountPercent = 0;
     if (promoCode?.trim()) {

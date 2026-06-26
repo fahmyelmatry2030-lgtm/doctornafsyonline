@@ -83,7 +83,24 @@ export async function PATCH(
   }
 
   const updateData: any = {};
-  if (status) updateData.status = status;
+  
+  if (status) {
+    // Role-based status validation
+    const role = session.user.role;
+    
+    // Patients cannot confirm appointments or mark them completed/cancelled by therapist
+    if (role === "PATIENT" && ["CONFIRMED", "COMPLETED", "CANCELLED_BY_THERAPIST"].includes(status)) {
+       return NextResponse.json({ error: "غير مصرح لك بتغيير الحالة إلى هذه القيمة" }, { status: 403 });
+    }
+
+    // Therapists shouldn't normally change to CANCELLED_BY_PATIENT
+    if (role === "THERAPIST" && ["CANCELLED_BY_PATIENT"].includes(status)) {
+       return NextResponse.json({ error: "غير مصرح لك بتغيير الحالة إلى هذه القيمة" }, { status: 403 });
+    }
+
+    updateData.status = status;
+  }
+  
   if (scheduledAt) updateData.scheduledAt = new Date(scheduledAt);
 
   const updated = await prisma.appointment.update({

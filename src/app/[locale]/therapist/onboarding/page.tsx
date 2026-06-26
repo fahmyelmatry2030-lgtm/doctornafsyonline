@@ -136,13 +136,13 @@ export default function TherapistOnboardingPage() {
     try {
       // Upload each certificate individually using the existing API
       for (const cert of certificates) {
+        const formData = new FormData();
+        formData.append("name", cert.name);
+        formData.append("file", cert.file);
+
         await fetch("/api/therapist/certificates", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: cert.name,
-            url: `/uploads/${cert.name}`,
-          }),
+          body: formData,
         });
       }
 
