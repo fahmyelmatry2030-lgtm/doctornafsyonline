@@ -273,6 +273,17 @@ export function DashboardLayout({
       // Fallback: use hardcoded role-based filtering while loading
       navItems = allAdminNavItems.filter(item => !item.roles || item.roles.includes(role as string));
     }
+
+    // Force add activity monitoring for specific roles to bypass any dynamic permission bugs
+    if (["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING"].includes(role as string)) {
+      if (!navItems.find(i => i.href === "/admin/activity")) {
+        const activityItem = allAdminNavItems.find(i => i.href === "/admin/activity");
+        if (activityItem) {
+          // Insert after manageShifts (index 2)
+          navItems.splice(2, 0, activityItem);
+        }
+      }
+    }
   }
 
   const userInitials = userName ? userName.substring(0, 2).toUpperCase() : "م";
