@@ -39,6 +39,12 @@ export default async function AdminEmployeeSalariesPage() {
             }
           }
         },
+        monthlySalaryRecords: {
+          where: {
+            month: now.getMonth() + 1,
+            year: now.getFullYear()
+          }
+        }
       },
       orderBy: { createdAt: "desc" }
     });
