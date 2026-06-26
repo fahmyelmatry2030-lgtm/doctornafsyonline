@@ -44,7 +44,7 @@ const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitU
   commission: 20,
   minPrice: 50,
   maxPrice: 1000,
-  sessionDuration: 50,
+  sessionDuration: 60,
   platformName: "دكتور نفسي",
   heroTitle: "رعاية نفسية متخصصة في متناول يدك",
   heroSubtitle: "تواصل مع أفضل الأخصائيين النفسيين المعتمدين من راحة منزلك، عبر جلسات فيديو آمنة وسرية.",
