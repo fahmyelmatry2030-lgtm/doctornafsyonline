@@ -18,7 +18,9 @@ export default async function AdminDashboardPage() {
   const t = await getTranslations("AdminDashboard");
 
   try {
-    const today = new Date();
+    // Use Egypt timezone so the date matches the user's local time
+    const nowInEgypt = new Date(new Date().toLocaleString("en-US", { timeZone: "Africa/Cairo" }));
+    const today = new Date(nowInEgypt);
     today.setHours(0, 0, 0, 0);
     const endOfDay = new Date(today);
     endOfDay.setHours(23, 59, 59, 999);
@@ -87,7 +89,7 @@ export default async function AdminDashboardPage() {
             <div className="bg-[#F4F7FE] px-5 py-3 rounded-2xl">
               <p className="text-xs text-[#A3AED0] font-bold mb-1">{t("todayDate")}</p>
               <p className="text-sm font-black text-[#2B3674]">
-                {today.toLocaleDateString("ar-EG", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+                {new Date().toLocaleDateString("ar-EG", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "Africa/Cairo" })}
               </p>
             </div>
           </div>
