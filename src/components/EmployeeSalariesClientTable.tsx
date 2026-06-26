@@ -320,8 +320,8 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                         ) : (
                           <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded w-max">معلق</span>
                         )}
-                        {currentMonthRecord?.paymentScreenshot && (
-                          <a href={currentMonthRecord.paymentScreenshot} target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline mt-1">صورة التحويل</a>
+                        {currentMonthRecord?.transferScreenshot && (
+                          <a href={currentMonthRecord.transferScreenshot} target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline mt-1">صورة التحويل</a>
                         )}
                         {currentMonthRecord?.receiptDocument && (
                           <a href={currentMonthRecord.receiptDocument} target="_blank" rel="noreferrer" className="text-[10px] text-purple-600 hover:underline">إقرار الموظف</a>

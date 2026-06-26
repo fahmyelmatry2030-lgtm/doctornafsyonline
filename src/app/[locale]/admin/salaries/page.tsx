@@ -95,7 +95,10 @@ export default async function AdminSalariesPage() {
     avatar: t.avatar,
     completedSessionsCount: t.therapistAppointments.length,
     therapistProfile: t.therapistProfile,
-    employeeBonuses: t.employeeBonuses || [],
+    employeeBonuses: (t.employeeBonuses || []).map(b => ({
+      ...b,
+      createdAt: b.createdAt.toISOString()
+    })),
   }));
 
   return (

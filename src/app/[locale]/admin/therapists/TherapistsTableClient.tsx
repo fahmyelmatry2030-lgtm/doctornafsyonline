@@ -21,6 +21,7 @@ type Therapist = {
     bio: string;
     specializations: string;
     pricePerSession: number;
+    salaryType: string;
     yearsExperience: number;
     rating: number;
     reviewCount: number;
