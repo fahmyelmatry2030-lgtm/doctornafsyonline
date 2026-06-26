@@ -247,6 +247,7 @@ export function DashboardLayout({
       { name: t("manageEmployeeSalaries"), href: "/admin/employee-salaries", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
       { name: "تحكم خدمة العملاء", href: "/admin/customer-service", icon: <Headset className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_VIEWER", "SHIFT_LEADER"] },
       { name: "اعتماد التحويلات البنكية", href: "/admin/reports", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
+      { name: "الحجوزات والعمليات", href: "/admin/operations", icon: <Calendar className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
       { name: "المقالات والتقييمات", href: "/admin/content", icon: <BookOpen className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "شهادات الكورسات والتدريب", href: "/admin/certificates", icon: <Award className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
       { name: "الإشعارات وأكواد الخصم", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
