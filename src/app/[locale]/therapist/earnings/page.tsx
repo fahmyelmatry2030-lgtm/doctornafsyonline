@@ -37,7 +37,7 @@ export default async function TherapistEarningsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-indigo-600 to-indigo-800 text-white shadow-xl shadow-indigo-900/20 flex flex-col justify-between">
+        <div className="card-glow rounded-3xl border border-indigo-500/30 p-6 bg-gradient-to-br from-indigo-600 to-indigo-800 text-white shadow-xl shadow-indigo-900/20 flex flex-col justify-between">
           <div>
             <h2 className="text-indigo-100 font-semibold mb-2 flex items-center gap-2">
               <Wallet className="w-5 h-5" /> نظام الحساب المالي
