@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 // GET /api/contracts/[type] — serves the PDF stored in the database
 export async function GET(
   request: Request,
-  { params }: { params: { type: string } }
+  { params }: { params: Promise<{ type: string }> }
 ) {
-  const { type } = params;
+  const { type } = await params;
 
   if (!["trial", "marketing", "annual"].includes(type)) {
     return new NextResponse("Not found", { status: 404 });
