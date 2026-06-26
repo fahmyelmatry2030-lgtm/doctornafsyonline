@@ -13,45 +13,26 @@ type PromoCode = {
   createdAt: string;
 };
 
-type Ticket = {
-  id: string;
-  userName: string;
-  userEmail: string;
-  subject: string;
-  message: string;
-  status: string;
-  response: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+
 
 export default function MarketingPage() {
   const { data: session } = useSession();
   const isReadOnly = session?.user?.role === "ADMIN_VIEWER";
-  const [tab, setTab] = useState<"promos" | "support" | "notifications">("promos");
+  const [tab, setTab] = useState<"promos" | "notifications">("promos");
   const [promos, setPromos] = useState<PromoCode[]>([]);
-  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [showPromoForm, setShowPromoForm] = useState(false);
   const [promoForm, setPromoForm] = useState({ code: "", discount: 10, expiresAt: "" });
   const [saving, setSaving] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
-  const [response, setResponse] = useState("");
-  const [respondingSaving, setRespondingSaving] = useState(false);
-  const [ticketFilter, setTicketFilter] = useState("ALL");
   const [notifForm, setNotifForm] = useState({ title: "", message: "", target: "ALL" });
   const [notifSent, setNotifSent] = useState(false);
   const [notifSaving, setNotifSaving] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [proRes, tkRes] = await Promise.all([
-      fetch("/api/admin/promos"),
-      fetch("/api/admin/support"),
-    ]);
+    const proRes = await fetch("/api/admin/promos");
     if (proRes.ok) setPromos(await proRes.json());
-    if (tkRes.ok) setTickets(await tkRes.json());
     setLoading(false);
   }, []);
 
@@ -90,19 +71,6 @@ export default function MarketingPage() {
     load();
   };
 
-  const respondTicket = async (id: string) => {
-    setRespondingSaving(true);
-    await fetch("/api/admin/support", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, response, status: "RESOLVED" }) });
-    setRespondingSaving(false);
-    setActiveTicket(null);
-    setResponse("");
-    load();
-  };
-
-  const closeTicket = async (id: string) => {
-    await fetch("/api/admin/support", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, status: "CLOSED" }) });
-    load();
-  };
 
   const sendNotification = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,9 +82,6 @@ export default function MarketingPage() {
     setTimeout(() => setNotifSent(false), 3000);
   };
 
-  const filteredTickets = ticketFilter === "ALL" ? tickets : tickets.filter(t => t.status === ticketFilter);
-  const statusColor: Record<string, string> = { OPEN: "bg-amber-100 text-amber-700", RESOLVED: "bg-green-100 text-green-700", CLOSED: "bg-slate-100 text-slate-500" };
-  const statusLabel: Record<string, string> = { OPEN: "مفتوحة", RESOLVED: "محلولة", CLOSED: "مغلقة" };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -136,15 +101,11 @@ export default function MarketingPage() {
       <div className="flex gap-1 bg-slate-100 rounded-xl p-1 w-fit">
         {[
           { id: "promos", label: "أكواد الخصم", icon: <Tag className="w-4 h-4" /> },
-          { id: "support", label: "الدعم الفني", icon: <X className="w-4 h-4" /> },
           { id: "notifications", label: "الإشعارات", icon: <Bell className="w-4 h-4" /> },
         ].map(t => (
-          <button key={t.id} onClick={() => setTab(t.id as "promos" | "support" | "notifications")}
+          <button key={t.id} onClick={() => setTab(t.id as "promos" | "notifications")}
             className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-bold transition-all ${tab === t.id ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>
             {t.icon} {t.label}
-            {t.id === "support" && tickets.filter(tk => tk.status === "OPEN").length > 0 && (
-              <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{tickets.filter(tk => tk.status === "OPEN").length}</span>
-            )}
           </button>
         ))}
       </div>
@@ -198,51 +159,6 @@ export default function MarketingPage() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      ) : tab === "support" ? (
-        <div className="space-y-4">
-          {/* Filter */}
-          <div className="flex gap-2">
-            {["ALL", "OPEN", "RESOLVED", "CLOSED"].map(s => (
-              <button key={s} onClick={() => setTicketFilter(s)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${ticketFilter === s ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>
-                {s === "ALL" ? "الكل" : statusLabel[s]}
-              </button>
-            ))}
-          </div>
-          <div className="glass rounded-2xl border border-[var(--color-border-soft)] overflow-hidden">
-            <div className="divide-y divide-slate-50">
-              {filteredTickets.length === 0 ? (
-                <div className="text-center py-16 text-slate-400"><p className="font-semibold">لا توجد تذاكر دعم.</p></div>
-              ) : filteredTickets.map(t => (
-                <div key={t.id} className="px-6 py-4 hover:bg-slate-50/50 transition-colors">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${statusColor[t.status]}`}>{statusLabel[t.status]}</span>
-                        <h3 className="font-bold text-sm text-slate-800">{t.subject}</h3>
-                      </div>
-                      <p className="text-xs text-slate-500">{t.userName} · {t.userEmail}</p>
-                      <p className="text-sm text-slate-600 mt-1 line-clamp-2">{t.message}</p>
-                      {t.response && <p className="text-xs text-green-700 bg-green-50 rounded-lg px-3 py-2 mt-2">ردنا: {t.response}</p>}
-                    </div>
-                    <div className="flex flex-col gap-2 items-end">
-                      <p className="text-xs text-slate-400">{new Date(t.createdAt).toLocaleDateString("ar-EG")}</p>
-                      {t.status === "OPEN" && !isReadOnly && (
-                        <button onClick={() => { setActiveTicket(t); setResponse(t.response || ""); }}
-                          className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-lg transition-colors">
-                          رد
-                        </button>
-                      )}
-                      {t.status !== "CLOSED" && !isReadOnly && (
-                        <button onClick={() => closeTicket(t.id)} className="text-xs text-slate-500 hover:text-red-500 font-semibold transition-colors">إغلاق</button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       ) : isReadOnly ? (
@@ -338,37 +254,7 @@ export default function MarketingPage() {
         </div>
       )}
 
-      {/* Reply Ticket Modal */}
-      {activeTicket && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-black text-slate-900 text-lg">الرد على التذكرة</h2>
-              <button onClick={() => setActiveTicket(null)} className="p-2 hover:bg-slate-100 rounded-full"><X className="w-5 h-5 text-slate-500" /></button>
-            </div>
-            <div className="bg-slate-50 rounded-xl p-4 mb-4">
-              <p className="font-bold text-slate-800 text-sm mb-1">{activeTicket.subject}</p>
-              <p className="text-sm text-slate-500 mb-2">{activeTicket.userName} · {activeTicket.userEmail}</p>
-              <p className="text-sm text-slate-700">{activeTicket.message}</p>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">ردك</label>
-                <textarea value={response} onChange={e => setResponse(e.target.value)} rows={5}
-                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
-                  placeholder="اكتب ردك هنا..." />
-              </div>
-              <div className="flex gap-3">
-                <button onClick={() => respondTicket(activeTicket.id)} disabled={respondingSaving || !response}
-                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
-                  <Send className="w-4 h-4" /> {respondingSaving ? "جارٍ الإرسال..." : "إرسال الرد"}
-                </button>
-                <button onClick={() => setActiveTicket(null)} className="px-5 border border-slate-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50">إلغاء</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 }

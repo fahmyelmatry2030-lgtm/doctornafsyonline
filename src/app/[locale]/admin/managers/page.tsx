@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2, Eye, EyeOff, Shield, QrCode, IdCard } from "lucide-react";
+import { Plus, User, ShieldCheck, Mail, Calendar, Loader2, Trash2, Eye, EyeOff, Shield, QrCode, IdCard, Edit2, Lock, Unlock } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
@@ -330,6 +330,18 @@ export default function ManagersPage() {
                       تاريخ الإضافة: {format(new Date(manager.createdAt), "dd MMM yyyy", { locale: arSA })}
                     </span>
                     <div className="flex items-center gap-1.5">
+                      <button
+                        className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                        title="تعديل بيانات المدير"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        className={`p-1.5 rounded-lg transition-all ${manager.isSuspended ? 'text-amber-500 hover:bg-amber-50' : 'text-slate-400 hover:text-amber-600 hover:bg-amber-50'}`}
+                        title={manager.isSuspended ? "تفعيل الحساب" : "تجميد الحساب"}
+                      >
+                        {manager.isSuspended ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                      </button>
                       <Link
                         href={`/admin/managers/badge/${manager.id}`}
                         className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
