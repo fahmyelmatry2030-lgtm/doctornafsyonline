@@ -3,6 +3,9 @@ import { AlertCircle } from "lucide-react";
 import { CustomerServiceTabs } from "@/components/CustomerServiceTabs";
 import { CustomerServiceDashboard } from "@/components/CustomerServiceDashboard";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function CustomerServicePage() {
   const session = await auth();
 

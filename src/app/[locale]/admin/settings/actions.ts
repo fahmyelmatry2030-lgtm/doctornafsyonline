@@ -38,6 +38,9 @@ export type SiteSettings = {
   bankIban?: string;
   enableAnnualContract?: boolean;
   currency: string;
+  trialContractUrl?: string;
+  marketingContractUrl?: string;
+  annualContractUrl?: string;
 };
 
 const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitUrl"> & { stripeKey?: string; livekitKey?: string; livekitUrl?: string } = {
@@ -67,6 +70,9 @@ const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitU
   bankAccount: "البنك الأهلي المصري - ح/ 1234567890123456 - IBAN: EG123456789012345678901234567",
   enableAnnualContract: false,
   currency: "EGP",
+  trialContractUrl: "/docs/trial_contract_template.pdf",
+  marketingContractUrl: "/docs/marketing_consent_template.pdf",
+  annualContractUrl: "/docs/annual_contract_template.pdf",
 };
 
 async function verifyAdmin() {

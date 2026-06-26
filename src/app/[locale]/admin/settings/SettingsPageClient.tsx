@@ -443,19 +443,19 @@ export function SettingsPageClient({
                     id: "trial",
                     title: "عقد فترة التجربة (١٤ يوم)",
                     desc: "النموذج الرسمي لعقد فترة التجربة التجريبية للأخصائيين بعد التسجيل.",
-                    fileUrl: "/docs/trial_contract_template.pdf",
+                    fileUrl: initialSettings.trialContractUrl || "/docs/trial_contract_template.pdf",
                   },
                   {
                     id: "marketing",
                     title: "إقرار الحملة الدعائية",
                     desc: "إقرار خاص بالموافقة على الحملات التسويقية ونشر بيانات الأخصائيين.",
-                    fileUrl: "/docs/marketing_consent_template.pdf",
+                    fileUrl: initialSettings.marketingContractUrl || "/docs/marketing_consent_template.pdf",
                   },
                   {
                     id: "annual",
                     title: "العقد السنوي الشامل",
                     desc: "النموذج الرسمي لعقد العمل السنوي الشامل طويل الأجل.",
-                    fileUrl: "/docs/annual_contract_template.pdf",
+                    fileUrl: initialSettings.annualContractUrl || "/docs/annual_contract_template.pdf",
                   },
                 ].map((tpl) => {
                   return (

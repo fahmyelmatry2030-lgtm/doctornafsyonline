@@ -36,27 +36,58 @@ export async function POST(request: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Save to public/docs
-    const uploadDir = path.join(process.cwd(), "public", "docs");
-    await fs.mkdir(uploadDir, { recursive: true });
-    try { await fs.chmod(uploadDir, 0o755); } catch(e){}
+    let fileUrl = "";
+    const fileExtension = file.name.split(".").pop() || "pdf";
+    const uniqueFileName = `${templateType}_contract_${Date.now()}.${fileExtension}`;
 
-    let filename = "";
-    if (templateType === "trial") {
-      filename = "trial_contract_template.pdf";
-    } else if (templateType === "marketing") {
-      filename = "marketing_consent_template.pdf";
-    } else if (templateType === "annual") {
-      filename = "annual_contract_template.pdf";
+    try {
+      // Try Cloudinary upload
+      const { uploadToCloudinary } = await import("@/lib/cloudinary");
+      fileUrl = await uploadToCloudinary(buffer, "contracts", uniqueFileName);
+    } catch (cloudinaryError) {
+      console.warn("[Contract Upload] Cloudinary upload failed, falling back to local file system:", cloudinaryError);
+      
+      const uploadDir = path.join(process.cwd(), "public", "docs");
+      await fs.mkdir(uploadDir, { recursive: true });
+      try { await fs.chmod(uploadDir, 0o755); } catch(e){}
+
+      const filePath = path.join(uploadDir, uniqueFileName);
+      await fs.writeFile(filePath, buffer);
+      try { await fs.chmod(filePath, 0o644); } catch(e){}
+      
+      fileUrl = `/docs/${uniqueFileName}`;
     }
 
-    const filePath = path.join(uploadDir, filename);
-    await fs.writeFile(filePath, buffer);
-    try { await fs.chmod(filePath, 0o644); } catch(e){}
+    // Update settings in database
+    const { prisma } = await import("@/lib/prisma");
+    const { getSettings } = await import("@/app/[locale]/admin/settings/actions");
+    const currentSettings = await getSettings();
+    
+    if (templateType === "trial") {
+      currentSettings.trialContractUrl = fileUrl;
+    } else if (templateType === "marketing") {
+      currentSettings.marketingContractUrl = fileUrl;
+    } else if (templateType === "annual") {
+      currentSettings.annualContractUrl = fileUrl;
+    }
+
+    // Strip out secrets before saving (similar to actions.ts)
+    const { stripeKey, livekitKey, livekitUrl, ...savableSettings } = currentSettings;
+
+    await prisma.systemSetting.upsert({
+      where: { key: "site_settings" },
+      update: { value: JSON.stringify(savableSettings) },
+      create: { key: "site_settings", value: JSON.stringify(savableSettings) }
+    });
+
+    const { revalidatePath } = await import("next/cache");
+    revalidatePath("/");
+    revalidatePath("/admin/settings");
+    revalidatePath("/admin/dashboard");
 
     return NextResponse.json({ 
       success: true, 
-      url: `/docs/${filename}?t=${Date.now()}` 
+      url: fileUrl 
     });
   } catch (error: any) {
     console.error("Template upload error:", error);

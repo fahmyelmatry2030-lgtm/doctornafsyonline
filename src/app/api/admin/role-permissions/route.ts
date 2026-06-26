@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import fs from "fs/promises";
-import path from "path";
-
-const PERMISSIONS_FILE_PATH = path.join(process.cwd(), "src/data/role-permissions.json");
+import { prisma } from "@/lib/prisma";
 
 // Default permissions for each role - which nav pages they can access
 export const DEFAULT_PERMISSIONS: Record<string, string[]> = {
@@ -39,7 +36,6 @@ export const DEFAULT_PERMISSIONS: Record<string, string[]> = {
   ADMIN_CUSTOMER_SERVICE: [
     "/admin/dashboard",
     "/admin/customer-service",
-    "/admin/shift-leader",
     "/admin/my-salary",
   ],
   ADMIN_SALES: [
@@ -55,10 +51,15 @@ export const DEFAULT_PERMISSIONS: Record<string, string[]> = {
 
 export async function readPermissions(): Promise<Record<string, string[]>> {
   try {
-    const data = await fs.readFile(PERMISSIONS_FILE_PATH, "utf8");
-    return JSON.parse(data);
-  } catch {
-    // Return defaults if file doesn't exist
+    const dbSetting = await prisma.systemSetting.findUnique({
+      where: { key: "role_permissions" }
+    });
+    if (dbSetting) {
+      return JSON.parse(dbSetting.value);
+    }
+    return DEFAULT_PERMISSIONS;
+  } catch (e) {
+    console.error("Failed to load permissions from DB:", e);
     return DEFAULT_PERMISSIONS;
   }
 }
@@ -106,8 +107,11 @@ export async function POST(req: Request) {
       }
     }
 
-    await fs.mkdir(path.dirname(PERMISSIONS_FILE_PATH), { recursive: true });
-    await fs.writeFile(PERMISSIONS_FILE_PATH, JSON.stringify(validated, null, 2), "utf8");
+    await prisma.systemSetting.upsert({
+      where: { key: "role_permissions" },
+      update: { value: JSON.stringify(validated) },
+      create: { key: "role_permissions", value: JSON.stringify(validated) }
+    });
 
     return NextResponse.json({ success: true, permissions: validated });
   } catch (error) {
