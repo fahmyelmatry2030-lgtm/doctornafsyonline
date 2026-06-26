@@ -46,7 +46,7 @@ export function Header({ platformName = "دكتور نفسي", locale = "ar" }: 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0 transition-opacity hover:opacity-80">
             <img
-              src="/logo.png?v=4"
+              src="/logo.png?v=5"
               alt={platformName}
               className="max-h-[60px] sm:max-h-[75px] w-auto object-contain drop-shadow-sm"
             />
