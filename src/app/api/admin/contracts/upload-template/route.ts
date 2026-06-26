@@ -5,16 +5,17 @@ import { revalidatePath } from "next/cache";
 
 export async function POST(request: Request) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "ADMIN") {
+  if (!session?.user) {
+    return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
+  }
+
+  // Allow any admin role
+  const role = session.user.role || "";
+  if (!role.startsWith("ADMIN")) {
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 
   try {
-    const contentType = request.headers.get("content-type") || "";
-    if (!contentType.includes("multipart/form-data")) {
-      return NextResponse.json({ error: "Content type must be multipart/form-data" }, { status: 400 });
-    }
-
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     const templateType = formData.get("templateType") as string | null;
@@ -27,34 +28,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "نوع النموذج غير صالح" }, { status: 400 });
     }
 
-    if (file.type !== "application/pdf") {
-      return NextResponse.json({ error: "يرجى اختيار ملف PDF فقط" }, { status: 400 });
-    }
-
-    // 15MB limit
-    if (file.size > 15 * 1024 * 1024) {
-      return NextResponse.json({ error: "حجم الملف يجب ألا يتجاوز 15 ميجابايت" }, { status: 400 });
+    // 10MB limit
+    if (file.size > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: "حجم الملف يجب ألا يتجاوز 10 ميجابايت" }, { status: 400 });
     }
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    const base64 = buffer.toString("base64");
 
-    let fileUrl = "";
+    // Store PDF as base64 in DB (LongText column — supports up to 4GB)
+    const dbKey = `contract_pdf_${templateType}`;
+    await prisma.systemSetting.upsert({
+      where: { key: dbKey },
+      update: { value: base64 },
+      create: { key: dbKey, value: base64 },
+    });
 
-    try {
-      // Upload PDF to Cloudinary as "raw" resource type for public access
-      const { uploadPdfToCloudinary } = await import("@/lib/cloudinary");
-      const fileName = `${templateType}_contract_${Date.now()}`;
-      fileUrl = await uploadPdfToCloudinary(buffer, "contracts", fileName);
-      console.log(`[Contract Upload] Uploaded ${templateType} contract to Cloudinary:`, fileUrl);
-    } catch (cloudinaryError) {
-      console.error("[Contract Upload] Cloudinary failed:", cloudinaryError);
-      return NextResponse.json({ 
-        error: "فشل رفع الملف. تأكد من إعدادات Cloudinary في لوحة Vercel." 
-      }, { status: 500 });
-    }
-
-    // Save the Cloudinary URL in site_settings
+    // Update URL in site_settings to point to our API
+    const fileUrl = `/api/contracts/${templateType}`;
     const contractField =
       templateType === "trial"     ? "trialContractUrl" :
       templateType === "marketing" ? "marketingContractUrl" :
@@ -65,23 +57,17 @@ export async function POST(request: Request) {
     });
     const currentSaved = dbRecord ? JSON.parse(dbRecord.value) : {};
 
-    const updatedSettings = {
-      ...currentSaved,
-      [contractField]: fileUrl,
-    };
-
     await prisma.systemSetting.upsert({
       where: { key: "site_settings" },
-      update: { value: JSON.stringify(updatedSettings) },
-      create: { key: "site_settings", value: JSON.stringify(updatedSettings) },
+      update: { value: JSON.stringify({ ...currentSaved, [contractField]: fileUrl }) },
+      create: { key: "site_settings", value: JSON.stringify({ ...currentSaved, [contractField]: fileUrl }) },
     });
 
     revalidatePath("/admin/settings");
-    revalidatePath("/");
 
     return NextResponse.json({ success: true, url: fileUrl });
   } catch (error: any) {
     console.error("Template upload error:", error);
-    return NextResponse.json({ error: `فشل رفع النموذج: ${error.message || error}` }, { status: 500 });
+    return NextResponse.json({ error: `فشل: ${error.message}` }, { status: 500 });
   }
 }
