@@ -79,15 +79,16 @@ export async function getSettings(): Promise<SiteSettings> {
   // We don't verifyAdmin here because some public/patient pages may need platformName or sessionDuration
   let settings: any = {};
   try {
-    const data = await fs.readFile(SETTINGS_FILE_PATH, "utf8");
-    settings = JSON.parse(data);
-  } catch {
-    try {
-      await fs.mkdir(path.dirname(SETTINGS_FILE_PATH), { recursive: true });
-      await fs.writeFile(SETTINGS_FILE_PATH, JSON.stringify(defaultSettings, null, 2), "utf8");
-    } catch (e) {
-      console.error("Failed to write default settings file:", e);
+    const dbSetting = await prisma.systemSetting.findUnique({
+      where: { key: "site_settings" }
+    });
+    if (dbSetting) {
+      settings = JSON.parse(dbSetting.value);
+    } else {
+      settings = { ...defaultSettings };
     }
+  } catch (e) {
+    console.error("Failed to load settings from DB:", e);
     settings = { ...defaultSettings };
   }
 
@@ -113,7 +114,11 @@ export async function updateSettings(settings: Partial<SiteSettings>): Promise<S
 
   const updatedSavable = { ...currentSavable, ...savableSettings };
   
-  await fs.writeFile(SETTINGS_FILE_PATH, JSON.stringify(updatedSavable, null, 2), "utf8");
+  await prisma.systemSetting.upsert({
+    where: { key: "site_settings" },
+    update: { value: JSON.stringify(updatedSavable) },
+    create: { key: "site_settings", value: JSON.stringify(updatedSavable) }
+  });
   
   revalidatePath("/admin/settings");
   revalidatePath("/admin/dashboard");
@@ -431,17 +436,16 @@ const defaultContent: WebsiteContent = {
 
 export async function getWebsiteContent(): Promise<WebsiteContent> {
   try {
-    const data = await fs.readFile(CONTENT_FILE_PATH, "utf8");
-    const parsed = JSON.parse(data);
-    // Merge parsed content with default content to guarantee all sections exist
-    return { ...defaultContent, ...parsed };
-  } catch {
-    try {
-      await fs.mkdir(path.dirname(CONTENT_FILE_PATH), { recursive: true });
-      await fs.writeFile(CONTENT_FILE_PATH, JSON.stringify(defaultContent, null, 2), "utf8");
-    } catch (e) {
-      console.error("Failed to write default website content file:", e);
+    const dbSetting = await prisma.systemSetting.findUnique({
+      where: { key: "website_content" }
+    });
+    if (dbSetting) {
+      const parsed = JSON.parse(dbSetting.value);
+      return { ...defaultContent, ...parsed };
     }
+    return { ...defaultContent };
+  } catch (e) {
+    console.error("Failed to load website content from DB:", e);
     return { ...defaultContent };
   }
 }
@@ -450,10 +454,15 @@ export async function updateWebsiteContent(content: Partial<WebsiteContent>): Pr
   await verifyAdmin();
   const current = await getWebsiteContent();
   const updated = { ...current, ...content };
-  await fs.writeFile(CONTENT_FILE_PATH, JSON.stringify(updated, null, 2), "utf8");
+
+  await prisma.systemSetting.upsert({
+    where: { key: "website_content" },
+    update: { value: JSON.stringify(updated) },
+    create: { key: "website_content", value: JSON.stringify(updated) }
+  });
+
   revalidatePath("/");
-  revalidatePath("/about");
-  revalidatePath("/contact");
+  revalidatePath("/about-us");
   revalidatePath("/therapists");
   revalidatePath("/how-it-works");
   revalidatePath("/faq");

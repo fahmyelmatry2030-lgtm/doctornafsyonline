@@ -73,6 +73,21 @@ export async function GET(req: NextRequest) {
       results.push("Added paymentDetails to TherapistProfile");
     } catch (e: any) { results.push("paymentDetails: " + e.message); }
 
+    // Create SystemSetting Table
+    try {
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS \`SystemSetting\` (
+          \`id\` VARCHAR(191) NOT NULL,
+          \`key\` VARCHAR(191) NOT NULL,
+          \`value\` TEXT NOT NULL,
+          \`updatedAt\` DATETIME(3) NOT NULL,
+          PRIMARY KEY (\`id\`),
+          UNIQUE INDEX \`SystemSetting_key_key\`(\`key\`)
+        ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      `);
+      results.push("Created SystemSetting table");
+    } catch (e: any) { results.push("SystemSetting table: " + e.message); }
+
     // Create Shift Table
     try {
       await prisma.$executeRawUnsafe(`
