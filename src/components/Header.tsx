@@ -44,17 +44,19 @@ export function Header({ platformName = "دكتور نفسي", locale = "ar" }: 
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-100 shadow-sm">
         <div className="mx-auto flex h-20 sm:h-24 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0 transition-opacity hover:opacity-80">
-            <img
-              src="/logo.png?v=5"
-              alt={platformName}
-              className="max-h-[60px] sm:max-h-[75px] w-auto object-contain drop-shadow-sm"
-            />
-          </Link>
+          {/* Logo - wrapped in flex-1 to push it to the edge */}
+          <div className="flex-1 flex justify-start">
+            <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
+              <img
+                src="/logo.png?v=5"
+                alt={platformName}
+                className="max-h-[60px] sm:max-h-[75px] w-auto object-contain drop-shadow-sm"
+              />
+            </Link>
+          </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-8 justify-center">
             {NAV_LINKS.map((item) => (
               <Link
                 key={item.href}
@@ -68,7 +70,7 @@ export function Header({ platformName = "دكتور نفسي", locale = "ar" }: 
           </nav>
 
           {/* Right side: auth buttons + hamburger */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3">
             <ThemeToggle />
 
             {/* Language Switcher */}
