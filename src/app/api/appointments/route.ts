@@ -86,8 +86,6 @@ export async function POST(request: Request) {
       select: { name: true, phone: true }
     });
 
-    const settings = await getSettings();
-
     const appointment = await prisma.appointment.create({
       data: {
         patientId: session.user.id,
