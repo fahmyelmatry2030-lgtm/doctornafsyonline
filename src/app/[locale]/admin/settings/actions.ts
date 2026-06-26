@@ -4,6 +4,7 @@ import fs from "fs/promises";
 import path from "path";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 const SETTINGS_FILE_PATH = path.join(process.cwd(), "src/data/settings.json");
 
@@ -41,7 +42,7 @@ export type SiteSettings = {
 
 const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitUrl"> & { stripeKey?: string; livekitKey?: string; livekitUrl?: string } = {
   commission: 20,
-  minPrice: 100,
+  minPrice: 50,
   maxPrice: 1000,
   sessionDuration: 50,
   platformName: "دكتور نفسي",
