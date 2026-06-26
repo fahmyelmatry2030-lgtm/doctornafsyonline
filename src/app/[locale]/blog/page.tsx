@@ -88,7 +88,7 @@ export default async function BlogPage({ params }: Props) {
               return (
               <Link
                 key={post.slug}
-                href={`${prefix}/blog/${post.slug}`}
+                href={`${prefix}/blog/${encodeURIComponent(post.slug)}`}
                 className="group flex flex-col bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
