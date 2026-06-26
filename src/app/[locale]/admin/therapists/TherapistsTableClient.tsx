@@ -371,12 +371,6 @@ export function TherapistsTableClient({
                           className="font-bold text-slate-800 text-sm hover:text-indigo-600 hover:underline transition-colors text-right flex items-center gap-2"
                         >
                           {t.name}
-                          {t.isOnline && (
-                            <span className="flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                              أونلاين
-                            </span>
-                          )}
                         </button>
                         <p className="text-xs text-slate-400">{t.email}</p>
                         

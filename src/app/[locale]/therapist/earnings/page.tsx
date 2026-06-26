@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import { PLATFORM_PHONE } from "@/lib/constants";
 import WithdrawalButton from "@/components/WithdrawalButton";
+import TherapistSalaryHistoryClient from "@/components/TherapistSalaryHistoryClient";
 
 export default async function TherapistEarningsPage() {
   const session = await auth();
@@ -14,6 +15,15 @@ export default async function TherapistEarningsPage() {
     where: { therapistId: session.user.id, status: "COMPLETED" },
     include: { patient: true },
     orderBy: { scheduledAt: "desc" },
+  });
+
+  const profile = await prisma.therapistProfile.findUnique({
+    where: { userId: session.user.id },
+  });
+
+  const history = await prisma.monthlySalaryRecord.findMany({
+    where: { userId: session.user.id },
+    orderBy: [{ year: "desc" }, { month: "desc" }],
   });
 
   const completedSessionsCount = appointments.length;
@@ -32,10 +42,14 @@ export default async function TherapistEarningsPage() {
             <h2 className="text-indigo-100 font-semibold mb-2 flex items-center gap-2">
               <Wallet className="w-5 h-5" /> نظام الحساب المالي
             </h2>
-            <p className="text-2xl font-black mt-4">راتب شهري ثابت</p>
+            <p className="text-2xl font-black mt-4">
+              {profile?.salaryType === "COMMISSION" ? "نظام العمولات" : "راتب شهري ثابت"}
+            </p>
           </div>
           <p className="text-xs text-indigo-200 mt-4 leading-relaxed">
-            يتم احتساب وتحويل راتبك الشهري بشكل ثابت بالاتفاق مع الإدارة.
+            {profile?.salaryType === "COMMISSION" 
+              ? "يتم احتساب مستحقاتك بناءً على الجلسات المكتملة بحصة المنصة (40%) والأخصائي (60%)." 
+              : "يتم احتساب وتحويل راتبك الشهري بشكل ثابت بالاتفاق مع الإدارة."}
           </p>
         </div>
 
@@ -57,6 +71,8 @@ export default async function TherapistEarningsPage() {
           </span>
         </div>
       </div>
+
+      <TherapistSalaryHistoryClient history={history.map(r => ({ ...r, status: r.status as "PENDING" | "PAID" | "ACKNOWLEDGED" }))} />
 
       <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] overflow-hidden">
         <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">

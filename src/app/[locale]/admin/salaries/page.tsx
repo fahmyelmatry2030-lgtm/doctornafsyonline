@@ -57,6 +57,12 @@ export default async function AdminSalariesPage() {
             },
           },
         },
+        monthlySalaryRecords: {
+          where: {
+            month: now.getMonth() + 1,
+            year: now.getFullYear(),
+          },
+        },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -98,6 +104,10 @@ export default async function AdminSalariesPage() {
     employeeBonuses: (t.employeeBonuses || []).map(b => ({
       ...b,
       createdAt: b.createdAt.toISOString()
+    })),
+    monthlySalaryRecords: (t.monthlySalaryRecords || []).map(r => ({
+      ...r,
+      status: r.status as "PENDING" | "PAID" | "ACKNOWLEDGED"
     })),
   }));
 

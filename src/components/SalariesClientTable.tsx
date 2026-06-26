@@ -23,6 +23,14 @@ type TherapistForSalary = {
     reason: string;
     createdAt: string;
   }[];
+  monthlySalaryRecords: {
+    id: string;
+    month: number;
+    year: number;
+    status: "PENDING" | "PAID" | "ACKNOWLEDGED";
+    transferScreenshot?: string | null;
+    receiptDocument?: string | null;
+  }[];
 };
 
 type Props = {
@@ -44,8 +52,9 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
   const [paymentMethod, setPaymentMethod] = useState("VODAFONE_CASH");
   const [paymentDetails, setPaymentDetails] = useState("");
 
-  // Success indicator for inline actions
-  const [paidStatus, setPaidStatus] = useState<Record<string, boolean>>({});
+  // Payment Modal
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
 
   // Bonus Modal State
   const [showBonusModal, setShowBonusModal] = useState(false);
@@ -116,9 +125,11 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
   // Calculate calculated payout for a therapist
   const calculatePayout = (t: TherapistForSalary) => {
     const profile = t.therapistProfile;
-    const base = profile ? profile.salary : 0;
+    const isCommission = profile?.salaryType === "COMMISSION";
+    const base = isCommission ? 0 : (profile?.salary || 0);
+    const commissionEarned = isCommission ? (t.completedSessionsCount * (profile?.pricePerSession || 0) * 0.6) : 0;
     const bonuses = t.employeeBonuses?.reduce((sum, b) => sum + b.amount, 0) || 0;
-    return base + bonuses;
+    return base + commissionEarned + bonuses;
   };
 
   // Stats
@@ -181,11 +192,58 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
     }
   };
 
-  const handleMarkAsPaid = (therapistId: string) => {
-    setPaidStatus((prev) => ({
-      ...prev,
-      [therapistId]: !prev[therapistId],
-    }));
+  const finalizeSalary = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedTherapist) return;
+
+    try {
+      setUpdating(true);
+      const formData = new FormData();
+      formData.append("userId", selectedTherapist.id);
+      
+      const now = new Date();
+      formData.append("month", (now.getMonth() + 1).toString());
+      formData.append("year", now.getFullYear().toString());
+      
+      const profile = selectedTherapist.therapistProfile;
+      const isCommission = profile?.salaryType === "COMMISSION";
+      const baseSalary = isCommission ? 0 : (profile?.salary || 0);
+      const commissionEarned = isCommission ? (selectedTherapist.completedSessionsCount * (profile?.pricePerSession || 0) * 0.6) : 0;
+      
+      let totalBonuses = commissionEarned;
+      let totalDeductions = 0;
+      selectedTherapist.employeeBonuses.forEach(b => {
+        if (b.amount >= 0) totalBonuses += b.amount;
+        else totalDeductions += Math.abs(b.amount);
+      });
+      
+      const netSalary = calculatePayout(selectedTherapist);
+
+      formData.append("baseSalary", baseSalary.toString());
+      formData.append("totalBonuses", totalBonuses.toString());
+      formData.append("totalDeductions", totalDeductions.toString());
+      formData.append("netSalary", netSalary.toString());
+
+      if (paymentScreenshot) {
+        formData.append("screenshot", paymentScreenshot);
+      }
+
+      const res = await fetch("/api/admin/employee-salaries/finalize", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        const data = await res.json();
+        alert(data.error || "فشل الدفع");
+      }
+    } catch (err) {
+      alert("حدث خطأ");
+    } finally {
+      setUpdating(false);
+    }
   };
 
   return (
@@ -269,8 +327,10 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
             <tbody className="divide-y divide-slate-50">
               {filtered.map((t) => {
                 const payout = calculatePayout(t);
-                const isPaid = paidStatus[t.id] || false;
                 const profile = t.therapistProfile;
+                const now = new Date();
+                const currentMonthRecord = t.monthlySalaryRecords.find(r => r.month === now.getMonth() + 1 && r.year === now.getFullYear());
+                const isPaid = currentMonthRecord?.status === "PAID" || currentMonthRecord?.status === "ACKNOWLEDGED";
 
                 return (
                   <tr key={t.id} className="hover:bg-slate-50/50 transition-colors">
@@ -338,23 +398,35 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <button
-                        onClick={() => !isReadOnly && handleMarkAsPaid(t.id)}
-                        disabled={isReadOnly}
-                        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${
-                          isPaid
-                            ? "bg-emerald-500 text-white shadow-sm"
-                            : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                        } transition`}
-                      >
-                        {isPaid ? (
-                          <>
-                            <Check className="w-3 h-3" /> تم الدفع
-                          </>
-                        ) : (
-                          "قيد الانتظار"
+                      <div className="flex flex-col gap-1 items-end">
+                        <button
+                          onClick={() => {
+                            setSelectedTherapist(t);
+                            setShowPaymentModal(true);
+                          }}
+                          disabled={isReadOnly || isPaid}
+                          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${
+                            isPaid
+                              ? "bg-emerald-500 text-white shadow-sm cursor-not-allowed"
+                              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                          } transition`}
+                        >
+                          {isPaid ? (
+                            <>
+                              <Check className="w-3 h-3" /> تم الدفع
+                            </>
+                          ) : (
+                            "تسجيل الدفع"
+                          )}
+                        </button>
+                        
+                        {currentMonthRecord?.transferScreenshot && (
+                          <a href={currentMonthRecord.transferScreenshot} target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline mt-1 font-bold">صورة التحويل</a>
                         )}
-                      </button>
+                        {currentMonthRecord?.receiptDocument && (
+                          <a href={currentMonthRecord.receiptDocument} target="_blank" rel="noreferrer" className="text-[10px] text-purple-600 hover:underline font-bold">إقرار الأخصائي</a>
+                        )}
+                      </div>
                     </td>
                     {!isReadOnly && (
                       <td className="px-6 py-4 text-center">
@@ -389,8 +461,10 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
         <div className="block lg:hidden divide-y divide-slate-50">
           {filtered.map((t) => {
             const payout = calculatePayout(t);
-            const isPaid = paidStatus[t.id] || false;
             const profile = t.therapistProfile;
+            const now = new Date();
+            const currentMonthRecord = t.monthlySalaryRecords.find(r => r.month === now.getMonth() + 1 && r.year === now.getFullYear());
+            const isPaid = currentMonthRecord?.status === "PAID" || currentMonthRecord?.status === "ACKNOWLEDGED";
 
             return (
               <div key={t.id} className="p-4 space-y-4">
@@ -409,17 +483,28 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                     </div>
                   </div>
                   
-                  <button
-                    onClick={() => !isReadOnly && handleMarkAsPaid(t.id)}
-                    disabled={isReadOnly}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                      isPaid
-                        ? "bg-emerald-500 text-white shadow-sm"
-                        : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                    } transition`}
-                  >
-                    {isPaid ? <><Check className="w-3 h-3" /> تم الدفع</> : "قيد الانتظار"}
-                  </button>
+                  <div className="flex flex-col items-end gap-1">
+                    <button
+                      onClick={() => {
+                        setSelectedTherapist(t);
+                        setShowPaymentModal(true);
+                      }}
+                      disabled={isReadOnly || isPaid}
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                        isPaid
+                          ? "bg-emerald-500 text-white shadow-sm cursor-not-allowed"
+                          : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                      } transition`}
+                    >
+                      {isPaid ? <><Check className="w-3 h-3" /> تم الدفع</> : "تسجيل الدفع"}
+                    </button>
+                    {currentMonthRecord?.transferScreenshot && (
+                      <a href={currentMonthRecord.transferScreenshot} target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline font-bold">صورة التحويل</a>
+                    )}
+                    {currentMonthRecord?.receiptDocument && (
+                      <a href={currentMonthRecord.receiptDocument} target="_blank" rel="noreferrer" className="text-[10px] text-purple-600 hover:underline font-bold">إقرار الأخصائي</a>
+                    )}
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
@@ -636,6 +721,72 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                 إغلاق
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Payment Modal */}
+      {showPaymentModal && selectedTherapist && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-[24px] shadow-2xl max-w-md w-full overflow-hidden border border-slate-100">
+            <form onSubmit={finalizeSalary} className="flex flex-col h-full">
+              <div className="p-6 border-b border-slate-100">
+                <h3 className="text-xl font-black text-slate-900">تسجيل دفع الرواتب</h3>
+                <p className="text-xs text-slate-500 mt-1">تأكيد تحويل الراتب للأخصائي: {selectedTherapist.name}</p>
+              </div>
+              <div className="p-6 space-y-5">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-bold text-slate-600">الإجمالي المستحق</span>
+                    <span className="text-xl font-black text-indigo-600">{calculatePayout(selectedTherapist).toLocaleString()} ج.م</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-slate-500">
+                    <span>الراتب الثابت/العمولات</span>
+                    <span className="font-bold">
+                      {selectedTherapist.therapistProfile?.salaryType === "COMMISSION"
+                        ? (selectedTherapist.completedSessionsCount * (selectedTherapist.therapistProfile?.pricePerSession || 0) * 0.6).toLocaleString()
+                        : (selectedTherapist.therapistProfile?.salary || 0).toLocaleString()} ج.م
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">إيصال التحويل (اختياري)</label>
+                  <input
+                    type="file"
+                    accept="image/*,.pdf"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        setPaymentScreenshot(e.target.files[0]);
+                      }
+                    }}
+                    className="w-full text-sm text-slate-500
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-xl file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-indigo-50 file:text-indigo-700
+                      hover:file:bg-indigo-100 transition-colors"
+                  />
+                  <p className="text-xs text-slate-400 mt-2">يرجى إرفاق صورة الحوالة أو سكرين شوت للدفع كإثبات.</p>
+                </div>
+              </div>
+              <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowPaymentModal(false)}
+                  disabled={updating}
+                  className="px-4 py-2 bg-white border border-slate-300 rounded-xl text-slate-700 font-bold hover:bg-slate-100 transition disabled:opacity-50"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  disabled={updating}
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition font-bold disabled:opacity-50 shadow-sm"
+                >
+                  {updating ? "جاري الحفظ..." : "تأكيد الدفع"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
