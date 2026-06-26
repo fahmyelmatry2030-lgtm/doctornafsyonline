@@ -4,7 +4,13 @@ import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
-export default async function BlogPage() {
+type Props = {
+  params: Promise<{ locale: string }>;
+};
+
+export default async function BlogPage({ params }: Props) {
+  const { locale } = await params;
+  const prefix = locale === "en" ? "/en" : "/ar";
   const t = await getTranslations("Blog");
   const { prisma } = await import("@/lib/prisma");
   const posts = await prisma.article.findMany({
@@ -82,7 +88,7 @@ export default async function BlogPage() {
               return (
               <Link
                 key={post.slug}
-                href={`/blog/${post.slug}`}
+                href={`${prefix}/blog/${post.slug}`}
                 className="group flex flex-col bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
@@ -167,13 +173,13 @@ export default async function BlogPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/contact"
+                href={`${prefix}/contact`}
                 className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 font-bold text-[#312E81] transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105"
               >
                 {t("contactBtn")}
               </Link>
               <Link
-                href="/faq"
+                href={`${prefix}/faq`}
                 className="inline-flex items-center gap-2 text-white font-semibold hover:text-[#C7D2FE] transition-colors"
               >
                 {t("faqLink")}
