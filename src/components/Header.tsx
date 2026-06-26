@@ -36,6 +36,7 @@ export function Header({ platformName = "دكتور نفسي", locale = "ar" }: 
     { href: `${prefix}/blog`,         label: t("blog") },
     { href: `${prefix}/about`,        label: t("about") },
     { href: `${prefix}/faq`,          label: t("faq") },
+    { href: `${prefix}/contact`,      label: t("contact") },
   ];
 
   return (

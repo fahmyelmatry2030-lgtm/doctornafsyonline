@@ -10,7 +10,8 @@
     "dashboard": "Dashboard",
     "login": "Log in",
     "register": "Get Started",
-    "logout": "Log out"
+    "logout": "Log out",
+    "contact": "Contact Us"
   },
   "Hero": {
     "badge": "Your Trusted Mental Health Platform",
