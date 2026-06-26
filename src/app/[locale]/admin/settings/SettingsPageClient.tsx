@@ -222,16 +222,8 @@ export function SettingsPageClient({
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-1.5">نسبة عمولة المنصة (%)</label>
                   <div className="space-y-2">
-                    <input
-                      type="range" min={5} max={40} value={commission}
-                      onChange={e => !isReadOnly && setCommission(Number(e.target.value))}
-                      disabled={isReadOnly}
-                      className={`w-full accent-indigo-600 ${isReadOnly ? "cursor-not-allowed opacity-60" : ""}`}
-                    />
-                    <div className="flex justify-between text-xs text-slate-400">
-                      <span>5%</span>
-                      <span className="font-black text-indigo-600 text-base">{commission}%</span>
-                      <span>40%</span>
+                    <div className="w-full px-4 py-3 bg-slate-100 text-slate-500 border border-slate-200 rounded-xl font-bold cursor-not-allowed text-center">
+                      نسبة العمولة ثابتة (المنصة 40% - الأخصائي 60%)
                     </div>
                   </div>
                 </div>

@@ -256,6 +256,7 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
             <thead className="bg-slate-50 text-[#A3AED0] uppercase tracking-wide text-xs border-b border-slate-100">
               <tr>
                 <th className="px-6 py-4 font-bold">الأخصائي</th>
+                <th className="px-6 py-4 font-bold">نظام العمل</th>
                 <th className="px-6 py-4 font-bold">المرتب الشهري</th>
                 <th className="px-6 py-4 font-bold">جلسات هذا الشهر</th>
                 <th className="px-6 py-4 font-bold">إضافي/خصم</th>
@@ -287,6 +288,17 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                           <p className="text-xs text-slate-400 font-medium">{t.email}</p>
                         </div>
                       </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      {profile?.salaryType === "FIXED" ? (
+                        <span className="inline-flex items-center gap-1 text-sky-600 bg-sky-50 border border-sky-200 px-2.5 py-1 rounded-lg text-xs font-bold">
+                          مرتب ثابت
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg text-xs font-bold">
+                          عمولات
+                        </span>
+                      )}
                     </td>
                     <td className="px-6 py-4 font-bold text-slate-900">
                       {profile?.salary || 0} ج.م

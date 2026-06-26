@@ -41,7 +41,7 @@ export type SiteSettings = {
 };
 
 const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitUrl"> & { stripeKey?: string; livekitKey?: string; livekitUrl?: string } = {
-  commission: 20,
+  commission: 40,
   minPrice: 50,
   maxPrice: 1000,
   sessionDuration: 60,
@@ -112,6 +112,9 @@ export async function updateSettings(settings: Partial<SiteSettings>): Promise<S
   // Extract sensitive keys so we do NOT save them to the JSON file
   const { stripeKey, livekitKey, livekitUrl, ...savableSettings } = settings;
   const { stripeKey: cS, livekitKey: cL, livekitUrl: cU, ...currentSavable } = current;
+
+  // Force commission to 40
+  savableSettings.commission = 40;
 
   const updatedSavable = { ...currentSavable, ...savableSettings };
   

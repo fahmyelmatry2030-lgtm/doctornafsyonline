@@ -332,9 +332,10 @@ export function TherapistsTableClient({
           <table className="w-full text-right text-sm">
             <thead className="bg-slate-50 text-slate-500 font-semibold text-xs border-b border-slate-100">
               <tr>
-                <th className="px-5 py-4">الأخصائي والتراخيص</th>
-                <th className="px-5 py-4">التخصصات</th>
-                <th className="px-5 py-4">سعر الجلسة</th>
+                <th className="px-5 py-4 font-bold text-slate-500 w-[20%] text-right">الأخصائي</th>
+                <th className="px-5 py-4 font-bold text-slate-500 w-[15%] text-right">التخصصات</th>
+                <th className="px-5 py-4 font-bold text-slate-500 w-[10%] text-right">نظام العمل</th>
+                <th className="px-5 py-4 font-bold text-slate-500 w-[10%] text-right">سعر الجلسة</th>
                 <th className="px-5 py-4">الخبرة</th>
                 <th className="px-5 py-4">التقييم</th>
                 <th className="px-5 py-4">الجلسات</th>
@@ -404,6 +405,17 @@ export function TherapistsTableClient({
                   </td>
                   <td className="px-5 py-3.5 max-w-[160px]">
                     <p className="text-xs text-slate-600 line-clamp-2">{t.therapistProfile?.specializations || "—"}</p>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    {t.therapistProfile?.salaryType === "FIXED" ? (
+                      <span className="inline-flex items-center gap-1 text-sky-600 bg-sky-50 border border-sky-200 px-2.5 py-1 rounded-lg text-xs font-bold">
+                        مرتب ثابت
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg text-xs font-bold">
+                        عمولات
+                      </span>
+                    )}
                   </td>
                   <td className="px-5 py-3.5 font-bold text-slate-700 text-sm">{t.therapistProfile?.pricePerSession || "—"} ج.م</td>
                   <td className="px-5 py-3.5 text-xs text-slate-600">{t.therapistProfile?.yearsExperience || "—"} سنوات</td>
