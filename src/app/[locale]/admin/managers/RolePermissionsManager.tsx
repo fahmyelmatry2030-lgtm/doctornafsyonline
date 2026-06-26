@@ -17,6 +17,7 @@ const ALL_PAGES = [
   { path: "/admin/support", label: "رسائل الدعم الفني 🎧" },
   { path: "/admin/certificates", label: "شهادات الكورسات والتدريب 🎓" },
   { path: "/admin/customer-service", label: "لوحة تحكم خدمة العملاء 🎯" },
+  { path: "/admin/activity", label: "مراقبة النشاط 📊" },
   { path: "/admin/settings", label: "إعدادات المنصة ⚙️" },
 ];
 

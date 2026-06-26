@@ -266,7 +266,8 @@ export function DashboardLayout({
       const allowedPaths = dynamicPerms[role as string];
       navItems = allAdminNavItems.filter(item => 
         allowedPaths.includes(item.href) || 
-        ["/admin/dashboard", "/admin/profile", "/admin/my-salary"].includes(item.href)
+        ["/admin/dashboard", "/admin/profile", "/admin/my-salary"].includes(item.href) ||
+        (item.href === "/admin/activity" && item.roles?.includes(role as string))
       );
     } else {
       // Fallback: use hardcoded role-based filtering while loading
