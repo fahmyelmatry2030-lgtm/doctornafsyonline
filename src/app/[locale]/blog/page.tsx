@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Clock, ArrowRight, TrendingUp, Heart, Brain, Sparkles, Star } from "lucide-react";
+import { BookOpen, Clock, ArrowRight, TrendingUp, Heart, Brain, Sparkles, Star, User } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
@@ -111,14 +111,22 @@ export default async function BlogPage({ params }: Props) {
                   <p className="text-slate-600 leading-relaxed text-sm flex-1 mb-6 line-clamp-3">
                     {post.content.replace(/<[^>]+>/g, '').substring(0, 150)}...
                   </p>
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                    <div className="flex items-center gap-1.5 text-sm text-slate-400 font-medium">
-                      <Clock className="h-4 w-4" />
-                      {post.readTime || "5 min"}
+                  <div className="flex flex-col gap-3 pt-4 border-t border-slate-100">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-600">
+                      <div className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 text-indigo-600">
+                        <User className="h-3 w-3" />
+                      </div>
+                      {post.author || "إدارة نَفسي"}
                     </div>
-                    <div className="flex items-center gap-2 font-bold text-[#6366F1] group-hover:gap-4 transition-all text-sm">
-                      {t("readNow")}
-                      <ArrowRight className="h-4 w-4" />
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-sm text-slate-400 font-medium">
+                        <Clock className="h-4 w-4" />
+                        {post.readTime || "5 min"}
+                      </div>
+                      <div className="flex items-center gap-2 font-bold text-[#6366F1] group-hover:gap-4 transition-all text-sm">
+                        {t("readNow")}
+                        <ArrowRight className="h-4 w-4" />
+                      </div>
                     </div>
                   </div>
                 </div>
