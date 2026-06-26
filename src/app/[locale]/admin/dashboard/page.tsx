@@ -9,6 +9,8 @@ import {
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboardPage() {
   const session = await auth();
   if (!session?.user) return null;
