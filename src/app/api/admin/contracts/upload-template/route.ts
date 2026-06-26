@@ -58,26 +58,30 @@ export async function POST(request: Request) {
       fileUrl = `/docs/${uniqueFileName}`;
     }
 
-    // Update settings in database
+    // Update settings in database — read directly from DB to avoid auth issues in getSettings()
     const { prisma } = await import("@/lib/prisma");
-    const { getSettings } = await import("@/app/[locale]/admin/settings/actions");
-    const currentSettings = await getSettings();
-    
-    if (templateType === "trial") {
-      currentSettings.trialContractUrl = fileUrl;
-    } else if (templateType === "marketing") {
-      currentSettings.marketingContractUrl = fileUrl;
-    } else if (templateType === "annual") {
-      currentSettings.annualContractUrl = fileUrl;
-    }
 
-    // Strip out secrets before saving (similar to actions.ts)
-    const { stripeKey, livekitKey, livekitUrl, ...savableSettings } = currentSettings;
+    // Read current saved settings directly from DB
+    const dbRecord = await prisma.systemSetting.findUnique({
+      where: { key: "site_settings" }
+    });
+    const currentSaved = dbRecord ? JSON.parse(dbRecord.value) : {};
+
+    // Only update the specific contract URL field, preserve everything else
+    const contractField =
+      templateType === "trial"    ? "trialContractUrl" :
+      templateType === "marketing"? "marketingContractUrl" :
+                                    "annualContractUrl";
+
+    const updatedSettings = {
+      ...currentSaved,
+      [contractField]: fileUrl,
+    };
 
     await prisma.systemSetting.upsert({
       where: { key: "site_settings" },
-      update: { value: JSON.stringify(savableSettings) },
-      create: { key: "site_settings", value: JSON.stringify(savableSettings) }
+      update: { value: JSON.stringify(updatedSettings) },
+      create: { key: "site_settings", value: JSON.stringify(updatedSettings) }
     });
 
     const { revalidatePath } = await import("next/cache");
