@@ -189,9 +189,9 @@ export default function MySalaryPage() {
                   {record.status === "PAID" && !record.receiptDocument && (
                     <div className="flex flex-col gap-2">
                       <a 
-                        href="/receipt_template.pdf" 
-                        download="اقرار_استلام_مستحقات.pdf"
+                        href="/ar/receipt-template" 
                         target="_blank"
+                        rel="noreferrer"
                         className="w-full text-sm font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 px-4 py-2 rounded-xl transition flex items-center justify-center shadow-sm"
                       >
                         تحميل نموذج الإقرار
