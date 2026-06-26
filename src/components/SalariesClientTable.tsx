@@ -540,7 +540,6 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
               </div>
             </div>
           </div>
-        </div>
       )}
 
       {/* Bonus Modal */}
