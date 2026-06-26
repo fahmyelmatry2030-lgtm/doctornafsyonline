@@ -35,6 +35,12 @@ export default function ManagersPage() {
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  // Edit State
+  const [editingManager, setEditingManager] = useState<Manager | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editRole, setEditRole] = useState("");
+  const [editSaving, setEditSaving] = useState(false);
+
   const fetchManagers = async () => {
     try {
       setLoading(true);
@@ -112,6 +118,69 @@ export default function ManagersPage() {
     } catch (err) {
       setError("حدث خطأ في الاتصال");
     }
+  };
+
+  const handleSuspendManager = async (id: string, currentStatus: boolean, name: string) => {
+    if (!confirm(`هل أنت متأكد من رغبتك في ${currentStatus ? 'تفعيل' : 'تجميد'} حساب المدير "${name}"؟`)) return;
+
+    setError("");
+    setSuccess("");
+
+    try {
+      const res = await fetch("/api/admin/managers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, isSuspended: !currentStatus }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setSuccess(`تم ${currentStatus ? 'تفعيل' : 'تجميد'} حساب المدير "${name}" بنجاح`);
+        fetchManagers();
+      } else {
+        setError(data.error || "حدث خطأ أثناء تعديل حالة المدير");
+      }
+    } catch (err) {
+      setError("حدث خطأ في الاتصال");
+    }
+  };
+
+  const handleUpdateManager = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingManager) return;
+    
+    setEditSaving(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const res = await fetch("/api/admin/managers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: editingManager.id, name: editName, role: editRole }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setSuccess(`تم تحديث بيانات المدير "${editName}" بنجاح`);
+        setEditingManager(null);
+        fetchManagers();
+      } else {
+        setError(data.error || "حدث خطأ أثناء تحديث المدير");
+      }
+    } catch (err) {
+      setError("حدث خطأ في الاتصال");
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
+  const openEditModal = (manager: Manager) => {
+    setEditingManager(manager);
+    setEditName(manager.name);
+    setEditRole(manager.role);
   };
 
   const getRoleLabel = (roleStr: string) => {
@@ -331,12 +400,14 @@ export default function ManagersPage() {
                     </span>
                     <div className="flex items-center gap-1.5">
                       <button
+                        onClick={() => openEditModal(manager)}
                         className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
                         title="تعديل بيانات المدير"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
+                        onClick={() => handleSuspendManager(manager.id, manager.isSuspended, manager.name)}
                         className={`p-1.5 rounded-lg transition-all ${manager.isSuspended ? 'text-amber-500 hover:bg-amber-50' : 'text-slate-400 hover:text-amber-600 hover:bg-amber-50'}`}
                         title={manager.isSuspended ? "تفعيل الحساب" : "تجميد الحساب"}
                       >
@@ -364,7 +435,71 @@ export default function ManagersPage() {
           </div>
         )}
       </div>
-    </>)}
+
+      {/* Edit Modal */}
+      {editingManager && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-100">
+            <div className="bg-indigo-600 px-6 py-4 flex items-center justify-between text-white">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                <Edit2 className="w-5 h-5" />
+                تعديل بيانات المدير
+              </h3>
+              <button onClick={() => setEditingManager(null)} className="text-white/70 hover:text-white transition-colors">
+                ✕
+              </button>
+            </div>
+            <div className="p-6">
+              <form onSubmit={handleUpdateManager} className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 block">الاسم كاملاً</label>
+                  <input
+                    type="text"
+                    required
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 block">الدور والصلاحية</label>
+                  <select
+                    value={editRole}
+                    onChange={(e) => setEditRole(e.target.value)}
+                    className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  >
+                    <option value="ADMIN_HR">مدير موارد بشرية</option>
+                    <option value="ADMIN_ACCOUNTING">مدير حسابات</option>
+                    <option value="ADMIN_CUSTOMER_SERVICE">مسؤول خدمة العملاء 🎯</option>
+                    <option value="ADMIN_MARKETING">المبيعات والتسويق 📈</option>
+                    <option value="ADMIN_VIEWER">مراقب — عرض فقط 🔍</option>
+                    <option value="SHIFT_LEADER">قائد الشيفت</option>
+                    <option value="ADMIN">مدير عام</option>
+                  </select>
+                </div>
+                <div className="pt-4 flex gap-3">
+                  <button
+                    type="submit"
+                    disabled={editSaving}
+                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold transition-all disabled:opacity-70"
+                  >
+                    {editSaving ? "جاري الحفظ..." : "حفظ التعديلات"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditingManager(null)}
+                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold transition-all"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      </>)}
     </div>
   );
 }

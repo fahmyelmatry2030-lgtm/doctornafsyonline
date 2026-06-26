@@ -129,3 +129,48 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "فشل في حذف المدير" }, { status: 500 });
   }
 }
+
+// PUT Handler
+export async function PUT(req: Request) {
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
+  try {
+    const data = await req.json();
+    const { id, name, role, isSuspended } = data;
+
+    if (!id) {
+      return NextResponse.json({ error: "معرف المدير مطلوب" }, { status: 400 });
+    }
+
+    // Prevent modifying oneself
+    if (session.user.id === id) {
+      return NextResponse.json({ error: "لا يمكنك تعديل حسابك الشخصي" }, { status: 400 });
+    }
+
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name;
+    if (role !== undefined) updateData.role = role;
+    if (isSuspended !== undefined) updateData.isSuspended = isSuspended;
+
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: updateData,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        isSuspended: true
+      }
+    });
+
+    return NextResponse.json(updatedUser);
+  } catch (error) {
+    console.error("Update manager error:", error);
+    return NextResponse.json({ error: "حدث خطأ أثناء تحديث المدير" }, { status: 500 });
+  }
+}
