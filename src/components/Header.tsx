@@ -48,7 +48,7 @@ export function Header({ platformName = "دكتور نفسي", locale = "ar" }: 
             <img
               src="/logo.png?v=3"
               alt={platformName}
-              className="h-[65px] sm:h-[80px] w-auto object-contain drop-shadow-sm pb-1"
+              className="max-h-[60px] sm:max-h-[75px] w-auto object-contain drop-shadow-sm"
             />
           </Link>
 

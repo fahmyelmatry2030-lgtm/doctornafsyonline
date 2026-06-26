@@ -282,7 +282,7 @@ export function DashboardLayout({
       {/* Mobile Header (Visible only on small screens) */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-[80px] bg-white border-b border-slate-200 z-30 flex items-center justify-between px-4 shadow-sm">
         <Link href="/" className="inline-block transition-transform hover:scale-105">
-          <img src="/logo.png?v=3" alt="دكتور نفسي اونلاين" className="h-[65px] w-auto object-contain drop-shadow-sm pb-1" />
+          <img src="/logo.png?v=3" alt="دكتور نفسي أونلاين" className="max-h-[60px] w-auto object-contain drop-shadow-sm" />
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
