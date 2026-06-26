@@ -42,6 +42,15 @@ export const DEFAULT_PERMISSIONS: Record<string, string[]> = {
     "/admin/shift-leader",
     "/admin/my-salary",
   ],
+  ADMIN_SALES: [
+    "/admin/dashboard",
+    "/admin/my-salary",
+  ],
+  ADMIN_MARKETING: [
+    "/admin/dashboard",
+    "/admin/marketing",
+    "/admin/my-salary",
+  ],
 };
 
 export async function readPermissions(): Promise<Record<string, string[]>> {
@@ -72,13 +81,17 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     // Validate structure
-    const validRoles = ["ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "ADMIN_CUSTOMER_SERVICE"];
+    const validRoles = [
+      "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", 
+      "ADMIN_CUSTOMER_SERVICE", "ADMIN_SALES", "ADMIN_MARKETING"
+    ];
     const validPages = [
       "/admin/dashboard", "/admin/operations", "/admin/therapists",
       "/admin/patients", "/admin/reports", "/admin/salaries",
       "/admin/content", "/admin/marketing", "/admin/support",
       "/admin/certificates", "/admin/settings", "/admin/shift-leader",
       "/admin/managers", "/admin/customer-service", "/admin/my-salary",
+      "/admin/activity", "/admin/employee-salaries"
     ];
 
     const validated: Record<string, string[]> = {};
