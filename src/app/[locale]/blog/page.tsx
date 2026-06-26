@@ -2,44 +2,14 @@ import Link from "next/link";
 import { BookOpen, Clock, ArrowRight, TrendingUp, Heart, Brain, Sparkles, Star } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
+export const dynamic = "force-dynamic";
+
 export default async function BlogPage() {
   const t = await getTranslations("Blog");
-
-  const posts = [
-    {
-      title: t("post1Title"),
-      description: t("post1Desc"),
-      href: "/blog/choose-therapist",
-      category: t("post1Cat"),
-      readTime: t("post1Time"),
-      emoji: "🎯",
-      color: "from-[#6366F1] to-[#8B5CF6]",
-      bgLight: "bg-[#EEF2FF]",
-      textColor: "text-[#6366F1]",
-    },
-    {
-      title: t("post2Title"),
-      description: t("post2Desc"),
-      href: "/blog/online-therapy-benefits",
-      category: t("post2Cat"),
-      readTime: t("post2Time"),
-      emoji: "💻",
-      color: "from-teal-500 to-emerald-600",
-      bgLight: "bg-teal-50",
-      textColor: "text-teal-700",
-    },
-    {
-      title: t("post3Title"),
-      description: t("post3Desc"),
-      href: "/blog/first-session-guide",
-      category: t("post3Cat"),
-      readTime: t("post3Time"),
-      emoji: "🚀",
-      color: "from-violet-500 to-purple-600",
-      bgLight: "bg-violet-50",
-      textColor: "text-violet-700",
-    },
-  ];
+  const { prisma } = await import("@/lib/prisma");
+  const posts = await prisma.article.findMany({
+    orderBy: { createdAt: "desc" },
+  });
 
   const tips = [
     { icon: <Brain className="w-6 h-6" />, title: t("tip1Title"), desc: t("tip1Desc") },
@@ -105,36 +75,40 @@ export default async function BlogPage() {
           </div>
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post, idx) => (
+            {posts.map((post, idx) => {
+              const bgColors = ["from-[#6366F1] to-[#8B5CF6]", "from-teal-500 to-emerald-600", "from-violet-500 to-purple-600", "from-pink-500 to-rose-600", "from-blue-500 to-cyan-600"];
+              const textColors = ["text-[#6366F1]", "text-teal-700", "text-violet-700", "text-pink-700", "text-blue-700"];
+              const colorIdx = idx % bgColors.length;
+              return (
               <Link
-                key={post.href}
-                href={post.href}
+                key={post.slug}
+                href={`/blog/${post.slug}`}
                 className="group flex flex-col bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 {/* Card Header */}
-                <div className={`relative h-44 bg-gradient-to-br ${post.color} flex items-center justify-center overflow-hidden`}>
+                <div className={`relative h-44 bg-gradient-to-br ${bgColors[colorIdx]} flex items-center justify-center overflow-hidden`}>
                   <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 30% 70%, white 0%, transparent 60%)' }} />
                   <span className="text-6xl drop-shadow-lg group-hover:scale-125 transition-transform duration-500">
-                    {post.emoji}
+                    {post.icon || "📝"}
                   </span>
-                  <span className={`absolute top-4 right-4 text-xs font-bold px-3 py-1.5 rounded-full bg-white ${post.textColor}`}>
-                    {post.category}
+                  <span className={`absolute top-4 right-4 text-xs font-bold px-3 py-1.5 rounded-full bg-white ${textColors[colorIdx]}`}>
+                    {post.category || "General"}
                   </span>
                 </div>
 
                 {/* Card Body */}
                 <div className="p-7 flex flex-col flex-1">
-                  <h3 className="mb-3 text-xl font-black text-slate-900 leading-snug group-hover:text-[#6366F1] transition-colors">
+                  <h3 className="mb-3 text-xl font-black text-slate-900 leading-snug group-hover:text-[#6366F1] transition-colors line-clamp-2">
                     {post.title}
                   </h3>
-                  <p className="text-slate-600 leading-relaxed text-sm flex-1 mb-6">
-                    {post.description}
+                  <p className="text-slate-600 leading-relaxed text-sm flex-1 mb-6 line-clamp-3">
+                    {post.content.replace(/<[^>]+>/g, '').substring(0, 150)}...
                   </p>
                   <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                     <div className="flex items-center gap-1.5 text-sm text-slate-400 font-medium">
                       <Clock className="h-4 w-4" />
-                      {post.readTime}
+                      {post.readTime || "5 min"}
                     </div>
                     <div className="flex items-center gap-2 font-bold text-[#6366F1] group-hover:gap-4 transition-all text-sm">
                       {t("readNow")}
@@ -143,7 +117,7 @@ export default async function BlogPage() {
                   </div>
                 </div>
               </Link>
-            ))}
+            )})}
           </div>
         </div>
       </section>
