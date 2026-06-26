@@ -97,12 +97,15 @@ export async function getSettings(): Promise<SiteSettings> {
   const isAdmin = session?.user?.role === "ADMIN";
 
   // Always bind credentials from environment variables for maximum security, but only expose to Super Admin
-  return {
+  const finalSettings = {
     ...settings,
-    stripeKey: isAdmin ? (process.env.STRIPE_SECRET_KEY || settings.stripeKey || "sk_test_***") : "sk_test_***",
-    livekitKey: isAdmin ? (process.env.LIVEKIT_API_SECRET || settings.livekitKey || "lk_secret_***") : "lk_secret_***",
+    commission: 40, // Force commission to 40 regardless of DB
+    stripeKey: isAdmin && process.env.STRIPE_SECRET_KEY ? process.env.STRIPE_SECRET_KEY : settings.stripeKey || "sk_test_***",
+    livekitKey: isAdmin && process.env.LIVEKIT_API_SECRET ? process.env.LIVEKIT_API_SECRET : settings.livekitKey || "lk_secret_***",
     livekitUrl: process.env.LIVEKIT_URL || settings.livekitUrl || "wss://your-livekit.livekit.cloud",
   };
+
+  return finalSettings;
 }
 
 export async function updateSettings(settings: Partial<SiteSettings>): Promise<SiteSettings> {

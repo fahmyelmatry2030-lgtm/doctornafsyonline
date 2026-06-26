@@ -585,8 +585,8 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
           <div className="grid gap-4 md:grid-cols-3">
             {[
               { label: "إجمالي المدفوعات المحصلة", value: `${totalRevenue.toLocaleString()} ج.م`, desc: `من إجمالي ${completedCount} جلسة مكتملة`, icon: <DollarSign className="w-5 h-5" />, color: "text-indigo-600", bg: "bg-indigo-50" },
-              { label: "حصة المنصة المحققة", value: `${platformRevenue.toLocaleString()} ج.م`, desc: `بنسبة عمولة ${commissionRate}% ديناميكياً`, icon: <TrendingUp className="w-5 h-5" />, color: "text-emerald-600", bg: "bg-emerald-50" },
-              { label: "حصة الأخصائيين المستحقة", value: `${therapistRevenue.toLocaleString()} ج.م`, desc: `بنسبة ${100 - commissionRate}% للشركاء الأخصائيين`, icon: <Award className="w-5 h-5" />, color: "text-purple-600", bg: "bg-purple-50" },
+              { label: "حصة المنصة المحققة", value: `${platformRevenue.toLocaleString()} ج.م`, desc: `بنسبة عمولة 40% ثابتة`, icon: <TrendingUp className="w-5 h-5" />, color: "text-emerald-600", bg: "bg-emerald-50" },
+              { label: "حصة الأخصائيين المستحقة", value: `${therapistRevenue.toLocaleString()} ج.م`, desc: `بنسبة 60% للشركاء الأخصائيين`, icon: <Award className="w-5 h-5" />, color: "text-purple-600", bg: "bg-purple-50" },
             ].map(stat => (
               <div key={stat.label} className="glass rounded-2xl border border-[var(--color-border-soft)] p-5 flex items-center gap-4">
                 <div className={`${stat.bg} ${stat.color} p-3 rounded-xl shrink-0`}>{stat.icon}</div>
