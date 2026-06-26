@@ -38,29 +38,32 @@ export async function POST(request: Request) {
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const base64 = buffer.toString("base64");
 
-    // Save PDF as base64 in a dedicated DB key — 100% persistent, no external service
-    const dbKey = `contract_pdf_${templateType}`;
-    await prisma.systemSetting.upsert({
-      where: { key: dbKey },
-      update: { value: base64 },
-      create: { key: dbKey, value: base64 },
-    });
+    let fileUrl = "";
 
-    // The serving URL is our own API route — always works
-    const fileUrl = `/api/contracts/${templateType}`;
+    try {
+      // Upload PDF to Cloudinary as "raw" resource type for public access
+      const { uploadPdfToCloudinary } = await import("@/lib/cloudinary");
+      const fileName = `${templateType}_contract_${Date.now()}`;
+      fileUrl = await uploadPdfToCloudinary(buffer, "contracts", fileName);
+      console.log(`[Contract Upload] Uploaded ${templateType} contract to Cloudinary:`, fileUrl);
+    } catch (cloudinaryError) {
+      console.error("[Contract Upload] Cloudinary failed:", cloudinaryError);
+      return NextResponse.json({ 
+        error: "فشل رفع الملف. تأكد من إعدادات Cloudinary في لوحة Vercel." 
+      }, { status: 500 });
+    }
 
-    // Update the URL in site_settings
-    const dbRecord = await prisma.systemSetting.findUnique({
-      where: { key: "site_settings" },
-    });
-    const currentSaved = dbRecord ? JSON.parse(dbRecord.value) : {};
-
+    // Save the Cloudinary URL in site_settings
     const contractField =
       templateType === "trial"     ? "trialContractUrl" :
       templateType === "marketing" ? "marketingContractUrl" :
                                      "annualContractUrl";
+
+    const dbRecord = await prisma.systemSetting.findUnique({
+      where: { key: "site_settings" },
+    });
+    const currentSaved = dbRecord ? JSON.parse(dbRecord.value) : {};
 
     const updatedSettings = {
       ...currentSaved,

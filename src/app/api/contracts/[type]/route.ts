@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-// GET /api/contracts/[type] — serves the PDF stored in the database
+// GET /api/contracts/[type] — redirects to the Cloudinary PDF URL
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ type: string }> }
@@ -15,28 +15,34 @@ export async function GET(
   }
 
   try {
-    const dbKey = `contract_pdf_${type}`;
-    const record = await prisma.systemSetting.findUnique({
-      where: { key: dbKey },
+    const contractField =
+      type === "trial"     ? "trialContractUrl" :
+      type === "marketing" ? "marketingContractUrl" :
+                             "annualContractUrl";
+
+    const dbRecord = await prisma.systemSetting.findUnique({
+      where: { key: "site_settings" },
     });
 
-    if (!record) {
+    if (!dbRecord) {
       return new NextResponse("العقد غير موجود. يرجى رفع العقد من صفحة الإعدادات.", {
         status: 404,
         headers: { "Content-Type": "text/plain; charset=utf-8" },
       });
     }
 
-    const buffer = Buffer.from(record.value, "base64");
+    const settings = JSON.parse(dbRecord.value);
+    const contractUrl = settings[contractField];
 
-    return new NextResponse(buffer, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `inline; filename="${type}_contract.pdf"`,
-        "Cache-Control": "public, max-age=3600",
-      },
-    });
+    if (!contractUrl || contractUrl.startsWith("/docs/")) {
+      return new NextResponse("العقد غير موجود. يرجى رفع العقد من صفحة الإعدادات.", {
+        status: 404,
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      });
+    }
+
+    // Redirect to the Cloudinary URL
+    return NextResponse.redirect(contractUrl);
   } catch (error) {
     console.error("Contract serve error:", error);
     return new NextResponse("حدث خطأ", { status: 500 });
