@@ -5,7 +5,6 @@ import { useSession, signOut } from "next-auth/react";
 import { LayoutDashboard, LogOut, User, Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { InstallAppButton } from "@/components/InstallAppButton";
 import { useTranslations } from "next-intl";
 
 export function Header({ platformName = "دكتور نفسي", locale = "ar" }: { platformName?: string; locale?: string }) {
@@ -71,7 +70,6 @@ export function Header({ platformName = "دكتور نفسي", locale = "ar" }: 
           {/* Right side: auth buttons + hamburger */}
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle />
-            <InstallAppButton />
 
             {/* Language Switcher */}
             <button
