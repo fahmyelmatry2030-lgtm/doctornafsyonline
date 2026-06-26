@@ -145,9 +145,9 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: "معرف المدير مطلوب" }, { status: 400 });
     }
 
-    // Prevent modifying oneself
-    if (session.user.id === id) {
-      return NextResponse.json({ error: "لا يمكنك تعديل حسابك الشخصي" }, { status: 400 });
+    // Allow users to modify their own accounts, but maybe prevent self-suspension
+    if (session.user.id === id && isSuspended === true) {
+      return NextResponse.json({ error: "لا يمكنك تجميد حسابك الشخصي" }, { status: 400 });
     }
 
     const updateData: any = {};
