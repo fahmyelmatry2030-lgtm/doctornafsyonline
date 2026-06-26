@@ -241,6 +241,7 @@ export function DashboardLayout({
       { name: t("adminHome"), href: "/admin/dashboard", icon: <Home className="h-5 w-5" />, roles: null },
       { name: t("manageManagers"), href: "/admin/managers", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN"] },
       { name: t("manageShifts"), href: "/admin/shift-leader", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING", "ADMIN_VIEWER", "ADMIN_CUSTOMER_SERVICE"] },
+      { name: "مراقبة النشاط", href: "/admin/activity", icon: <Activity className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_ACCOUNTING"] },
       { name: t("verifyTherapists"), href: "/admin/therapists", icon: <ShieldCheck className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
       { name: t("managePatients"), href: "/admin/patients", icon: <Users className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_HR", "ADMIN_VIEWER"] },
       { name: t("manageTherapistSalaries"), href: "/admin/salaries", icon: <CreditCard className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_ACCOUNTING", "ADMIN_VIEWER"] },
