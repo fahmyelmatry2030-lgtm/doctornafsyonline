@@ -48,7 +48,7 @@ function StaffIDCard({ member }: { member: StaffMember }) {
       {/* Logo */}
       <div className="pt-4 pb-1 flex flex-col items-center gap-1">
         <img
-          src="/logo.png"
+          src="/logo.png?v=5"
           alt="Doctor Nafsy"
           className="h-7 w-auto object-contain rounded"
         />

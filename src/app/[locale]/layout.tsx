@@ -64,9 +64,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     manifest: "/manifest.json",
     icons: {
-      icon: "/logo.png?v=3",
-      shortcut: "/logo.png?v=3",
-      apple: "/logo.png?v=3",
+      icon: "/logo.png?v=5",
+      shortcut: "/logo.png?v=5",
+      apple: "/logo.png?v=5",
     },
   };
 }

@@ -93,7 +93,7 @@ export default function RegisterForm() {
         {/* Header */}
         <div className="text-center mb-10">
           <Link href="/" className="inline-block transition-transform hover:scale-105">
-            <img src="/logo.png?v=3" alt="Logo" className="h-14 w-auto mx-auto object-contain" />
+            <img src="/logo.png?v=5" alt="Logo" className="h-14 w-auto mx-auto object-contain" />
           </Link>
           <h2 className="mt-6 text-3xl font-black tracking-tight text-[var(--color-foreground)]">
             {t("title")}

@@ -10,7 +10,7 @@ export default function GlobalLoading() {
         {/* اللوجو في المنتصف مع تأثير نبض */}
         <div className="relative w-24 h-24 rounded-full overflow-hidden animate-pulse shadow-lg bg-white flex items-center justify-center p-2">
           <Image 
-            src="/logo.png" 
+            src="/logo.png?v=5" 
             alt="جاري التحميل..." 
             fill 
             className="object-contain p-1"
