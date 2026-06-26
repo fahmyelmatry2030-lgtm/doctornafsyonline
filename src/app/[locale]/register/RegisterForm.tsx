@@ -22,6 +22,7 @@ export default function RegisterForm() {
     specializations: "",
     yearsExperience: "",
     pricePerSession: "",
+    salaryType: "COMMISSION",
   });
   
   const [error, setError] = useState("");
@@ -299,35 +300,55 @@ export default function RegisterForm() {
                         <input
                           type="number"
                           required
-                          min="0"
+                          min="1"
                           value={form.yearsExperience}
                           onChange={(e) => setForm({ ...form, yearsExperience: e.target.value })}
                           className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
-                          placeholder="مثال: 5"
+                          placeholder="1"
                         />
                       </div>
                     </div>
 
-                    {/* Price per session */}
+                    {/* Salary Type (Work Model) */}
                     <div>
                       <label className="block text-sm font-bold text-slate-700 mb-2">
-                        {t("pricePerSessionLabel")}
+                        نظام العمل المفضل
                       </label>
                       <div className="relative">
-                        <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
-                          <DollarSign className="h-5 w-5" />
-                        </div>
-                        <input
-                          type="number"
+                        <select
                           required
-                          min="50"
-                          value={form.pricePerSession}
-                          onChange={(e) => setForm({ ...form, pricePerSession: e.target.value })}
-                          className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
-                          placeholder="مثال: 300"
-                        />
+                          value={form.salaryType}
+                          onChange={(e) => setForm({ ...form, salaryType: e.target.value })}
+                          className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 px-4 text-slate-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium appearance-none"
+                        >
+                          <option value="COMMISSION">نظام العمولات (تحدد سعر جلستك)</option>
+                          <option value="FIXED">نظام التوظيف (مرتب شهري ثابت)</option>
+                        </select>
                       </div>
                     </div>
+
+                    {/* Price Per Session (Only if COMMISSION) */}
+                    {form.salaryType === "COMMISSION" && (
+                      <div>
+                        <label className="block text-sm font-bold text-slate-700 mb-2">
+                          {t("pricePerSessionLabel")}
+                        </label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                            <DollarSign className="h-5 w-5" />
+                          </div>
+                          <input
+                            type="number"
+                            required={form.salaryType === "COMMISSION"}
+                            min="100"
+                            value={form.pricePerSession}
+                            onChange={(e) => setForm({ ...form, pricePerSession: e.target.value })}
+                            className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
+                            placeholder="300"
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 

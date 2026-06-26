@@ -13,6 +13,7 @@ type TherapistProfile = {
   user: {
     name: string;
   };
+  salaryType?: "FIXED" | "COMMISSION";
 };
 
 type TherapistProfileFormProps = {
@@ -108,12 +109,18 @@ export default function TherapistProfileForm({ profile, settings }: TherapistPro
             onChange={(e) => setPricePerSession(parseInt(e.target.value) || 0)}
             min={settings.minPrice} 
             max={settings.maxPrice} 
-            className="block w-full rounded-xl border border-[var(--color-border-soft)] bg-white/50 py-3 pl-12 pr-4 text-slate-900 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-sm" 
+            disabled={profile.salaryType === "FIXED"}
+            className={`block w-full rounded-xl border border-[var(--color-border-soft)] py-3 pl-12 pr-4 text-slate-900 transition-all shadow-sm ${profile.salaryType === "FIXED" ? "bg-slate-100 cursor-not-allowed opacity-70" : "bg-white/50 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20"}`}
           />
           <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-500 font-semibold">
             ج.م
           </div>
         </div>
+        {profile.salaryType === "FIXED" && (
+          <p className="mt-2 text-xs text-amber-600 font-medium">
+            أنت تعمل بنظام المرتب الشهري الثابت، لذلك يتم تحديد سعر الجلسة من قِبل الإدارة ولا يمكنك تعديله من هنا.
+          </p>
+        )}
       </div>
 
       <div>

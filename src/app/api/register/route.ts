@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { 
       name, email, password, phone, gender, role,
-      specializations, yearsExperience, pricePerSession 
+      specializations, yearsExperience, pricePerSession, salaryType
     } = body as {
       name: string;
       email: string;
@@ -20,6 +20,7 @@ export async function POST(request: Request) {
       specializations?: string;
       yearsExperience?: string;
       pricePerSession?: string;
+      salaryType?: "FIXED" | "COMMISSION";
     };
 
     if (!name || !email || !password) {
@@ -78,8 +79,9 @@ export async function POST(request: Request) {
             create: {
               bio: "أخصائي نفسي جديد",
               specializations: specializations ? JSON.stringify(specializations.split(',').map(s => s.trim())) : JSON.stringify(["استشارات عامة"]),
-              pricePerSession: pricePerSession ? Number(pricePerSession) : 300,
+              pricePerSession: (salaryType === "FIXED" || !pricePerSession) ? 300 : Number(pricePerSession),
               yearsExperience: yearsExperience ? Number(yearsExperience) : 1,
+              salaryType: salaryType === "FIXED" ? "FIXED" : "COMMISSION",
             },
           },
         }),

@@ -12,18 +12,31 @@ export async function updateTherapistProfile(formData: FormData) {
     return { success: false, error: "غير مصرح لك بالقيام بهذا الإجراء" };
   }
 
+  const existingProfile = await prisma.therapistProfile.findUnique({ where: { userId } });
+  if (!existingProfile) {
+    return { success: false, error: "الملف غير موجود" };
+  }
+
   const bio = (formData.get("bio") as string) || "";
   const specializations = (formData.get("specializations") as string) || "";
-  let pricePerSession = parseInt((formData.get("pricePerSession") as string) || "0");
-  const yearsExperience = parseInt((formData.get("yearsExperience") as string) || "1");
+  const yearsExperienceRaw = formData.get("yearsExperience") as string;
+  const yearsExperience = parseInt(yearsExperienceRaw || String(existingProfile.yearsExperience));
   const isAvailable = formData.get("isAvailable") === "true";
 
-  const currentSettings = await getSettings();
-  if (isNaN(pricePerSession) || pricePerSession < currentSettings.minPrice) {
-    pricePerSession = currentSettings.minPrice;
-  }
-  if (pricePerSession > currentSettings.maxPrice) {
-    pricePerSession = currentSettings.maxPrice;
+  let pricePerSession = existingProfile.pricePerSession;
+
+  if (existingProfile.salaryType !== "FIXED") {
+    const priceRaw = formData.get("pricePerSession") as string;
+    if (priceRaw) {
+      pricePerSession = parseInt(priceRaw);
+      const currentSettings = await getSettings();
+      if (isNaN(pricePerSession) || pricePerSession < currentSettings.minPrice) {
+        pricePerSession = currentSettings.minPrice;
+      }
+      if (pricePerSession > currentSettings.maxPrice) {
+        pricePerSession = currentSettings.maxPrice;
+      }
+    }
   }
 
   try {
