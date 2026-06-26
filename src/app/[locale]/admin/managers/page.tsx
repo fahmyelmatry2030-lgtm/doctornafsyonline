@@ -459,6 +459,12 @@ export default function ManagersPage() {
               </button>
             </div>
             <div className="p-6">
+              {error && (
+                <div className="mb-4 bg-red-50 text-red-600 p-3 rounded-xl text-sm border border-red-100 flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span>{error}</span>
+                </div>
+              )}
               <form onSubmit={handleUpdateManager} className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-slate-700 block">الاسم كاملاً</label>
