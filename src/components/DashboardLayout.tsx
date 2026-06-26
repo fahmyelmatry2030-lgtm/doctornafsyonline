@@ -219,7 +219,7 @@ export function DashboardLayout({
       { name: t("schedule"), href: "/therapist/schedule", icon: <Calendar className="h-5 w-5" /> },
       { name: t("notificationsTitle"), href: "/therapist/notifications", icon: <Bell className="h-5 w-5" /> },
       { name: t("treatmentRoom"), href: "/therapist/messages", icon: <MessageCircle className="h-5 w-5" /> },
-      { name: t("mySalary"), href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" /> },
+      { name: t("mySalary"), href: "/therapist/earnings", icon: <DollarSign className="h-5 w-5" /> },
       { name: t("profile"), href: "/therapist/profile", icon: <UserIcon className="h-5 w-5" /> },
       { name: t("settings"), href: "/therapist/settings", icon: <Settings className="h-5 w-5" /> },
     ];
