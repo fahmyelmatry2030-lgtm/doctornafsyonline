@@ -314,11 +314,19 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                       {employee.baseSalary + empBonusesTotal} ج.م
                     </td>
                     <td className="px-6 py-4">
-                      {isPaid ? (
-                        <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded">تم الدفع</span>
-                      ) : (
-                        <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded">معلق</span>
-                      )}
+                      <div className="flex flex-col gap-1">
+                        {isPaid ? (
+                          <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded w-max">تم الدفع</span>
+                        ) : (
+                          <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded w-max">معلق</span>
+                        )}
+                        {currentMonthRecord?.paymentScreenshot && (
+                          <a href={currentMonthRecord.paymentScreenshot} target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline mt-1">صورة التحويل</a>
+                        )}
+                        {currentMonthRecord?.receiptDocument && (
+                          <a href={currentMonthRecord.receiptDocument} target="_blank" rel="noreferrer" className="text-[10px] text-purple-600 hover:underline">إقرار الموظف</a>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-2">
