@@ -96,24 +96,34 @@ export default function TherapistSalaryHistoryClient({ history }: Props) {
                   )}
 
                   {record.status === "PAID" && !record.receiptDocument && (
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*,application/pdf"
-                        onChange={(e) => {
-                          if (e.target.files && e.target.files[0]) {
-                            handleUploadReceipt(record.id, e.target.files[0]);
-                          }
-                        }}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        disabled={uploadingReceipt === record.id}
-                      />
-                      <button 
-                        disabled={uploadingReceipt === record.id}
-                        className="w-full text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl transition flex items-center justify-center disabled:opacity-50 shadow-sm"
+                    <div className="flex flex-col gap-2">
+                      <a 
+                        href="/receipt_template.pdf" 
+                        download="اقرار_استلام_مستحقات.pdf"
+                        target="_blank"
+                        className="w-full text-sm font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 px-4 py-2 rounded-xl transition flex items-center justify-center shadow-sm"
                       >
-                        {uploadingReceipt === record.id ? "جاري الرفع..." : "إرفاق إقرار الاستلام"}
-                      </button>
+                        تحميل نموذج الإقرار
+                      </a>
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*,application/pdf"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              handleUploadReceipt(record.id, e.target.files[0]);
+                            }
+                          }}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          disabled={uploadingReceipt === record.id}
+                        />
+                        <button 
+                          disabled={uploadingReceipt === record.id}
+                          className="w-full text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl transition flex items-center justify-center disabled:opacity-50 shadow-sm"
+                        >
+                          {uploadingReceipt === record.id ? "جاري الرفع..." : "إرفاق الإقرار الموقع"}
+                        </button>
+                      </div>
                     </div>
                   )}
 
