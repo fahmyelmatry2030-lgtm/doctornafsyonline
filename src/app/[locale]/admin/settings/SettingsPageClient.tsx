@@ -467,9 +467,13 @@ export function SettingsPageClient({
                         </h4>
                         <p className="text-xs text-slate-500 max-w-xl">{tpl.desc}</p>
                         <div className="pt-2 flex items-center gap-3">
-                          <a href={tpl.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
-                            <Eye className="w-3.5 h-3.5" /> عرض النموذج الحالي
-                          </a>
+                          {tpl.fileUrl && !tpl.fileUrl.startsWith("/docs/") ? (
+                            <a href={tpl.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                              <Eye className="w-3.5 h-3.5" /> عرض النموذج الحالي
+                            </a>
+                          ) : (
+                            <span className="text-xs text-amber-600 font-bold">⚠️ لم يتم رفع نموذج بعد</span>
+                          )}
                         </div>
                       </div>
                       

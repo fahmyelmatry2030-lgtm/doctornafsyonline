@@ -6,13 +6,12 @@ import { revalidatePath } from "next/cache";
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user) {
-    return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
+    return NextResponse.json({ error: "غير مصرح - لم يتم تسجيل الدخول" }, { status: 401 });
   }
 
-  // Allow any admin role
-  const role = session.user.role || "";
-  if (!role.startsWith("ADMIN")) {
-    return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
+  const role = (session.user.role || "").toUpperCase();
+  if (!role.includes("ADMIN")) {
+    return NextResponse.json({ error: `غير مصرح - دورك: ${session.user.role}` }, { status: 401 });
   }
 
   try {
@@ -28,25 +27,36 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "نوع النموذج غير صالح" }, { status: 400 });
     }
 
-    // 10MB limit
     if (file.size > 10 * 1024 * 1024) {
       return NextResponse.json({ error: "حجم الملف يجب ألا يتجاوز 10 ميجابايت" }, { status: 400 });
     }
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const base64 = buffer.toString("base64");
 
-    // Store PDF as base64 in DB (LongText column — supports up to 4GB)
-    const dbKey = `contract_pdf_${templateType}`;
-    await prisma.systemSetting.upsert({
-      where: { key: dbKey },
-      update: { value: base64 },
-      create: { key: dbKey, value: base64 },
-    });
+    let fileUrl = "";
 
-    // Update URL in site_settings to point to our API
-    const fileUrl = `/api/contracts/${templateType}`;
+    // Try Cloudinary first
+    try {
+      const { uploadPdfToCloudinary } = await import("@/lib/cloudinary");
+      const fileName = `${templateType}_contract_${Date.now()}`;
+      fileUrl = await uploadPdfToCloudinary(buffer, "contracts", fileName);
+      console.log("[Contract] Uploaded to Cloudinary:", fileUrl);
+    } catch (cloudErr: any) {
+      console.warn("[Contract] Cloudinary failed, saving to DB:", cloudErr.message);
+      
+      // Fallback: save to DB as base64
+      const base64 = buffer.toString("base64");
+      const dbKey = `contract_pdf_${templateType}`;
+      await prisma.systemSetting.upsert({
+        where: { key: dbKey },
+        update: { value: base64 },
+        create: { key: dbKey, value: base64 },
+      });
+      fileUrl = `/api/contracts/${templateType}`;
+    }
+
+    // Save URL in site_settings
     const contractField =
       templateType === "trial"     ? "trialContractUrl" :
       templateType === "marketing" ? "marketingContractUrl" :
@@ -67,7 +77,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, url: fileUrl });
   } catch (error: any) {
-    console.error("Template upload error:", error);
-    return NextResponse.json({ error: `فشل: ${error.message}` }, { status: 500 });
+    console.error("Upload error:", error);
+    return NextResponse.json({ error: error.message || "خطأ غير متوقع" }, { status: 500 });
   }
 }
