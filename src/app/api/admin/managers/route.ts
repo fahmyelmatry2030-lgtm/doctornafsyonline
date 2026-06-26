@@ -139,7 +139,7 @@ export async function PUT(req: Request) {
 
   try {
     const data = await req.json();
-    const { id, name, role, isSuspended } = data;
+    const { id, name, role, isSuspended, email, password } = data;
 
     if (!id) {
       return NextResponse.json({ error: "معرف المدير مطلوب" }, { status: 400 });
@@ -154,6 +154,19 @@ export async function PUT(req: Request) {
     if (name !== undefined) updateData.name = name;
     if (role !== undefined) updateData.role = role;
     if (isSuspended !== undefined) updateData.isSuspended = isSuspended;
+    
+    if (email) {
+      const existingUser = await prisma.user.findUnique({ where: { email } });
+      if (existingUser && existingUser.id !== id) {
+        return NextResponse.json({ error: "البريد الإلكتروني مسجل مسبقاً" }, { status: 400 });
+      }
+      updateData.email = email;
+    }
+
+    if (password && password.trim() !== "") {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateData.password = hashedPassword;
+    }
 
     const updatedUser = await prisma.user.update({
       where: { id },

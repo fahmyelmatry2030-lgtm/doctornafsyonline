@@ -35,10 +35,11 @@ export default function ManagersPage() {
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // Edit State
   const [editingManager, setEditingManager] = useState<Manager | null>(null);
   const [editName, setEditName] = useState("");
   const [editRole, setEditRole] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editPassword, setEditPassword] = useState("");
   const [editSaving, setEditSaving] = useState(false);
 
   const fetchManagers = async () => {
@@ -158,7 +159,13 @@ export default function ManagersPage() {
       const res = await fetch("/api/admin/managers", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: editingManager.id, name: editName, role: editRole }),
+        body: JSON.stringify({ 
+          id: editingManager.id, 
+          name: editName, 
+          role: editRole,
+          email: editEmail,
+          password: editPassword 
+        }),
       });
 
       const data = await res.json();
@@ -181,6 +188,8 @@ export default function ManagersPage() {
     setEditingManager(manager);
     setEditName(manager.name);
     setEditRole(manager.role);
+    setEditEmail(manager.email);
+    setEditPassword("");
   };
 
   const getRoleLabel = (roleStr: string) => {
@@ -459,6 +468,28 @@ export default function ManagersPage() {
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 block">البريد الإلكتروني</label>
+                  <input
+                    type="email"
+                    required
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                    dir="ltr"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 block">كلمة المرور الجديدة (اختياري)</label>
+                  <input
+                    type="text"
+                    value={editPassword}
+                    onChange={(e) => setEditPassword(e.target.value)}
+                    placeholder="اتركها فارغة إذا لم ترد تغييرها"
+                    className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                    dir="ltr"
                   />
                 </div>
                 <div className="space-y-2">
