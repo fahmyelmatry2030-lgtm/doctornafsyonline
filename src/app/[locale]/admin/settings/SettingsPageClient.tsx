@@ -468,9 +468,25 @@ export function SettingsPageClient({
                         <p className="text-xs text-slate-500 max-w-xl">{tpl.desc}</p>
                         <div className="pt-2 flex items-center gap-3">
                           {tpl.fileUrl && !tpl.fileUrl.startsWith("/docs/") ? (
-                            <a href={tpl.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                            <button
+                              onClick={async () => {
+                                try {
+                                  const res = await fetch(tpl.fileUrl);
+                                  if (!res.ok) {
+                                    alert("العقد غير موجود. يرجى رفعه أولاً.");
+                                    return;
+                                  }
+                                  const blob = await res.blob();
+                                  const url = URL.createObjectURL(new Blob([blob], { type: "application/pdf" }));
+                                  window.open(url, "_blank");
+                                } catch {
+                                  alert("فشل تحميل العقد");
+                                }
+                              }}
+                              className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer"
+                            >
                               <Eye className="w-3.5 h-3.5" /> عرض النموذج الحالي
-                            </a>
+                            </button>
                           ) : (
                             <span className="text-xs text-amber-600 font-bold">⚠️ لم يتم رفع نموذج بعد</span>
                           )}
