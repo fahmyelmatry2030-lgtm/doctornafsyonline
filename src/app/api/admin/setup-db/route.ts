@@ -24,6 +24,21 @@ export async function GET(req: NextRequest) {
     } catch (e: any) { results.push("certificates: " + e.message); }
 
     try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE TherapistProfile ADD COLUMN internationalPrice INT NULL;`);
+      results.push("Added internationalPrice to TherapistProfile");
+    } catch (e: any) { results.push("internationalPrice: " + e.message); }
+
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE TherapistProfile ADD COLUMN internationalCurrency VARCHAR(191) NULL;`);
+      results.push("Added internationalCurrency to TherapistProfile");
+    } catch (e: any) { results.push("internationalCurrency: " + e.message); }
+
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE Appointment ADD COLUMN currency VARCHAR(191) NOT NULL DEFAULT 'EGP';`);
+      results.push("Added currency to Appointment");
+    } catch (e: any) { results.push("currency: " + e.message); }
+
+    try {
       await prisma.$executeRawUnsafe(`ALTER TABLE TherapistProfile ADD COLUMN contractUrl TEXT NULL;`);
       results.push("Added contractUrl to TherapistProfile");
     } catch (e: any) { results.push("contractUrl: " + e.message); }
