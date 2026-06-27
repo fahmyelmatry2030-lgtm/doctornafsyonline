@@ -297,7 +297,7 @@
   },
   {
     "route": "/[locale]/therapist/profile",
-    "firstLoadUncompressedJsBytes": 656677,
+    "firstLoadUncompressedJsBytes": 656868,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
@@ -305,7 +305,7 @@
       ".next/static/chunks/2zbex19ox0ef1.js",
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
-      ".next/static/chunks/1qtwoxhsvvloh.js",
+      ".next/static/chunks/2iwr82f_ye_o9.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -422,7 +422,7 @@
   },
   {
     "route": "/[locale]/therapist/onboarding",
-    "firstLoadUncompressedJsBytes": 649201,
+    "firstLoadUncompressedJsBytes": 649392,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
@@ -430,7 +430,7 @@
       ".next/static/chunks/2zbex19ox0ef1.js",
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
-      ".next/static/chunks/0rh1xdiyruxrx.js",
+      ".next/static/chunks/1p7me8cva--b8.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -547,7 +547,7 @@
   },
   {
     "route": "/[locale]/admin/profile",
-    "firstLoadUncompressedJsBytes": 640290,
+    "firstLoadUncompressedJsBytes": 640481,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
@@ -556,7 +556,7 @@
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/2k03cmog65fin.js",
-      ".next/static/chunks/36yhmo950vcxx.js",
+      ".next/static/chunks/3wped6ymba2c2.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -754,7 +754,7 @@
   },
   {
     "route": "/[locale]/patient/profile",
-    "firstLoadUncompressedJsBytes": 631362,
+    "firstLoadUncompressedJsBytes": 631553,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
@@ -762,7 +762,7 @@
       ".next/static/chunks/2zbex19ox0ef1.js",
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
-      ".next/static/chunks/36lvk0-tf2col.js",
+      ".next/static/chunks/1msqhnakz-vo1.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
