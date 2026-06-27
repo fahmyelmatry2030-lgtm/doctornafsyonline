@@ -358,7 +358,7 @@ export function TherapistDetailsModal({
                       }
                     }
 
-                    const detail = parsedContracts[contract.id];
+                    const detail = contractsObj[contract.id];
                     const isUploading = uploadingContractType === contract.id;
                     
                     return (

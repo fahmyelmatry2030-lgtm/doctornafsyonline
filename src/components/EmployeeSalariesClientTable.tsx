@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { User, Plus, Trash2, TrendingUp, DollarSign } from "lucide-react";
+import { formatPrice } from "@/lib/constants";
 
 interface EmployeeBonus {
   id: string;
