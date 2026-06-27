@@ -397,7 +397,25 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                                   </button>
                                 </>
                               )}
-                              {["COMPLETED", "CANCELLED", "IN_PROGRESS"].includes(app.status) && (
+                              {app.status === "IN_PROGRESS" && (
+                                <>
+                                  <button
+                                    onClick={() => handleStatusUpdate(app.id, "COMPLETED")}
+                                    disabled={isPending}
+                                    className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-colors shadow-sm"
+                                  >
+                                    إنهاء الجلسة
+                                  </button>
+                                  <button
+                                    onClick={() => handleStatusUpdate(app.id, "CANCELLED")}
+                                    disabled={isPending}
+                                    className="flex items-center gap-1 border border-red-200 text-red-600 hover:bg-red-50 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
+                                  >
+                                    <X className="w-3.5 h-3.5" /> إلغاء
+                                  </button>
+                                </>
+                              )}
+                              {["COMPLETED", "CANCELLED"].includes(app.status) && (
                                 <span className="text-xs text-slate-400 font-semibold">—</span>
                               )}
                             </>
