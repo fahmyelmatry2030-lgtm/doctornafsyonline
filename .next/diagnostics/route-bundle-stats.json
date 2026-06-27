@@ -52,7 +52,7 @@
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/2k03cmog65fin.js",
-      ".next/static/chunks/0uadq1vsey_af.js",
+      ".next/static/chunks/2af4vik8t166_.js",
       ".next/static/chunks/2tpi_ps2obkr8.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
@@ -108,7 +108,7 @@
   },
   {
     "route": "/[locale]/admin/therapists",
-    "firstLoadUncompressedJsBytes": 666347,
+    "firstLoadUncompressedJsBytes": 666438,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
@@ -117,7 +117,7 @@
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/2k03cmog65fin.js",
-      ".next/static/chunks/1k-lbyvcm2xtz.js",
+      ".next/static/chunks/2cn6dg0is_f-v.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -305,7 +305,7 @@
       ".next/static/chunks/2zbex19ox0ef1.js",
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
-      ".next/static/chunks/2n-xyvf53pg-p.js",
+      ".next/static/chunks/11xsp28_osujw.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -380,7 +380,7 @@
   },
   {
     "route": "/[locale]/admin/salaries",
-    "firstLoadUncompressedJsBytes": 653267,
+    "firstLoadUncompressedJsBytes": 653692,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
@@ -389,7 +389,7 @@
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/2k03cmog65fin.js",
-      ".next/static/chunks/3jtxbc6-l7dwp.js",
+      ".next/static/chunks/423smrcmmshhu.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -462,6 +462,27 @@
     ]
   },
   {
+    "route": "/[locale]/admin/employee-salaries",
+    "firstLoadUncompressedJsBytes": 647417,
+    "firstLoadChunkPaths": [
+      ".next/static/chunks/2yl1jv4w6po1z.js",
+      ".next/static/chunks/1ntn7efqc-iiw.js",
+      ".next/static/chunks/1t9i2dp6fkjbn.js",
+      ".next/static/chunks/2zbex19ox0ef1.js",
+      ".next/static/chunks/2be_g45jeuzjr.js",
+      ".next/static/chunks/3-a6ur8iyxcp2.js",
+      ".next/static/chunks/2k03cmog65fin.js",
+      ".next/static/chunks/20zefsqu4blt7.js",
+      ".next/static/chunks/37v5ulr6qjozi.js",
+      ".next/static/chunks/1rm737diirj6u.js",
+      ".next/static/chunks/1uow_ccy778ci.js",
+      ".next/static/chunks/1wpi-_59dw0su.js",
+      ".next/static/chunks/228oj19jyxe16.js",
+      ".next/static/chunks/3nc6x0_y5iwnk.js",
+      ".next/static/chunks/turbopack-3bdyg26jim6nr.js"
+    ]
+  },
+  {
     "route": "/[locale]/admin/patients",
     "firstLoadUncompressedJsBytes": 647308,
     "firstLoadChunkPaths": [
@@ -473,27 +494,6 @@
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/2k03cmog65fin.js",
       ".next/static/chunks/2_n8n4-u0-pnk.js",
-      ".next/static/chunks/37v5ulr6qjozi.js",
-      ".next/static/chunks/1rm737diirj6u.js",
-      ".next/static/chunks/1uow_ccy778ci.js",
-      ".next/static/chunks/1wpi-_59dw0su.js",
-      ".next/static/chunks/228oj19jyxe16.js",
-      ".next/static/chunks/3nc6x0_y5iwnk.js",
-      ".next/static/chunks/turbopack-3bdyg26jim6nr.js"
-    ]
-  },
-  {
-    "route": "/[locale]/admin/employee-salaries",
-    "firstLoadUncompressedJsBytes": 646972,
-    "firstLoadChunkPaths": [
-      ".next/static/chunks/2yl1jv4w6po1z.js",
-      ".next/static/chunks/1ntn7efqc-iiw.js",
-      ".next/static/chunks/1t9i2dp6fkjbn.js",
-      ".next/static/chunks/2zbex19ox0ef1.js",
-      ".next/static/chunks/2be_g45jeuzjr.js",
-      ".next/static/chunks/3-a6ur8iyxcp2.js",
-      ".next/static/chunks/2k03cmog65fin.js",
-      ".next/static/chunks/0xlk6hsa2ly5c.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
