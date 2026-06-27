@@ -6,6 +6,7 @@ import {
   X, Mail, Phone, Calendar, Star, Award, ShieldCheck, ShieldAlert, 
   FileText, Download, UploadCloud, Ban, CheckCircle, Trash2, Loader2, Link as LinkIcon
 } from "lucide-react";
+import { formatPrice } from "@/lib/constants";
 
 type Therapist = {
   id: string;
@@ -15,6 +16,8 @@ type Therapist = {
   avatar: string | null;
   createdAt: string | Date;
   isSuspended: boolean;
+  currency?: string | null;
+  country?: string | null;
   therapistProfile: {
     bio: string;
     specializations: string;
@@ -283,7 +286,7 @@ export function TherapistDetailsModal({
             <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
               <span className="text-xs text-slate-400 font-bold block mb-1">سعر الجلسة / الخبرة</span>
               <span className="text-sm font-black text-slate-800 block">
-                {profile?.pricePerSession} ج.م · {profile?.yearsExperience} سنوات خبرة
+                {formatPrice(profile?.pricePerSession || 0, localTherapist.currency)} · {profile?.yearsExperience} سنوات خبرة
               </span>
             </div>
             <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">

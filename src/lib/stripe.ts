@@ -27,6 +27,7 @@ export async function createCheckoutSession({
   therapistName: string;
   successUrl: string;
   cancelUrl: string;
+  currency?: string | null;
 }) {
   if (!stripe) {
     throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY.");
@@ -38,7 +39,7 @@ export async function createCheckoutSession({
     line_items: [
       {
         price_data: {
-          currency: "egp",
+          currency: (currency || "egp").toLowerCase(),
           product_data: {
             name: `جلسة استشارة نفسية - د. ${therapistName}`,
             description: `حجز موعد للمريض: ${patientName}`,
