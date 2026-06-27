@@ -17,6 +17,7 @@ type TherapistCardProps = {
   isVerified: boolean;
   isOnline?: boolean;
   imageUrl?: string;
+  currency?: string;
 };
 
 export function TherapistCard({
@@ -31,6 +32,7 @@ export function TherapistCard({
   isVerified,
   isOnline,
   imageUrl,
+  currency,
 }: TherapistCardProps) {
   const params = useParams();
   const locale = params?.locale || "ar";
@@ -96,7 +98,7 @@ export function TherapistCard({
 
       <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
         <span className="font-bold text-slate-900">
-          {formatPrice(pricePerSession)}
+          {formatPrice(pricePerSession, currency)}
           <span className="text-xs font-normal text-slate-500"> / جلسة</span>
         </span>
         <span className="rounded-full bg-gradient-to-r from-emerald-700 to-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-95">

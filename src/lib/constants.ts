@@ -26,8 +26,18 @@ export const PLATFORM_PHONE = "01550651123";
 export const PLATFORM_PHONE_TEL = `tel:${PLATFORM_PHONE}`;
 export const PLATFORM_INSTAPAY = `${PLATFORM_PHONE}@instapay`;
 
-export function formatPrice(amount: number): string {
-  return `${amount.toLocaleString("ar-EG")} ج.م`;
+export function formatPrice(amount: number, currencyCode: string = "EGP"): string {
+  const currencyLabels: Record<string, string> = {
+    EGP: "ج.م",
+    SAR: "ر.س",
+    AED: "د.إ",
+    QAR: "ر.ق",
+    KWD: "د.ك",
+    OMR: "ر.ع",
+    BHD: "د.ب",
+  };
+  const label = currencyLabels[currencyCode] || currencyCode;
+  return `${amount.toLocaleString("ar-EG")} ${label}`;
 }
 
 export function formatDate(date: Date): string {

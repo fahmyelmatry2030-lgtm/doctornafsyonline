@@ -65,9 +65,18 @@ export function AppHome({ therapists, locale }: { therapists: any[], locale: str
           {therapists.map((therapist) => (
             <div key={therapist.id} className="min-w-[280px] snap-center shrink-0">
               <TherapistCard
-                therapist={therapist}
-                profile={therapist.therapistProfile}
-                locale={locale}
+                id={therapist.id}
+                name={therapist.name}
+                bio={therapist.therapistProfile.bio}
+                specializations={therapist.therapistProfile.specializations}
+                pricePerSession={therapist.therapistProfile.pricePerSession}
+                yearsExperience={therapist.therapistProfile.yearsExperience}
+                rating={therapist.therapistProfile.rating}
+                reviewCount={therapist.therapistProfile.reviewCount}
+                isVerified={therapist.therapistProfile.isVerified}
+                isOnline={therapist.isOnline}
+                imageUrl={therapist.avatar}
+                currency={therapist.currency}
               />
             </div>
           ))}

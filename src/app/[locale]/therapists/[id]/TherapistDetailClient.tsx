@@ -10,6 +10,7 @@ type Therapist = {
   name: string;
   avatar: string | null;
   isOnline?: boolean;
+  currency?: string;
   therapistProfile: {
     bio: string;
     specializations: string;
@@ -308,10 +309,10 @@ export default function TherapistDetailPage({
               <div className="mb-6 text-center">
                 <div className="flex items-center justify-center gap-2">
                   <span className="text-sm text-slate-400 line-through">
-                    {formatPrice(originalPrice)}
+                    {formatPrice(originalPrice, therapist.currency)}
                   </span>
                   <span className="text-3xl font-bold text-teal-700">
-                    {formatPrice(finalPrice)}
+                    {formatPrice(finalPrice, therapist.currency)}
                   </span>
                 </div>
                 <span className="text-xs text-teal-600 font-bold block mt-1">تطبيق خصم بقيمة {discountPercent}%</span>
@@ -319,7 +320,7 @@ export default function TherapistDetailPage({
             ) : (
               <div className="mb-6 text-center">
                 <span className="text-3xl font-bold text-teal-700">
-                  {formatPrice(originalPrice)}
+                  {formatPrice(originalPrice, therapist.currency)}
                 </span>
                 <span className="text-sm text-slate-500"> / جلسة {sessionDuration} دقيقة</span>
               </div>

@@ -4,7 +4,17 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { authenticateAfterRegister } from "./actions";
-import { User, Mail, Lock, Phone, ArrowRight, Loader2, Heart, ShieldCheck, Briefcase, Clock, DollarSign, Users, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Lock, Phone, ArrowRight, Loader2, Heart, ShieldCheck, Briefcase, Clock, DollarSign, Users, Eye, EyeOff, MapPin, Globe } from "lucide-react";
+
+export const ARAB_COUNTRIES = [
+  { id: "Egypt", name: "مصر", code: "+20", currency: "EGP", currencyLabel: "ج.م" },
+  { id: "Saudi Arabia", name: "السعودية", code: "+966", currency: "SAR", currencyLabel: "ر.س" },
+  { id: "UAE", name: "الإمارات", code: "+971", currency: "AED", currencyLabel: "د.إ" },
+  { id: "Qatar", name: "قطر", code: "+974", currency: "QAR", currencyLabel: "ر.ق" },
+  { id: "Kuwait", name: "الكويت", code: "+965", currency: "KWD", currencyLabel: "د.ك" },
+  { id: "Oman", name: "عُمان", code: "+968", currency: "OMR", currencyLabel: "ر.ع" },
+  { id: "Bahrain", name: "البحرين", code: "+973", currency: "BHD", currencyLabel: "د.ب" },
+];
 import { useTranslations } from "next-intl";
 
 export default function RegisterForm() {
@@ -17,6 +27,7 @@ export default function RegisterForm() {
     email: "",
     password: "",
     phone: "",
+    country: "Egypt",
     gender: "",
     role: defaultRole as "PATIENT" | "THERAPIST",
     specializations: "",
@@ -44,17 +55,26 @@ export default function RegisterForm() {
       return;
     }
 
-    if (form.phone.length !== 11) {
+    const selectedCountryData = ARAB_COUNTRIES.find(c => c.id === form.country) || ARAB_COUNTRIES[0];
+    
+    // Validate phone length based on country (rough check, at least 7 digits)
+    if (form.phone.length < 7) {
       setError(t("errorPhoneLength"));
       setLoading(false);
       return;
     }
 
     try {
+      const payload = {
+        ...form,
+        countryCode: selectedCountryData.code,
+        currency: selectedCountryData.currency,
+      };
+
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -181,34 +201,59 @@ export default function RegisterForm() {
               </div>
             </div>
 
-            {/* Phone + Gender Row */}
+            {/* Country + Phone Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Country */}
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">
+                  دولة الإقامة / الجنسية
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                    <Globe className="h-5 w-5" />
+                  </div>
+                  <select
+                    required
+                    value={form.country}
+                    onChange={(e) => setForm({ ...form, country: e.target.value })}
+                    className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 focus:border-[#4318FF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-medium appearance-none"
+                  >
+                    {ARAB_COUNTRIES.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               {/* Phone */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
                   {t("phoneLabel")}
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
-                    <Phone className="h-5 w-5" />
-                  </div>
+                <div className="relative flex rounded-2xl shadow-sm border border-slate-200 bg-slate-50 focus-within:border-[#4318FF] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#4318FF]/20 overflow-hidden">
+                  <span className="flex items-center px-4 bg-slate-100 border-l border-slate-200 text-slate-600 font-bold text-sm" dir="ltr">
+                    {ARAB_COUNTRIES.find(c => c.id === form.country)?.code || "+20"}
+                  </span>
                   <input
                     type="tel"
                     required
                     value={form.phone}
                     onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, "").slice(0, 11);
+                      const val = e.target.value.replace(/\D/g, "").slice(0, 15);
                       setForm({ ...form, phone: val });
                     }}
-                    className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-[#4318FF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4318FF]/20 transition-all font-medium"
-                    placeholder="01xxxxxxxxx"
+                    className="block w-full border-none bg-transparent py-3.5 px-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-0 transition-all font-medium"
+                    placeholder="xxxxxxxx"
                     dir="ltr"
-                    style={{ textAlign: 'right' }}
-                    maxLength={11}
                   />
                 </div>
               </div>
+            </div>
 
+            {/* Gender Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Gender */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
@@ -340,12 +385,15 @@ export default function RegisterForm() {
                           <input
                             type="number"
                             required={form.salaryType === "COMMISSION"}
-                            min="100"
+                            min="50"
                             value={form.pricePerSession}
                             onChange={(e) => setForm({ ...form, pricePerSession: e.target.value })}
-                            className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-4 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
+                            className="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pr-12 pl-12 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
                             placeholder="300"
                           />
+                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-emerald-600 font-bold text-sm">
+                            {ARAB_COUNTRIES.find(c => c.id === form.country)?.currencyLabel || "ج.م"}
+                          </div>
                         </div>
                       </div>
                     )}

@@ -6,6 +6,7 @@ import { arSA } from "date-fns/locale";
 import { getSettings } from "@/app/[locale]/admin/settings/actions";
 import ScreenshotUploader from "@/components/ScreenshotUploader";
 import PayOnlineButton from "@/components/PayOnlineButton";
+import { formatPrice } from "@/lib/constants";
 
 export default async function PatientBillingPage({
   searchParams,
@@ -63,9 +64,10 @@ export default async function PatientBillingPage({
 
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {/* Transfer Method 1: Vodafone Cash */}
-        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-indigo-50/50 to-white flex flex-col justify-between">
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+        {appointments.some(app => app.status === "PENDING" && app.therapist.country === "Egypt") && (
+          <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-indigo-50/50 to-white flex flex-col justify-between">
+            <div className="space-y-4">
+              <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
               <Wallet className="w-5 h-5 text-indigo-500" /> المحافظ الإلكترونية كاش
             </h2>
             <div className="space-y-2">
@@ -90,11 +92,13 @@ export default async function PatientBillingPage({
             </span>
           </div>
         </div>
+        )}
 
         {/* Transfer Method 2: InstaPay */}
-        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-emerald-50/50 to-white flex flex-col justify-between">
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+        {appointments.some(app => app.status === "PENDING" && app.therapist.country === "Egypt") && (
+          <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-emerald-50/50 to-white flex flex-col justify-between">
+            <div className="space-y-4">
+              <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-emerald-500" /> عنوان إنستا باي (InstaPay)
             </h2>
             <div className="space-y-2">
@@ -119,11 +123,13 @@ export default async function PatientBillingPage({
             </span>
           </div>
         </div>
+        )}
 
         {/* Transfer Method 3: Bank Transfer */}
-        <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-amber-50/50 to-white flex flex-col justify-between">
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+        {appointments.some(app => app.status === "PENDING" && app.therapist.country === "Egypt") && (
+          <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-amber-50/50 to-white flex flex-col justify-between">
+            <div className="space-y-4">
+              <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
               <Landmark className="w-5 h-5 text-amber-500" /> التحويل البنكي
             </h2>
             <div className="space-y-2 text-slate-700 text-sm">
@@ -156,6 +162,7 @@ export default async function PatientBillingPage({
             </span>
           </div>
         </div>
+        )}
 
         {/* Transfer Method 4: Online Stripe Payment */}
         <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] p-6 bg-gradient-to-br from-purple-50/50 to-white flex flex-col justify-between">
@@ -203,7 +210,7 @@ export default async function PatientBillingPage({
                     {format(new Date(app.createdAt), 'dd MMMM yyyy', { locale: arSA })}
                   </td>
                   <td className="px-6 py-4 font-bold text-slate-800">د. {app.therapist.name}</td>
-                  <td className="px-6 py-4 font-bold text-slate-900">{app.price} ج.م</td>
+                  <td className="px-6 py-4 font-bold text-slate-900">{formatPrice(app.price, app.therapist.currency)}</td>
                   <td className="px-6 py-4">
                     {app.status === "COMPLETED" || app.status === "CONFIRMED" || app.status === "IN_PROGRESS" ? (
                       <span className="inline-flex items-center gap-1 text-green-600 bg-green-50 px-2 py-1 rounded text-xs font-bold">
@@ -226,13 +233,21 @@ export default async function PatientBillingPage({
                       ) : (
                         <div className="flex flex-col gap-2 max-w-[200px]">
                           <PayOnlineButton appointmentId={app.id} />
-                          <div className="relative flex items-center justify-center my-1">
-                            <span className="absolute inset-0 flex items-center">
-                              <span className="w-full border-t border-slate-200"></span>
-                            </span>
-                            <span className="relative bg-white px-2 text-[10px] text-slate-400 font-bold">أو تحويل يدوي</span>
-                          </div>
-                          <ScreenshotUploader appointmentId={app.id} />
+                          {app.therapist.country === "Egypt" ? (
+                            <>
+                              <div className="relative flex items-center justify-center my-1">
+                                <span className="absolute inset-0 flex items-center">
+                                  <span className="w-full border-t border-slate-200"></span>
+                                </span>
+                                <span className="relative bg-white px-2 text-[10px] text-slate-400 font-bold">أو تحويل يدوي</span>
+                              </div>
+                              <ScreenshotUploader appointmentId={app.id} />
+                            </>
+                          ) : (
+                            <div className="text-[10px] text-purple-600 font-bold text-center mt-1 bg-purple-50 py-1 rounded">
+                              الدفع بالفيزا فقط
+                            </div>
+                          )}
                         </div>
                       )
                     ) : (

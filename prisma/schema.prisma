@@ -21,6 +21,9 @@ model User {
   isSuspended   Boolean   @default(false)
   isOnline      Boolean   @default(false)
   baseSalary    Int       @default(0)
+  country       String    @default("Egypt")
+  countryCode   String    @default("+20")
+  currency      String    @default("EGP")
   lastActivityAt DateTime  @default(now())
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

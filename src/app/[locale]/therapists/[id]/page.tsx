@@ -34,6 +34,7 @@ export default async function TherapistPage({ params }: Props) {
         id: therapist.id,
         name: therapist.name,
         avatar: therapist.avatar,
+        currency: therapist.currency,
         isOnline: therapist.isOnline && (new Date().getTime() - new Date(therapist.lastActivityAt).getTime()) / 60000 <= 3,
         therapistProfile: therapist.therapistProfile,
       }}

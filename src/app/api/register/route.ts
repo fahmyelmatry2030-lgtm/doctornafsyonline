@@ -9,7 +9,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { 
       name, email, password, phone, gender, role,
-      specializations, yearsExperience, pricePerSession, salaryType
+      specializations, yearsExperience, pricePerSession, salaryType,
+      country, countryCode, currency
     } = body as {
       name: string;
       email: string;
@@ -21,6 +22,9 @@ export async function POST(request: Request) {
       yearsExperience?: string;
       pricePerSession?: string;
       salaryType?: "FIXED" | "COMMISSION";
+      country?: string;
+      countryCode?: string;
+      currency?: string;
     };
 
     if (!name || !email || !password) {
@@ -72,6 +76,9 @@ export async function POST(request: Request) {
         email,
         password: hashedPassword,
         phone,
+        country: country || "Egypt",
+        countryCode: countryCode || "+20",
+        currency: currency || "EGP",
         gender,
         role: userRole,
         ...(userRole === "THERAPIST" && {

@@ -161,6 +161,7 @@ export default async function TherapistsPage({ searchParams }: Props) {
                     isVerified={t.therapistProfile.isVerified}
                     isOnline={t.isOnline && (new Date().getTime() - new Date(t.lastActivityAt).getTime()) / 60000 <= 3}
                     imageUrl={t.avatar || undefined}
+                    currency={t.currency}
                   />
                 </div>
               ) : null
