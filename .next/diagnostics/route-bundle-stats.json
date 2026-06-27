@@ -86,7 +86,7 @@
   },
   {
     "route": "/[locale]/admin/therapists",
-    "firstLoadUncompressedJsBytes": 666114,
+    "firstLoadUncompressedJsBytes": 666239,
     "firstLoadChunkPaths": [
       ".next\\static\\chunks\\2yl1jv4w6po1z.js",
       ".next\\static\\chunks\\1ntn7efqc-iiw.js",
@@ -95,7 +95,7 @@
       ".next\\static\\chunks\\2be_g45jeuzjr.js",
       ".next\\static\\chunks\\3-a6ur8iyxcp2.js",
       ".next\\static\\chunks\\2k03cmog65fin.js",
-      ".next\\static\\chunks\\3leow23o83aqb.js",
+      ".next\\static\\chunks\\3r5v0z-t_0d0k.js",
       ".next\\static\\chunks\\37v5ulr6qjozi.js",
       ".next\\static\\chunks\\1rm737diirj6u.js",
       ".next\\static\\chunks\\1uow_ccy778ci.js",

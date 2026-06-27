@@ -8,6 +8,7 @@ import {
 import { useSearchParams } from "next/navigation";
 import { TherapistDetailsModal } from "./TherapistDetailsModal";
 import Link from "next/link";
+import { formatPrice } from "@/lib/constants";
 
 type Therapist = {
   id: string;
@@ -17,6 +18,7 @@ type Therapist = {
   avatar: string | null;
   createdAt: string | Date;
   isSuspended: boolean;
+  currency?: string;
   therapistProfile: {
     bio: string;
     specializations: string;
@@ -301,7 +303,7 @@ export function TherapistsTableClient({
                 <div className="flex items-center gap-6 shrink-0 mt-3 md:mt-0">
                   <div className="text-center">
                     <p className="text-xs text-slate-500">السعر/جلسة</p>
-                    <p className="font-black text-slate-800 text-base">{t.therapistProfile?.pricePerSession} ج.م</p>
+                    <p className="font-black text-slate-800 text-base">{t.therapistProfile?.pricePerSession ? formatPrice(t.therapistProfile.pricePerSession, t.currency || "EGP") : "—"}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-xs text-slate-500">الخبرة</p>
@@ -412,7 +414,7 @@ export function TherapistsTableClient({
                       </span>
                     )}
                   </td>
-                  <td className="px-5 py-3.5 font-bold text-slate-700 text-sm">{t.therapistProfile?.pricePerSession || "—"} ج.م</td>
+                  <td className="px-5 py-3.5 font-bold text-slate-700 text-sm">{t.therapistProfile?.pricePerSession ? formatPrice(t.therapistProfile.pricePerSession, t.currency || "EGP") : "—"}</td>
                   <td className="px-5 py-3.5 text-xs text-slate-600">{t.therapistProfile?.yearsExperience || "—"} سنوات</td>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-1">

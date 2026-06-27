@@ -19,6 +19,7 @@ export async function createCheckoutSession({
   therapistName,
   successUrl,
   cancelUrl,
+  currency,
 }: {
   appointmentId: string;
   price: number;
