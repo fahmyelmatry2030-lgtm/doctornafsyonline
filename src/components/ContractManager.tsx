@@ -57,6 +57,11 @@ export default function ContractManager() {
   const [successMsg, setSuccessMsg] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeType, setActiveType] = useState<"trial" | "marketing" | "annual">("trial");
+  const [templateUrls, setTemplateUrls] = useState({
+    trial: "/docs/trial_contract_template.pdf",
+    marketing: "/docs/marketing_consent_template.pdf",
+    annual: "/docs/annual_contract_template.pdf",
+  });
 
   useEffect(() => {
     fetchContract();
@@ -68,6 +73,13 @@ export default function ContractManager() {
       if (res.ok) {
         const data = await res.json();
         setEnableAnnualContract(data.enableAnnualContract ?? false);
+        if (data.trialTemplateUrl) {
+          setTemplateUrls({
+            trial: data.trialTemplateUrl,
+            marketing: data.marketingTemplateUrl || "/docs/marketing_consent_template.pdf",
+            annual: data.annualTemplateUrl || "/docs/annual_contract_template.pdf",
+          });
+        }
         const rawUrl = data.contractUrl;
         if (rawUrl) {
           if (rawUrl.startsWith("{")) {
@@ -244,7 +256,7 @@ export default function ContractManager() {
 
                 <div className="space-y-2">
                   <a 
-                    href={contract.template}
+                    href={templateUrls[contract.id]}
                     target="_blank"
                     download
                     className="w-full inline-flex items-center justify-center gap-2 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl py-2.5 hover:bg-slate-100 transition-colors shadow-sm"

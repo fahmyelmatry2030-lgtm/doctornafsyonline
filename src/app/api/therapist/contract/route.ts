@@ -90,7 +90,10 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       contractUrl: profile?.contractUrl || null,
-      enableAnnualContract
+      enableAnnualContract,
+      trialTemplateUrl: settings.trialContractUrl || "/docs/trial_contract_template.pdf",
+      marketingTemplateUrl: settings.marketingContractUrl || "/docs/marketing_consent_template.pdf",
+      annualTemplateUrl: settings.annualContractUrl || "/docs/annual_contract_template.pdf",
     });
   } catch {
     return NextResponse.json({ error: "فشل تحميل العقد" }, { status: 500 });
