@@ -5,6 +5,12 @@ import fs from "fs/promises";
 import path from "path";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 
+export const dynamic = "force-dynamic";
+
+export async function GET(request: Request) {
+  return NextResponse.json({ error: "Method incorrectly redirected to GET by server proxy. This is a Hostinger trailing slash issue." }, { status: 400 });
+}
+
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user) {

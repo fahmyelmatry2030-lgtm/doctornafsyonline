@@ -50,7 +50,7 @@ export default function AvatarManager({
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("/api/therapist/avatar", {
+      const res = await fetch("/api/therapist/avatar/", {
         method: "POST",
         body: formData,
       });
