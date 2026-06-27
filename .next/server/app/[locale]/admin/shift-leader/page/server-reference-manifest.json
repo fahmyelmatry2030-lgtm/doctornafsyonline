@@ -1,0 +1,113 @@
+{
+  "node": {
+    "00670ccb83a6e6c768bd03af0887ece7eddf368647": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getWebsiteContent",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "00b59c7f0eaaacd8c7e3c462c7d040c2d7dd406812": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getSettings",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "40e36521ada5ff60aa45d82cf0068557d1e2340cc9": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateWebsiteContent",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "40f19919428ecf040d7d7381ff389aec191b89ef63": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateSettings",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "40e6a931690532c428ebc4d62da9cc3183de1005b6": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "createShift",
+          "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+        }
+      },
+      "exportedName": "createShift",
+      "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+    },
+    "6091a4d6269b6750b31538b30768b4e96449678ed4": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "updateShift",
+          "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+        }
+      },
+      "exportedName": "updateShift",
+      "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+    },
+    "408c82f1a7949e7b4e68664246e255a77c46466f3a": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "deleteShift",
+          "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+        }
+      },
+      "exportedName": "deleteShift",
+      "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+    },
+    "6066073d974e16abc99127af9eb58aee3bfa7a5c82": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "assignSpecialistToShift",
+          "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+        }
+      },
+      "exportedName": "assignSpecialistToShift",
+      "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+    },
+    "601d9ee3ba87f2443470d447ee5031a09859b67987": {
+      "workers": {
+        "app/[locale]/admin/shift-leader/page": {
+          "moduleId": 874580,
+          "async": false,
+          "exportedName": "removeSpecialistFromShift",
+          "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+        }
+      },
+      "exportedName": "removeSpecialistFromShift",
+      "filename": "src/app/[locale]/admin/shift-leader/actions.ts"
+    }
+  },
+  "edge": {}
+}

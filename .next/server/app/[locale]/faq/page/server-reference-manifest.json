@@ -1,0 +1,53 @@
+{
+  "node": {
+    "00670ccb83a6e6c768bd03af0887ece7eddf368647": {
+      "workers": {
+        "app/[locale]/faq/page": {
+          "moduleId": 743708,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getWebsiteContent",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "00b59c7f0eaaacd8c7e3c462c7d040c2d7dd406812": {
+      "workers": {
+        "app/[locale]/faq/page": {
+          "moduleId": 743708,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getSettings",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "40e36521ada5ff60aa45d82cf0068557d1e2340cc9": {
+      "workers": {
+        "app/[locale]/faq/page": {
+          "moduleId": 743708,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateWebsiteContent",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "40f19919428ecf040d7d7381ff389aec191b89ef63": {
+      "workers": {
+        "app/[locale]/faq/page": {
+          "moduleId": 743708,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateSettings",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    }
+  },
+  "edge": {}
+}

@@ -1,0 +1,3 @@
+module.exports=[753998,a=>{"use strict";var b=a.i(187924),c=a.i(572131),d=a.i(256711),e=a.i(264939);a.s(["default",0,function({date:a,formatStr:f="EEEE، d MMMM - hh:mm a"}){let[g,h]=(0,c.useState)("");return((0,c.useEffect)(()=>{h((0,d.format)(new Date(a),f,{locale:e.arSA}))},[a,f]),g)?(0,b.jsx)(b.Fragment,{children:g}):(0,b.jsx)("span",{className:"opacity-0",children:"Loading..."})}])}];
+
+//# sourceMappingURL=src_components_ClientDateTime_tsx_05lbg9y._.js.map

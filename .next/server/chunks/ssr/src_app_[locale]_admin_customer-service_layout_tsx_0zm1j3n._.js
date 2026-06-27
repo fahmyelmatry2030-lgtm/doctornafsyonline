@@ -1,0 +1,3 @@
+module.exports=[654058,a=>{"use strict";var b=a.i(907997),c=a.i(109307);async function d({children:a}){let e=await (0,c.auth)();return e?.user?.role!=="ADMIN"&&e?.user?.role!=="ADMIN_CUSTOMER_SERVICE"&&e?.user?.role!=="ADMIN_HR"&&e?.user?.role!=="SHIFT_LEADER"?(0,b.jsx)("div",{className:"p-6",children:(0,b.jsx)("div",{className:"bg-red-50 border border-red-200 rounded-lg p-4 text-red-700",children:"غير مصرح - تحتاج صلاحية خدمة العملاء أو قائد الشيفت"})}):(0,b.jsx)(b.Fragment,{children:a})}a.s(["default",0,d])},561336,a=>{a.n(a.i(654058))}];
+
+//# sourceMappingURL=src_app_%5Blocale%5D_admin_customer-service_layout_tsx_0zm1j3n._.js.map
