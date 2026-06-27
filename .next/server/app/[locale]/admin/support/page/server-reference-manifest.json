@@ -1,0 +1,77 @@
+{
+  "node": {
+    "003912942fdd773d0821c894d4d66a739f32ab5760": {
+      "workers": {
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getWebsiteContent",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "0098ed3638b970df61922efcc2c8ce48174fa15414": {
+      "workers": {
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "getSettings",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "406f90eaec06189958f6aac81f1440745e57cd8781": {
+      "workers": {
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateWebsiteContent",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "40e07364dbc411ede9bcf77ac6a67766ab7719d54e": {
+      "workers": {
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        }
+      },
+      "exportedName": "updateSettings",
+      "filename": "src/app/[locale]/admin/settings/actions.ts"
+    },
+    "40c163d4900063994f2785f13b3bc3cb866c630351": {
+      "workers": {
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_1",
+          "filename": "src/app/[locale]/admin/support/page.tsx"
+        }
+      },
+      "exportedName": "$$RSC_SERVER_ACTION_1",
+      "filename": "src/app/[locale]/admin/support/page.tsx"
+    },
+    "7098fecf77e423641d14e9407f27bd4c98f1c7d04e": {
+      "workers": {
+        "app/[locale]/admin/support/page": {
+          "moduleId": 228717,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "src/app/[locale]/admin/support/page.tsx"
+        }
+      },
+      "exportedName": "$$RSC_SERVER_ACTION_0",
+      "filename": "src/app/[locale]/admin/support/page.tsx"
+    }
+  },
+  "edge": {}
+}
