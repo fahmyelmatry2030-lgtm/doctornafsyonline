@@ -5,6 +5,8 @@ import { Clock, Video, CheckCircle2, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import RescheduleButton from "@/components/RescheduleButton";
+import ClientDateTime from "@/components/ClientDateTime";
+import { Phone, MessageCircle } from "lucide-react";
 
 export default async function PatientAppointmentsPage() {
   const session = await auth();
@@ -72,12 +74,14 @@ export default async function PatientAppointmentsPage() {
                       </td>
                       <td className="px-6 py-4 flex items-center gap-2 whitespace-nowrap">
                         <Clock className="w-4 h-4 text-slate-400" />
-                        {format(new Date(app.scheduledAt), "EEEE، d MMMM - hh:mm a", { locale: arSA })}
+                        <ClientDateTime date={app.scheduledAt} />
                       </td>
                       <td className="px-6 py-4">
                         <span className="flex items-center gap-1">
-                          <Video className="w-4 h-4 text-indigo-500" />
-                          فيديو
+                          {app.type === "VIDEO" && <><Video className="w-4 h-4 text-indigo-500" /> فيديو</>}
+                          {app.type === "AUDIO" && <><Phone className="w-4 h-4 text-emerald-500" /> صوت</>}
+                          {app.type === "CHAT" && <><MessageCircle className="w-4 h-4 text-amber-500" /> شات</>}
+                          {!app.type && <><Video className="w-4 h-4 text-indigo-500" /> فيديو</>}
                         </span>
                       </td>
                       <td className="px-6 py-4">

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
+import ClientDateTime from "@/components/ClientDateTime";
 import { getTranslations } from "next-intl/server";
 
 const typeIcon: Record<string, React.ReactNode> = {
@@ -145,7 +146,7 @@ export default async function TherapistDashboardPage() {
               {t("welcome", { name: session?.user?.name || "" })}
             </h1>
             <p className="text-[#A3AED0] font-medium text-sm">
-              {format(now, "EEEE، d MMMM yyyy", { locale: arSA })}
+              <ClientDateTime date={now} formatStr="EEEE، d MMMM yyyy" />
             </p>
           </div>
 
@@ -250,7 +251,7 @@ export default async function TherapistDashboardPage() {
                         <p className="font-black text-[#2B3674] text-sm mb-1">{app.patient.name}</p>
                         <div className="flex items-center gap-2 text-xs font-bold text-[#A3AED0]">
                           <Clock className="w-3.5 h-3.5" />
-                          {format(new Date(app.scheduledAt), "EEE، d MMM · hh:mm a", { locale: arSA })}
+                          <ClientDateTime date={app.scheduledAt} formatStr="EEE، d MMM · hh:mm a" />
                           <span className="w-1 h-1 rounded-full bg-[#A3AED0]"></span>
                           {typeIcon[app.type]} {typeLabel[app.type]}
                         </div>
@@ -294,7 +295,7 @@ export default async function TherapistDashboardPage() {
                         <p className="font-black text-[#2B3674] text-sm mb-1">{app.patient.name}</p>
                         <p className="flex items-center gap-1.5 text-xs font-bold text-[#A3AED0]">
                           <Clock className="w-3.5 h-3.5" />
-                          {format(new Date(app.scheduledAt), "d MMM · hh:mm a", { locale: arSA })}
+                          <ClientDateTime date={app.scheduledAt} formatStr="d MMM · hh:mm a" />
                         </p>
                       </div>
                     </div>

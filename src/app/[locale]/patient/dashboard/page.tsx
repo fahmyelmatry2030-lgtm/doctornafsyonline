@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Calendar, Video, Clock, MessageCircle, ArrowUpRight, PlayCircle } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
+import ClientDateTime from "@/components/ClientDateTime";
 import { getTranslations } from "next-intl/server";
 
 export default async function PatientDashboardPage() {
@@ -171,7 +172,7 @@ export default async function PatientDashboardPage() {
                       <h4 className="font-black text-[#2B3674] text-base mb-1">د. {app.therapist.name}</h4>
                       <p className="text-xs font-bold text-[#A3AED0] flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5" /> 
-                        {format(new Date(app.scheduledAt), "EEEE، d MMMM yyyy - hh:mm a", { locale: arSA })}
+                        <ClientDateTime date={app.scheduledAt} formatStr="EEEE، d MMMM yyyy - hh:mm a" />
                       </p>
                     </div>
                   </div>

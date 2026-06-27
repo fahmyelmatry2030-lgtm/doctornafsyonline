@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
+import ClientDateTime from "@/components/ClientDateTime";
 import {
   Clock,
   CheckCircle2,
@@ -108,7 +109,7 @@ export default async function TherapistSessionsPage() {
                       <span>جلسة {typeLabel[app.type]}</span>
                       <span>·</span>
                       <Clock className="w-3.5 h-3.5" />
-                      <span>{format(new Date(app.scheduledAt), "hh:mm a", { locale: arSA })}</span>
+                      <span><ClientDateTime date={app.scheduledAt} formatStr="hh:mm a" /></span>
                     </div>
                   </div>
                 </div>
@@ -153,7 +154,7 @@ export default async function TherapistSessionsPage() {
                       <span>·</span>
                       <Clock className="w-3.5 h-3.5" />
                       <span>
-                        {format(new Date(app.scheduledAt), "EEEE، d MMMM · hh:mm a", { locale: arSA })}
+                        <ClientDateTime date={app.scheduledAt} formatStr="EEEE، d MMMM · hh:mm a" />
                       </span>
                     </div>
                   </div>
@@ -212,7 +213,7 @@ export default async function TherapistSessionsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-slate-600">
-                        {format(new Date(app.scheduledAt), "d MMM yyyy · hh:mm a", { locale: arSA })}
+                        <ClientDateTime date={app.scheduledAt} formatStr="d MMM yyyy · hh:mm a" />
                       </td>
                       <td className="px-6 py-4 font-black text-slate-800">{app.price} ج.م</td>
                       <td className="px-6 py-4">
