@@ -43,7 +43,7 @@
   },
   {
     "route": "/[locale]/admin/operations",
-    "firstLoadUncompressedJsBytes": 685487,
+    "firstLoadUncompressedJsBytes": 686026,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
@@ -52,7 +52,7 @@
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/2k03cmog65fin.js",
-      ".next/static/chunks/1pl_3df7gm0j4.js",
+      ".next/static/chunks/0uadq1vsey_af.js",
       ".next/static/chunks/2tpi_ps2obkr8.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
@@ -65,7 +65,7 @@
   },
   {
     "route": "/[locale]/admin/settings",
-    "firstLoadUncompressedJsBytes": 675534,
+    "firstLoadUncompressedJsBytes": 675704,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
@@ -75,7 +75,7 @@
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/2k03cmog65fin.js",
       ".next/static/chunks/2vdqfh2nimvwf.js",
-      ".next/static/chunks/11rcjsw41rm3f.js",
+      ".next/static/chunks/0z1kwpr93tg8i.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -108,7 +108,7 @@
   },
   {
     "route": "/[locale]/admin/therapists",
-    "firstLoadUncompressedJsBytes": 666232,
+    "firstLoadUncompressedJsBytes": 666347,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
@@ -117,7 +117,7 @@
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/2k03cmog65fin.js",
-      ".next/static/chunks/17c3awfv_907r.js",
+      ".next/static/chunks/1k-lbyvcm2xtz.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -129,7 +129,7 @@
   },
   {
     "route": "/[locale]/admin/reports",
-    "firstLoadUncompressedJsBytes": 665126,
+    "firstLoadUncompressedJsBytes": 665524,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
@@ -138,7 +138,7 @@
       ".next/static/chunks/2be_g45jeuzjr.js",
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/2k03cmog65fin.js",
-      ".next/static/chunks/24vd4f979x7wp.js",
+      ".next/static/chunks/0tez0wlmoa-8v.js",
       ".next/static/chunks/2tpi_ps2obkr8.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
@@ -296,6 +296,26 @@
     ]
   },
   {
+    "route": "/[locale]/therapist/profile",
+    "firstLoadUncompressedJsBytes": 656677,
+    "firstLoadChunkPaths": [
+      ".next/static/chunks/2yl1jv4w6po1z.js",
+      ".next/static/chunks/1ntn7efqc-iiw.js",
+      ".next/static/chunks/1t9i2dp6fkjbn.js",
+      ".next/static/chunks/2zbex19ox0ef1.js",
+      ".next/static/chunks/2be_g45jeuzjr.js",
+      ".next/static/chunks/3-a6ur8iyxcp2.js",
+      ".next/static/chunks/1qtwoxhsvvloh.js",
+      ".next/static/chunks/37v5ulr6qjozi.js",
+      ".next/static/chunks/1rm737diirj6u.js",
+      ".next/static/chunks/1uow_ccy778ci.js",
+      ".next/static/chunks/1wpi-_59dw0su.js",
+      ".next/static/chunks/228oj19jyxe16.js",
+      ".next/static/chunks/3nc6x0_y5iwnk.js",
+      ".next/static/chunks/turbopack-3bdyg26jim6nr.js"
+    ]
+  },
+  {
     "route": "/[locale]/admin/activity",
     "firstLoadUncompressedJsBytes": 656076,
     "firstLoadChunkPaths": [
@@ -349,26 +369,6 @@
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/41nzf5couwdmv.js",
       ".next/static/chunks/2tpi_ps2obkr8.js",
-      ".next/static/chunks/37v5ulr6qjozi.js",
-      ".next/static/chunks/1rm737diirj6u.js",
-      ".next/static/chunks/1uow_ccy778ci.js",
-      ".next/static/chunks/1wpi-_59dw0su.js",
-      ".next/static/chunks/228oj19jyxe16.js",
-      ".next/static/chunks/3nc6x0_y5iwnk.js",
-      ".next/static/chunks/turbopack-3bdyg26jim6nr.js"
-    ]
-  },
-  {
-    "route": "/[locale]/therapist/profile",
-    "firstLoadUncompressedJsBytes": 654716,
-    "firstLoadChunkPaths": [
-      ".next/static/chunks/2yl1jv4w6po1z.js",
-      ".next/static/chunks/1ntn7efqc-iiw.js",
-      ".next/static/chunks/1t9i2dp6fkjbn.js",
-      ".next/static/chunks/2zbex19ox0ef1.js",
-      ".next/static/chunks/2be_g45jeuzjr.js",
-      ".next/static/chunks/3-a6ur8iyxcp2.js",
-      ".next/static/chunks/357rpo8hibhvu.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -462,6 +462,27 @@
     ]
   },
   {
+    "route": "/[locale]/admin/patients",
+    "firstLoadUncompressedJsBytes": 647308,
+    "firstLoadChunkPaths": [
+      ".next/static/chunks/2yl1jv4w6po1z.js",
+      ".next/static/chunks/1ntn7efqc-iiw.js",
+      ".next/static/chunks/1t9i2dp6fkjbn.js",
+      ".next/static/chunks/2zbex19ox0ef1.js",
+      ".next/static/chunks/2be_g45jeuzjr.js",
+      ".next/static/chunks/3-a6ur8iyxcp2.js",
+      ".next/static/chunks/2k03cmog65fin.js",
+      ".next/static/chunks/2_n8n4-u0-pnk.js",
+      ".next/static/chunks/37v5ulr6qjozi.js",
+      ".next/static/chunks/1rm737diirj6u.js",
+      ".next/static/chunks/1uow_ccy778ci.js",
+      ".next/static/chunks/1wpi-_59dw0su.js",
+      ".next/static/chunks/228oj19jyxe16.js",
+      ".next/static/chunks/3nc6x0_y5iwnk.js",
+      ".next/static/chunks/turbopack-3bdyg26jim6nr.js"
+    ]
+  },
+  {
     "route": "/[locale]/admin/employee-salaries",
     "firstLoadUncompressedJsBytes": 646972,
     "firstLoadChunkPaths": [
@@ -473,27 +494,6 @@
       ".next/static/chunks/3-a6ur8iyxcp2.js",
       ".next/static/chunks/2k03cmog65fin.js",
       ".next/static/chunks/0xlk6hsa2ly5c.js",
-      ".next/static/chunks/37v5ulr6qjozi.js",
-      ".next/static/chunks/1rm737diirj6u.js",
-      ".next/static/chunks/1uow_ccy778ci.js",
-      ".next/static/chunks/1wpi-_59dw0su.js",
-      ".next/static/chunks/228oj19jyxe16.js",
-      ".next/static/chunks/3nc6x0_y5iwnk.js",
-      ".next/static/chunks/turbopack-3bdyg26jim6nr.js"
-    ]
-  },
-  {
-    "route": "/[locale]/admin/patients",
-    "firstLoadUncompressedJsBytes": 646907,
-    "firstLoadChunkPaths": [
-      ".next/static/chunks/2yl1jv4w6po1z.js",
-      ".next/static/chunks/1ntn7efqc-iiw.js",
-      ".next/static/chunks/1t9i2dp6fkjbn.js",
-      ".next/static/chunks/2zbex19ox0ef1.js",
-      ".next/static/chunks/2be_g45jeuzjr.js",
-      ".next/static/chunks/3-a6ur8iyxcp2.js",
-      ".next/static/chunks/2k03cmog65fin.js",
-      ".next/static/chunks/1xn5j4jhy1edt.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -892,14 +892,14 @@
   },
   {
     "route": "/[locale]/therapists/[id]",
-    "firstLoadUncompressedJsBytes": 615721,
+    "firstLoadUncompressedJsBytes": 615949,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
       ".next/static/chunks/1t9i2dp6fkjbn.js",
       ".next/static/chunks/2zbex19ox0ef1.js",
       ".next/static/chunks/2be_g45jeuzjr.js",
-      ".next/static/chunks/0c6l82ug7gcbj.js",
+      ".next/static/chunks/3qzwr7ikeb_93.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -949,14 +949,14 @@
   },
   {
     "route": "/[locale]",
-    "firstLoadUncompressedJsBytes": 611241,
+    "firstLoadUncompressedJsBytes": 611515,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
       ".next/static/chunks/1t9i2dp6fkjbn.js",
       ".next/static/chunks/2zbex19ox0ef1.js",
       ".next/static/chunks/2be_g45jeuzjr.js",
-      ".next/static/chunks/24yujyimqlo0b.js",
+      ".next/static/chunks/0fpycl0mvis-1.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
@@ -1101,14 +1101,14 @@
   },
   {
     "route": "/[locale]/therapists",
-    "firstLoadUncompressedJsBytes": 605286,
+    "firstLoadUncompressedJsBytes": 605396,
     "firstLoadChunkPaths": [
       ".next/static/chunks/2yl1jv4w6po1z.js",
       ".next/static/chunks/1ntn7efqc-iiw.js",
       ".next/static/chunks/1t9i2dp6fkjbn.js",
       ".next/static/chunks/2zbex19ox0ef1.js",
       ".next/static/chunks/2be_g45jeuzjr.js",
-      ".next/static/chunks/1p6p8ar7hzhhe.js",
+      ".next/static/chunks/3lfpsf7yl5jfx.js",
       ".next/static/chunks/37v5ulr6qjozi.js",
       ".next/static/chunks/1rm737diirj6u.js",
       ".next/static/chunks/1uow_ccy778ci.js",
