@@ -69,7 +69,12 @@ export default function ContractManager() {
 
   async function fetchContract() {
     try {
-      const res = await fetch("/api/therapist/contract");
+      const res = await fetch("/api/therapist/contract", {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
       if (res.ok) {
         const data = await res.json();
         setEnableAnnualContract(data.enableAnnualContract ?? false);
@@ -137,7 +142,11 @@ export default function ContractManager() {
 
       const data = await res.json();
       if (res.ok) {
-        const rawUrl = data.contractUrl;
+        const rawUrl = typeof data.contractUrl === 'string' 
+          ? data.contractUrl.trim() 
+          : (typeof data.contractUrl === 'object' && data.contractUrl !== null 
+              ? JSON.stringify(data.contractUrl) 
+              : "");
         if (rawUrl) {
           if (rawUrl.startsWith("{")) {
             setContracts(JSON.parse(rawUrl));

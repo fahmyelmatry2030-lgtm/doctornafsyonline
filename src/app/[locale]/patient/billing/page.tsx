@@ -210,7 +210,7 @@ export default async function PatientBillingPage({
                     {format(new Date(app.createdAt), 'dd MMMM yyyy', { locale: arSA })}
                   </td>
                   <td className="px-6 py-4 font-bold text-slate-800">د. {app.therapist.name}</td>
-                  <td className="px-6 py-4 font-bold text-slate-900">{formatPrice(app.price, app.therapist.currency)}</td>
+                  <td className="px-6 py-4 font-bold text-slate-900">{formatPrice(app.price, (app as any).currency || app.therapist.currency)}</td>
                   <td className="px-6 py-4">
                     {app.status === "COMPLETED" || app.status === "CONFIRMED" || app.status === "IN_PROGRESS" ? (
                       <span className="inline-flex items-center gap-1 text-green-600 bg-green-50 px-2 py-1 rounded text-xs font-bold">

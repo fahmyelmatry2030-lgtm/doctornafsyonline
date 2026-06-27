@@ -20,6 +20,8 @@ type Therapist = {
     reviewCount: number;
     isVerified: boolean;
     languages: string;
+    internationalPrice?: number | null;
+    internationalCurrency?: string | null;
   };
 };
 
@@ -33,10 +35,12 @@ type Review = {
 
 export default function TherapistDetailPage({
   therapist,
+  currentUserCurrency,
   reviews = [],
   sessionDuration = 50,
 }: {
   therapist: Therapist;
+  currentUserCurrency?: string;
   reviews?: Review[];
   sessionDuration?: number;
 }) {
@@ -179,7 +183,16 @@ export default function TherapistDetailPage({
 
   // Price calculations based on discount code
   const discountPercent = appliedDiscount || 0;
-  const originalPrice = profile.pricePerSession;
+  
+  const isInternational = currentUserCurrency && therapist.currency && currentUserCurrency !== therapist.currency;
+  const originalPrice = isInternational && therapist.therapistProfile.internationalPrice 
+    ? therapist.therapistProfile.internationalPrice 
+    : therapist.therapistProfile.pricePerSession;
+    
+  const computedCurrency = isInternational && therapist.therapistProfile.internationalCurrency
+    ? therapist.therapistProfile.internationalCurrency
+    : (therapist.currency || "EGP");
+
   const finalPrice = Math.max(0, Math.round(originalPrice * (1 - discountPercent / 100)));
 
   return (
@@ -309,10 +322,10 @@ export default function TherapistDetailPage({
               <div className="mb-6 text-center">
                 <div className="flex items-center justify-center gap-2">
                   <span className="text-sm text-slate-400 line-through">
-                    {formatPrice(originalPrice, therapist.currency)}
+                    {formatPrice(originalPrice, computedCurrency)}
                   </span>
                   <span className="text-3xl font-bold text-teal-700">
-                    {formatPrice(finalPrice, therapist.currency)}
+                    {formatPrice(finalPrice, computedCurrency)}
                   </span>
                 </div>
                 <span className="text-xs text-teal-600 font-bold block mt-1">تطبيق خصم بقيمة {discountPercent}%</span>
@@ -320,7 +333,7 @@ export default function TherapistDetailPage({
             ) : (
               <div className="mb-6 text-center">
                 <span className="text-3xl font-bold text-teal-700">
-                  {formatPrice(originalPrice, therapist.currency)}
+                  {formatPrice(originalPrice, computedCurrency)}
                 </span>
                 <span className="text-sm text-slate-500"> / جلسة {sessionDuration} دقيقة</span>
               </div>

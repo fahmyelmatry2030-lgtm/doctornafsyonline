@@ -26,6 +26,7 @@ export type SiteSettings = {
   twoFactor: boolean;
   sessionTimeout: number;
   stripeKey: string;
+  livekitApiKey: string;
   livekitKey: string;
   livekitUrl: string;
   walletVodafone?: string;
@@ -43,7 +44,7 @@ export type SiteSettings = {
   annualContractUrl?: string;
 };
 
-const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitUrl"> & { stripeKey?: string; livekitKey?: string; livekitUrl?: string } = {
+const defaultSettings: Omit<SiteSettings, "stripeKey" | "livekitKey" | "livekitApiKey" | "livekitUrl"> & { stripeKey?: string; livekitKey?: string; livekitApiKey?: string; livekitUrl?: string } = {
   commission: 40,
   minPrice: 50,
   maxPrice: 1000,
@@ -107,6 +108,7 @@ export async function getSettings(): Promise<SiteSettings> {
     ...settings,
     commission: 40, // Force commission to 40 regardless of DB
     stripeKey: isAdmin && process.env.STRIPE_SECRET_KEY ? process.env.STRIPE_SECRET_KEY : settings.stripeKey || "sk_test_***",
+    livekitApiKey: isAdmin && process.env.LIVEKIT_API_KEY ? process.env.LIVEKIT_API_KEY : settings.livekitApiKey || "API_***",
     livekitKey: isAdmin && process.env.LIVEKIT_API_SECRET ? process.env.LIVEKIT_API_SECRET : settings.livekitKey || "lk_secret_***",
     livekitUrl: process.env.LIVEKIT_URL || settings.livekitUrl || "wss://your-livekit.livekit.cloud",
   };
@@ -119,8 +121,8 @@ export async function updateSettings(settings: Partial<SiteSettings>): Promise<S
   const current = await getSettings();
   
   // Extract sensitive keys so we do NOT save them to the JSON file
-  const { stripeKey, livekitKey, livekitUrl, ...savableSettings } = settings;
-  const { stripeKey: cS, livekitKey: cL, livekitUrl: cU, ...currentSavable } = current;
+  const { stripeKey, livekitKey, livekitApiKey, livekitUrl, ...savableSettings } = settings;
+  const { stripeKey: cS, livekitKey: cL, livekitApiKey: cA, livekitUrl: cU, ...currentSavable } = current;
 
   // Force commission to 40
   savableSettings.commission = 40;

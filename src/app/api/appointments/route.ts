@@ -76,15 +76,23 @@ export async function POST(request: Request) {
       }
     }
 
-    const originalPrice = therapist.therapistProfile.pricePerSession;
+    const patientUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { name: true, phone: true, currency: true }
+    });
+
+    const isInternational = patientUser?.currency && therapist.currency && patientUser.currency !== therapist.currency;
+    const originalPrice = isInternational && therapist.therapistProfile.internationalPrice 
+      ? therapist.therapistProfile.internationalPrice 
+      : therapist.therapistProfile.pricePerSession;
+      
+    const computedCurrency = isInternational && therapist.therapistProfile.internationalCurrency
+      ? therapist.therapistProfile.internationalCurrency
+      : (therapist.currency || "EGP");
+
     const finalPrice = Math.max(0, Math.round(originalPrice * (1 - discountPercent / 100)));
 
     const roomName = `session-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-
-    const patientUser = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { name: true, phone: true }
-    });
 
     const appointment = await prisma.appointment.create({
       data: {
@@ -94,6 +102,7 @@ export async function POST(request: Request) {
         type: type || "VIDEO",
         duration: duration || settings.sessionDuration || 50,
         price: finalPrice,
+        currency: computedCurrency,
         roomName,
         status: "PENDING",
       },

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import TherapistDetailClient from "./TherapistDetailClient";
 import { getSettings } from "@/app/[locale]/admin/settings/actions";
+import { auth } from "@/lib/auth";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -27,6 +28,15 @@ export default async function TherapistPage({ params }: Props) {
   });
 
   const settings = await getSettings();
+  
+  const session = await auth();
+  let currentUserCurrency = undefined;
+  if (session?.user?.id) {
+    const user = await prisma.user.findUnique({ where: { id: session.user.id }, select: { currency: true } });
+    if (user?.currency) {
+      currentUserCurrency = user.currency;
+    }
+  }
 
   return (
     <TherapistDetailClient
@@ -38,6 +48,7 @@ export default async function TherapistPage({ params }: Props) {
         isOnline: therapist.isOnline && (new Date().getTime() - new Date(therapist.lastActivityAt).getTime()) / 60000 <= 3,
         therapistProfile: therapist.therapistProfile,
       }}
+      currentUserCurrency={currentUserCurrency}
       reviews={JSON.parse(JSON.stringify(reviews))}
       sessionDuration={settings.sessionDuration}
     />

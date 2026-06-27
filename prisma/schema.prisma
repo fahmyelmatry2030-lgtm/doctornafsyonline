@@ -53,9 +53,11 @@ model TherapistProfile {
   bio              String   @db.Text
   specializations  String   @db.Text
   languages        String   @default("العربية")
-  pricePerSession  Int
-  yearsExperience  Int      @default(1)
-  rating           Float    @default(5.0)
+  pricePerSession       Int
+  internationalPrice    Int?
+  internationalCurrency String?
+  yearsExperience       Int      @default(1)
+  rating                Float    @default(5.0)
   reviewCount      Int      @default(0)
   isVerified       Boolean  @default(false)
   isAvailable      Boolean  @default(true)
@@ -80,6 +82,7 @@ model Appointment {
   type        String            @default("VIDEO")
   status      String            @default("PENDING")
   price       Int
+  currency    String            @default("EGP")
   roomName    String            @unique
   notes       String?
   paymentScreenshot String?     @db.Text

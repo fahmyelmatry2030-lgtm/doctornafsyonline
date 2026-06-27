@@ -5,7 +5,7 @@ import { TherapistCard } from "@/components/TherapistCard";
 import { Calendar, MessageCircle, Clock, ArrowLeft, Star, HeartPulse } from "lucide-react";
 import { useSession } from "next-auth/react";
 
-export function AppHome({ therapists, locale }: { therapists: any[], locale: string }) {
+export function AppHome({ therapists, locale, currentUserCurrency }: { therapists: any[], locale: string, currentUserCurrency?: string }) {
   const { data: session } = useSession();
   const isArabic = locale !== "en";
   const prefix = isArabic ? "" : "/en";
@@ -77,6 +77,9 @@ export function AppHome({ therapists, locale }: { therapists: any[], locale: str
                 isOnline={therapist.isOnline}
                 imageUrl={therapist.avatar}
                 currency={therapist.currency}
+                currentUserCurrency={currentUserCurrency}
+                internationalPrice={therapist.therapistProfile.internationalPrice}
+                internationalCurrency={therapist.therapistProfile.internationalCurrency}
               />
             </div>
           ))}

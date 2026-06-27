@@ -56,6 +56,7 @@ export function SettingsPageClient({
   const [twoFactor, setTwoFactor] = useState(initialSettings.twoFactor);
   const [sessionTimeout, setSessionTimeout] = useState(initialSettings.sessionTimeout);
   const [stripeKey] = useState(initialSettings.stripeKey);
+  const [livekitApiKey] = useState(initialSettings.livekitApiKey);
   const [livekitKey] = useState(initialSettings.livekitKey);
   const [livekitUrl] = useState(initialSettings.livekitUrl);
   const [walletVodafone, setWalletVodafone] = useState(initialSettings.walletVodafone || "");
@@ -135,7 +136,7 @@ export function SettingsPageClient({
           platformName, allowNewTherapists, allowNewPatients,
           maintenanceMode, emailOnBooking, emailOnCancel,
           smsEnabled, twoFactor, sessionTimeout,
-          stripeKey, livekitKey, livekitUrl,
+          stripeKey, livekitApiKey, livekitKey, livekitUrl,
           walletVodafone, walletVodafoneName,
           walletInstapay, walletInstapayName,
           bankName, bankAccountNumber, bankIban,
@@ -1130,6 +1131,7 @@ export function SettingsPageClient({
                 </div>
                 {[
                   { label: "Stripe Secret Key", value: stripeKey === "sk_test_***" ? "" : stripeKey, placeholder: "معرف بملف البيئة (STRIPE_SECRET_KEY)" },
+                  { label: "LiveKit API Key", value: livekitApiKey === "API_***" ? "" : livekitApiKey, placeholder: "معرف بملف البيئة (LIVEKIT_API_KEY)" },
                   { label: "LiveKit Secret Key", value: livekitKey === "lk_secret_***" ? "" : livekitKey, placeholder: "معرف بملف البيئة (LIVEKIT_API_SECRET)" },
                   { label: "LiveKit Server URL", value: livekitUrl === "wss://your-livekit.livekit.cloud" ? "" : livekitUrl, placeholder: "معرف بملف البيئة (LIVEKIT_URL)" },
                 ].map(field => (

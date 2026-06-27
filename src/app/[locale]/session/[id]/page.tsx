@@ -129,8 +129,14 @@ export default async function SessionPage({ params }: Props) {
       ? appointment.therapist.name
       : appointment.patient.name;
 
+  const isConfigured = await isLiveKitConfigured();
+  
   let token: string | null = null;
-  if (isLiveKitConfigured()) {
+  let lkUrl: string | null = null;
+  
+  if (isConfigured) {
+    const settings = await import("@/app/[locale]/admin/settings/actions").then(m => m.getSettings());
+    lkUrl = settings.livekitUrl || process.env.LIVEKIT_URL || null;
     token = await createLiveKitToken(
       appointment.roomName,
       session.user.name || "مستخدم",
@@ -160,8 +166,8 @@ export default async function SessionPage({ params }: Props) {
         appointmentId={appointment.id}
         sessionType={appointment.type as "VIDEO" | "AUDIO" | "CHAT"}
         livekitToken={token}
-        livekitUrl={process.env.LIVEKIT_URL || null}
-        livekitConfigured={isLiveKitConfigured()}
+        livekitUrl={lkUrl}
+        livekitConfigured={isConfigured}
         currentUserId={session.user.id}
         currentUserName={session.user.name || ""}
         otherParticipantName={otherParticipantName}

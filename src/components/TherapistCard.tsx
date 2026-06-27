@@ -18,6 +18,9 @@ type TherapistCardProps = {
   isOnline?: boolean;
   imageUrl?: string;
   currency?: string;
+  currentUserCurrency?: string;
+  internationalPrice?: number | null;
+  internationalCurrency?: string | null;
 };
 
 export function TherapistCard({
@@ -33,11 +36,23 @@ export function TherapistCard({
   isOnline,
   imageUrl,
   currency,
+  currentUserCurrency,
+  internationalPrice,
+  internationalCurrency,
 }: TherapistCardProps) {
   const params = useParams();
-  const locale = params?.locale || "ar";
+  const locale = (params?.locale as string) || "ar";
   const specs = parseSpecializations(specializations).slice(0, 3);
   const profileUrl = `/${locale}/therapists/${id}`;
+
+  const isInternational = currentUserCurrency && currency && currentUserCurrency !== currency;
+  const originalPrice = isInternational && internationalPrice 
+    ? internationalPrice 
+    : pricePerSession;
+    
+  const computedCurrency = isInternational && internationalCurrency
+    ? internationalCurrency
+    : (currency || "EGP");
 
   return (
     <Link href={profileUrl} className="block group">
@@ -98,7 +113,7 @@ export function TherapistCard({
 
       <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
         <span className="font-bold text-slate-900">
-          {formatPrice(pricePerSession, currency)}
+          {formatPrice(originalPrice, computedCurrency)}
           <span className="text-xs font-normal text-slate-500"> / جلسة</span>
         </span>
         <span className="rounded-full bg-gradient-to-r from-emerald-700 to-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-95">

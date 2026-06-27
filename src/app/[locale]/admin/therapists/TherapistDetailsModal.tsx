@@ -28,6 +28,8 @@ type Therapist = {
     isVerified: boolean;
     certificates: string | null;
     contractUrl: string | null;
+    internationalPrice?: number | null;
+    internationalCurrency?: string | null;
   } | null;
   _count: {
     therapistAppointments: number;
@@ -284,9 +286,9 @@ export function TherapistDetailsModal({
               </span>
             </div>
             <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
-              <span className="text-xs text-slate-400 font-bold block mb-1">سعر الجلسة / الخبرة</span>
+              <span className="text-xs text-slate-400 font-bold block mb-1">سعر الجلسة / السعر الدولي</span>
               <span className="text-sm font-black text-slate-800 block">
-                {formatPrice(profile?.pricePerSession || 0, localTherapist.currency)} · {profile?.yearsExperience} سنوات خبرة
+                {formatPrice(profile?.pricePerSession || 0, localTherapist.currency)} / {profile?.internationalPrice ? formatPrice(profile.internationalPrice, profile.internationalCurrency || "USD") : "—"}
               </span>
             </div>
             <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
@@ -336,21 +338,23 @@ export function TherapistDetailsModal({
                     { id: "marketing", name: "إقرار الحملة الدعائية" },
                     { id: "annual", name: "العقد السنوي الشامل" }
                   ].map((contract) => {
-                    const rawContractUrl = profile?.contractUrl;
-                    let parsedContracts: any = {};
-                    if (rawContractUrl) {
-                      if (rawContractUrl.startsWith("{")) {
-                        try {
-                          parsedContracts = JSON.parse(rawContractUrl);
-                        } catch {
-                          parsedContracts = {
-                            trial: { url: rawContractUrl, status: "APPROVED", uploadedAt: new Date().toISOString() }
-                          };
+                    let contractsObj: Record<string, any> = {};
+                    if (profile?.contractUrl) {
+                      const rawUrl = typeof profile.contractUrl === 'string' 
+                        ? profile.contractUrl.trim() 
+                        : (typeof profile.contractUrl === 'object' && profile.contractUrl !== null 
+                            ? JSON.stringify(profile.contractUrl) 
+                            : "");
+                      if (rawUrl) {
+                        if (rawUrl.startsWith("{") || rawUrl.startsWith("[")) {
+                          try {
+                            contractsObj = JSON.parse(rawUrl);
+                          } catch {
+                            contractsObj = { trial: { url: rawUrl, status: "APPROVED", uploadedAt: profile.createdAt } };
+                          }
+                        } else {
+                          contractsObj = { trial: { url: rawUrl, status: "APPROVED", uploadedAt: profile.createdAt } };
                         }
-                      } else {
-                        parsedContracts = {
-                          trial: { url: rawContractUrl, status: "APPROVED", uploadedAt: new Date().toISOString() }
-                        };
                       }
                     }
 

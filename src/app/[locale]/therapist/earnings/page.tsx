@@ -102,7 +102,7 @@ export default async function TherapistEarningsPage() {
                     {format(new Date(app.scheduledAt), 'dd MMMM yyyy', { locale: arSA })}
                   </td>
                   <td className="px-6 py-4 font-bold text-slate-800">{app.patient.name}</td>
-                  <td className="px-6 py-4 text-slate-600">{formatPrice(app.price, user?.currency || "EGP")}</td>
+                  <td className="px-6 py-4 text-slate-600">{formatPrice(app.price, (app as any).currency || user?.currency || "EGP")}</td>
                   <td className="px-6 py-4 font-bold text-emerald-600">
                     مكتملة ومؤكدة ✓
                   </td>

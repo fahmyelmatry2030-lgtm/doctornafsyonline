@@ -1,6 +1,7 @@
 import { TherapistCard } from "@/components/TherapistCard";
 import { SPECIALIZATIONS } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import Link from "next/link";
 import { Users, Filter } from "lucide-react";
 import { getWebsiteContent } from "@/app/[locale]/admin/settings/actions";
@@ -17,6 +18,15 @@ export default async function TherapistsPage({ searchParams }: Props) {
 
   const content = await getWebsiteContent();
   const t = await getTranslations("Therapists");
+
+  const session = await auth();
+  let currentUserCurrency = undefined;
+  if (session?.user?.id) {
+    const user = await prisma.user.findUnique({ where: { id: session.user.id }, select: { currency: true } });
+    if (user?.currency) {
+      currentUserCurrency = user.currency;
+    }
+  }
 
   // Lazy sweep for online status (Heartbeat check: offline if no activity in last 3 mins)
   const threeMinutesAgo = new Date(Date.now() - 3 * 60 * 1000);
@@ -162,6 +172,9 @@ export default async function TherapistsPage({ searchParams }: Props) {
                     isOnline={t.isOnline && (new Date().getTime() - new Date(t.lastActivityAt).getTime()) / 60000 <= 3}
                     imageUrl={t.avatar || undefined}
                     currency={t.currency}
+                    currentUserCurrency={currentUserCurrency}
+                    internationalPrice={(t.therapistProfile as any).internationalPrice}
+                    internationalCurrency={(t.therapistProfile as any).internationalCurrency}
                   />
                 </div>
               ) : null

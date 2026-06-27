@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { formatPrice } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -355,7 +356,7 @@ export default async function AdminDashboardPage() {
                           <td className="px-6 py-4">
                             <p className="text-sm font-bold text-[#2B3674]">{app.scheduledAt.toLocaleDateString("ar-EG")}</p>
                             {session.user.role !== "ADMIN_HR" && (
-                              <p className="text-xs font-bold text-[#A3AED0]">{app.price} {t("currency")}</p>
+                              <p className="text-xs font-bold text-[#A3AED0]">{formatPrice(app.price, app.currency || "EGP")}</p>
                             )}
                           </td>
                           <td className="px-6 py-4">

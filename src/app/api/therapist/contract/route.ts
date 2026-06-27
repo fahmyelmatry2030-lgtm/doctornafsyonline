@@ -9,14 +9,17 @@ import { getSettings } from "@/app/[locale]/admin/settings/actions";
 const updateContractJson = (currentVal: string | null, type: string, url: string | null) => {
   let contracts: Record<string, any> = {};
   if (currentVal) {
-    if (currentVal.startsWith("{")) {
-      try {
-        contracts = JSON.parse(currentVal);
-      } catch {
-        contracts = { trial: { url: currentVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
+    const rawVal = typeof currentVal === 'string' ? currentVal.trim() : (typeof currentVal === 'object' && currentVal !== null ? JSON.stringify(currentVal) : "");
+    if (rawVal) {
+      if (rawVal.startsWith("{") || rawVal.startsWith("[")) {
+        try {
+          contracts = JSON.parse(rawVal);
+        } catch {
+          contracts = { trial: { url: rawVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
+        }
+      } else {
+        contracts = { trial: { url: rawVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
       }
-    } else {
-      contracts = { trial: { url: currentVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
     }
   }
   
@@ -36,14 +39,17 @@ const updateContractJson = (currentVal: string | null, type: string, url: string
 const updateContractStatusJson = (currentVal: string | null, type: string, status: string) => {
   let contracts: Record<string, any> = {};
   if (currentVal) {
-    if (currentVal.startsWith("{")) {
-      try {
-        contracts = JSON.parse(currentVal);
-      } catch {
-        contracts = { trial: { url: currentVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
+    const rawVal = typeof currentVal === 'string' ? currentVal.trim() : (typeof currentVal === 'object' && currentVal !== null ? JSON.stringify(currentVal) : "");
+    if (rawVal) {
+      if (rawVal.startsWith("{") || rawVal.startsWith("[")) {
+        try {
+          contracts = JSON.parse(rawVal);
+        } catch {
+          contracts = { trial: { url: rawVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
+        }
+      } else {
+        contracts = { trial: { url: rawVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
       }
-    } else {
-      contracts = { trial: { url: currentVal, status: "APPROVED", uploadedAt: new Date().toISOString() } };
     }
   }
   

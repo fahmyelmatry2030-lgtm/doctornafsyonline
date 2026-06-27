@@ -16,6 +16,8 @@ type TherapistProfile = {
     currency?: string;
   };
   salaryType?: "FIXED" | "COMMISSION";
+  internationalPrice?: number | null;
+  internationalCurrency?: string | null;
 };
 
 type TherapistProfileFormProps = {
@@ -32,6 +34,8 @@ export default function TherapistProfileForm({ profile, settings }: TherapistPro
   const [pricePerSession, setPricePerSession] = useState(profile.pricePerSession);
   const [yearsExperience, setYearsExperience] = useState(profile.yearsExperience);
   const [isAvailable, setIsAvailable] = useState(profile.isAvailable);
+  const [internationalPrice, setInternationalPrice] = useState(profile.internationalPrice || 0);
+  const [internationalCurrency, setInternationalCurrency] = useState(profile.internationalCurrency || "USD");
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -48,6 +52,8 @@ export default function TherapistProfileForm({ profile, settings }: TherapistPro
       formData.append("bio", bio);
       formData.append("specializations", specializations);
       formData.append("pricePerSession", String(pricePerSession));
+      formData.append("internationalPrice", String(internationalPrice));
+      formData.append("internationalCurrency", internationalCurrency);
       formData.append("yearsExperience", String(yearsExperience));
       formData.append("isAvailable", String(isAvailable));
 
@@ -123,6 +129,35 @@ export default function TherapistProfileForm({ profile, settings }: TherapistPro
             أنت تعمل بنظام المرتب الشهري الثابت، لذلك يتم تحديد سعر الجلسة من قِبل الإدارة ولا يمكنك تعديله من هنا.
           </p>
         )}
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
+        <div>
+          <label className="block text-sm font-semibold text-indigo-900 mb-2">السعر الدولي (للمرضى من خارج دولتك)</label>
+          <input 
+            type="number" 
+            name="internationalPrice" 
+            value={internationalPrice} 
+            onChange={(e) => setInternationalPrice(parseInt(e.target.value) || 0)}
+            disabled={profile.salaryType === "FIXED"}
+            className={`block w-full rounded-xl border border-indigo-200 py-3 px-4 text-slate-900 transition-all shadow-sm ${profile.salaryType === "FIXED" ? "bg-slate-100 cursor-not-allowed opacity-70" : "bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20"}`}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-semibold text-indigo-900 mb-2">العملة الدولية</label>
+          <select 
+            value={internationalCurrency}
+            onChange={(e) => setInternationalCurrency(e.target.value)}
+            disabled={profile.salaryType === "FIXED"}
+            className={`block w-full rounded-xl border border-indigo-200 py-3 px-4 text-slate-900 transition-all shadow-sm ${profile.salaryType === "FIXED" ? "bg-slate-100 cursor-not-allowed opacity-70" : "bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20"}`}
+          >
+            <option value="USD">دولار أمريكي (USD)</option>
+            <option value="AED">درهم إماراتي (AED)</option>
+            <option value="SAR">ريال سعودي (SAR)</option>
+            <option value="EUR">يورو (EUR)</option>
+            <option value="GBP">جنيه إسترليني (GBP)</option>
+          </select>
+        </div>
       </div>
 
       <div>

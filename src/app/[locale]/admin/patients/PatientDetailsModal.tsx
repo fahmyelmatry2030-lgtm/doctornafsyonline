@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { 
   Users, Mail, Phone, Calendar, ArrowRight, ShieldAlert,
-  User, CheckCircle, Clock, Video, FileText, ChevronDown, ChevronUp, Search, AlertCircle, X
+  User, CheckCircle, Clock, Video, FileText, ChevronDown, ChevronUp, Search, AlertCircle, X, FileLock2, XCircle
 } from "lucide-react";
+import { formatPrice } from "@/lib/constants";
 
 type Appointment = {
   id: string;
@@ -154,7 +155,7 @@ export function PatientDetailsModal({ patient, onClose }: PatientDetailsModalPro
                             <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
                               <span>التاريخ: {new Date(app.scheduledAt).toLocaleDateString("ar-EG", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
                               <span>•</span>
-                              <span>السعر: {app.price} ج.م</span>
+                              <span>السعر: {formatPrice(app.price, (app as any).currency || "EGP")}</span>
                             </div>
                           </div>
                         </div>

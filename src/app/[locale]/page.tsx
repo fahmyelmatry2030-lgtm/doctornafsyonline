@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { TherapistCard } from "@/components/TherapistCard";
+import { auth } from "@/lib/auth";
 
 async function getFeaturedTherapists() {
   return prisma.user.findMany({
@@ -45,6 +46,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     dbError = err.message || String(err);
   }
 
+  const session = await auth();
+  let currentUserCurrency = undefined;
+  if (session?.user?.id) {
+    const user = await prisma.user.findUnique({ where: { id: session.user.id }, select: { currency: true } });
+    if (user?.currency) {
+      currentUserCurrency = user.currency;
+    }
+  }
+
   // Pass locale explicitly from URL params - fixes Arabic showing on /en
   const t = await getTranslations({ locale, namespace: "Hero" }).catch(() => ({
     badge: locale === 'en' ? "Your Trusted Mental Health Platform" : "رعاية نفسية مبسطة بثقة وخصوصية",
@@ -57,7 +67,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <HomeWrapper 
-      appHome={<AppHome therapists={therapists} locale={locale} />}
+      appHome={<AppHome therapists={therapists} locale={locale} currentUserCurrency={currentUserCurrency} />}
       websiteHome={
         <>
           {/* ============ HERO SECTION ============ */}
@@ -339,6 +349,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                       isVerified={t.therapistProfile.isVerified}
                       imageUrl={t.avatar || undefined}
                       isOnline={t.isOnline}
+                      currency={t.currency}
+                      currentUserCurrency={currentUserCurrency}
+                      internationalPrice={(t.therapistProfile as any).internationalPrice}
+                      internationalCurrency={(t.therapistProfile as any).internationalCurrency}
                     />
                   </div>
                 ) : null

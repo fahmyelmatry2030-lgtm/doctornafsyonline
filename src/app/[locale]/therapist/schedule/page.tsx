@@ -170,7 +170,7 @@ export default async function TherapistSessionsPage() {
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${statusLabels[app.status].className}`}>
                     {statusLabels[app.status].label}
                   </span>
-                  <span className="font-black text-slate-800">{formatPrice(app.price, user?.currency || "EGP")}</span>
+                  <span className="font-black text-slate-800">{formatPrice(app.price, (app as any).currency || user?.currency || "EGP")}</span>
                   <Link
                     href={`/session/${app.id}`}
                     className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-bold text-sm border border-indigo-200 hover:border-indigo-400 px-3 py-1.5 rounded-xl transition-colors"
@@ -221,7 +221,7 @@ export default async function TherapistSessionsPage() {
                       <td className="px-6 py-4 text-slate-600">
                         <ClientDateTime date={app.scheduledAt} formatStr="d MMM yyyy · hh:mm a" />
                       </td>
-                      <td className="px-6 py-4 font-black text-slate-800">{formatPrice(app.price, user?.currency || "EGP")}</td>
+                      <td className="px-6 py-4 font-black text-slate-800">{formatPrice(app.price, (app as any).currency || user?.currency || "EGP")}</td>
                       <td className="px-6 py-4">
                         <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${statusLabels[app.status]?.className}`}>
                           {statusLabels[app.status]?.label}

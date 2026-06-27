@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       where: { id: appointmentId },
       include: {
         patient: { select: { id: true, name: true, email: true } },
-        therapist: { select: { name: true, currency: true } },
+        therapist: { select: { name: true } },
       },
     });
 
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       patientEmail: appointment.patient.email,
       patientName: appointment.patient.name,
       therapistName: appointment.therapist.name,
-      currency: appointment.therapist.currency,
+      currency: appointment.currency,
       successUrl: `${baseUrl}/patient/billing?status=success&session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${baseUrl}/patient/billing?status=cancelled`,
     });

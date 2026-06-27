@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import TransferVerificationTable from "@/components/TransferVerificationTable";
 import PrintReportButton from "@/components/PrintReportButton";
+import { formatPrice } from "@/lib/constants";
 
 export default async function AdminReportsPage() {
   const session = await auth();
@@ -289,7 +290,7 @@ export default async function AdminReportsPage() {
                   <div>
                     <p className="text-xs font-bold text-slate-800">{app.patient.name} ← {app.therapist.name}</p>
                     <p className="text-[10px] text-slate-400 mt-0.5">
-                      {new Date(app.scheduledAt).toLocaleDateString("ar-EG")} · {app.price} ج.م
+                      {new Date(app.scheduledAt).toLocaleDateString("ar-EG")} · {formatPrice(app.price, (app as any).currency || "EGP")}
                     </p>
                   </div>
                 </div>

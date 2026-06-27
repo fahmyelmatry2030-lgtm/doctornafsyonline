@@ -22,6 +22,10 @@ export async function updateTherapistProfile(formData: FormData) {
   const yearsExperienceRaw = formData.get("yearsExperience") as string;
   const yearsExperience = parseInt(yearsExperienceRaw || String(existingProfile.yearsExperience));
   const isAvailable = formData.get("isAvailable") === "true";
+  const internationalCurrency = (formData.get("internationalCurrency") as string) || "USD";
+  const internationalPriceRaw = formData.get("internationalPrice") as string;
+  let internationalPrice = parseInt(internationalPriceRaw || "0");
+  if (isNaN(internationalPrice)) internationalPrice = 0;
 
   let pricePerSession = existingProfile.pricePerSession;
 
@@ -46,6 +50,8 @@ export async function updateTherapistProfile(formData: FormData) {
         bio,
         specializations,
         pricePerSession,
+        internationalPrice,
+        internationalCurrency,
         yearsExperience: isNaN(yearsExperience) ? 1 : yearsExperience,
         isAvailable,
       },

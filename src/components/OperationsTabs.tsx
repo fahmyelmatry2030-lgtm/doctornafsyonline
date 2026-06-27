@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { updateAppointmentStatus, rejectAppointmentPayment, editAppointmentDetails } from "@/app/[locale]/admin/operations/actions";
 import ClientDateTime from "./ClientDateTime";
+import { formatPrice } from "@/lib/constants";
 
 type Appointment = {
   id: string;
@@ -304,7 +305,7 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                         <span className="text-slate-400"><ClientDateTime date={app.scheduledAt} formatStr="hh:mm a" /></span>
                       </td>
                       <td className="px-5 py-4 font-bold text-slate-700">
-                        {app.price} ج.م
+                        {formatPrice(app.price, (app as any).currency || "EGP")}
                       </td>
                       <td className="px-5 py-4">
                         {app.paymentScreenshot ? (
@@ -647,13 +648,13 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                           </span>
                         </td>
                         <td className="px-5 py-4 font-bold text-slate-800">
-                          {app.price} ج.م
+                          {formatPrice(app.price, (app as any).currency || "EGP")}
                         </td>
                         <td className="px-5 py-4 font-bold text-emerald-600">
-                          {isCompleted ? `${appCommission} ج.م` : "0 ج.م"}
+                          {isCompleted ? formatPrice(appCommission, (app as any).currency || "EGP") : formatPrice(0, (app as any).currency || "EGP")}
                         </td>
                         <td className="px-5 py-4 font-bold text-indigo-600">
-                          {isCompleted ? `${therapistPayout}  ج.م` : "0 ج.م"}
+                          {isCompleted ? formatPrice(therapistPayout, (app as any).currency || "EGP") : formatPrice(0, (app as any).currency || "EGP")}
                         </td>
                         <td className="px-5 py-4">
                           {isCompleted ? (

@@ -5,6 +5,7 @@ import { Check, X, FileImage, Loader2, AlertCircle, Calendar, User } from "lucid
 import { updateAppointmentStatus, rejectAppointmentPayment } from "@/app/[locale]/admin/operations/actions";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
+import { formatPrice } from "@/lib/constants";
 
 type TransferAppointment = {
   id: string;
@@ -109,7 +110,7 @@ export default function TransferVerificationTable({
                     </div>
                   </td>
                   <td className="px-6 py-4 font-bold text-slate-800">د. {t.therapist.name}</td>
-                  <td className="px-6 py-4 font-black text-slate-900">{t.price} ج.م</td>
+                  <td className="px-6 py-4 font-black text-slate-900">{formatPrice(t.price, (t as any).currency || "EGP")}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-1.5 text-slate-600">
                       <Calendar className="w-4 h-4 text-slate-400" />
