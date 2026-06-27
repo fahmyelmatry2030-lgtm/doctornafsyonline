@@ -3,8 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { CreditCard, Wallet, ArrowDownToLine, History } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
-import { PLATFORM_PHONE } from "@/lib/constants";
-import WithdrawalButton from "@/components/WithdrawalButton";
+import { PLATFORM_PHONE, formatPrice } from "@/lib/constants";
 import TherapistSalaryHistoryClient from "@/components/TherapistSalaryHistoryClient";
 
 export default async function TherapistEarningsPage() {
@@ -15,6 +14,11 @@ export default async function TherapistEarningsPage() {
     where: { therapistId: session.user.id, status: "COMPLETED" },
     include: { patient: true },
     orderBy: { scheduledAt: "desc" },
+  });
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { currency: true }
   });
 
   const profile = await prisma.therapistProfile.findUnique({
@@ -72,7 +76,7 @@ export default async function TherapistEarningsPage() {
         </div>
       </div>
 
-      <TherapistSalaryHistoryClient history={history.map(r => ({ ...r, status: r.status as "PENDING" | "PAID" | "ACKNOWLEDGED" }))} />
+      <TherapistSalaryHistoryClient history={history.map(r => ({ ...r, status: r.status as "PENDING" | "PAID" | "ACKNOWLEDGED" }))} currency={user?.currency || "EGP"} />
 
       <div className="card-glow glass rounded-3xl border border-[var(--color-border-soft)] overflow-hidden">
         <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
@@ -98,7 +102,7 @@ export default async function TherapistEarningsPage() {
                     {format(new Date(app.scheduledAt), 'dd MMMM yyyy', { locale: arSA })}
                   </td>
                   <td className="px-6 py-4 font-bold text-slate-800">{app.patient.name}</td>
-                  <td className="px-6 py-4 text-slate-600">{app.price} ج.م</td>
+                  <td className="px-6 py-4 text-slate-600">{formatPrice(app.price, user?.currency || "EGP")}</td>
                   <td className="px-6 py-4 font-bold text-emerald-600">
                     مكتملة ومؤكدة ✓
                   </td>

@@ -13,9 +13,12 @@ import {
 
 type WithdrawalButtonProps = {
   maxAmount: number;
+  currency: string;
 };
 
-export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
+import { formatPrice } from "@/lib/constants";
+
+export default function WithdrawalButton({ maxAmount, currency }: WithdrawalButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [method, setMethod] = useState<"instapay" | "vodafone" | "bank">("instapay");
   const [amount, setAmount] = useState(maxAmount.toString());
@@ -127,7 +130,7 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
                 </div>
                 <h3 className="text-xl font-bold text-slate-800">تم تقديم الطلب بنجاح!</h3>
                 <p className="text-sm text-slate-500 leading-relaxed max-w-xs mx-auto">
-                  لقد استلمنا طلب سحب مبلغ <span className="font-bold text-indigo-600">{amount} ج.م</span>. 
+                  لقد استلمنا طلب سحب مبلغ <span className="font-bold text-indigo-600">{formatPrice(parseFloat(amount) || 0, currency)}</span>. 
                   سيتم مراجعة الطلب وتحويل الأموال إلى حسابك في غضون 24 ساعة عمل.
                 </p>
                 <button
@@ -141,7 +144,7 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <h3 className="text-lg font-black text-slate-950">سحب الرصيد إلى حسابك</h3>
-                  <p className="text-xs text-slate-500 mt-1">الرصيد الأقصى المتاح للسحب هو {maxAmount} ج.م</p>
+                  <p className="text-xs text-slate-500 mt-1">الرصيد الأقصى المتاح للسحب هو {formatPrice(maxAmount, currency)}</p>
                 </div>
 
                 {error && (
@@ -164,7 +167,7 @@ export default function WithdrawalButton({ maxAmount }: WithdrawalButtonProps) {
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-4 pr-12 text-sm focus:bg-white focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 outline-none transition-all font-bold text-slate-900"
                     />
                     <div className="absolute inset-y-0 right-0 pr-4 flex items-center text-xs font-bold text-slate-500 pointer-events-none">
-                      ج.م
+                      {currency}
                     </div>
                   </div>
                 </div>

@@ -1,3 +1,0 @@
-module.exports=[661232,a=>{"use strict";var b=a.i(585275);a.s([],567272),a.i(567272),a.s(["0020b8c8526c50ae8848b4c7414e1c5fe12eb6c280",()=>b.getSettings,"00e8f8d499616c05cdcb382c37b344e481bc72f143",()=>b.getWebsiteContent,"40f641790f2dfb8406f3b584b3a2ad3ef8aaf494d0",()=>b.updateWebsiteContent,"40f67d8801e7eee62b97df7b4239d17050ceaca019",()=>b.updateSettings],661232)}];
-
-//# sourceMappingURL=_next-internal_server_app_%5Blocale%5D_how-it-works_page_actions_0-i53xu.js.map

@@ -18,12 +18,14 @@ type Therapist = {
   avatar: string | null;
   createdAt: string | Date;
   isSuspended: boolean;
-  currency?: string;
+  currency: string;
+  role: string;
   therapistProfile: {
     bio: string;
     specializations: string;
     pricePerSession: number;
     salaryType: string;
+    salary?: number | null;
     yearsExperience: number;
     rating: number;
     reviewCount: number;
@@ -303,7 +305,7 @@ export function TherapistsTableClient({
                 <div className="flex items-center gap-6 shrink-0 mt-3 md:mt-0">
                   <div className="text-center">
                     <p className="text-xs text-slate-500">السعر/جلسة</p>
-                    <p className="font-black text-slate-800 text-base">{t.therapistProfile?.pricePerSession ? formatPrice(t.therapistProfile.pricePerSession, t.currency || "EGP") : "—"}</p>
+                    <p className="font-black text-slate-800 text-base">{t.therapistProfile?.pricePerSession ? formatPrice(t.therapistProfile.pricePerSession, t.currency) : "—"}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-xs text-slate-500">الخبرة</p>

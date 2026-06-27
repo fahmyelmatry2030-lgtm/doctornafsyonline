@@ -30,6 +30,7 @@ export default async function AdminEmployeeSalariesPage() {
         name: true,
         email: true,
         role: true,
+        currency: true,
         baseSalary: true,
         employeeBonuses: {
           where: {

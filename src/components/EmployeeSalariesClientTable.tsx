@@ -24,6 +24,7 @@ interface Employee {
   name: string;
   email: string;
   role: string;
+  currency: string;
   baseSalary: number;
   employeeBonuses: EmployeeBonus[];
   monthlySalaryRecords: MonthlySalaryRecord[];
@@ -211,7 +212,7 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
           </div>
           <div>
             <p className="text-sm font-bold text-slate-500 mb-1">إجمالي الرواتب الثابتة (هذا الشهر)</p>
-            <p className="text-2xl font-black text-slate-900">{totalSalaries} ج.م</p>
+            <p className="text-2xl font-black text-slate-900">{formatPrice(totalSalaries, "EGP")}</p>
           </div>
         </div>
         <div className="bg-white rounded-[24px] p-6 border border-slate-100 shadow-sm flex items-center gap-4">
@@ -220,7 +221,7 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
           </div>
           <div>
             <p className="text-sm font-bold text-slate-500 mb-1">إجمالي العمولات (هذا الشهر)</p>
-            <p className="text-2xl font-black text-slate-900">{totalBonuses} ج.م</p>
+            <p className="text-2xl font-black text-slate-900">{formatPrice(totalBonuses, "EGP")}</p>
           </div>
         </div>
         <div className="bg-indigo-600 rounded-[24px] p-6 border border-indigo-500 shadow-md flex items-center gap-4 text-white">
@@ -229,7 +230,7 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
           </div>
           <div>
             <p className="text-sm font-bold text-indigo-100 mb-1">الإجمالي العام المستحق</p>
-            <p className="text-2xl font-black">{grandTotal} ج.م</p>
+            <p className="text-2xl font-black">{formatPrice(grandTotal, "EGP")}</p>
           </div>
         </div>
       </div>
@@ -306,12 +307,12 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`font-bold ${empBonusesTotal >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                        {empBonusesTotal >= 0 ? '+' : ''}{empBonusesTotal} ج.م
+                        {formatPrice(empBonusesTotal, employee.currency)}
                       </span>
                       <p className="text-xs text-slate-500 mt-1">({employee.employeeBonuses.length} عمليات)</p>
                     </td>
-                    <td className="px-6 py-4 font-black text-indigo-700 text-base">
-                      {employee.baseSalary + empBonusesTotal} ج.م
+                    <td className="px-6 py-4 font-black text-slate-900">
+                      {formatPrice(employee.baseSalary + empBonusesTotal, employee.currency)}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
@@ -385,7 +386,7 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                 <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
                   <div className="col-span-2 flex justify-between items-center bg-indigo-50/50 p-2 rounded-lg border border-indigo-50">
                     <p className="text-xs text-indigo-900 font-bold">الإجمالي النهائي للقبض</p>
-                    <p className="font-black text-indigo-700 text-base">{employee.baseSalary + empBonusesTotal} ج.م</p>
+                    <p className="font-black text-indigo-700 text-base">{formatPrice(employee.baseSalary + empBonusesTotal, employee.currency)}</p>
                   </div>
                   <div>
                     <p className="text-[10px] text-slate-500 font-bold mb-1">الراتب الأساسي</p>
@@ -404,7 +405,7 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                         </div>
                       ) : (
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-slate-900 text-sm">{employee.baseSalary} ج.م</span>
+                          <span className="font-bold text-slate-900 text-sm">{formatPrice(employee.baseSalary, employee.currency)}</span>
                           <button
                             onClick={() => {
                               setEditingBaseSalary(employee.id);
@@ -420,8 +421,8 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                   <div>
                     <p className="text-[10px] text-slate-500 font-bold mb-1">المكافآت والخصومات</p>
                     <div className="flex flex-col">
-                      <span className={`font-bold text-sm ${empBonusesTotal >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                        {empBonusesTotal >= 0 ? '+' : ''}{empBonusesTotal} ج.م
+                      <span className={`font-bold text-sm ${empBonusesTotal >= 0 ? 'text-emerald-600' : 'text-red-600'}`} dir="ltr">
+                        {formatPrice(empBonusesTotal, employee.currency)}
                       </span>
                       <span className="text-[10px] text-slate-400">({employee.employeeBonuses.length} عمليات)</span>
                     </div>
@@ -471,7 +472,7 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
               
               <form onSubmit={addBonus} className="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
                 <div>
-                  <label className="block text-sm font-bold mb-1">المبلغ (ج.م)</label>
+                  <label className="block text-sm font-bold mb-1">المبلغ</label>
                   <input
                     type="number"
                     required
@@ -516,7 +517,7 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                         </div>
                         <div className="flex items-center gap-3">
                           <span className={`font-bold ${bonus.amount >= 0 ? "text-emerald-600" : "text-red-600"}`}>
-                            {bonus.amount >= 0 ? "+" : ""}{bonus.amount} ج.م
+                            {formatPrice(bonus.amount, selectedEmployee.currency)}
                           </span>
                           <button
                             onClick={() => deleteBonus(bonus.id)}
@@ -558,16 +559,16 @@ export function EmployeeSalariesClientTable({ initialEmployees }: Props) {
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                   <p className="text-sm font-bold text-slate-700 flex justify-between mb-2">
                     <span>الراتب الأساسي:</span>
-                    <span>{selectedEmployee.baseSalary} ج.م</span>
+                    <span>{formatPrice(selectedEmployee.baseSalary, selectedEmployee.currency)}</span>
                   </p>
                   <p className="text-sm font-bold text-slate-700 flex justify-between mb-2">
                     <span>المكافآت والخصومات:</span>
-                    <span>{selectedEmployee.employeeBonuses.reduce((acc, b) => acc + b.amount, 0)} ج.م</span>
+                    <span>{formatPrice(selectedEmployee.employeeBonuses.reduce((acc, b) => acc + b.amount, 0), selectedEmployee.currency)}</span>
                   </p>
                   <div className="h-px bg-slate-200 my-2"></div>
                   <p className="text-lg font-black text-indigo-700 flex justify-between">
                     <span>الإجمالي المستحق:</span>
-                    <span>{selectedEmployee.baseSalary + selectedEmployee.employeeBonuses.reduce((acc, b) => acc + b.amount, 0)} ج.م</span>
+                    <span>{formatPrice(selectedEmployee.baseSalary + selectedEmployee.employeeBonuses.reduce((acc, b) => acc + b.amount, 0), selectedEmployee.currency)}</span>
                   </p>
                 </div>
 

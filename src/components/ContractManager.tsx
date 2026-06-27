@@ -270,9 +270,10 @@ export default function ContractManager() {
                         href={data.url}
                         target="_blank"
                         rel="noopener noreferrer"
+                        download
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-[11px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-xl py-2.5 hover:bg-indigo-100 transition-colors text-center"
                       >
-                        <FileText className="w-3.5 h-3.5" /> عرض المرفوع
+                        <FileText className="w-3.5 h-3.5" /> تحميل الملف
                       </a>
                       <button 
                         type="button"

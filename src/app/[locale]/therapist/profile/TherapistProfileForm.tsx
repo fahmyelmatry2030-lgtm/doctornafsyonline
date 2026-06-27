@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { updateTherapistProfile } from "./actions";
+import { formatPrice } from "@/lib/constants";
 
 type TherapistProfile = {
   bio: string;
@@ -12,6 +13,7 @@ type TherapistProfile = {
   isAvailable: boolean;
   user: {
     name: string;
+    currency?: string;
   };
   salaryType?: "FIXED" | "COMMISSION";
 };
@@ -99,7 +101,7 @@ export default function TherapistProfileForm({ profile, settings }: TherapistPro
 
       <div>
         <label className="block text-sm font-semibold text-slate-700 mb-2">
-          سعر الجلسة (الحد الأدنى المسموح به: {settings.minPrice} ج.م · الحد الأقصى: {settings.maxPrice} ج.م)
+          سعر الجلسة (الحد الأدنى المسموح به: {formatPrice(settings.minPrice, profile.user.currency)} · الحد الأقصى: {formatPrice(settings.maxPrice, profile.user.currency)})
         </label>
         <div className="relative">
           <input 
@@ -113,7 +115,7 @@ export default function TherapistProfileForm({ profile, settings }: TherapistPro
             className={`block w-full rounded-xl border border-[var(--color-border-soft)] py-3 pl-12 pr-4 text-slate-900 transition-all shadow-sm ${profile.salaryType === "FIXED" ? "bg-slate-100 cursor-not-allowed opacity-70" : "bg-white/50 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20"}`}
           />
           <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-500 font-semibold">
-            ج.م
+            {formatPrice(0, profile.user.currency).replace(/[\d.,]/g, "").trim()}
           </div>
         </div>
         {profile.salaryType === "FIXED" && (

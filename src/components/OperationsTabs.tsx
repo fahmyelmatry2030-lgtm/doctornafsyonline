@@ -7,6 +7,7 @@ import {
   AlertCircle, ChevronDown, Award, ExternalLink, Edit3
 } from "lucide-react";
 import { updateAppointmentStatus, rejectAppointmentPayment, editAppointmentDetails } from "@/app/[locale]/admin/operations/actions";
+import ClientDateTime from "./ClientDateTime";
 
 type Appointment = {
   id: string;
@@ -298,9 +299,9 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
                         د. {app.therapist.name}
                       </td>
                       <td className="px-5 py-4 text-xs text-slate-600">
-                        {new Date(app.scheduledAt).toLocaleDateString("ar-EG", { day: "2-digit", month: "short", year: "numeric" })}
+                        <ClientDateTime date={app.scheduledAt} formatStr="d MMM yyyy" />
                         <br />
-                        <span className="text-slate-400">{new Date(app.scheduledAt).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" })}</span>
+                        <span className="text-slate-400"><ClientDateTime date={app.scheduledAt} formatStr="hh:mm a" /></span>
                       </td>
                       <td className="px-5 py-4 font-bold text-slate-700">
                         {app.price} ج.م

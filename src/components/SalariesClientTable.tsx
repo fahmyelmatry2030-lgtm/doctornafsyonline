@@ -9,6 +9,7 @@ type TherapistForSalary = {
   name: string;
   email: string;
   avatar: string | null;
+  currency: string;
   completedSessionsCount: number;
   therapistProfile: {
     pricePerSession: number;
@@ -257,8 +258,8 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
             </div>
             <div className="text-left">
               <p className="text-xs font-bold text-[#A3AED0] mb-1">إجمالي رواتب الأخصائيين</p>
-              <p className="text-2xl font-black text-[#2B3674]">
-                {totalPayroll.toLocaleString("ar-EG")} <span className="text-xs font-bold text-slate-400">ج.م</span>
+              <p className="mt-2 text-3xl font-black text-indigo-700">
+                {formatPrice(totalPayroll, "EGP")}
               </p>
             </div>
           </div>
@@ -361,18 +362,18 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                       )}
                     </td>
                     <td className="px-6 py-4 font-bold text-slate-900">
-                      {profile?.salary || 0} ج.م
+                      {profile?.salaryType === "COMMISSION"
+                        ? `${profile?.salary || 0}%`
+                        : formatPrice(profile?.salary || 0, t.currency)}
                     </td>
                     <td className="px-6 py-4 font-semibold text-slate-600">
                       {t.completedSessionsCount} جلسات مكتملة
                     </td>
-                    <td className="px-6 py-4">
-                      <span className={`font-bold ${t.employeeBonuses.reduce((acc, b) => acc + b.amount, 0) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                        {t.employeeBonuses.reduce((acc, b) => acc + b.amount, 0) >= 0 ? '+' : ''}{t.employeeBonuses.reduce((acc, b) => acc + b.amount, 0)} ج.م
-                      </span>
+                    <td className="px-6 py-4 text-emerald-600 font-bold" dir="ltr">
+                      {formatPrice(t.employeeBonuses.reduce((acc, b) => acc + b.amount, 0), t.currency)}
                     </td>
-                    <td className="px-6 py-4 text-emerald-600 font-black text-base">
-                      {payout.toLocaleString("ar-EG")} ج.م
+                    <td className="px-6 py-4 font-black text-slate-900">
+                      {formatPrice(payout, t.currency)}
                     </td>
                     <td className="px-6 py-4">
                       {profile?.paymentMethod ? (
@@ -510,11 +511,13 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                 <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
                   <div>
                     <p className="text-[10px] text-slate-500 font-bold mb-0.5">المرتب الشهري</p>
-                    <p className="font-bold text-slate-900 text-sm">{profile?.salary || 0} ج.م</p>
+                    <p className="font-bold text-slate-900 text-sm">
+                      {profile?.salaryType === "COMMISSION" ? `${profile?.salary || 0}%` : formatPrice(profile?.salary || 0, t.currency)}
+                    </p>
                   </div>
                   <div>
                     <p className="text-[10px] text-slate-500 font-bold mb-0.5">إجمالي المستحقات</p>
-                    <p className="font-black text-emerald-600 text-sm">{payout.toLocaleString("ar-EG")} ج.م</p>
+                    <p className="font-black text-emerald-600 text-sm">{formatPrice(payout, t.currency)}</p>
                   </div>
                   <div>
                     <p className="text-[10px] text-slate-500 font-bold mb-0.5">جلسات الشهر</p>
@@ -580,7 +583,7 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-2">قيمة المرتب الشهري (ج.م)</label>
+                <label className="block text-xs font-bold text-slate-500 mb-2">قيمة الراتب / النسبة</label>
                 <input
                   type="number"
                   value={salaryValue}
@@ -651,7 +654,7 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
               
               <form onSubmit={addBonus} className="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
                 <div>
-                  <label className="block text-sm font-bold mb-1">المبلغ (ج.م)</label>
+                  <label className="block text-sm font-bold mb-1">المبلغ</label>
                   <input
                     type="number"
                     required
@@ -696,7 +699,7 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
                         </div>
                         <div className="flex items-center gap-3">
                           <span className={`font-bold ${bonus.amount >= 0 ? "text-emerald-600" : "text-red-600"}`}>
-                            {bonus.amount >= 0 ? "+" : ""}{bonus.amount} ج.م
+                            {formatPrice(bonus.amount, selectedTherapist.currency)}
                           </span>
                           <button
                             onClick={() => deleteBonus(bonus.id)}
@@ -735,16 +738,15 @@ export function SalariesClientTable({ initialTherapists, isReadOnly }: Props) {
               </div>
               <div className="p-6 space-y-5">
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-bold text-slate-600">الإجمالي المستحق</span>
-                    <span className="text-xl font-black text-indigo-600">{calculatePayout(selectedTherapist).toLocaleString()} ج.م</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs text-slate-500">
-                    <span>الراتب الثابت/العمولات</span>
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-sm font-bold text-slate-700">المبلغ المستحق:</span>
                     <span className="font-bold">
-                      {selectedTherapist.therapistProfile?.salaryType === "COMMISSION"
-                        ? (selectedTherapist.completedSessionsCount * (selectedTherapist.therapistProfile?.pricePerSession || 0) * 0.6).toLocaleString()
-                        : (selectedTherapist.therapistProfile?.salary || 0).toLocaleString()} ج.م
+                      {formatPrice(
+                        selectedTherapist.therapistProfile?.salaryType === "COMMISSION"
+                          ? (selectedTherapist.completedSessionsCount * (selectedTherapist.therapistProfile?.pricePerSession || 0) * 0.6)
+                          : (selectedTherapist.therapistProfile?.salary || 0),
+                        selectedTherapist.currency
+                      )}
                     </span>
                   </div>
                 </div>

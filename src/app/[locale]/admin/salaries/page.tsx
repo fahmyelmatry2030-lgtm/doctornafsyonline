@@ -28,6 +28,7 @@ export default async function AdminSalariesPage() {
         name: true,
         email: true,
         avatar: true,
+        currency: true,
         therapistProfile: {
           select: {
             pricePerSession: true,
@@ -99,6 +100,7 @@ export default async function AdminSalariesPage() {
     name: t.name,
     email: t.email,
     avatar: t.avatar,
+    currency: t.currency,
     completedSessionsCount: t.therapistAppointments.length,
     therapistProfile: t.therapistProfile,
     employeeBonuses: (t.employeeBonuses || []).map(b => ({

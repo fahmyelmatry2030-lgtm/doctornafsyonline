@@ -18,9 +18,12 @@ interface MonthlySalaryRecord {
 
 interface Props {
   history: MonthlySalaryRecord[];
+  currency?: string | null;
 }
 
-export default function TherapistSalaryHistoryClient({ history }: Props) {
+import { formatPrice } from "@/lib/constants";
+
+export default function TherapistSalaryHistoryClient({ history, currency }: Props) {
   const [uploadingReceipt, setUploadingReceipt] = useState<string | null>(null);
 
   const handleUploadReceipt = async (recordId: string, file: File) => {
@@ -79,10 +82,10 @@ export default function TherapistSalaryHistoryClient({ history }: Props) {
                   </div>
                   
                   <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                    <span className="text-slate-500">الأساسي: <strong className="text-slate-700">{record.baseSalary} ج.م</strong></span>
-                    <span className="text-slate-500">مكافآت/عمولات: <strong className="text-emerald-600">+{record.totalBonuses} ج.م</strong></span>
-                    <span className="text-slate-500">خصم: <strong className="text-rose-600">-{record.totalDeductions} ج.م</strong></span>
-                    <span className="font-bold">الصافي المدفوع: <strong className="text-indigo-700">{record.netSalary} ج.م</strong></span>
+                    <span className="text-slate-500">الأساسي: <strong className="text-slate-700">{formatPrice(record.baseSalary, currency || "EGP")}</strong></span>
+                    <span className="text-slate-500">مكافآت/عمولات: <strong className="text-emerald-600">+{formatPrice(record.totalBonuses, currency || "EGP")}</strong></span>
+                    <span className="text-slate-500">خصم: <strong className="text-rose-600">-{formatPrice(record.totalDeductions, currency || "EGP")}</strong></span>
+                    <span className="font-bold">الصافي المدفوع: <strong className="text-indigo-700">{formatPrice(record.netSalary, currency || "EGP")}</strong></span>
                   </div>
                 </div>
 

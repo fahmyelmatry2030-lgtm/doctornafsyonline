@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import ClientDateTime from "@/components/ClientDateTime";
+import { formatPrice } from "@/lib/constants";
 import {
   Clock,
   CheckCircle2,
@@ -41,6 +42,11 @@ export default async function TherapistSessionsPage() {
   const session = await auth();
   const userId = session?.user?.id;
   if (!userId) return null;
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { currency: true },
+  });
 
   const now = new Date();
 
@@ -164,7 +170,7 @@ export default async function TherapistSessionsPage() {
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${statusLabels[app.status].className}`}>
                     {statusLabels[app.status].label}
                   </span>
-                  <span className="font-black text-slate-800">{app.price} ج.م</span>
+                  <span className="font-black text-slate-800">{formatPrice(app.price, user?.currency || "EGP")}</span>
                   <Link
                     href={`/session/${app.id}`}
                     className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-bold text-sm border border-indigo-200 hover:border-indigo-400 px-3 py-1.5 rounded-xl transition-colors"
@@ -215,7 +221,7 @@ export default async function TherapistSessionsPage() {
                       <td className="px-6 py-4 text-slate-600">
                         <ClientDateTime date={app.scheduledAt} formatStr="d MMM yyyy · hh:mm a" />
                       </td>
-                      <td className="px-6 py-4 font-black text-slate-800">{app.price} ج.م</td>
+                      <td className="px-6 py-4 font-black text-slate-800">{formatPrice(app.price, user?.currency || "EGP")}</td>
                       <td className="px-6 py-4">
                         <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${statusLabels[app.status]?.className}`}>
                           {statusLabels[app.status]?.label}
