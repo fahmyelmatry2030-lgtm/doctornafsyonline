@@ -55,7 +55,17 @@ export default function AvatarManager({
         body: formData,
       });
 
-      const data = await res.json();
+      let data;
+      const textResponse = await res.text();
+      try {
+        data = JSON.parse(textResponse);
+      } catch (parseError) {
+        console.error("Server returned non-JSON:", textResponse);
+        setError(`خطأ غير متوقع من الخادم (${res.status})`);
+        setAvatar(initialAvatar);
+        setUploading(false);
+        return;
+      }
 
       if (res.ok) {
         setAvatar(data.avatar + "?v=" + new Date().getTime());
@@ -65,7 +75,8 @@ export default function AvatarManager({
         setError(data.error || "فشل رفع الصورة الشخصية");
         setAvatar(initialAvatar);
       }
-    } catch {
+    } catch (err: any) {
+      console.error("Fetch error:", err);
       setError("حدث خطأ أثناء الاتصال بالخادم");
       setAvatar(initialAvatar);
     } finally {
