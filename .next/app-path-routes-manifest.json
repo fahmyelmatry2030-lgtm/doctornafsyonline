@@ -1,5 +1,6 @@
 {
   "/[locale]/about/page": "/[locale]/about",
+  "/[locale]/admin/activity/page": "/[locale]/admin/activity",
   "/[locale]/admin/certificates/page": "/[locale]/admin/certificates",
   "/[locale]/admin/content/page": "/[locale]/admin/content",
   "/[locale]/admin/customer-service/page": "/[locale]/admin/customer-service",
@@ -41,6 +42,7 @@
   "/[locale]/patient/profile/page": "/[locale]/patient/profile",
   "/[locale]/patient/reviews/page": "/[locale]/patient/reviews",
   "/[locale]/privacy/page": "/[locale]/privacy",
+  "/[locale]/receipt-template/page": "/[locale]/receipt-template",
   "/[locale]/register/page": "/[locale]/register",
   "/[locale]/reset-password/page": "/[locale]/reset-password",
   "/[locale]/services/page": "/[locale]/services",
@@ -98,6 +100,8 @@
   "/api/certificates/verify/route": "/api/certificates/verify",
   "/api/check-settings/route": "/api/check-settings",
   "/api/content/route": "/api/content",
+  "/api/contracts/[type]/route": "/api/contracts/[type]",
+  "/api/contracts/debug/route": "/api/contracts/debug",
   "/api/customer-service/available-appointments/route": "/api/customer-service/available-appointments",
   "/api/customer-service/check-conflict/route": "/api/customer-service/check-conflict",
   "/api/customer-service/session-status/route": "/api/customer-service/session-status",

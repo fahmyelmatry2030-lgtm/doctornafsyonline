@@ -87,6 +87,14 @@
       "namedRegex": "^/api/auth/(?<nxtPnextauth>.+?)(?:/)?$"
     },
     {
+      "page": "/api/contracts/[type]",
+      "regex": "^/api/contracts/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPtype": "nxtPtype"
+      },
+      "namedRegex": "^/api/contracts/(?<nxtPtype>[^/]+?)(?:/)?$"
+    },
+    {
       "page": "/api/public/verify-staff/[id]",
       "regex": "^/api/public/verify\\-staff/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -125,6 +133,14 @@
         "nxtPlocale": "nxtPlocale"
       },
       "namedRegex": "^/(?<nxtPlocale>[^/]+?)/admin(?:/)?$"
+    },
+    {
+      "page": "/[locale]/admin/activity",
+      "regex": "^/([^/]+?)/admin/activity(?:/)?$",
+      "routeKeys": {
+        "nxtPlocale": "nxtPlocale"
+      },
+      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/admin/activity(?:/)?$"
     },
     {
       "page": "/[locale]/admin/certificates",
@@ -440,6 +456,14 @@
         "nxtPlocale": "nxtPlocale"
       },
       "namedRegex": "^/(?<nxtPlocale>[^/]+?)/privacy(?:/)?$"
+    },
+    {
+      "page": "/[locale]/receipt-template",
+      "regex": "^/([^/]+?)/receipt\\-template(?:/)?$",
+      "routeKeys": {
+        "nxtPlocale": "nxtPlocale"
+      },
+      "namedRegex": "^/(?<nxtPlocale>[^/]+?)/receipt\\-template(?:/)?$"
     },
     {
       "page": "/[locale]/register",
@@ -776,6 +800,12 @@
       "regex": "^/api/content(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/content(?:/)?$"
+    },
+    {
+      "page": "/api/contracts/debug",
+      "regex": "^/api/contracts/debug(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/contracts/debug(?:/)?$"
     },
     {
       "page": "/api/customer-service/available-appointments",

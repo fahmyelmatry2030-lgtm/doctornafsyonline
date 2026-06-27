@@ -1,5 +1,6 @@
 {
   "/[locale]/about/page": "app/[locale]/about/page.js",
+  "/[locale]/admin/activity/page": "app/[locale]/admin/activity/page.js",
   "/[locale]/admin/certificates/page": "app/[locale]/admin/certificates/page.js",
   "/[locale]/admin/content/page": "app/[locale]/admin/content/page.js",
   "/[locale]/admin/customer-service/page": "app/[locale]/admin/customer-service/page.js",
@@ -41,6 +42,7 @@
   "/[locale]/patient/profile/page": "app/[locale]/patient/profile/page.js",
   "/[locale]/patient/reviews/page": "app/[locale]/patient/reviews/page.js",
   "/[locale]/privacy/page": "app/[locale]/privacy/page.js",
+  "/[locale]/receipt-template/page": "app/[locale]/receipt-template/page.js",
   "/[locale]/register/page": "app/[locale]/register/page.js",
   "/[locale]/reset-password/page": "app/[locale]/reset-password/page.js",
   "/[locale]/services/page": "app/[locale]/services/page.js",
@@ -98,6 +100,8 @@
   "/api/certificates/verify/route": "app/api/certificates/verify/route.js",
   "/api/check-settings/route": "app/api/check-settings/route.js",
   "/api/content/route": "app/api/content/route.js",
+  "/api/contracts/[type]/route": "app/api/contracts/[type]/route.js",
+  "/api/contracts/debug/route": "app/api/contracts/debug/route.js",
   "/api/customer-service/available-appointments/route": "app/api/customer-service/available-appointments/route.js",
   "/api/customer-service/check-conflict/route": "app/api/customer-service/check-conflict/route.js",
   "/api/customer-service/session-status/route": "app/api/customer-service/session-status/route.js",

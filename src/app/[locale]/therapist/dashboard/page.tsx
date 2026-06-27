@@ -54,6 +54,66 @@ export default async function TherapistDashboardPage() {
 
   return (
     <div className="animate-fade-in space-y-6">
+      {/* Trial Status alert / lock banner */}
+      {(() => {
+        if (!therapistProfile) return null;
+        const profileCreatedAt = new Date(therapistProfile.createdAt);
+        const daysSinceCreation = (new Date().getTime() - profileCreatedAt.getTime()) / (1000 * 60 * 60 * 24);
+        
+        let annualApproved = false;
+        const contractVal = therapistProfile.contractUrl;
+        if (contractVal && contractVal.startsWith("{")) {
+          try {
+            const parsed = JSON.parse(contractVal);
+            if (parsed.annual && parsed.annual.status === "APPROVED") {
+              annualApproved = true;
+            }
+          } catch {}
+        }
+
+        if (daysSinceCreation >= 14 && !annualApproved) {
+          return (
+            <div className="bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-md animate-pulse">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0 shadow-inner">
+                  <span className="text-red-600 text-2xl font-black">🔒</span>
+                </div>
+                <div>
+                  <h3 className="text-red-900 font-black text-sm md:text-base">لقد انتهت فترة التجربة الخاصة بك (14 يوماً)</h3>
+                  <p className="text-red-700/90 text-xs md:text-sm mt-1 font-semibold leading-relaxed">
+                    تم إيقاف ظهور ملفك للمرضى مؤقتاً. يرجى تنزيل وتوقيع "العقد السنوي الشامل" وإعادة رفعه في صفحة الملف الشخصي لتفعيل حسابك مجدداً.
+                  </p>
+                </div>
+              </div>
+              <Link href="/therapist/profile" className="shrink-0 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-red-600/30 transition-all">
+                التوجه لتوقيع العقد
+              </Link>
+            </div>
+          );
+        } else if (daysSinceCreation >= 11 && !annualApproved) {
+          const remainingDays = Math.max(0, Math.ceil(14 - daysSinceCreation));
+          return (
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center shrink-0 shadow-inner animate-bounce">
+                  <span className="text-amber-600 text-2xl font-black">⚠️</span>
+                </div>
+                <div>
+                  <h3 className="text-amber-950 font-bold text-sm md:text-base">تنبيه: أوشكت فترة التجربة على الانتهاء</h3>
+                  <p className="text-amber-700/90 text-xs md:text-sm mt-0.5 font-semibold">
+                    متبقي لك {remainingDays === 1 ? "يوم واحد" : `${remainingDays} أيام`} في فترة التجربة. يرجى توقيع ورفع العقد السنوي لضمان عدم توقف حسابك.
+                  </p>
+                </div>
+              </div>
+              <Link href="/therapist/profile" className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-500/30 transition-all">
+                رفع العقد الآن
+              </Link>
+            </div>
+          );
+        }
+        return null;
+      })()}
+
       {/* Avatar Reminder Banner */}
       {!user?.avatar && (
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">

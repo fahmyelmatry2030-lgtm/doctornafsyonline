@@ -39,7 +39,14 @@ export default async function AdminDashboardPage() {
       prisma.appointment.aggregate({ _sum: { price: true }, where: { status: "COMPLETED", createdAt: { gte: firstDayOfMonth } } }),
       prisma.appointment.aggregate({ _sum: { price: true }, where: { status: "COMPLETED", createdAt: { gte: lastMonth, lt: firstDayOfMonth } } }),
       prisma.appointment.findMany({ include: { patient: { select: { name: true } }, therapist: { select: { name: true } } }, orderBy: { createdAt: "desc" }, take: 5 }),
-      prisma.user.findMany({ where: { role: "THERAPIST", therapistProfile: { isVerified: false } }, include: { therapistProfile: true }, take: 4 })
+      prisma.user.findMany({ where: { role: "THERAPIST", therapistProfile: { isVerified: false } }, include: { therapistProfile: true }, take: 4 }),
+      // Query therapists with active trial (createdAt exists on profile, we check those who do NOT have annual approved contract)
+      prisma.user.findMany({
+        where: {
+          role: "THERAPIST",
+        },
+        include: { therapistProfile: true }
+      })
     ]);
 
     const settings = await getSettings();
@@ -49,8 +56,44 @@ export default async function AdminDashboardPage() {
       activeNow, pendingVerifications, totalAppointments,
       completedAppointments, cancelledAppointments,
       monthlyEarningsData, lastMonthEarningsData,
-      recentAppointments, pendingTherapists
+      recentAppointments, pendingTherapists, allTherapists
     ] = transactionResults;
+
+    // Filter out therapists who are in day 11-14 or locked at 15+ days and have no approved annual contract
+    const nowTime = new Date().getTime();
+    const trialExpiringSoon: Array<any> = [];
+    const trialExpiredLocked: Array<any> = [];
+
+    allTherapists.forEach((therapist: any) => {
+      if (!therapist.therapistProfile) return;
+      const profileCreatedAt = new Date(therapist.therapistProfile.createdAt).getTime();
+      const daysSinceCreation = (nowTime - profileCreatedAt) / (1000 * 60 * 60 * 24);
+
+      let annualApproved = false;
+      const contractVal = therapist.therapistProfile.contractUrl;
+      if (contractVal && contractVal.startsWith("{")) {
+        try {
+          const parsed = JSON.parse(contractVal);
+          if (parsed.annual && parsed.annual.status === "APPROVED") {
+            annualApproved = true;
+          }
+        } catch {}
+      }
+
+      if (!annualApproved) {
+        if (daysSinceCreation >= 14) {
+          trialExpiredLocked.push({
+            ...therapist,
+            days: Math.floor(daysSinceCreation)
+          });
+        } else if (daysSinceCreation >= 11) {
+          trialExpiringSoon.push({
+            ...therapist,
+            daysLeft: Math.max(0, Math.ceil(14 - daysSinceCreation))
+          });
+        }
+      }
+    });
 
     const commissionFactor = (settings?.commission || 20) / 100;
     const monthlyRevenue = (monthlyEarningsData._sum.price || 0) * commissionFactor;
@@ -182,6 +225,57 @@ export default async function AdminDashboardPage() {
             </div>
           </div>
         </div>
+
+        {/* Trial Status & Expirations Section */}
+        {(trialExpiringSoon.length > 0 || trialExpiredLocked.length > 0) && (
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Trial Expiring Soon */}
+            {trialExpiringSoon.length > 0 && (
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-[24px] p-6 shadow-sm">
+                <h3 className="font-black text-amber-900 text-base flex items-center gap-2 mb-4">
+                  ⚠️ أخصائيون أوشكت فترة تجربتهم على الانتهاء ({trialExpiringSoon.length})
+                </h3>
+                <div className="space-y-3">
+                  {trialExpiringSoon.map((req) => (
+                    <div key={req.id} className="flex items-center justify-between p-3.5 bg-white/80 rounded-2xl border border-amber-100">
+                      <div>
+                        <p className="text-sm font-black text-slate-800">{req.name}</p>
+                        <p className="text-xs text-amber-700 font-bold mt-0.5">متبقي {req.daysLeft} أيام على انتهاء الـ 14 يوم</p>
+                      </div>
+                      <Link href={`/admin/therapists?search=${encodeURIComponent(req.name)}`}
+                        className="text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl shadow-sm transition-all">
+                        مراجعة وإرسال العقد
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Trial Expired & Locked */}
+            {trialExpiredLocked.length > 0 && (
+              <div className="bg-gradient-to-br from-red-50 to-rose-50 border border-red-200 rounded-[24px] p-6 shadow-sm">
+                <h3 className="font-black text-red-900 text-base flex items-center gap-2 mb-4">
+                  🔒 أخصائيون منتهية فترة تجربتهم ومغلقون ({trialExpiredLocked.length})
+                </h3>
+                <div className="space-y-3">
+                  {trialExpiredLocked.map((req) => (
+                    <div key={req.id} className="flex items-center justify-between p-3.5 bg-white/80 rounded-2xl border border-red-100">
+                      <div>
+                        <p className="text-sm font-black text-slate-800">{req.name}</p>
+                        <p className="text-xs text-red-600 font-bold mt-0.5">انتهت فترة التجربة من {req.days} يوم (مغلق حالياً)</p>
+                      </div>
+                      <Link href={`/admin/therapists?search=${encodeURIComponent(req.name)}`}
+                        className="text-xs font-bold bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow-sm transition-all">
+                        مراجعة الملف
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Lists Row */}
         <div className="grid gap-6 lg:grid-cols-2">

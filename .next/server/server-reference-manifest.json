@@ -8,6 +8,12 @@
           "exportedName": "getSettings",
           "filename": "src/app/[locale]/admin/settings/actions.ts"
         },
+        "app/[locale]/admin/activity/page": {
+          "moduleId": 920890,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
         "app/[locale]/admin/certificates/page": {
           "moduleId": 839128,
           "async": false,
@@ -250,6 +256,12 @@
         },
         "app/[locale]/privacy/page": {
           "moduleId": 492936,
+          "async": false,
+          "exportedName": "getSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/receipt-template/page": {
+          "moduleId": 9349,
           "async": false,
           "exportedName": "getSettings",
           "filename": "src/app/[locale]/admin/settings/actions.ts"
@@ -380,6 +392,12 @@
           "exportedName": "getWebsiteContent",
           "filename": "src/app/[locale]/admin/settings/actions.ts"
         },
+        "app/[locale]/admin/activity/page": {
+          "moduleId": 920890,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
         "app/[locale]/admin/certificates/page": {
           "moduleId": 839128,
           "async": false,
@@ -622,6 +640,12 @@
         },
         "app/[locale]/privacy/page": {
           "moduleId": 492936,
+          "async": false,
+          "exportedName": "getWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/receipt-template/page": {
+          "moduleId": 9349,
           "async": false,
           "exportedName": "getWebsiteContent",
           "filename": "src/app/[locale]/admin/settings/actions.ts"
@@ -752,6 +776,12 @@
           "exportedName": "updateWebsiteContent",
           "filename": "src/app/[locale]/admin/settings/actions.ts"
         },
+        "app/[locale]/admin/activity/page": {
+          "moduleId": 920890,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
         "app/[locale]/admin/certificates/page": {
           "moduleId": 839128,
           "async": false,
@@ -994,6 +1024,12 @@
         },
         "app/[locale]/privacy/page": {
           "moduleId": 492936,
+          "async": false,
+          "exportedName": "updateWebsiteContent",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/receipt-template/page": {
+          "moduleId": 9349,
           "async": false,
           "exportedName": "updateWebsiteContent",
           "filename": "src/app/[locale]/admin/settings/actions.ts"
@@ -1124,6 +1160,12 @@
           "exportedName": "updateSettings",
           "filename": "src/app/[locale]/admin/settings/actions.ts"
         },
+        "app/[locale]/admin/activity/page": {
+          "moduleId": 920890,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
         "app/[locale]/admin/certificates/page": {
           "moduleId": 839128,
           "async": false,
@@ -1366,6 +1408,12 @@
         },
         "app/[locale]/privacy/page": {
           "moduleId": 492936,
+          "async": false,
+          "exportedName": "updateSettings",
+          "filename": "src/app/[locale]/admin/settings/actions.ts"
+        },
+        "app/[locale]/receipt-template/page": {
+          "moduleId": 9349,
           "async": false,
           "exportedName": "updateSettings",
           "filename": "src/app/[locale]/admin/settings/actions.ts"
