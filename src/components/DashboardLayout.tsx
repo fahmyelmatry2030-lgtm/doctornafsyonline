@@ -254,7 +254,7 @@ export function DashboardLayout({
       { name: "الإشعارات وأكواد الخصم", href: "/admin/marketing", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: "رسائل الدعم الفني", href: "/admin/support", icon: <MessageCircle className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
       { name: t("siteSettings"), href: "/admin/settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER"] },
-      { name: t("mySalary"), href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_ACCOUNTING", "SHIFT_LEADER", "ADMIN_MARKETING"] },
+      { name: t("mySalary"), href: "/admin/my-salary", icon: <DollarSign className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_ACCOUNTING", "SHIFT_LEADER", "ADMIN_MARKETING"] },
       { name: t("profile"), href: "/admin/profile", icon: <UserIcon className="h-5 w-5" />, roles: ["ADMIN", "ADMIN_VIEWER", "ADMIN_CUSTOMER_SERVICE", "ADMIN_HR", "ADMIN_ACCOUNTING", "SHIFT_LEADER", "ADMIN_MARKETING"] },
     ];
 
