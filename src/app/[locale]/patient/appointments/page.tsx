@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Clock, Video, CheckCircle2, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
-import RescheduleButton from "@/components/RescheduleButton";
 import ClientDateTime from "@/components/ClientDateTime";
 import { Phone, MessageCircle } from "lucide-react";
 
@@ -65,7 +64,9 @@ export default async function PatientAppointmentsPage() {
               </thead>
               <tbody>
                 {appointments.map((app) => {
-                  const isUpcoming = app.scheduledAt > new Date() && (app.status === "PENDING" || app.status === "CONFIRMED");
+                  const now = new Date();
+                  const endTime = new Date(app.scheduledAt.getTime() + (app.duration || 60) * 60000);
+                  const canEnterRoom = app.status === "IN_PROGRESS" || (app.status === "CONFIRMED" && now < endTime);
                   
                   return (
                     <tr key={app.id} className="bg-white border-b border-slate-100 hover:bg-slate-50 transition-colors">
@@ -88,12 +89,11 @@ export default async function PatientAppointmentsPage() {
                         {getStatusBadge(app.status)}
                       </td>
                       <td className="px-6 py-4">
-                        {isUpcoming ? (
+                        {canEnterRoom ? (
                           <div className="flex items-center gap-2">
                             <Link href={`/session/${app.id}`} className="font-semibold text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors">
                               دخول الغرفة
                             </Link>
-                            <RescheduleButton appointmentId={app.id} />
                           </div>
                         ) : (
                           <span className="text-slate-400">-</span>

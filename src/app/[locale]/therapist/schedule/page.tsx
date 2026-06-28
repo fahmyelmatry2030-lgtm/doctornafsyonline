@@ -56,14 +56,16 @@ export default async function TherapistSessionsPage() {
     orderBy: { scheduledAt: "asc" },
   });
 
+  const oneHourAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000); // 2 hours grace period
+
   const upcoming = appointments.filter(
-    (a) => ["PENDING", "CONFIRMED"].includes(a.status) && new Date(a.scheduledAt) >= now
+    (a) => ["PENDING", "CONFIRMED"].includes(a.status) && new Date(a.scheduledAt) >= oneHourAgo
   );
   const ongoing = appointments.filter((a) => a.status === "IN_PROGRESS");
   const past = appointments.filter(
     (a) =>
       ["COMPLETED", "CANCELLED"].includes(a.status) ||
-      (["PENDING", "CONFIRMED"].includes(a.status) && new Date(a.scheduledAt) < now)
+      (["PENDING", "CONFIRMED"].includes(a.status) && new Date(a.scheduledAt) < oneHourAgo)
   );
 
   return (

@@ -101,7 +101,12 @@ export async function PATCH(
     updateData.status = status;
   }
   
-  if (scheduledAt) updateData.scheduledAt = new Date(scheduledAt);
+  if (scheduledAt) {
+    if (session.user.role === "PATIENT") {
+      return NextResponse.json({ error: "غير مصرح لك بتغيير الموعد" }, { status: 403 });
+    }
+    updateData.scheduledAt = new Date(scheduledAt);
+  }
 
   const updated = await prisma.appointment.update({
     where: { id },

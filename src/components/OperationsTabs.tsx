@@ -94,8 +94,10 @@ export function OperationsTabs({ initialAppointments, commissionRate, isReadOnly
 
     setActionMessage(null);
     startTransition(async () => {
+      // Ensure we send an absolute UTC ISO string to prevent server timezone offsets
+      const utcDate = new Date(editForm.scheduledAt).toISOString();
       const res = await editAppointmentDetails(editingAppointment.id, {
-        scheduledAt: editForm.scheduledAt,
+        scheduledAt: utcDate,
         duration: editForm.duration,
         price: editForm.price,
       });

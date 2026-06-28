@@ -19,8 +19,8 @@ export default async function PatientDashboardPage() {
   const upcomingAppointments = await prisma.appointment.findMany({
     where: {
       patientId: userId,
-      status: { in: ["PENDING", "CONFIRMED"] },
-      scheduledAt: { gte: new Date() },
+      status: { in: ["PENDING", "CONFIRMED", "IN_PROGRESS"] },
+      scheduledAt: { gte: new Date(Date.now() - 2 * 60 * 60 * 1000) },
     },
     include: { therapist: true },
     orderBy: { scheduledAt: "asc" },
@@ -33,7 +33,11 @@ export default async function PatientDashboardPage() {
   });
 
   const upcomingCount = await prisma.appointment.count({
-    where: { patientId: userId, status: { in: ["PENDING", "CONFIRMED"] }, scheduledAt: { gte: new Date() } }
+    where: { 
+      patientId: userId, 
+      status: { in: ["PENDING", "CONFIRMED", "IN_PROGRESS"] }, 
+      scheduledAt: { gte: new Date(Date.now() - 2 * 60 * 60 * 1000) } 
+    }
   });
 
   // Fetch if there is any unrated completed appointment
