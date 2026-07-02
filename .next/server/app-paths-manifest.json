@@ -76,6 +76,7 @@
   "/api/admin/notifications/route": "app/api/admin/notifications/route.js",
   "/api/admin/presence/route": "app/api/admin/presence/route.js",
   "/api/admin/promos/route": "app/api/admin/promos/route.js",
+  "/api/admin/proxy-file/route": "app/api/admin/proxy-file/route.js",
   "/api/admin/reviews/route": "app/api/admin/reviews/route.js",
   "/api/admin/role-permissions/route": "app/api/admin/role-permissions/route.js",
   "/api/admin/seed-customer-service/route": "app/api/admin/seed-customer-service/route.js",

@@ -706,6 +706,12 @@
       "namedRegex": "^/api/admin/promos(?:/)?$"
     },
     {
+      "page": "/api/admin/proxy-file",
+      "regex": "^/api/admin/proxy\\-file(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/proxy\\-file(?:/)?$"
+    },
+    {
       "page": "/api/admin/reviews",
       "regex": "^/api/admin/reviews(?:/)?$",
       "routeKeys": {},

@@ -76,6 +76,7 @@
   "/api/admin/notifications/route": "/api/admin/notifications",
   "/api/admin/presence/route": "/api/admin/presence",
   "/api/admin/promos/route": "/api/admin/promos",
+  "/api/admin/proxy-file/route": "/api/admin/proxy-file",
   "/api/admin/reviews/route": "/api/admin/reviews",
   "/api/admin/role-permissions/route": "/api/admin/role-permissions",
   "/api/admin/seed-customer-service/route": "/api/admin/seed-customer-service",
