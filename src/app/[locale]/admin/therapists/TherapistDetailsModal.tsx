@@ -371,7 +371,7 @@ export function TherapistDetailsModal({
                         {detail?.url && (
                           <div className="flex gap-1.5 items-center">
                             <a 
-                              href={detail.url}
+                              href={`/api/admin/proxy-file?url=${encodeURIComponent(detail.url)}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="flex-1 inline-flex items-center justify-center gap-1 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-lg py-1 text-[10px] font-bold hover:bg-indigo-100 transition-colors"
@@ -520,7 +520,7 @@ export function TherapistDetailsModal({
                       </div>
                       <div>
                         <a 
-                          href={c.url} 
+                          href={`/api/admin/proxy-file?url=${encodeURIComponent(c.url)}`} 
                           target="_blank" 
                           rel="noopener noreferrer" 
                           className="font-bold text-slate-800 text-sm hover:text-indigo-600 flex items-center gap-1 transition-colors leading-tight"

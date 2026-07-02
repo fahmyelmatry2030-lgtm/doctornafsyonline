@@ -276,11 +276,11 @@ export default function ContractManager() {
                   {data?.url ? (
                     <div className="flex gap-2">
                       <a 
-                        href={data.url}
+                        href={`/api/admin/proxy-file?url=${encodeURIComponent(data.url)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         download
-                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-[11px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-xl py-2.5 hover:bg-indigo-100 transition-colors text-center"
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-colors border border-emerald-200"
                       >
                         <FileText className="w-3.5 h-3.5" /> تحميل الملف
                       </a>
