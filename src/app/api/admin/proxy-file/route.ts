@@ -43,13 +43,14 @@ export async function GET(request: Request) {
         // Remove extension for public_id
         const publicId = publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf("."));
         
-        // Generate signed URL
-        const signedUrl = cloudinary.v2.utils.private_download_url(publicId, "pdf", {
-          resource_type: "image",
-          expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour
+        // Generate a ZIP download URL because Cloudinary free tier blocks raw PDF delivery
+        const zipUrl = cloudinary.v2.utils.download_zip_url({
+          public_ids: [publicId],
+          resource_type: "image", // The PDFs were uploaded with resource_type image
+          target_public_id: `nafsi_file_${publicId.split("/").pop()}`
         });
-        
-        return NextResponse.redirect(signedUrl);
+
+        return NextResponse.redirect(zipUrl);
       }
     }
 
