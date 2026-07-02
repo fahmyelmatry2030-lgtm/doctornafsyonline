@@ -33,13 +33,14 @@ export async function uploadToCloudinary(
   return new Promise((resolve, reject) => {
     // Strip file extension to get public_id
     const publicId = fileName.substring(0, fileName.lastIndexOf(".")) || fileName;
+    const isPdf = fileName.toLowerCase().endsWith(".pdf");
 
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder: `nafsi/${folder}`,
         public_id: publicId,
         overwrite: true,
-        resource_type: "auto",
+        resource_type: isPdf ? "raw" : "auto",
       },
       (error, result) => {
         if (error) {
