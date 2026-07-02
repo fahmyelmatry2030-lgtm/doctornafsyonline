@@ -52,6 +52,28 @@ app.prepare().then(() => {
   const server = createServer(async (req, res) => {
     try {
       const parsedUrl = parse(req.url, true);
+      
+      // Serve /uploads/ files directly to bypass Next.js static caching issues
+      if (parsedUrl.pathname && parsedUrl.pathname.startsWith('/uploads/')) {
+        // Prevent directory traversal
+        const safePath = path.normalize(parsedUrl.pathname).replace(/^(\.\.[\/\\])+/, '');
+        const filePath = path.join(__dirname, 'public', safePath);
+        
+        if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+          const ext = path.extname(filePath).toLowerCase();
+          const mimeTypes = {
+            '.pdf': 'application/pdf',
+            '.png': 'image/png',
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.webp': 'image/webp'
+          };
+          res.setHeader('Content-Type', mimeTypes[ext] || 'application/octet-stream');
+          fs.createReadStream(filePath).pipe(res);
+          return;
+        }
+      }
+      
       await handle(req, res, parsedUrl);
     } catch (err) {
       console.error('Error occurred handling', req.url, err);
