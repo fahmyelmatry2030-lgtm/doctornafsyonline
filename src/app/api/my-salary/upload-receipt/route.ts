@@ -45,6 +45,9 @@ export async function POST(request: Request) {
     let receiptUrl = "";
 
     try {
+      if (fileExtension.toLowerCase() === "pdf") {
+        throw new Error("PDF uploads to Cloudinary are restricted. Forcing local storage.");
+      }
       receiptUrl = await uploadToCloudinary(buffer, "receipts", fileName);
     } catch (cloudinaryError) {
       try {

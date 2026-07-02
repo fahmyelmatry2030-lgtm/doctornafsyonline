@@ -139,6 +139,9 @@ export async function POST(request: Request) {
       let uploadedUrl: string | null = null;
 
       try {
+        if (file.name.toLowerCase().endsWith('.pdf')) {
+          throw new Error("PDF uploads to Cloudinary are restricted. Forcing local storage.");
+        }
         // Upload to Cloudinary
         uploadedUrl = await uploadToCloudinary(buffer, `contracts/${targetUserId}`, safeName);
       } catch (cloudinaryError) {

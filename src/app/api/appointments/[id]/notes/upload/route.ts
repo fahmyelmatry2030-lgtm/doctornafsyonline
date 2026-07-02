@@ -49,6 +49,9 @@ export async function POST(
     let fileUrl = "";
 
     try {
+      if (fileExtension.toLowerCase() === "pdf") {
+        throw new Error("PDF uploads to Cloudinary are restricted. Forcing local storage.");
+      }
       // Try Cloudinary upload if available
       const { uploadToCloudinary } = await import("@/lib/cloudinary");
       fileUrl = await uploadToCloudinary(buffer, "notes", fileName);
