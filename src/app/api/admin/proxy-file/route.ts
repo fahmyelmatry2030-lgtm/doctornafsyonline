@@ -50,7 +50,36 @@ export async function GET(request: Request) {
           target_public_id: `nafsi_file_${publicId.split("/").pop()}`
         });
 
-        return NextResponse.redirect(zipUrl);
+        // Fetch the zip from Cloudinary
+        const zipResponse = await fetch(zipUrl);
+        if (!zipResponse.ok) {
+          return new NextResponse("Failed to fetch zip from Cloudinary", { status: 500 });
+        }
+        
+        const arrayBuffer = await zipResponse.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        
+        // Unzip in memory using adm-zip
+        // @ts-ignore
+        const AdmZip = (await import("adm-zip")).default || await import("adm-zip");
+        const zip = new AdmZip(buffer);
+        const zipEntries = zip.getEntries();
+        
+        if (zipEntries.length > 0) {
+          // Cloudinary usually puts the files at the root of the ZIP
+          const pdfEntry = zipEntries.find((entry: any) => entry.entryName.toLowerCase().endsWith(".pdf")) || zipEntries[0];
+          const pdfBuffer = pdfEntry.getData();
+          
+          return new NextResponse(pdfBuffer, {
+            status: 200,
+            headers: {
+              "Content-Type": "application/pdf",
+              "Content-Disposition": `inline; filename="${publicId.split("/").pop()}.pdf"`,
+            }
+          });
+        }
+
+        return new NextResponse("PDF not found in archive", { status: 404 });
       }
     }
 
